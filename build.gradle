@@ -7,7 +7,6 @@ buildscript {
     rootProject.ext.msimsdk = msimsdk
     msimsdk.deps = [:]
     msimsdk.deps.msimsdk = "io.github.blackfireteam.msimsdk:imsdk-de4:1.0-SNAPSHOT"
-    msimsdk.deps.msimsdk_uikit = "io.github.blackfireteam.msimsdk:imsdk-uikit-de4:1.0-SNAPSHOT"
 
     apply from: 'git.version.gradle'
     apply from: 'versions.gradle'
