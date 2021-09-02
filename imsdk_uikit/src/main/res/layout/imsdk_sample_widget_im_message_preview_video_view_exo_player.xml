@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <io.github.idonans.systeminsets.SystemInsetsFrameLayout
+        android:id="@+id/system_insets_top"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:systemInsetPaddingTop="all"
+        app:systemInsetPaddingTopNotConsume="true"
+        tools:minHeight="20dp" />
+
+    <Space
+        android:id="@+id/inset_top"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/system_insets_top"
+        tools:minHeight="20dp" />
+
+    <io.github.idonans.systeminsets.SystemInsetsFrameLayout
+        android:id="@+id/system_insets_bottom"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:systemInsetPaddingBottom="56dp"
+        app:systemInsetPaddingBottomNotConsume="true"
+        tools:minHeight="40dp" />
+
+    <Space
+        android:id="@+id/inset_bottom"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/system_insets_bottom"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:minHeight="20dp" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/h_line_top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="system_insets_top,inset_top" />
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/h_line_bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:barrierDirection="top"
+        app:constraint_referenced_ids="system_insets_bottom,inset_bottom" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/v_line_start"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="15dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/v_line_end"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_end="15dp" />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.exoplayer2.ui.AspectRatioFrameLayout
+            android:id="@id/exo_content_frame"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center" />
+    </FrameLayout>
+
+    <FrameLayout
+        android:id="@id/exo_shutter"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/black">
+
+        <com.masonsoft.imsdk.uikit.widget.IMImageView
+            android:id="@+id/cover_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </FrameLayout>
+
+    <com.google.android.exoplayer2.ui.PlayerControlView
+        android:id="@id/exo_controller"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:controller_layout_id="@layout/imsdk_sample_widget_im_message_preview_video_view_exo_player_control_view"
+        app:layout_constraintBottom_toTopOf="@id/h_line_bottom"
+        app:layout_constraintEnd_toStartOf="@id/v_line_end"
+        app:layout_constraintStart_toEndOf="@id/v_line_start"
+        app:layout_constraintTop_toBottomOf="@id/h_line_top" />
+
+    <com.masonsoft.imsdk.uikit.widget.TinyLoadingView
+        android:id="@id/exo_buffering"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

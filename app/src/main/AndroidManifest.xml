@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.masonsoft.imsdk.sample">
+
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
+    <application
+        android:name=".SampleApplication"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.ImsdkSample">
+        <activity
+            android:name=".app.splash.SplashActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.ImsdkSample.Splash">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".app.main.MainActivity" />
+        <activity android:name=".app.signin.SignInActivity" />
+        <activity android:name=".app.signup.SignUpActivity" />
+        <activity android:name=".app.signup.nickname.SignUpNicknameActivity" />
+        <activity android:name=".app.signup.avatar.SignUpAvatarActivity" />
+    </application>
+
+</manifest>

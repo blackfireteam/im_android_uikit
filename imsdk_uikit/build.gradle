@@ -1,0 +1,88 @@
+plugins {
+    id 'com.android.library'
+}
+
+android {
+    compileSdkVersion rootProject.ext.bcfg.ver.target_sdk
+    buildToolsVersion rootProject.ext.bcfg.ver.build_tools
+
+    defaultConfig {
+        minSdkVersion rootProject.ext.bcfg.ver.min_sdk
+        targetSdkVersion rootProject.ext.bcfg.ver.target_sdk
+        versionCode rootProject.ext.bcfg.ver.versionCode
+        versionName rootProject.ext.bcfg.ver.versionName
+        buildConfigField("String", "LIB_NAME", "\"MSIMSDK_UIKIT\"")
+        buildConfigField("int", "LIB_VERSION_CODE", "$versionCode")
+        buildConfigField("String", "LIB_VERSION_NAME", "\"$versionName\"")
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildFeatures {
+        viewBinding = true
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+// 自定义生成的 aar 文件名
+android.libraryVariants.all { variant ->
+    variant.outputs.all {
+        if (outputFileName.endsWith(".aar")) {
+            outputFileName = "MSIMSDK_UIKIT_de4_v${android.defaultConfig.versionName}_${variant.buildType.name}.aar"
+        }
+    }
+}
+
+dependencies {
+    api fileTree(dir: 'libs', include: ['*.jar'])
+
+    api rootProject.ext.msimsdk.deps.msimsdk
+
+    api rootProject.ext.bcfg.deps.androidx_appcompat
+    api rootProject.ext.bcfg.deps.androidx_constraintlayout
+    api rootProject.ext.bcfg.deps.idonans_appcontext
+    api rootProject.ext.bcfg.deps.idonans_core
+    api rootProject.ext.bcfg.deps.idonans_lang
+    api rootProject.ext.bcfg.deps.idonans_backstack
+    api rootProject.ext.bcfg.deps.idonans_systeminsets
+    api rootProject.ext.bcfg.deps.idonans_uniontype
+    api rootProject.ext.bcfg.deps.idonans_dynamic
+
+    api rootProject.ext.bcfg.deps.material
+    api rootProject.ext.bcfg.deps.guava
+    api rootProject.ext.bcfg.deps.gson
+    api rootProject.ext.bcfg.deps.rxbinding
+    api rootProject.ext.bcfg.deps.okhttp
+    api rootProject.ext.bcfg.deps.okhttp_logging_interceptor
+    api rootProject.ext.bcfg.deps.rxjava
+    api rootProject.ext.bcfg.deps.rxandroid
+
+    api 'androidx.emoji:emoji-appcompat:1.1.0'
+    api 'androidx.emoji:emoji-bundled:1.1.0'
+    api "androidx.gridlayout:gridlayout:1.0.0"
+    api 'com.google.android:flexbox:2.0.1'
+    api 'com.google.android.exoplayer:exoplayer:2.13.3'
+    api 'com.google.android.exoplayer:extension-okhttp:2.13.3'
+    api 'com.github.tbruyelle:rxpermissions:0.12'
+
+    api rootProject.ext.bcfg.deps.fresco
+    api rootProject.ext.bcfg.deps.fresco_anim_gif
+    api rootProject.ext.bcfg.deps.fresco_anim_webp
+    api rootProject.ext.bcfg.deps.fresco_support_webp
+    api rootProject.ext.bcfg.deps.fresco_okhttp
+
+    api 'com.tencent.qcloud:cosxml:5.6.0'
+}
+
+apply from: rootProject.file('gradle-mvn-push.gradle')

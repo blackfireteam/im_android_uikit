@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<io.github.idonans.systeminsets.SystemInsetsFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    app:systemInsetPaddingBottom="all"
+    app:systemInsetPaddingBottomNotConsume="true"
+    app:systemInsetPaddingTop="all"
+    app:systemInsetPaddingTopNotConsume="true">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
+        android:background="@drawable/imsdk_sample_ic_common_rect_corners_16dp_stroke_2dp_black"
+        android:clickable="true"
+        android:focusable="true">
+
+        <EditText
+            android:id="@+id/edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            android:hint="@string/imsdk_sample_empty_text_hint"
+            android:importantForAutofill="no"
+            android:includeFontPadding="false"
+            android:inputType="textMultiLine"
+            android:lineSpacingMultiplier="1.2"
+            android:maxLines="3"
+            android:paddingStart="25dp"
+            android:paddingTop="35dp"
+            android:paddingEnd="25dp"
+            android:paddingBottom="20dp"
+            android:textColor="#333333"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容内容" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrier_1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="edit_text" />
+
+        <TextView
+            android:id="@+id/btn_left"
+            android:layout_width="0dp"
+            android:layout_height="42dp"
+            android:layout_marginStart="17dp"
+            android:layout_marginTop="17dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="17dp"
+            android:background="@drawable/imsdk_sample_ic_common_rect_corners_6dp_stroke_1dp_alpha70black"
+            android:gravity="center"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:text="@string/imsdk_sample_button_text_cancel"
+            android:textColor="#FF555555"
+            android:textSize="15sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/btn_right"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/barrier_1" />
+
+        <TextView
+            android:id="@+id/btn_right"
+            android:layout_width="0dp"
+            android:layout_height="42dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="17dp"
+            android:layout_marginEnd="17dp"
+            android:layout_marginBottom="17dp"
+            android:background="@drawable/imsdk_sample_ic_common_rect_corners_6dp_fill_black"
+            android:gravity="center"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:text="@string/imsdk_sample_button_text_submit"
+            android:textColor="#FFffffff"
+            android:textSize="15sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/btn_left"
+            app:layout_constraintTop_toBottomOf="@id/barrier_1" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</io.github.idonans.systeminsets.SystemInsetsFrameLayout>
