@@ -9,8 +9,8 @@ buildscript {
     msimsdk.deps.msimsdk = "io.github.blackfireteam.msimsdk:imsdk-de4:1.0-SNAPSHOT"
     msimsdk.deps.msimsdk_uikit = "io.github.blackfireteam.msimsdk:imsdk-uikit-de4:1.0-SNAPSHOT"
 
-    apply from: 'https://raw.githubusercontent.com/idonans/Example/master/git.version.gradle?'
-    apply from: 'https://raw.githubusercontent.com/idonans/Example/master/versions.gradle?'
+    apply from: 'git.version.gradle'
+    apply from: 'versions.gradle'
     repositories {
         mavenLocal()
         maven {

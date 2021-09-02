@@ -60,11 +60,7 @@ android.applicationVariants.all { variant ->
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation rootProject.ext.msimsdk.deps.msimsdk
-    implementation rootProject.ext.msimsdk.deps.msimsdk_uikit
-
-    implementation 'com.tencent.qcloud:cosxml:5.6.0'
-    implementation 'me.relex:photodraweeview:2.0.0'
+    implementation project(":imsdk_uikit")
 
     // debugImplementation rootProject.ext.bcfg.deps.leakcanary
 
