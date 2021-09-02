@@ -1,1 +1,1 @@
-# MSIMSDK for Android
+# MSIMSDK uikit for Android
