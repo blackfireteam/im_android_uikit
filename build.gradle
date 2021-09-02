@@ -7,7 +7,6 @@ buildscript {
     rootProject.ext.msimsdk = msimsdk
     msimsdk.deps = [:]
     msimsdk.deps.msimsdk = "io.github.blackfireteam.msimsdk:imsdk:1.0-SNAPSHOT"
-    msimsdk.deps.msimsdk_uikit = "io.github.blackfireteam.msimsdk:imsdk-uikit:1.0-SNAPSHOT"
     msimsdk.deps.msimsdk_push_fcm = "io.github.blackfireteam.msimsdk:imsdk-push-fcm:1.0-SNAPSHOT"
     msimsdk.deps.msimsdk_gradle_plugin = "io.github.blackfireteam.msimsdk:imsdk-gradle-plugin:1.0-SNAPSHOT"
 
