@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="utf-8"?>
+<io.github.idonans.systeminsets.SystemInsetsFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/darker_gray"
+    app:systemInsetPaddingBottom="all">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <FrameLayout
+            android:id="@+id/video_layout_background"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <com.masonsoft.imsdk.uikit.widget.UserCacheAvatar
+            android:id="@+id/user_avatar_audio"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginTop="100dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:roundSize="16dp"
+            tools:visibility="gone" />
+
+        <com.masonsoft.imsdk.uikit.widget.UserCacheName
+            android:id="@+id/username_audio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="20dp"
+            android:paddingBottom="5dp"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/user_avatar_audio"
+            tools:text="Username"
+            tools:visibility="gone" />
+
+        <com.masonsoft.imsdk.uikit.widget.RtcStateHintTextView
+            android:id="@+id/rtc_state_hint_text_audio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#FFd5d5d5"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/username_audio"
+            tools:text="waiting"
+            tools:visibility="gone" />
+
+        <com.masonsoft.imsdk.uikit.widget.UserCacheAvatar
+            android:id="@+id/user_avatar_video"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginStart="30dp"
+            android:layout_marginTop="100dp"
+            app:layout_constraintEnd_toStartOf="@id/username_video"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:roundSize="14dp" />
+
+        <com.masonsoft.imsdk.uikit.widget.UserCacheName
+            android:id="@+id/username_video"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:paddingTop="20dp"
+            android:paddingBottom="5dp"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/user_avatar_video"
+            app:layout_constraintTop_toTopOf="@id/user_avatar_video"
+            tools:text="Username" />
+
+        <com.masonsoft.imsdk.uikit.widget.RtcStateHintTextView
+            android:id="@+id/rtc_state_hint_text_video"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingTop="10dp"
+            android:textColor="#FFd5d5d5"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/username_video"
+            app:layout_constraintTop_toBottomOf="@id/username_video"
+            tools:text="waiting" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/bottom_line"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_end="60dp" />
+
+        <ImageView
+            android:id="@+id/action_mutemic"
+            android:layout_width="85dp"
+            android:layout_height="85dp"
+            android:contentDescription="@string/imsdk_uikit_empty_text_hint"
+            android:scaleType="fitXY"
+            android:src="@drawable/imsdk_uikit_ic_mutemic_selector"
+            app:layout_constraintBottom_toTopOf="@id/bottom_line"
+            app:layout_constraintEnd_toStartOf="@id/action_hangup"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TextView
+            android:id="@+id/action_mutemic_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="5dp"
+            android:textColor="#fff0f0f0"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="@id/action_mutemic"
+            app:layout_constraintStart_toStartOf="@id/action_mutemic"
+            app:layout_constraintTop_toBottomOf="@id/action_mutemic"
+            tools:text="@string/imsdk_uikit_rtc_microphone_on" />
+
+        <ImageView
+            android:id="@+id/action_hangup"
+            android:layout_width="85dp"
+            android:layout_height="85dp"
+            android:contentDescription="@string/imsdk_uikit_empty_text_hint"
+            android:scaleType="fitXY"
+            android:src="@drawable/imsdk_uikit_ic_hangup"
+            app:layout_constraintBottom_toTopOf="@id/bottom_line"
+            app:layout_constraintEnd_toStartOf="@id/action_speaker"
+            app:layout_constraintStart_toEndOf="@id/action_mutemic" />
+
+        <TextView
+            android:id="@+id/action_hangup_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="5dp"
+            android:text="@string/imsdk_uikit_rtc_hangup"
+            android:textColor="#fff0f0f0"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="@id/action_hangup"
+            app:layout_constraintStart_toStartOf="@id/action_hangup"
+            app:layout_constraintTop_toBottomOf="@id/action_hangup" />
+
+        <ImageView
+            android:id="@+id/action_speaker"
+            android:layout_width="85dp"
+            android:layout_height="85dp"
+            android:contentDescription="@string/imsdk_uikit_empty_text_hint"
+            android:scaleType="fitXY"
+            android:src="@drawable/imsdk_uikit_ic_speaker_selector"
+            app:layout_constraintBottom_toTopOf="@id/bottom_line"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/action_hangup" />
+
+        <TextView
+            android:id="@+id/action_speaker_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="5dp"
+            android:textColor="#fff0f0f0"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="@id/action_speaker"
+            app:layout_constraintStart_toStartOf="@id/action_speaker"
+            app:layout_constraintTop_toBottomOf="@id/action_speaker"
+            tools:text="@string/imsdk_uikit_rtc_speaker_off" />
+
+        <ImageView
+            android:id="@+id/action_received_accept"
+            android:layout_width="85dp"
+            android:layout_height="85dp"
+            android:contentDescription="@string/imsdk_uikit_empty_text_hint"
+            android:scaleType="fitXY"
+            android:src="@drawable/imsdk_uikit_ic_accept"
+            app:layout_constraintBottom_toTopOf="@id/bottom_line"
+            app:layout_constraintEnd_toStartOf="@id/action_received_hangup"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:visibility="gone" />
+
+        <TextView
+            android:id="@+id/action_received_accept_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="5dp"
+            android:text="@string/imsdk_uikit_rtc_accept"
+            android:textColor="#fff0f0f0"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="@id/action_received_accept"
+            app:layout_constraintStart_toStartOf="@id/action_received_accept"
+            app:layout_constraintTop_toBottomOf="@id/action_received_accept"
+            tools:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/action_received_hangup"
+            android:layout_width="85dp"
+            android:layout_height="85dp"
+            android:contentDescription="@string/imsdk_uikit_empty_text_hint"
+            android:scaleType="fitXY"
+            android:src="@drawable/imsdk_uikit_ic_hangup"
+            app:layout_constraintBottom_toTopOf="@id/bottom_line"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/action_received_accept"
+            tools:visibility="gone" />
+
+        <TextView
+            android:id="@+id/action_received_hangup_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="5dp"
+            android:text="@string/imsdk_uikit_rtc_hangup"
+            android:textColor="#fff0f0f0"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="@id/action_received_hangup"
+            app:layout_constraintStart_toStartOf="@id/action_received_hangup"
+            app:layout_constraintTop_toBottomOf="@id/action_received_hangup"
+            tools:visibility="gone" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/bottom_hint_line"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:barrierDirection="top"
+            app:barrierMargin="-15dp"
+            app:constraint_referenced_ids="action_mutemic,action_hangup,action_speaker,action_received_accept,action_received_hangup" />
+
+        <TextView
+            android:id="@+id/connected_time_duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toTopOf="@id/bottom_hint_line"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:text="00:00" />
+
+        <com.masonsoft.imsdk.uikit.widget.RtcStateHintTextView
+            android:id="@+id/rtc_state_hint_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
+            android:background="#70000000"
+            android:padding="6dp"
+            android:textColor="@android:color/white"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toTopOf="@id/connected_time_duration"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:text="waiting" />
+
+        <com.masonsoft.imsdk.uikit.widget.GestureTranslationView
+            android:id="@+id/video_layout_foreground"
+            android:layout_width="110dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="20dp"
+            app:layout_constraintDimensionRatio="9:16"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:background="#8f00" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</io.github.idonans.systeminsets.SystemInsetsFrameLayout>

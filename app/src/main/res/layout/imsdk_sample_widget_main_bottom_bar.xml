@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:layout_gravity="bottom"
+    tools:layout_height="@dimen/imsdk_uikit_main_bottom_bar_height">
+
+    <LinearLayout
+        android:id="@+id/tab_home"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toStartOf="@id/tab_discover"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:contentDescription="@string/imsdk_uikit_empty_text_hint"
+            android:duplicateParentState="true"
+            android:scaleType="centerInside"
+            android:src="@drawable/imsdk_sample_ic_home_selector" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:duplicateParentState="true"
+            android:includeFontPadding="false"
+            android:paddingTop="5dp"
+            android:text="@string/imsdk_sample_tab_home"
+            android:textColor="@color/imsdk_sample_main_bottom_bar_text_selector" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/tab_discover"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toStartOf="@id/tab_conversation"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toEndOf="@id/tab_home">
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:contentDescription="@string/imsdk_uikit_empty_text_hint"
+            android:duplicateParentState="true"
+            android:scaleType="centerInside"
+            android:src="@drawable/imsdk_sample_ic_discover_selector" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:duplicateParentState="true"
+            android:includeFontPadding="false"
+            android:paddingTop="5dp"
+            android:text="@string/imsdk_sample_tab_discover"
+            android:textColor="@color/imsdk_sample_main_bottom_bar_text_selector" />
+    </LinearLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/tab_conversation"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        app:layout_constraintEnd_toStartOf="@id/tab_mine"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toEndOf="@id/tab_discover">
+
+        <ImageView
+            android:id="@+id/image"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:contentDescription="@string/imsdk_uikit_empty_text_hint"
+            android:duplicateParentState="true"
+            android:scaleType="centerInside"
+            android:src="@drawable/imsdk_sample_ic_conversation_selector"
+            app:layout_constraintBottom_toTopOf="@id/text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed" />
+
+        <TextView
+            android:id="@+id/text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:duplicateParentState="true"
+            android:includeFontPadding="false"
+            android:paddingTop="5dp"
+            android:text="@string/imsdk_sample_tab_conversation"
+            android:textColor="@color/imsdk_sample_main_bottom_bar_text_selector"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/image" />
+
+        <com.masonsoft.imsdk.uikit.widget.SessionConversationUnreadCountView
+            android:id="@+id/unread_count_view"
+            android:layout_width="wrap_content"
+            android:layout_height="18dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:layout_width="18dp" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <LinearLayout
+        android:id="@+id/tab_mine"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toEndOf="@id/tab_conversation">
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:contentDescription="@string/imsdk_uikit_empty_text_hint"
+            android:duplicateParentState="true"
+            android:scaleType="centerInside"
+            android:src="@drawable/imsdk_sample_ic_mine_selector" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:duplicateParentState="true"
+            android:includeFontPadding="false"
+            android:paddingTop="5dp"
+            android:text="@string/imsdk_sample_tab_mine"
+            android:textColor="@color/imsdk_sample_main_bottom_bar_text_selector" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

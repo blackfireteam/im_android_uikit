@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">msimsdk</string>
+    <string name="imsdk_sample_tab_home">首页</string>
+    <string name="imsdk_sample_tab_discover">探索</string>
+    <string name="imsdk_sample_tab_conversation">消息</string>
+    <string name="imsdk_sample_tab_mine">我的</string>
+    <string name="imsdk_sample_tab_discover_title">在线用户</string>
+    <string name="imsdk_sample_sign_in_submit_text">登录</string>
+    <string name="imsdk_sample_submit_action_ok">确定</string>
+    <string name="imsdk_sample_edit_hint_phone">手机号码</string>
+    <string name="imsdk_sample_edit_hint_api_server">API 服务器地址 https://xxx:8888</string>
+    <string name="imsdk_sample_edit_hint_im_server">消息服务器地址 x.x.x.x:8888</string>
+    <string name="imsdk_sample_edit_hint_nickname">昵称</string>
+    <string name="imsdk_sample_input_error_empty_phone">手机号码不能为空</string>
+    <string name="imsdk_sample_input_error_invalid_phone">手机号码格式错误</string>
+    <string name="imsdk_sample_input_error_api_server_error">API 服务器地址错误</string>
+    <string name="imsdk_sample_input_error_im_server_error">消息服务器地址错误</string>
+    <string name="imsdk_sample_input_error_nickname_error">昵称在 3 – 20 字符</string>
+    <string name="imsdk_sample_input_error_avatar_empty">头像地址不能为空</string>
+    <string name="imsdk_sample_switch_setting">设置</string>
+    <string name="imsdk_sample_open_app_setting">打开系统设置</string>
+    <string name="imsdk_sample_switch_internet_server_default">重置(切换)默认值</string>
+    <string name="imsdk_sample_dialog_confirm_user_not_found_and_auto_reg">当前账号未注册，是否立即注册？</string>
+    <string name="imsdk_sample_profile_modify_nickname">修改昵称</string>
+    <string name="imsdk_sample_profile_modify_nickname_error_empty">昵称不能为空</string>
+    <string name="imsdk_sample_profile_modify_avatar_fail">头像修改失败</string>
+    <string name="imsdk_sample_profile_modify_avatar_success">头像修改成功</string>
+    <string name="imsdk_sample_profile_modify_nickname_fail">昵称修改失败</string>
+    <string name="imsdk_sample_profile_modify_nickname_success">昵称修改成功</string>
+    <string name="imsdk_sample_profile_modify_gender">性别</string>
+    <string name="imsdk_sample_tip_action_general_fail">操作失败</string>
+    <string name="imsdk_sample_tip_action_general_success">操作成功</string>
+    <string name="imsdk_sample_button_text_sign_out">退出登录</string>
+    <string name="imsdk_sample_sign_out_confirm_text">退出登录？</string>
+    <string name="imsdk_sample_tip_kicked_offline">你的账号已经在其它地方登录</string>
+    <string name="imsdk_sample_tip_token_expired">你的登录信息已过期</string>
+</resources>

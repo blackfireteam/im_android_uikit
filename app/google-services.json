@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "602106700160",
+    "project_id": "msimsdk-android-sample",
+    "storage_bucket": "msimsdk-android-sample.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:602106700160:android:06a01e960cf804b21a6165",
+        "android_client_info": {
+          "package_name": "com.masonsoft.imsdk.sample"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "602106700160-9tikbv8kbaqobend9j2m50iv6kam7ngo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.masonsoft.imsdk.sample",
+            "certificate_hash": "b738647eae1a9efbfd701388ea4545f86089c2ec"
+          }
+        },
+        {
+          "client_id": "602106700160-cal4m1qh22scto9j7t1ru9fkk3gemspj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCPFnhGdGlTe7XYUAMDnDsPfXI1rtRGEcg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "602106700160-cal4m1qh22scto9j7t1ru9fkk3gemspj.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

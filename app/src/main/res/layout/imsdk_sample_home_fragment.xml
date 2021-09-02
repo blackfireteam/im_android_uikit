@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/imsdk_uikit_color_white_grey_background">
+
+    <io.github.idonans.systeminsets.SystemInsetsFrameLayout
+        android:id="@+id/top_system_insets"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:systemInsetPaddingTop="all"
+        app:systemInsetPaddingTopNotConsume="true" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:overScrollMode="never"
+        android:padding="20dp"
+        android:scrollbars="none"
+        app:layout_constraintBottom_toTopOf="@id/bottom_system_insets"
+        app:layout_constraintTop_toBottomOf="@id/top_system_insets" />
+
+    <io.github.idonans.systeminsets.SystemInsetsFrameLayout
+        android:id="@+id/bottom_system_insets"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/recycler_view"
+        app:systemInsetPaddingBottom="48dp"
+        app:systemInsetPaddingBottomNotConsume="true">
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/imsdk_uikit_main_bottom_bar_height" />
+    </io.github.idonans.systeminsets.SystemInsetsFrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

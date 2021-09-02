@@ -1,0 +1,3 @@
+include ':imsdk_uikit'
+include ':app'
+rootProject.name = "imsdk_android"

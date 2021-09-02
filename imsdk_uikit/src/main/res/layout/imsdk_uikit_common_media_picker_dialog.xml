@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<io.github.idonans.systeminsets.SystemInsetsFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/pager_overlay_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:background="#FF000000">
+
+    <io.github.idonans.systeminsets.SystemInsetsLinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:systemInsetPaddingTop="all"
+        app:systemInsetPaddingTopNotConsume="true">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="57dp"
+            android:background="@drawable/imsdk_uikit_ic_common_rect_top_corners_16dp_white"
+            android:clickable="true"
+            android:focusable="true">
+
+            <ImageView
+                android:id="@+id/grid_top_bar_close"
+                android:layout_width="56dp"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/imsdk_uikit_empty_text_hint"
+                android:scaleType="centerInside"
+                android:src="@drawable/imsdk_uikit_ic_common_close_black" />
+
+            <TextView
+                android:id="@+id/grid_top_bar_title"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:drawablePadding="4dp"
+                android:gravity="center"
+                android:includeFontPadding="false"
+                android:maxLines="1"
+                android:paddingStart="60dp"
+                android:paddingEnd="60dp"
+                android:singleLine="true"
+                android:text="@string/imsdk_uikit_custom_soft_keyboard_item_media"
+                android:textColor="#333333"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:drawableEndCompat="@drawable/imsdk_uikit_ic_common_arrow_down_black" />
+
+            <TextView
+                android:id="@+id/action_submit"
+                android:layout_width="95dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center_vertical|end"
+                android:layout_marginEnd="15dp"
+                android:background="@drawable/imsdk_uikit_ic_common_rect_corners_4dp_fill_enable_black_normal_cccccc"
+                android:enabled="false"
+                android:gravity="center"
+                android:includeFontPadding="false"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:text="@string/imsdk_uikit_custom_soft_keyboard_item_media_picker_submit_0"
+                android:textColor="@android:color/white"
+                android:textSize="14sp" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/bucket_overlay_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@android:color/white">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/grid_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#FFf2f2f2" />
+        </FrameLayout>
+    </io.github.idonans.systeminsets.SystemInsetsLinearLayout>
+
+</io.github.idonans.systeminsets.SystemInsetsFrameLayout>

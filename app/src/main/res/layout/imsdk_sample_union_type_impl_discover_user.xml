@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.masonsoft.imsdk.uikit.widget.AspectRatioFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:background="#ff999999"
+    tools:layout_margin="20dp"
+    tools:layout_width="120dp">
+
+    <com.masonsoft.imsdk.uikit.widget.ClipLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:borderColor="#ff666666"
+        app:borderSize="1dp"
+        app:roundSize="6dp"
+        app:showBorder="true">
+
+        <com.masonsoft.imsdk.uikit.widget.UserCacheAvatar
+            android:id="@+id/avatar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:roundAsCircle="false" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:background="@android:color/white"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:paddingStart="5dp"
+            android:paddingTop="10dp"
+            android:paddingEnd="5dp"
+            android:paddingBottom="10dp">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="5dp"
+                android:contentDescription="@string/imsdk_uikit_empty_text_hint"
+                android:scaleType="centerInside"
+                android:src="@drawable/imsdk_sample_ic_user_online" />
+
+            <com.masonsoft.imsdk.uikit.widget.UserCacheName
+                android:id="@+id/username"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:includeFontPadding="false"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:textColor="#ff282828"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                tools:text="discover user" />
+        </LinearLayout>
+    </com.masonsoft.imsdk.uikit.widget.ClipLayout>
+</com.masonsoft.imsdk.uikit.widget.AspectRatioFrameLayout>

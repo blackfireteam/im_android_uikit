@@ -1,0 +1,82 @@
+plugins {
+    id 'com.android.application'
+    id 'io.github.blackfireteam.msimsdk'
+}
+
+MSIMSDK {
+    push {
+        fcm {
+        }
+    }
+}
+
+android {
+
+    compileSdkVersion rootProject.ext.bcfg.ver.target_sdk
+    buildToolsVersion rootProject.ext.bcfg.ver.build_tools
+
+    defaultConfig {
+        applicationId "com.masonsoft.imsdk.sample"
+        minSdkVersion rootProject.ext.bcfg.ver.min_sdk
+        targetSdkVersion rootProject.ext.bcfg.ver.target_sdk
+        versionCode rootProject.ext.bcfg.ver.versionCode
+        versionName rootProject.ext.bcfg.ver.versionName
+        buildConfigField("String", "LIB_NAME", "\"MSIMSDK_SAMPLE\"")
+        buildConfigField("int", "LIB_VERSION_CODE", "$versionCode")
+        buildConfigField("String", "LIB_VERSION_NAME", "\"$versionName\"")
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildFeatures {
+        viewBinding = true
+    }
+
+    signingConfigs {
+        release {
+            storeFile file("../msimsdk_sign.jks")
+            storePassword "20210528MSIMSDK"
+            keyAlias "msimsdk"
+            keyPassword "20210528MSIMSDK"
+        }
+    }
+
+    buildTypes {
+        debug {
+            signingConfig signingConfigs.release
+        }
+        release {
+            signingConfig signingConfigs.release
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+// 自定义生成的 apk 文件名
+android.applicationVariants.all { variant ->
+    variant.outputs.all {
+        if (outputFileName.endsWith(".apk")) {
+            outputFileName = "MSIMSDK_v${android.defaultConfig.versionName}_${variant.buildType.name}_sample.apk"
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation rootProject.ext.msimsdk.deps.msimsdk
+    implementation rootProject.ext.msimsdk.deps.msimsdk_uikit
+
+    implementation 'me.relex:photodraweeview:2.0.0'
+
+    // debugImplementation rootProject.ext.bcfg.deps.leakcanary
+
+    testImplementation 'junit:junit:4.13.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+}

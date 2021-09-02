@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="ClipLayout">
+        <attr name="roundSize" format="dimension|reference" />
+        <attr name="roundAsCircle" format="boolean" />
+        <attr name="showBorder" format="boolean" />
+        <attr name="borderSize" format="dimension|reference" />
+        <attr name="borderColor" format="color|reference" />
+    </declare-styleable>
+    <declare-styleable name="ImageLayout">
+        <attr name="imageScaleType">
+            <enum name="centerCrop" value="0" />
+            <enum name="centerInside" value="1" />
+            <enum name="fixWidth" value="2" />
+            <enum name="fitCenter" value="3" />
+        </attr>
+        <attr name="imagePlaceHolderLoading" format="reference|color" />
+        <attr name="imagePlaceHolderFail" format="reference|color" />
+        <attr name="imageResizePercent" format="float" />
+        <attr name="imageResize" format="dimension|reference" />
+        <attr name="smallCache" format="boolean" />
+        <attr name="autoPlay" format="boolean" />
+    </declare-styleable>
+    <declare-styleable name="UserCacheAvatar">
+        <attr name="avatarSize">
+            <enum name="small" value="0" />
+            <enum name="middle" value="1" />
+            <enum name="large" value="2" />
+        </attr>
+    </declare-styleable>
+    <declare-styleable name="IMMessageRevokeTextView">
+        <attr name="received" format="boolean" />
+    </declare-styleable>
+    <declare-styleable name="AspectRatioFrameLayout">
+        <attr name="aspectRatio" format="float" />
+    </declare-styleable>
+    <declare-styleable name="ProgressView">
+        <attr name="android:orientation" />
+        <attr name="android:progressDrawable" />
+        <attr name="includeProgressStart" format="boolean" />
+        <attr name="includeProgressEnd" format="boolean" />
+    </declare-styleable>
+    <declare-styleable name="IMConversationUnreadCountView">
+        <attr name="OnlyDrawableBackground" format="boolean" />
+    </declare-styleable>
+</resources>
