@@ -2,7 +2,6 @@ buildscript {
     configurations.all {
         resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
     }
-
     apply from: 'git.version.gradle'
     apply from: 'versions.gradle'
     rootProject.ext.bcfg.addRepos(repositories)
