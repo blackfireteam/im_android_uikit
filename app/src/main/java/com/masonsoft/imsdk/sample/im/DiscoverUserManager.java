@@ -18,6 +18,9 @@ import java.util.List;
 import io.github.idonans.core.Singleton;
 import io.github.idonans.core.thread.TaskQueue;
 
+/**
+ * 记录并同步 '探索' 中的用户列表
+ */
 public class DiscoverUserManager {
 
     private static final Singleton<DiscoverUserManager> INSTANCE = new Singleton<DiscoverUserManager>() {
