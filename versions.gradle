@@ -51,11 +51,18 @@ bcfg.deps.idonans_backstack = "io.github.idonans.backstack:backstack:2.0.2"
 bcfg.deps.idonans_uniontype = "io.github.idonans.uniontype:uniontype:3.0.3"
 bcfg.deps.idonans_dynamic = "io.github.idonans.dynamic:dynamic:3.0.5"
 
+bcfg.deps.msimsdk = "io.github.blackfireteam.msimsdk:imsdk:1.0-SNAPSHOT"
+bcfg.deps.msimsdk_push_fcm = "io.github.blackfireteam.msimsdk:imsdk-push-fcm:1.0-SNAPSHOT"
+bcfg.deps.msimsdk_gradle_plugin = "io.github.blackfireteam.msimsdk:imsdk-gradle-plugin:1.0-SNAPSHOT"
+
 bcfg.addRepos = this.&addRepos
 
 def static addRepos(RepositoryHandler handler) {
+    handler.mavenLocal()
     handler.mavenCentral()
     handler.google()
+    handler.maven { url 'https://s01.oss.sonatype.org/content/repositories/releases/' }
+    handler.maven { url 'https://s01.oss.sonatype.org/content/repositories/snapshots/' }
     handler.maven { url 'https://maven.aliyun.com/repository/gradle-plugin' }
     handler.maven { url 'https://maven.aliyun.com/repository/central' }
     handler.maven { url 'https://maven.aliyun.com/repository/public' }
