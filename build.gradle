@@ -3,22 +3,8 @@ buildscript {
         resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
     }
 
-    def msimsdk = [:]
-    rootProject.ext.msimsdk = msimsdk
-    msimsdk.deps = [:]
-    msimsdk.deps.msimsdk = "io.github.blackfireteam.msimsdk:imsdk-de4:1.0-SNAPSHOT"
-
     apply from: 'git.version.gradle'
     apply from: 'versions.gradle'
-    repositories {
-        mavenLocal()
-        maven {
-            url('https://s01.oss.sonatype.org/content/repositories/releases/')
-        }
-        maven {
-            url('https://s01.oss.sonatype.org/content/repositories/snapshots/')
-        }
-    }
     rootProject.ext.bcfg.addRepos(repositories)
     dependencies {
         classpath rootProject.ext.bcfg.deps.android_gradle_plugin
@@ -32,16 +18,6 @@ buildscript {
 allprojects {
     configurations.all {
         resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
-    }
-
-    repositories {
-        mavenLocal()
-        maven {
-            url('https://s01.oss.sonatype.org/content/repositories/releases/')
-        }
-        maven {
-            url('https://s01.oss.sonatype.org/content/repositories/snapshots/')
-        }
     }
     rootProject.ext.bcfg.addRepos(repositories)
     tasks.withType(Javadoc).all {

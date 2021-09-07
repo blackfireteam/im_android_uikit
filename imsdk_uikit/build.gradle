@@ -47,7 +47,7 @@ android.libraryVariants.all { variant ->
 dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
 
-    api rootProject.ext.msimsdk.deps.msimsdk
+    api rootProject.ext.bcfg.deps.msimsdk
 
     api rootProject.ext.bcfg.deps.androidx_appcompat
     api rootProject.ext.bcfg.deps.androidx_constraintlayout
