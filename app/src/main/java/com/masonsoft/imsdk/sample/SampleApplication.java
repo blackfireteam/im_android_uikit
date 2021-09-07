@@ -19,8 +19,11 @@ public class SampleApplication extends Application {
 
         final boolean debug = BuildConfig.DEBUG;
         if (debug) {
+            // 设置 imsdk 的 log 打印级别
             IMLog.setLogLevel(Log.VERBOSE);
+            // 设置 uikit 的 log 打印级别
             MSIMUikitLog.setLogLevel(Log.VERBOSE);
+            // 设置 sample 的 log 打印级别
             SampleLog.setLogLevel(Log.VERBOSE);
         }
 
@@ -30,7 +33,7 @@ public class SampleApplication extends Application {
 
             // 初始化 im
             MSIMManager.getInstance().initSdk(Constants.SUB_APP, IMTokenOfflineManager.getInstance().getSdkListener());
-            // 初始化 im ui kit
+            // 初始化 uikit
             MSIMUikitManager.getInstance().start();
 
             LocalSettingsManager.getInstance().start();
