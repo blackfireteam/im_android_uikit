@@ -5,6 +5,7 @@ import android.text.TextUtils;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.google.common.base.Verify;
 import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.core.FileUploadProvider;
 import com.masonsoft.imsdk.core.OtherMessage;
@@ -18,8 +19,15 @@ import com.masonsoft.imsdk.uikit.message.packet.GetCosKeyMessagePacket;
 import com.masonsoft.imsdk.uikit.util.FilenameUtil;
 import com.tencent.cos.xml.CosXmlService;
 import com.tencent.cos.xml.CosXmlServiceConfig;
+import com.tencent.cos.xml.exception.CosXmlClientException;
+import com.tencent.cos.xml.exception.CosXmlServiceException;
+import com.tencent.cos.xml.listener.CosXmlResultListener;
+import com.tencent.cos.xml.model.CosXmlRequest;
+import com.tencent.cos.xml.model.CosXmlResult;
 import com.tencent.cos.xml.model.object.PutObjectRequest;
-import com.tencent.cos.xml.model.object.PutObjectResult;
+import com.tencent.cos.xml.transfer.COSXMLUploadTask;
+import com.tencent.cos.xml.transfer.TransferConfig;
+import com.tencent.cos.xml.transfer.TransferManager;
 import com.tencent.qcloud.core.auth.QCloudCredentialProvider;
 import com.tencent.qcloud.core.auth.QCloudCredentials;
 import com.tencent.qcloud.core.auth.SessionQCloudCredentials;
@@ -32,17 +40,16 @@ import java.util.concurrent.TimeUnit;
 import io.github.idonans.core.Progress;
 import io.github.idonans.core.util.ContextUtil;
 import io.github.idonans.core.util.FileUtil;
-import io.github.idonans.core.util.Preconditions;
 import io.reactivex.rxjava3.subjects.SingleSubject;
 
 /**
  * 基于腾讯云对象存储实现的文件上传服务
  */
-public class TencentOSSFileUploadProvider implements FileUploadProvider {
+public class TencentOSSFileUploadProvider2 implements FileUploadProvider {
 
     private final CosKeyInfoProvider mCosKeyInfoProvider = new CosKeyInfoProvider();
 
-    public TencentOSSFileUploadProvider() {
+    public TencentOSSFileUploadProvider2() {
     }
 
     @NonNull
@@ -111,12 +118,45 @@ public class TencentOSSFileUploadProvider implements FileUploadProvider {
         if (!TextUtils.isEmpty(mimeType)) {
             putObjectRequest.setRequestHeaders("Content-Type", mimeType, false);
         }
-        putObjectRequest.setProgressListener((complete, target) -> progress.set(target, complete));
-        final PutObjectResult putObjectResult = cosXmlService.putObject(putObjectRequest);
 
-        final String accessUrl = putObjectResult.accessUrl;
-        Preconditions.checkNotNull(accessUrl);
-        return accessUrl;
+        final SingleSubject<Object> blockResult = SingleSubject.create();
+
+        // 初始化 TransferConfig，这里使用默认配置，如果需要定制，请参考 SDK 接口文档
+        TransferConfig transferConfig = new TransferConfig.Builder().build();
+        // 初始化 TransferManager
+        TransferManager transferManager = new TransferManager(cosXmlService, transferConfig);
+        COSXMLUploadTask cosxmlUploadTask = transferManager.upload(putObjectRequest, null);
+        cosxmlUploadTask.setCosXmlProgressListener((complete, target) -> progress.set(target, complete));
+        cosxmlUploadTask.setCosXmlResultListener(new CosXmlResultListener() {
+            @Override
+            public void onSuccess(CosXmlRequest request, CosXmlResult result) {
+                blockResult.onSuccess(request);
+            }
+
+            @Override
+            public void onFail(CosXmlRequest request, CosXmlClientException exception, CosXmlServiceException serviceException) {
+                blockResult.onSuccess(exception != null ? exception : serviceException);
+            }
+        });
+        CosXmlResult result = cosxmlUploadTask.getResult();
+        if (result != null) {
+            blockResult.onSuccess(result);
+        } else {
+            Exception exception = cosxmlUploadTask.getException();
+            if (exception != null) {
+                blockResult.onSuccess(exception);
+            }
+        }
+        final Object target = blockResult.blockingGet();
+        if (target instanceof CosXmlResult) {
+            final String accessUrl = ((CosXmlResult) target).accessUrl;
+            Verify.verifyNotNull(accessUrl);
+            return accessUrl;
+        } else if (target instanceof Throwable) {
+            throw (Throwable) target;
+        } else {
+            throw new RuntimeException(String.valueOf(target));
+        }
     }
 
     @NonNull
