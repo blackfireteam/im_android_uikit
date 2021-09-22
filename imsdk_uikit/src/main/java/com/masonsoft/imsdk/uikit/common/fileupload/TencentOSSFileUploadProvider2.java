@@ -1,7 +1,5 @@
 package com.masonsoft.imsdk.uikit.common.fileupload;
 
-import android.text.TextUtils;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -115,10 +113,6 @@ public class TencentOSSFileUploadProvider2 implements FileUploadProvider {
         final String srcPath = filePath;
 
         final PutObjectRequest putObjectRequest = new PutObjectRequest(bucket, cosPath, srcPath);
-        if (!TextUtils.isEmpty(mimeType)) {
-            putObjectRequest.setRequestHeaders("Content-Type", mimeType, false);
-        }
-
         final SingleSubject<Object> blockResult = SingleSubject.create();
 
         // 初始化 TransferConfig，这里使用默认配置，如果需要定制，请参考 SDK 接口文档
