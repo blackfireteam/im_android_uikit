@@ -20,6 +20,12 @@ public abstract class SignInViewPresenter<T extends SignInView> extends DynamicP
         super(view);
     }
 
+    /**
+     * 从业务后台请求用于登录 im 的 token
+     *
+     * @param userId 模拟的业务用户 id
+     * @see #requestTcpSignIn(String, String)
+     */
     public void requestToken(long userId) {
         mRequestHolder.set(Single.just("")
                 .map(input -> DefaultApi.getImToken(userId))
@@ -49,7 +55,13 @@ public abstract class SignInViewPresenter<T extends SignInView> extends DynamicP
                 }));
     }
 
-
+    /**
+     * 登录 im
+     *
+     * @param token 用于登录 im 的 token, 由业务后台返回。
+     * @param url   登录 im 的地址, 由业务后台返回。
+     * @see #requestToken(long)
+     */
     public void requestTcpSignIn(String token, String url) {
         mRequestHolder.set(Single.just("")
                 .map(input -> {
