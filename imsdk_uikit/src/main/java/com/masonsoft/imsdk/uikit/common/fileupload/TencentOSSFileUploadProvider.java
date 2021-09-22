@@ -1,7 +1,5 @@
 package com.masonsoft.imsdk.uikit.common.fileupload;
 
-import android.text.TextUtils;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
@@ -108,9 +106,6 @@ public class TencentOSSFileUploadProvider implements FileUploadProvider {
         final String srcPath = filePath;
 
         final PutObjectRequest putObjectRequest = new PutObjectRequest(bucket, cosPath, srcPath);
-        if (!TextUtils.isEmpty(mimeType)) {
-            putObjectRequest.setRequestHeaders("Content-Type", mimeType, false);
-        }
         putObjectRequest.setProgressListener((complete, target) -> progress.set(target, complete));
         final PutObjectResult putObjectResult = cosXmlService.putObject(putObjectRequest);
 
