@@ -100,7 +100,6 @@ public class IMConversationViewHolder extends UnionTypeViewHolder {
                 if (menuId == MENU_ID_DELETE) {
                     // 删除
                     MSIMManager.getInstance().getConversationManager().deleteConversation(
-                            sessionUserId,
                             conversation
                     );
                 } else {

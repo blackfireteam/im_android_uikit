@@ -130,7 +130,7 @@ public class TencentOSSFileUploadProvider2 implements FileUploadProvider {
         cosxmlUploadTask.setCosXmlResultListener(new CosXmlResultListener() {
             @Override
             public void onSuccess(CosXmlRequest request, CosXmlResult result) {
-                blockResult.onSuccess(request);
+                blockResult.onSuccess(result);
             }
 
             @Override
