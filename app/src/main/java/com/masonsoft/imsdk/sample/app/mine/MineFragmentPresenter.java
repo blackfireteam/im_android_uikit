@@ -272,7 +272,7 @@ public class MineFragmentPresenter extends DynamicPresenter<MineFragment.ViewImp
 
     public void requestSignOut() {
         mRequestHolder.set(Single.just("")
-                .map(input -> MSIMManager.getInstance().signOutWithBlock())
+                .map(input -> MSIMManager.getInstance().signOutWithBlock(200L))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
