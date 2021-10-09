@@ -1,8 +1,17 @@
 plugins {
     id 'com.android.application'
+    id 'io.github.blackfireteam.msimsdk'
+}
+
+MSIMSDK {
+    push {
+        fcm {
+        }
+    }
 }
 
 android {
+
     compileSdkVersion rootProject.ext.bcfg.ver.target_sdk
     buildToolsVersion rootProject.ext.bcfg.ver.build_tools
 

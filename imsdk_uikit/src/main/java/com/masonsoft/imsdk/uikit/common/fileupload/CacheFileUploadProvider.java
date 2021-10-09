@@ -7,6 +7,7 @@ import androidx.annotation.Nullable;
 import androidx.collection.LruCache;
 
 import com.masonsoft.imsdk.core.FileUploadProvider;
+import com.masonsoft.imsdk.core.FileUploadResult;
 import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.lang.ImageInfo;
 import com.masonsoft.imsdk.lang.MediaInfo;
@@ -36,10 +37,12 @@ public class CacheFileUploadProvider implements FileUploadProvider {
     private static final class CacheEntity {
         final String mimeType;
         final String accessUrl;
+        final Long accId;
 
-        public CacheEntity(String mimeType, String accessUrl) {
+        public CacheEntity(String mimeType, String accessUrl, Long accId) {
             this.mimeType = mimeType;
             this.accessUrl = accessUrl;
+            this.accId = accId;
         }
 
         @Override
@@ -47,6 +50,7 @@ public class CacheFileUploadProvider implements FileUploadProvider {
             return "CacheEntity{" +
                     "mimeType='" + mimeType + '\'' +
                     ", accessUrl='" + accessUrl + '\'' +
+                    ", accId=" + accId +
                     '}';
         }
     }
@@ -75,12 +79,16 @@ public class CacheFileUploadProvider implements FileUploadProvider {
 
     @NonNull
     @Override
-    public String uploadFile(@NonNull String filePath, @Source int source, @Nullable String mimeType, @NonNull Progress progress) throws Throwable {
+    public FileUploadResult uploadFile(@NonNull String filePath, @Source int source, @Nullable String mimeType, @NonNull Progress progress) throws Throwable {
         final CacheEntity cache = MemoryFullCache.DEFAULT.getFullCache(filePath);
         if (cache != null) {
             IMLog.v(Objects.defaultObjectTag(this) + " uploadFile cache hit. %s -> %s",
                     filePath, cache);
-            return cache.accessUrl;
+
+            FileUploadResult fileUploadResult = new FileUploadResult();
+            fileUploadResult.url = cache.accessUrl;
+            fileUploadResult.accId = cache.accId;
+            return fileUploadResult;
         }
 
         final String[] outMimeType = new String[1];
@@ -88,9 +96,9 @@ public class CacheFileUploadProvider implements FileUploadProvider {
         IMLog.v(Objects.defaultObjectTag(this) + " compress file %s -> %s, mimeType:%s",
                 filePath, compressFilePath, outMimeType[0]);
 
-        final String accessUrl = mProvider.uploadFile(compressFilePath, source, outMimeType[0], progress);
-        MemoryFullCache.DEFAULT.addFullCache(filePath, new CacheEntity(outMimeType[0], accessUrl));
-        return accessUrl;
+        final FileUploadResult fileUploadResult = mProvider.uploadFile(compressFilePath, source, outMimeType[0], progress);
+        MemoryFullCache.DEFAULT.addFullCache(filePath, new CacheEntity(outMimeType[0], fileUploadResult.url, fileUploadResult.accId));
+        return fileUploadResult;
     }
 
     /**

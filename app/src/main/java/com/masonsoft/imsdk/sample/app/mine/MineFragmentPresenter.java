@@ -106,7 +106,7 @@ public class MineFragmentPresenter extends DynamicPresenter<MineFragment.ViewImp
                         }
                     };
                     final FileUploadProvider fileUploadProvider = MSIMManager.getInstance().getFileUploadProvider();
-                    return fileUploadProvider.uploadFile(photoUri.toString(), FileUploadProvider.SOURCE_OTHER, null, progress);
+                    return fileUploadProvider.uploadFile(photoUri.toString(), FileUploadProvider.SOURCE_OTHER, null, progress).url;
                 })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
