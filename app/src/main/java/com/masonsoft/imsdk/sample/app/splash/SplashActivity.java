@@ -5,9 +5,11 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 
 import com.masonsoft.imsdk.MSIMManager;
-import com.masonsoft.imsdk.uikit.app.FragmentDelegateActivity;
+import com.masonsoft.imsdk.push.MSIMPushManager;
+import com.masonsoft.imsdk.push.PushPayload;
 import com.masonsoft.imsdk.sample.app.main.MainActivity;
 import com.masonsoft.imsdk.sample.app.signin.SignInActivity;
+import com.masonsoft.imsdk.uikit.app.FragmentDelegateActivity;
 
 import io.github.idonans.core.WeakAbortSignal;
 import io.github.idonans.core.thread.Threads;
@@ -73,7 +75,8 @@ public class SplashActivity extends FragmentDelegateActivity {
 
         if (hasValidSession()) {
             // 已经登录，跳转到主页
-            MainActivity.start(this);
+            final PushPayload pushPayload = MSIMPushManager.getInstance().decodePushPayload(getIntent().getExtras());
+            MainActivity.startToTabConversation(this, pushPayload);
         } else {
             // 没有登录，跳转到登录页
             SignInActivity.start(this);

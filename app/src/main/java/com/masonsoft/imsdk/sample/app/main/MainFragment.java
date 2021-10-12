@@ -13,6 +13,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.Lifecycle;
 
+import com.masonsoft.imsdk.push.PushPayload;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.app.discover.DiscoverFragment;
@@ -23,10 +24,16 @@ import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 import com.masonsoft.imsdk.uikit.app.SystemInsetsFragment;
 import com.masonsoft.imsdk.uikit.app.conversation.ConversationFragment;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+
 public class MainFragment extends SystemInsetsFragment {
 
-    public static MainFragment newInstance() {
+    private static final String KEY_PUSH_PAYLOAD = "extra:pushPayload_20210813";
+
+    public static MainFragment newInstance(@Nullable PushPayload pushPayload) {
         Bundle args = new Bundle();
+        args.putParcelable(KEY_PUSH_PAYLOAD, pushPayload);
         MainFragment fragment = new MainFragment();
         fragment.setArguments(args);
         return fragment;
@@ -41,15 +48,33 @@ public class MainFragment extends SystemInsetsFragment {
     private static final int FRAGMENT_ID_MINE = 3;
 
     @IntDef({FRAGMENT_ID_HOME, FRAGMENT_ID_DISCOVER, FRAGMENT_ID_CONVERSATION, FRAGMENT_ID_MINE})
+    @Retention(RetentionPolicy.SOURCE)
     private @interface FragmentId {
     }
 
+    @Nullable
+    private PushPayload mPushPayload;
+    private boolean mPendingSelectTabConversation;
     private int mCurrentFragmentId = -1;
 
     private static final String FRAGMENT_TAG_HOME = "fragment_home_20210416";
     private static final String FRAGMENT_TAG_DISCOVER = "fragment_discover_20210416";
     private static final String FRAGMENT_TAG_CONVERSATION = "fragment_conversation_20210416";
     private static final String FRAGMENT_TAG_MINE = "fragment_mine_20210416";
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        final Bundle args = getArguments();
+        if (args != null) {
+            mPushPayload = args.getParcelable(KEY_PUSH_PAYLOAD);
+        }
+
+        if (mPushPayload != null) {
+            // 从 push 通知路由到此，设置跳转到会话 tab
+            mPendingSelectTabConversation = true;
+        }
+    }
 
     @Nullable
     @Override
@@ -64,7 +89,13 @@ public class MainFragment extends SystemInsetsFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         mBinding.mainBottomBar.setOnTabClickListener(this::syncTabSelected);
-        syncTabSelected(0);
+
+        if (mPendingSelectTabConversation) {
+            mPendingSelectTabConversation = false;
+            syncTabSelected(FRAGMENT_ID_CONVERSATION);
+        } else {
+            syncTabSelected(FRAGMENT_ID_HOME);
+        }
 
         super.onViewCreated(view, savedInstanceState);
     }
@@ -91,7 +122,6 @@ public class MainFragment extends SystemInsetsFragment {
             SampleLog.v("ignore. showFragment mCurrentFragmentId is already %s", fragmentId);
             return;
         }
-
 
         FragmentManager fm = getChildFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
