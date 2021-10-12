@@ -7,8 +7,6 @@ buildscript {
     rootProject.ext.bcfg.addRepos(repositories)
     dependencies {
         classpath rootProject.ext.bcfg.deps.android_gradle_plugin
-        classpath rootProject.ext.bcfg.deps.android_maven_gradle_plugin
-        classpath rootProject.ext.bcfg.deps.gradle_bintray_plugin
         classpath rootProject.ext.bcfg.deps.kotlin_gradle_plugin
         classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.15'
         classpath rootProject.ext.bcfg.deps.msimsdk_gradle_plugin
@@ -20,11 +18,6 @@ allprojects {
         resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
     }
     rootProject.ext.bcfg.addRepos(repositories)
-    tasks.withType(Javadoc).all {
-        options.addStringOption('Xdoclint:none', '-quiet')
-        options.addStringOption('encoding', 'UTF-8')
-        options.addStringOption('charset', 'UTF-8')
-    }
 }
 
 task clean(type: Delete) {

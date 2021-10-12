@@ -10,9 +10,7 @@ bcfg.ver.versionCode = ext.createGitVersionCode()
 bcfg.ver.versionName = ext.createGitVersionName()
 
 bcfg.deps = [:]
-bcfg.deps.android_gradle_plugin = "com.android.tools.build:gradle:4.1.2"
-bcfg.deps.android_maven_gradle_plugin = "com.github.dcendents:android-maven-gradle-plugin:2.1"
-bcfg.deps.gradle_bintray_plugin = "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.5"
+bcfg.deps.android_gradle_plugin = "com.android.tools.build:gradle:4.2.2"
 bcfg.deps.kotlin_gradle_plugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:1.3.21"
 bcfg.deps.kotlin_stdlib_jdk8 = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.3.21"
 
