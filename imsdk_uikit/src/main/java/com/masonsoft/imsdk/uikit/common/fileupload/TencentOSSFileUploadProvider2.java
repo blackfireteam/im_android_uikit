@@ -6,7 +6,6 @@ import androidx.annotation.Nullable;
 import com.google.common.base.Verify;
 import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.core.FileUploadProvider;
-import com.masonsoft.imsdk.core.FileUploadResult;
 import com.masonsoft.imsdk.core.OtherMessage;
 import com.masonsoft.imsdk.core.OtherMessageManager;
 import com.masonsoft.imsdk.core.SignGenerator;
@@ -53,7 +52,7 @@ public class TencentOSSFileUploadProvider2 implements FileUploadProvider {
 
     @NonNull
     @Override
-    public FileUploadResult uploadFile(@NonNull String filePath, @Source int source, @Nullable String mimeType, @NonNull Progress progress) throws Throwable {
+    public String uploadFile(@NonNull String filePath, @Source int source, @Nullable String mimeType, @NonNull Progress progress) throws Throwable {
         final String fileExtension = FileUtil.getFileExtensionFromUrl(filePath);
 
         CosKeyInfo cosKeyInfo = mCosKeyInfoProvider.getCosKeyInfo();
@@ -147,9 +146,7 @@ public class TencentOSSFileUploadProvider2 implements FileUploadProvider {
             final String accessUrl = ((CosXmlResult) target).accessUrl;
             Verify.verifyNotNull(accessUrl);
 
-            FileUploadResult fileUploadResult = new FileUploadResult();
-            fileUploadResult.url = accessUrl;
-            return fileUploadResult;
+            return accessUrl;
         } else if (target instanceof Throwable) {
             throw (Throwable) target;
         } else {
