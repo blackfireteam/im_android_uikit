@@ -74,4 +74,25 @@ public class MSIMUikitConstants {
     ///////////////////////////////////////////////////////////////////////
     ///////////////////////////////////////////////////////////////////////
 
+    /**
+     * 定制业务消息类型
+     *
+     * @see com.masonsoft.imsdk.MSIMConstants.MessageType#isBusinessMessage(int)
+     * @see com.masonsoft.imsdk.MSIMConstants.MessageType#isSendableBusinessMessage(int)
+     */
+    public static class BusinessMessageType {
+        /**
+         * 媚眼
+         */
+        public static final int WINK = 32;
+        /**
+         * 匹配
+         */
+        public static final int MATCH = 33;
+        /**
+         * 取消匹配
+         */
+        public static final int UNMATCH = 34;
+    }
+
 }
