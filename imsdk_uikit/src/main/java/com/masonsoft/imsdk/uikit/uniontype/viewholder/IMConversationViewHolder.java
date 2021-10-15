@@ -50,6 +50,7 @@ public class IMConversationViewHolder extends UnionTypeViewHolder {
         mBinding.userGoldFlag.setTargetUserId(targetUserId);
 
         mBinding.unreadCountView.setConversation(sessionUserId, conversationId);
+        mBinding.chatRelation.setConversation(sessionUserId, conversationId);
 
         mBinding.time.setConversation(sessionUserId, conversationId);
         mBinding.msg.setConversation(sessionUserId, conversationId);

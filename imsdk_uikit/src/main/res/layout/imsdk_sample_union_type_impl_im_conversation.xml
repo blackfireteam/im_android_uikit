@@ -80,6 +80,16 @@
                 android:layout_margin="5dp"
                 app:layout_flexGrow="0"
                 app:layout_flexShrink="0" />
+
+            <com.masonsoft.imsdk.uikit.widget.IMConversationIChatUAndUChatIView
+                android:id="@+id/chat_relation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:textColor="#ff333333"
+                android:textSize="12sp"
+                app:layout_flexGrow="0"
+                app:layout_flexShrink="0" />
         </com.google.android.flexbox.FlexboxLayout>
 
         <com.masonsoft.imsdk.uikit.widget.IMConversationUnreadCountView
