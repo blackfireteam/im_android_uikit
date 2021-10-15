@@ -1,5 +1,7 @@
 package com.masonsoft.imsdk.uikit;
 
+import com.masonsoft.imsdk.annotation.DemoOnly;
+
 import java.util.concurrent.TimeUnit;
 
 import io.github.idonans.core.util.HumanUtil;
@@ -81,6 +83,11 @@ public class MSIMUikitConstants {
      * @see com.masonsoft.imsdk.MSIMConstants.MessageType#isSendableBusinessMessage(int)
      */
     public static class BusinessMessageType {
+        /**
+         * 用于 spark 上的 like 消息
+         */
+        @DemoOnly
+        public static final int LIKE = 11;
         /**
          * 媚眼
          */
