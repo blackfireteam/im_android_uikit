@@ -8,6 +8,7 @@ import com.google.common.collect.Lists;
 import com.masonsoft.imsdk.MSIMConstants;
 import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.MSIMMessage;
+import com.masonsoft.imsdk.MSIMMessagePageContext;
 import com.masonsoft.imsdk.lang.GeneralResultException;
 import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 import com.masonsoft.imsdk.uikit.MSIMUikitLog;
@@ -33,8 +34,8 @@ public class IMImageOrVideoPreviewPresenter extends PagePresenter<UnionTypeItemO
     private final int mConversationType;
     private final long mTargetUserId;
     private final int mPageSize = 20;
-    private long mFirstMessageSeq = -1;
-    private long mLastMessageSeq = -1;
+
+    private final MSIMMessagePageContext mPageContext;
 
     @UiThread
     public IMImageOrVideoPreviewPresenter(@NonNull IMImageOrVideoPreviewDialog.ViewImpl view, long targetUserId, long initMessageSeq) {
@@ -44,8 +45,7 @@ public class IMImageOrVideoPreviewPresenter extends PagePresenter<UnionTypeItemO
         mSessionUserId = MSIMManager.getInstance().getSessionUserId();
         mConversationType = MSIMConstants.ConversationType.C2C;
         mTargetUserId = targetUserId;
-        mFirstMessageSeq = initMessageSeq;
-        mLastMessageSeq = initMessageSeq;
+        mPageContext = new MSIMMessagePageContext(initMessageSeq);
     }
 
     void showInitMessage(MSIMMessage initMessage) {
@@ -97,23 +97,18 @@ public class IMImageOrVideoPreviewPresenter extends PagePresenter<UnionTypeItemO
     protected SingleSource<DynamicResult<UnionTypeItemObject, Object>> createPrePageRequest() throws Exception {
         MSIMUikitLog.v("createPrePageRequest");
         if (DEBUG) {
-            MSIMUikitLog.v("createPrePageRequest sessionUserId:%s, mConversationType:%s, targetUserId:%s, pageSize:%s, firstMessageSeq:%s",
+            MSIMUikitLog.v("createPrePageRequest sessionUserId:%s, mConversationType:%s, targetUserId:%s, pageSize:%s",
                     mSessionUserId,
                     mConversationType,
                     mTargetUserId,
-                    mPageSize,
-                    mFirstMessageSeq);
-        }
-
-        if (mFirstMessageSeq <= 0) {
-            MSIMUikitLog.e("createPrePageRequest invalid firstMessageSeq:%s", mFirstMessageSeq);
-            return null;
+                    mPageSize);
         }
 
         return Single.just("")
                 .map(input -> MSIMManager.getInstance().getMessageManager().pageQueryHistoryMessage(
+                        mPageContext,
+                        false,
                         mSessionUserId,
-                        mFirstMessageSeq,
                         mPageSize,
                         mConversationType,
                         mTargetUserId))
@@ -142,39 +137,23 @@ public class IMImageOrVideoPreviewPresenter extends PagePresenter<UnionTypeItemO
                 });
     }
 
-    @Override
-    protected void onPrePageRequestResult(@NonNull IMImageOrVideoPreviewDialog.ViewImpl view, @NonNull DynamicResult<UnionTypeItemObject, Object> result) {
-        MSIMUikitLog.v("onPrePageRequestResult");
-
-        // 记录上一页，下一页参数
-        if (result.items != null && !result.items.isEmpty()) {
-            mFirstMessageSeq = ((MSIMMessage) ((DataObject) ((UnionTypeItemObject) ((List) result.items).get(0)).itemObject).object).getSeq();
-        }
-        super.onPrePageRequestResult(view, result);
-    }
-
     @Nullable
     @Override
     protected SingleSource<DynamicResult<UnionTypeItemObject, Object>> createNextPageRequest() throws Exception {
         MSIMUikitLog.v("createNextPageRequest");
         if (DEBUG) {
-            MSIMUikitLog.v("createNextPageRequest sessionUserId:%s, mConversationType:%s, targetUserId:%s, pageSize:%s, lastMessageSeq:%s",
+            MSIMUikitLog.v("createNextPageRequest sessionUserId:%s, mConversationType:%s, targetUserId:%s, pageSize:%s",
                     mSessionUserId,
                     mConversationType,
                     mTargetUserId,
-                    mPageSize,
-                    mLastMessageSeq);
-        }
-
-        if (mLastMessageSeq <= 0) {
-            MSIMUikitLog.e("createNextPageRequest invalid lastMessageSeq:%s", mLastMessageSeq);
-            return null;
+                    mPageSize);
         }
 
         return Single.just("")
                 .map(input -> MSIMManager.getInstance().getMessageManager().pageQueryNewMessage(
+                        mPageContext,
+                        false,
                         mSessionUserId,
-                        mLastMessageSeq,
                         mPageSize,
                         mConversationType,
                         mTargetUserId))
@@ -200,17 +179,6 @@ public class IMImageOrVideoPreviewPresenter extends PagePresenter<UnionTypeItemO
                             .setPayload(page.generalResult)
                             .setError(GeneralResultException.createOrNull(page.generalResult));
                 });
-    }
-
-    @Override
-    protected void onNextPageRequestResult(@NonNull IMImageOrVideoPreviewDialog.ViewImpl view, @NonNull DynamicResult<UnionTypeItemObject, Object> result) {
-        MSIMUikitLog.v("onNextPageRequestResult");
-
-        // 记录上一页，下一页参数
-        if (result.items != null && !result.items.isEmpty()) {
-            mLastMessageSeq = ((MSIMMessage) ((DataObject) ((UnionTypeItemObject) ((List) result.items).get(result.items.size() - 1)).itemObject).object).getSeq();
-        }
-        super.onNextPageRequestResult(view, result);
     }
 
 }

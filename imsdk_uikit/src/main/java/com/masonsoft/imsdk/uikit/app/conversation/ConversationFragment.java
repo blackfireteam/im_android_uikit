@@ -123,8 +123,8 @@ public class ConversationFragment extends SystemInsetsFragment {
         }
 
         @WorkerThread
-        void mergeSortedConversationList(@NonNull final List<UnionTypeItemObject> unionTypeItemObjectList) {
-            final String tag = Objects.defaultObjectTag(this) + "[mergeSortedConversationList][" + System.currentTimeMillis() + "][size:]" + unionTypeItemObjectList.size();
+        void mergeConversationList(@NonNull final List<UnionTypeItemObject> unionTypeItemObjectList) {
+            final String tag = Objects.defaultObjectTag(this) + "[mergeConversationList][" + System.currentTimeMillis() + "][size:]" + unionTypeItemObjectList.size();
             MSIMUikitLog.v(tag);
             final boolean[] autoScrollToTop = {false};
             getAdapter().getData().beginTransaction()
@@ -176,7 +176,7 @@ public class ConversationFragment extends SystemInsetsFragment {
                         }
                         innerMergeTimeDiffDebugHelper.print("rm delete");
 
-                        // 第三步，将 unionTypeItemObjectList 与 currentList 合并(这两个都是有序列表，且其中不包含重复元素)
+                        // 第三步，将 unionTypeItemObjectList 与 currentList 合并(这两个不包含重复元素)
                         innerMergeTimeDiffDebugHelper.mark();
                         currentList.addAll(0, unionTypeItemObjectList);
                         innerMergeTimeDiffDebugHelper.mark();

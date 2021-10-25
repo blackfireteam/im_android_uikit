@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 
 import com.masonsoft.imsdk.MSIMConversation;
+import com.masonsoft.imsdk.MSIMConversationPageContext;
 import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 
 import io.github.idonans.appcontext.AppContext;
@@ -39,7 +40,7 @@ public abstract class IMConversationDynamicFrameLayout extends FrameLayout {
     private void initFromAttributes(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         AppContext.setContextInEditMode(this);
 
-        mConversationChangedViewHelper = new MSIMConversationChangedViewHelper() {
+        mConversationChangedViewHelper = new MSIMConversationChangedViewHelper(MSIMConversationPageContext.GLOBAL) {
             @Nullable
             @Override
             protected Object loadCustomObject() {

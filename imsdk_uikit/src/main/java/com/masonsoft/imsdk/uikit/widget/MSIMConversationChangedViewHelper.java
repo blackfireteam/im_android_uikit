@@ -1,5 +1,6 @@
 package com.masonsoft.imsdk.uikit.widget;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 import androidx.annotation.WorkerThread;
@@ -9,14 +10,11 @@ import com.masonsoft.imsdk.MSIMConstants;
 import com.masonsoft.imsdk.MSIMConversation;
 import com.masonsoft.imsdk.MSIMConversationListener;
 import com.masonsoft.imsdk.MSIMConversationListenerProxy;
+import com.masonsoft.imsdk.MSIMConversationPageContext;
 import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.lang.ObjectWrapper;
 import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.util.Objects;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.locks.ReentrantLock;
 
 import io.github.idonans.core.thread.Threads;
 import io.github.idonans.core.util.Preconditions;
@@ -38,8 +36,8 @@ public abstract class MSIMConversationChangedViewHelper {
     private int mConversationType = Integer.MIN_VALUE / 2;
     private long mTargetUserId = Long.MIN_VALUE / 2;
 
-    public MSIMConversationChangedViewHelper() {
-        MSIMManager.getInstance().getConversationManager().addConversationListener(mConversationListener);
+    public MSIMConversationChangedViewHelper(@NonNull MSIMConversationPageContext pageContext) {
+        MSIMManager.getInstance().getConversationManager().addConversationListener(pageContext, mConversationListener);
     }
 
     public void setConversation(long sessionUserId, long conversationId) {
@@ -175,14 +173,6 @@ public abstract class MSIMConversationChangedViewHelper {
             onConversationChangedInternal(sessionUserId, conversationId, conversationType, targetUserId);
         }
 
-        @Override
-        public void onConversationCreated(long sessionUserId, long conversationId, int conversationType, long targetUserId) {
-            onConversationChangedInternal(sessionUserId, conversationId, conversationType, targetUserId);
-        }
-
-        private final ReentrantLock mRefreshLock = new ReentrantLock();
-        private List<RefreshArgs> mRefreshArgsList = new ArrayList<>();
-
         private void onConversationChangedInternal(long sessionUserId, long conversationId, int conversationType, long targetUserId) {
             if (notMatch(sessionUserId, conversationId, conversationType, targetUserId)) {
                 return;
@@ -194,67 +184,8 @@ public abstract class MSIMConversationChangedViewHelper {
                     conversationId
             );
 
-            mRefreshLock.lock();
-            try {
-                mRefreshArgsList.add(new RefreshArgs(sessionUserId, conversationId, conversationType, targetUserId));
-            } finally {
-                mRefreshLock.unlock();
-            }
-
-            Threads.postUi(() -> {
-                final List<RefreshArgs> refreshArgsList;
-                mRefreshLock.lock();
-                try {
-                    refreshArgsList = mRefreshArgsList;
-                    mRefreshArgsList = new ArrayList<>();
-                } finally {
-                    mRefreshLock.unlock();
-                }
-
-                RefreshArgs firstMatchRefreshArgs = null;
-                if (refreshArgsList != null) {
-                    for (RefreshArgs refreshArgs : refreshArgsList) {
-                        if (!notMatch(refreshArgs.sessionUserId, refreshArgs.conversationId, refreshArgs.conversationType, refreshArgs.targetUserId)) {
-                            firstMatchRefreshArgs = refreshArgs;
-                            break;
-                        }
-                    }
-                }
-
-                if (firstMatchRefreshArgs == null) {
-                    return;
-                }
-
-                MSIMUikitLog.v("[%s] ============= [merge size:%s] onConversationChangedInternal sessionUserId:%s, conversationId:%s",
-                        Objects.defaultObjectTag(MSIMConversationChangedViewHelper.this),
-                        refreshArgsList.size(),
-                        firstMatchRefreshArgs.sessionUserId,
-                        firstMatchRefreshArgs.conversationId
-                );
-                requestLoadData(false);
-            });
+            requestLoadData(false);
         }
-    }) {
-        @Nullable
-        @Override
-        protected Object getOnConversationCreatedTag(long sessionUserId, long conversationId, int conversationType, long targetUserId) {
-            // merge created, changed callback
-            return super.getOnConversationChangedTag(sessionUserId, conversationId, conversationType, targetUserId);
-        }
-    };
-
-    private static class RefreshArgs {
-        final long sessionUserId;
-        final long conversationId;
-        final int conversationType;
-        final long targetUserId;
-
-        private RefreshArgs(long sessionUserId, long conversationId, int conversationType, long targetUserId) {
-            this.sessionUserId = sessionUserId;
-            this.conversationId = conversationId;
-            this.conversationType = conversationType;
-            this.targetUserId = targetUserId;
-        }
-    }
+    }, true);
 
 }

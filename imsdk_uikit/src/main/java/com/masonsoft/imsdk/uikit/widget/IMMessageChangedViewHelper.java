@@ -136,34 +136,13 @@ public abstract class IMMessageChangedViewHelper {
             onMessageChangedInternal(sessionUserId, conversationType, targetUserId, localMessageId);
         }
 
-        @Override
-        public void onMessageCreated(long sessionUserId, int conversationType, long targetUserId, long localMessageId) {
-            onMessageChangedInternal(sessionUserId, conversationType, targetUserId, localMessageId);
-        }
-
-        @Override
-        public void onMultiMessageChanged(long sessionUserId) {
-            onMessageChangedInternal(sessionUserId, MSIMConstants.ID_ANY, MSIMConstants.ID_ANY, MSIMConstants.ID_ANY);
-        }
-
         private void onMessageChangedInternal(long sessionUserId, int conversationType, long targetUserId, long localMessageId) {
             if (notMatch(sessionUserId, conversationType, targetUserId, localMessageId)) {
                 return;
             }
 
-            Threads.postUi(() -> {
-                if (notMatch(sessionUserId, conversationType, targetUserId, localMessageId)) {
-                    return;
-                }
-                requestLoadData(false);
-            });
+            requestLoadData(false);
         }
-    }) {
-        @Nullable
-        @Override
-        protected String getOnMessageChangedTag(long sessionUserId, int conversationType, long targetUserId, long localMessageId) {
-            return super.getOnMessageCreatedTag(sessionUserId, conversationType, targetUserId, localMessageId);
-        }
-    };
+    }, true);
 
 }

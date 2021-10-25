@@ -12,6 +12,7 @@ import androidx.appcompat.widget.AppCompatTextView;
 
 import com.masonsoft.imsdk.MSIMConstants;
 import com.masonsoft.imsdk.MSIMConversation;
+import com.masonsoft.imsdk.MSIMConversationPageContext;
 import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.MSIMMessage;
 import com.masonsoft.imsdk.uikit.MSIMUikitLog;
@@ -41,7 +42,7 @@ public class IMMessageReadStatusView extends IMMessageDynamicFrameLayout {
     private TextView mReadTextView;
 
     private void initFromAttributes(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        mConversationChangedViewHelper = new MSIMConversationChangedViewHelper() {
+        mConversationChangedViewHelper = new MSIMConversationChangedViewHelper(MSIMConversationPageContext.GLOBAL) {
             @Nullable
             @Override
             protected MSIMMessage loadCustomObject() {
