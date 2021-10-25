@@ -91,8 +91,8 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
             return;
         }
         if (isNextPageRequestEnable()) {
-            MSIMUikitLog.v("reloadOrRequestMoreMessage start requestNextPage()");
-            requestNextPage();
+            MSIMUikitLog.v("reloadOrRequestMoreMessage start requestNextPage(true)");
+            requestNextPage(true);
         } else {
             MSIMUikitLog.v("reloadOrRequestMoreMessage start requestInit(true)");
             requestInit(true);
@@ -122,6 +122,12 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
                 .putExtHolderItemClick1(mOnHolderItemClickListener)
                 .putExtHolderItemLongClick1(mOnHolderItemLongClickListener);
         return IMMessageViewHolder.Helper.createDefault(dataObject, mSessionUserId);
+    }
+
+    @Override
+    protected void onInitRequest(@NonNull SingleChatFragment.ViewImpl view) {
+        MSIMUikitLog.v("onInitRequest");
+        super.onInitRequest(view);
     }
 
     @Nullable
@@ -171,7 +177,7 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
 
     @Override
     protected void onInitRequestResult(@NonNull SingleChatFragment.ViewImpl view, @NonNull DynamicResult<UnionTypeItemObject, GeneralResult> result) {
-        // 记录上一页，下一页参数
+        MSIMUikitLog.v("onInitRequestResult");
         if (result.items == null || result.items.isEmpty()) {
             setPrePageRequestEnable(false);
             setNextPageRequestEnable(false);
@@ -181,6 +187,12 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
         }
 
         super.onInitRequestResult(view, result);
+    }
+
+    @Override
+    protected void onPrePageRequest(@NonNull SingleChatFragment.ViewImpl view) {
+        MSIMUikitLog.v("onPrePageRequest");
+        super.onPrePageRequest(view);
     }
 
     @Nullable
@@ -228,6 +240,18 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
                 });
     }
 
+    @Override
+    protected void onPrePageRequestResult(@NonNull SingleChatFragment.ViewImpl view, @NonNull DynamicResult<UnionTypeItemObject, GeneralResult> result) {
+        MSIMUikitLog.v("onPrePageRequestResult");
+        super.onPrePageRequestResult(view, result);
+    }
+
+    @Override
+    protected void onNextPageRequest(@NonNull SingleChatFragment.ViewImpl view) {
+        MSIMUikitLog.v("onNextPageRequest");
+        super.onNextPageRequest(view);
+    }
+
     @Nullable
     @Override
     protected SingleSource<DynamicResult<UnionTypeItemObject, GeneralResult>> createNextPageRequest() throws Exception {
@@ -270,6 +294,12 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
                             .setPayload(page.generalResult)
                             .setError(GeneralResultException.createOrNull(page.generalResult));
                 });
+    }
+
+    @Override
+    protected void onNextPageRequestResult(@NonNull SingleChatFragment.ViewImpl view, @NonNull DynamicResult<UnionTypeItemObject, GeneralResult> result) {
+        MSIMUikitLog.v("onNextPageRequestResult");
+        super.onNextPageRequestResult(view, result);
     }
 
     @Override
