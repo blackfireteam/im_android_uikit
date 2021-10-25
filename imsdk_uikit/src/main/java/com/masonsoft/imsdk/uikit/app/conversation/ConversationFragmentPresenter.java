@@ -21,7 +21,9 @@ import com.masonsoft.imsdk.util.Objects;
 import com.masonsoft.imsdk.util.TimeDiffDebugHelper;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import io.github.idonans.core.thread.BatchQueue;
 import io.github.idonans.dynamic.DynamicResult;
@@ -63,7 +65,6 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
             }
         });
         MSIMManager.getInstance().getConversationManager().addConversationListener(mConversationPageContext, mConversationListener);
-
         mBatchQueueAddOrUpdateConversation.setConsumer(this::addOrUpdateConversation);
     }
 
@@ -102,8 +103,17 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
             return;
         }
 
+        // 移除重复的会话
+        final Set<String> duplicate = new HashSet<>();
+
         final List<UnionTypeItemObject> unionTypeItemObjectList = new ArrayList<>();
         for (MSIMConversation conversation : updateList) {
+            final String key = conversation.getSessionUserId() + "_" + conversation.getConversationId();
+            if (duplicate.contains(key)) {
+                continue;
+            }
+            duplicate.add(key);
+
             final UnionTypeItemObject unionTypeItemObject = createDefault(conversation);
             if (unionTypeItemObject != null) {
                 unionTypeItemObjectList.add(unionTypeItemObject);
@@ -142,10 +152,16 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
         );
     }
 
+    @Override
+    protected void onInitRequest(@NonNull ConversationFragment.ViewImpl view) {
+        MSIMUikitLog.v("%s onInitRequest", Objects.defaultObjectTag(this));
+        super.onInitRequest(view);
+    }
+
     @Nullable
     @Override
     protected SingleSource<DynamicResult<UnionTypeItemObject, GeneralResult>> createInitRequest() throws Exception {
-        MSIMUikitLog.v(Objects.defaultObjectTag(this) + " createInitRequest");
+        MSIMUikitLog.v("%s createInitRequest", Objects.defaultObjectTag(this));
         if (DEBUG) {
             MSIMUikitLog.v(Objects.defaultObjectTag(this) + " createInitRequest sessionUserId:%s, mConversationType:%s, pageSize:%s",
                     getSessionUserId(),
@@ -186,7 +202,7 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
 
     @Override
     protected void onInitRequestResult(@NonNull ConversationFragment.ViewImpl view, @NonNull DynamicResult<UnionTypeItemObject, GeneralResult> result) {
-        MSIMUikitLog.v(Objects.defaultObjectTag(this) + " onInitRequestResult");
+        MSIMUikitLog.v("%s onInitRequestResult", Objects.defaultObjectTag(this));
         // 记录上一页，下一页参数
         if (result.items == null || result.items.isEmpty()) {
             setNextPageRequestEnable(false);
@@ -197,10 +213,16 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
         super.onInitRequestResult(view, result);
     }
 
+    @Override
+    protected void onNextPageRequest(@NonNull ConversationFragment.ViewImpl view) {
+        MSIMUikitLog.v("%s onNextPageRequest", Objects.defaultObjectTag(this));
+        super.onNextPageRequest(view);
+    }
+
     @Nullable
     @Override
     protected SingleSource<DynamicResult<UnionTypeItemObject, GeneralResult>> createNextPageRequest() throws Exception {
-        MSIMUikitLog.v(Objects.defaultObjectTag(this) + " createNextPageRequest");
+        MSIMUikitLog.v("%s createNextPageRequest", Objects.defaultObjectTag(this));
         if (DEBUG) {
             MSIMUikitLog.v(Objects.defaultObjectTag(this) + " createNextPageRequest sessionUserId:%s, mConversationType:%s, pageSize:%s",
                     getSessionUserId(),
@@ -237,6 +259,12 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
                             .setPayload(page.generalResult)
                             .setError(GeneralResultException.createOrNull(page.generalResult));
                 });
+    }
+
+    @Override
+    protected void onNextPageRequestResult(@NonNull ConversationFragment.ViewImpl view, @NonNull DynamicResult<UnionTypeItemObject, GeneralResult> result) {
+        MSIMUikitLog.v("%s onNextPageRequestResult", Objects.defaultObjectTag(this));
+        super.onNextPageRequestResult(view, result);
     }
 
     @Override
