@@ -43,4 +43,7 @@
     <declare-styleable name="IMConversationUnreadCountView">
         <attr name="OnlyDrawableBackground" format="boolean" />
     </declare-styleable>
+    <declare-styleable name="IMConversationAllUnreadCountView">
+        <attr name="OnlyDrawableBackground" format="boolean" />
+    </declare-styleable>
 </resources>

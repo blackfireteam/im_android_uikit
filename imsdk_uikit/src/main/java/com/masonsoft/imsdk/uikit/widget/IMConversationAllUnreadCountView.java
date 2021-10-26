@@ -7,12 +7,10 @@ import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.view.Gravity;
-import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.masonsoft.imsdk.MSIMConversation;
 import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 import com.masonsoft.imsdk.uikit.R;
 
@@ -20,23 +18,23 @@ import io.github.idonans.appcontext.AppContext;
 import io.github.idonans.core.util.DimenUtil;
 import io.github.idonans.lang.util.ViewUtil;
 
-public class IMConversationUnreadCountView extends IMConversationDynamicFrameLayout {
+public class IMConversationAllUnreadCountView extends IMConversationAllUnreadCountDynamicFrameLayout {
 
     private final boolean DEBUG = MSIMUikitConstants.DEBUG_WIDGET;
 
-    public IMConversationUnreadCountView(Context context) {
+    public IMConversationAllUnreadCountView(Context context) {
         this(context, null);
     }
 
-    public IMConversationUnreadCountView(Context context, AttributeSet attrs) {
+    public IMConversationAllUnreadCountView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public IMConversationUnreadCountView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public IMConversationAllUnreadCountView(Context context, AttributeSet attrs, int defStyleAttr) {
         this(context, attrs, defStyleAttr, 0);
     }
 
-    public IMConversationUnreadCountView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public IMConversationAllUnreadCountView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         initFromAttributes(context, attrs, defStyleAttr, defStyleRes);
     }
@@ -59,9 +57,9 @@ public class IMConversationUnreadCountView extends IMConversationDynamicFrameLay
             setUnreadCount((long) (1 + Math.random() * 100));
         }
 
-        final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.IMConversationUnreadCountView, defStyleAttr,
+        final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.IMConversationAllUnreadCountView, defStyleAttr,
                 defStyleRes);
-        mOnlyDrawableBackground = a.getBoolean(R.styleable.IMConversationUnreadCountView_OnlyDrawableBackground, mOnlyDrawableBackground);
+        mOnlyDrawableBackground = a.getBoolean(R.styleable.IMConversationAllUnreadCountView_OnlyDrawableBackground, mOnlyDrawableBackground);
         a.recycle();
 
         mDefaultMeasureSize = DimenUtil.dp2px(18);
@@ -95,12 +93,11 @@ public class IMConversationUnreadCountView extends IMConversationDynamicFrameLay
     }
 
     @Override
-    protected void onConversationChanged(@Nullable MSIMConversation conversation, @Nullable Object customObject) {
+    protected void onConversationAllUnreadCountChanged(@Nullable Integer allUnreadCount, @Nullable Object customObject) {
         long unreadCount = 0L;
-        if (conversation != null) {
-            unreadCount = conversation.getUnreadCount();
+        if (allUnreadCount != null) {
+            unreadCount = allUnreadCount;
         }
-
         setUnreadCount(unreadCount);
     }
 
@@ -115,25 +112,25 @@ public class IMConversationUnreadCountView extends IMConversationDynamicFrameLay
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int widthSize = View.MeasureSpec.getSize(widthMeasureSpec);
-        int widthMode = View.MeasureSpec.getMode(widthMeasureSpec);
-        int heightSize = View.MeasureSpec.getSize(heightMeasureSpec);
-        int heightMode = View.MeasureSpec.getMode(heightMeasureSpec);
+        int widthSize = MeasureSpec.getSize(widthMeasureSpec);
+        int widthMode = MeasureSpec.getMode(widthMeasureSpec);
+        int heightSize = MeasureSpec.getSize(heightMeasureSpec);
+        int heightMode = MeasureSpec.getMode(heightMeasureSpec);
 
-        if (widthMode == View.MeasureSpec.EXACTLY && heightMode == View.MeasureSpec.EXACTLY) {
+        if (widthMode == MeasureSpec.EXACTLY && heightMode == MeasureSpec.EXACTLY) {
             super.onMeasure(widthMeasureSpec, heightMeasureSpec);
             return;
         }
 
         int adjustHeight;
-        if (heightMode == View.MeasureSpec.EXACTLY) {
+        if (heightMode == MeasureSpec.EXACTLY) {
             adjustHeight = heightSize;
         } else {
             adjustHeight = mDefaultMeasureSize;
         }
 
         int adjustWidth;
-        if (widthMode == View.MeasureSpec.EXACTLY) {
+        if (widthMode == MeasureSpec.EXACTLY) {
             adjustWidth = widthSize;
         } else {
             if (mUnreadCount <= 99) {
@@ -152,8 +149,8 @@ public class IMConversationUnreadCountView extends IMConversationDynamicFrameLay
         }
 
         super.onMeasure(
-                View.MeasureSpec.makeMeasureSpec(adjustWidth, View.MeasureSpec.EXACTLY),
-                View.MeasureSpec.makeMeasureSpec(adjustHeight, View.MeasureSpec.EXACTLY)
+                MeasureSpec.makeMeasureSpec(adjustWidth, MeasureSpec.EXACTLY),
+                MeasureSpec.makeMeasureSpec(adjustHeight, MeasureSpec.EXACTLY)
         );
     }
 
