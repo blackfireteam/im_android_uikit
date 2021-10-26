@@ -25,7 +25,6 @@ import com.masonsoft.imsdk.util.TimeDiffDebugHelper;
 import java.util.Collections;
 import java.util.List;
 
-import io.github.idonans.core.thread.Threads;
 import io.github.idonans.core.util.DimenUtil;
 import io.github.idonans.core.util.Preconditions;
 import io.github.idonans.dynamic.page.UnionTypeStatusPageView;
@@ -129,23 +128,6 @@ public class ConversationFragment extends SystemInsetsFragment {
             final boolean[] autoScrollToTop = {false};
             getAdapter().getData().beginTransaction()
                     .add((transaction, groupArrayList) -> {
-                        if (groupArrayList.getGroupItemsSize(getGroupContent()) == 0) {
-                            // request init page
-                            MSIMUikitLog.v(tag + " try use requestInit instead of merge");
-                            ConversationFragmentPresenter presenter = mPresenter;
-                            if (presenter != null && !presenter.getInitRequestStatus().isLoading()) {
-                                Threads.postUi(() -> {
-                                    if (mPresenter != null) {
-                                        if (!mPresenter.getInitRequestStatus().isLoading()) {
-                                            MSIMUikitLog.v(tag + " use requestInit instead of merge");
-                                            mPresenter.requestInit(true);
-                                        }
-                                    }
-                                });
-                            }
-                            return;
-                        }
-
                         final TimeDiffDebugHelper innerMergeTimeDiffDebugHelper = new TimeDiffDebugHelper("innerMergeTimeDiffDebugHelper[" + tag + "]");
 
                         final List<UnionTypeItemObject> currentList = groupArrayList.getGroupItems(getGroupContent());
