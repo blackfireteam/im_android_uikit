@@ -141,8 +141,13 @@ public abstract class IMMessageChangedViewHelper {
                 return;
             }
 
-            requestLoadData(false);
+            Threads.postUi(() -> {
+                if (notMatch(sessionUserId, conversationType, targetUserId, localMessageId)) {
+                    return;
+                }
+                requestLoadData(false);
+            });
         }
-    }, true);
+    });
 
 }

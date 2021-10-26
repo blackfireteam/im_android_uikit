@@ -178,14 +178,20 @@ public abstract class MSIMConversationChangedViewHelper {
                 return;
             }
 
-            MSIMUikitLog.v("[%s] ============= onConversationChangedInternal sessionUserId:%s, conversationId:%s",
-                    Objects.defaultObjectTag(MSIMConversationChangedViewHelper.this),
-                    sessionUserId,
-                    conversationId
-            );
+            Threads.postUi(() -> {
+                if (notMatch(sessionUserId, conversationId, conversationType, targetUserId)) {
+                    return;
+                }
 
-            requestLoadData(false);
+                MSIMUikitLog.v("[%s] ============= onConversationChangedInternal sessionUserId:%s, conversationId:%s",
+                        Objects.defaultObjectTag(MSIMConversationChangedViewHelper.this),
+                        sessionUserId,
+                        conversationId
+                );
+
+                requestLoadData(false);
+            });
         }
-    }, true);
+    });
 
 }
