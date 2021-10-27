@@ -11,6 +11,7 @@ import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.MSIMMessage;
 import com.masonsoft.imsdk.MSIMMessageListener;
 import com.masonsoft.imsdk.MSIMMessageListenerProxy;
+import com.masonsoft.imsdk.MSIMMessagePageContext;
 import com.masonsoft.imsdk.lang.ObjectWrapper;
 import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.util.Objects;
@@ -32,7 +33,10 @@ public abstract class IMMessageChangedViewHelper {
     private long mLocalMessageId = Long.MIN_VALUE / 2;
 
     public IMMessageChangedViewHelper() {
-        MSIMManager.getInstance().getMessageManager().addMessageListener(mMessageListener);
+        MSIMManager.getInstance().getMessageManager().addMessageListener(
+                MSIMMessagePageContext.GLOBAL,
+                mMessageListener
+        );
     }
 
     public void setMessage(@NonNull MSIMMessage message) {
