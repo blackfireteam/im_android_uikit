@@ -110,6 +110,13 @@ public class MineFragment extends SystemInsetsFragment {
         return mBinding.getRoot();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        MSIMManager.getInstance().syncManual();
+    }
+
     private void clearCheckedChangeListener() {
         if (mBinding == null) {
             SampleLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);

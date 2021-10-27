@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.masonsoft.imsdk.MSIMConversation;
+import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.lang.GeneralResult;
 import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.uikit.app.SystemInsetsFragment;
@@ -87,6 +88,13 @@ public class ConversationFragment extends SystemInsetsFragment {
         mPresenter.requestInit();
 
         return mBinding.getRoot();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        MSIMManager.getInstance().syncManual();
     }
 
     private void clearPresenter() {
