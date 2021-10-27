@@ -152,7 +152,7 @@ public class ConversationFragment extends SystemInsetsFragment {
                         innerMergeTimeDiffDebugHelper.mark();
                         for (int i = unionTypeItemObjectList.size() - 1; i >= 0; i--) {
                             final MSIMConversation updateConversation = (MSIMConversation) ((DataObject<?>) unionTypeItemObjectList.get(i).itemObject).object;
-                            if (updateConversation.isDelete()) {
+                            if (updateConversation.isHidden()) {
                                 unionTypeItemObjectList.remove(i);
                             }
                         }
