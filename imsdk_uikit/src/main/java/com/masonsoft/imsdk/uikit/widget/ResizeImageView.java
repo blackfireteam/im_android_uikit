@@ -56,9 +56,7 @@ public class ResizeImageView extends FrameLayout {
 
         boolean requireMeasure = false;
         if (widthMode != MeasureSpec.EXACTLY || heightMode != MeasureSpec.EXACTLY) {
-            if (mImageWidth > 0 && mImageHeight > 0) {
-                requireMeasure = true;
-            }
+            requireMeasure = true;
         }
         if (widthSize <= 0) {
             widthSize = DimenUtil.getSmallScreenWidth();
@@ -67,22 +65,29 @@ public class ResizeImageView extends FrameLayout {
         if (requireMeasure) {
             final float minPercent = 0.25f;
             final float maxPercent = 0.50f;
+            int imageWidth = mImageWidth;
+            int imageHeight = mImageHeight;
+            if (imageWidth <= 0 || imageHeight <= 0) {
+                // 图片宽高未设置或者设置的值不合法
+                imageWidth = 100;
+                imageHeight = 100;
+            }
 
             float minSize = Math.max(getMinimumWidth(), DimenUtil.getSmallScreenWidth() * minPercent);
             minSize = Math.min(minSize, widthSize);
             float maxSize = Math.max(minSize, DimenUtil.getSmallScreenWidth() * maxPercent);
 
-            if (mImageWidth > mImageHeight) {
+            if (imageWidth > imageHeight) {
                 // 宽度固定
-                final float bestWidth = MathUtils.clamp(mImageWidth, minSize, maxSize);
-                float bestHeight = bestWidth * mImageHeight / mImageWidth;
+                final float bestWidth = MathUtils.clamp(imageWidth, minSize, maxSize);
+                float bestHeight = bestWidth * imageHeight / imageWidth;
                 bestHeight = MathUtils.clamp(bestHeight, minSize, maxSize);
                 widthMeasureSpec = MeasureSpec.makeMeasureSpec((int) bestWidth, MeasureSpec.EXACTLY);
                 heightMeasureSpec = MeasureSpec.makeMeasureSpec((int) bestHeight, MeasureSpec.EXACTLY);
             } else {
                 // 高度固定
-                final float bestHeight = MathUtils.clamp(mImageHeight, minSize, maxSize);
-                float bestWidth = bestHeight * mImageWidth / mImageHeight;
+                final float bestHeight = MathUtils.clamp(imageHeight, minSize, maxSize);
+                float bestWidth = bestHeight * imageWidth / imageHeight;
                 bestWidth = MathUtils.clamp(bestWidth, minSize, maxSize);
                 widthMeasureSpec = MeasureSpec.makeMeasureSpec((int) bestWidth, MeasureSpec.EXACTLY);
                 heightMeasureSpec = MeasureSpec.makeMeasureSpec((int) bestHeight, MeasureSpec.EXACTLY);
