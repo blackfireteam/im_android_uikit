@@ -57,8 +57,8 @@ bcfg.addRepos = this.&addRepos
 
 def static addRepos(RepositoryHandler handler) {
     handler.mavenLocal()
-    handler.maven { url 'https://s01.oss.sonatype.org/content/repositories/releases/' }
     handler.maven { url 'https://s01.oss.sonatype.org/content/repositories/snapshots/' }
+    handler.maven { url 'https://s01.oss.sonatype.org/content/repositories/releases/' }
     handler.maven { url 'https://maven.aliyun.com/repository/gradle-plugin' }
     handler.maven { url 'https://maven.aliyun.com/repository/central' }
     handler.maven { url 'https://maven.aliyun.com/repository/public' }

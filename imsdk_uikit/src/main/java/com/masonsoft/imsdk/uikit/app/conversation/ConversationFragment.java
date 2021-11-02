@@ -23,11 +23,13 @@ import com.masonsoft.imsdk.uikit.widget.DividerItemDecoration;
 import com.masonsoft.imsdk.util.Objects;
 import com.masonsoft.imsdk.util.TimeDiffDebugHelper;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import io.github.idonans.core.util.DimenUtil;
 import io.github.idonans.core.util.Preconditions;
+import io.github.idonans.dynamic.DynamicResult;
 import io.github.idonans.dynamic.page.UnionTypeStatusPageView;
 import io.github.idonans.uniontype.Host;
 import io.github.idonans.uniontype.UnionTypeAdapter;
@@ -129,6 +131,27 @@ public class ConversationFragment extends SystemInsetsFragment {
             setAlwaysHideNoMoreData(true);
         }
 
+        @Override
+        public void onInitRequestResult(@NonNull DynamicResult<UnionTypeItemObject, GeneralResult> result) {
+            if (result.items != null) {
+                mergeConversationList(new ArrayList<>(result.items));
+            }
+        }
+
+        @Override
+        public void onPrePageRequestResult(@NonNull DynamicResult<UnionTypeItemObject, GeneralResult> result) {
+            if (result.items != null) {
+                mergeConversationList(new ArrayList<>(result.items));
+            }
+        }
+
+        @Override
+        public void onNextPageRequestResult(@NonNull DynamicResult<UnionTypeItemObject, GeneralResult> result) {
+            if (result.items != null) {
+                mergeConversationList(new ArrayList<>(result.items));
+            }
+        }
+
         @WorkerThread
         void mergeConversationList(@NonNull final List<UnionTypeItemObject> unionTypeItemObjectList) {
             final String tag = Objects.defaultObjectTag(this) + "[mergeConversationList][" + System.currentTimeMillis() + "][size:]" + unionTypeItemObjectList.size();
@@ -138,6 +161,9 @@ public class ConversationFragment extends SystemInsetsFragment {
                     .add((transaction, groupArrayList) -> {
                         final TimeDiffDebugHelper innerMergeTimeDiffDebugHelper = new TimeDiffDebugHelper("innerMergeTimeDiffDebugHelper[" + tag + "]");
 
+                        if (groupArrayList.getGroupItemsSize(getGroupContent()) == 0) {
+                            groupArrayList.setGroupItems(getGroupContent(), new ArrayList<>());
+                        }
                         final List<UnionTypeItemObject> currentList = groupArrayList.getGroupItems(getGroupContent());
                         Preconditions.checkNotNull(currentList);
 
@@ -183,6 +209,7 @@ public class ConversationFragment extends SystemInsetsFragment {
                         innerMergeTimeDiffDebugHelper.print("sort current list size:" + currentList.size());
 
                         groupArrayList.removeGroup(getGroupHeader());
+                        groupArrayList.removeGroup(getGroupFooter());
                     })
                     .commit(() -> {
                         final ImsdkSampleConversationFragmentBinding binding = mBinding;
