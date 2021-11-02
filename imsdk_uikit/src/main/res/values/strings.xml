@@ -51,7 +51,7 @@
     <string name="imsdk_sample_hint_no_more">没有更多了</string>
     <string name="imsdk_sample_switch_setting">设置</string>
     <string name="imsdk_sample_open_app_setting">打开系统设置</string>
-    <string name="imsdk_sample_switch_internet_server_default">重置(切换)默认值</string>
+    <string name="imsdk_sample_select_api_server_lru">选择最近使用的地址</string>
     <string name="imsdk_sample_button_text_cancel">取消</string>
     <string name="imsdk_sample_button_text_submit">确认</string>
     <string name="imsdk_sample_dialog_confirm_user_not_found_and_auto_reg">当前账号未注册，是否立即注册？</string>

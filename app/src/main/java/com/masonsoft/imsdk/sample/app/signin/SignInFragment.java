@@ -20,12 +20,16 @@ import com.masonsoft.imsdk.sample.LocalSettingsManager;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleSignInFragmentBinding;
+import com.masonsoft.imsdk.sample.selector.SimpleTextListPickerDialog;
 import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 import com.masonsoft.imsdk.uikit.app.SystemInsetsFragment;
 import com.masonsoft.imsdk.uikit.common.simpledialog.SimpleContentConfirmDialog;
 import com.masonsoft.imsdk.uikit.common.simpledialog.SimpleLoadingDialog;
+import com.masonsoft.imsdk.uikit.util.ActivityUtil;
 import com.masonsoft.imsdk.uikit.util.TipUtil;
 import com.masonsoft.imsdk.util.Objects;
+
+import java.util.List;
 
 import io.github.idonans.core.FormValidator;
 import io.github.idonans.core.util.Preconditions;
@@ -41,10 +45,6 @@ public class SignInFragment extends SystemInsetsFragment {
         fragment.setArguments(args);
         return fragment;
     }
-
-    private static final String DEFAULT_API_SERVER_INTERNET = "https://im.ekfree.com:18788";
-    private static final String DEFAULT_API_SERVER_LOCAL = "https://192.168.50.189:18788";
-    private boolean mCurrentApiServerInternet = true;
 
     @Nullable
     private ImsdkSampleSignInFragmentBinding mBinding;
@@ -108,41 +108,30 @@ public class SignInFragment extends SystemInsetsFragment {
 
         final LocalSettingsManager.Settings settings = LocalSettingsManager.getInstance().getSettings();
         if (!TextUtils.isEmpty(settings.apiServer)) {
-            // 猜测内外网
-            mCurrentApiServerInternet = !settings.apiServer.contains("192.168");
+            mBinding.apiServer.setText(settings.apiServer);
+        } else {
+            List<String> allApiServer = LocalSettingsManager.getInstance().getApiServerLru().allApiServer();
+            if (!allApiServer.isEmpty()) {
+                mBinding.apiServer.setText(allApiServer.get(0));
+            }
         }
-        refreshShowCurrentApiServer();
         mBinding.settingsSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
-                ViewUtil.setVisibilityIfChanged(mBinding.resetServer, View.VISIBLE);
+                ViewUtil.setVisibilityIfChanged(mBinding.openAppSettings, View.VISIBLE);
+                ViewUtil.setVisibilityIfChanged(mBinding.selectApiServerLru, View.VISIBLE);
                 ViewUtil.setVisibilityIfChanged(mBinding.apiServer, View.VISIBLE);
             } else {
-                ViewUtil.setVisibilityIfChanged(mBinding.resetServer, View.GONE);
+                ViewUtil.setVisibilityIfChanged(mBinding.openAppSettings, View.GONE);
+                ViewUtil.setVisibilityIfChanged(mBinding.selectApiServerLru, View.GONE);
                 ViewUtil.setVisibilityIfChanged(mBinding.apiServer, View.GONE);
             }
         });
 
-        ViewUtil.onClick(mBinding.resetServer, v -> {
-            mCurrentApiServerInternet = !mCurrentApiServerInternet;
-            refreshShowCurrentApiServer();
-        });
-
         ViewUtil.onClick(mBinding.submit, v -> onSubmit());
         ViewUtil.onClick(mBinding.openAppSettings, v -> openAppSettings());
+        ViewUtil.onClick(mBinding.selectApiServerLru, v -> showApiServerSelector());
 
         return mBinding.getRoot();
-    }
-
-    private void refreshShowCurrentApiServer() {
-        if (mBinding == null) {
-            SampleLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
-            return;
-        }
-        if (mCurrentApiServerInternet) {
-            mBinding.apiServer.setText(DEFAULT_API_SERVER_INTERNET);
-        } else {
-            mBinding.apiServer.setText(DEFAULT_API_SERVER_LOCAL);
-        }
     }
 
     private void openAppSettings() {
@@ -156,6 +145,24 @@ public class SignInFragment extends SystemInsetsFragment {
         } catch (Throwable e) {
             SampleLog.e(e);
         }
+    }
+
+    public void showApiServerSelector() {
+        final Activity activity = ActivityUtil.getActiveAppCompatActivity(getContext());
+        if (activity == null) {
+            SampleLog.e(MSIMUikitConstants.ErrorLog.ACTIVITY_IS_NULL);
+            return;
+        }
+        SimpleTextListPickerDialog selector = new SimpleTextListPickerDialog(
+                activity,
+                LocalSettingsManager.getInstance().getApiServerLru().allApiServer()
+        );
+        selector.setOnTextSelectedListener(text -> {
+            if (mBinding != null) {
+                mBinding.apiServer.setText(text);
+            }
+        });
+        selector.show();
     }
 
     @Override
@@ -209,6 +216,7 @@ public class SignInFragment extends SystemInsetsFragment {
             settings.imServer = null;
             settings.imToken = null;
             LocalSettingsManager.getInstance().setSettings(settings);
+            LocalSettingsManager.getInstance().getApiServerLru().addApiServer(apiServer);
         } catch (Throwable e) {
             SampleLog.e(e);
             ToastUtil.show(e.getMessage());
