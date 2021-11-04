@@ -11,17 +11,12 @@ MSIMSDK {
 }
 
 android {
-
-    compileSdk 31
-    // compileSdkVersion 31
-    // buildToolsVersion '30.0.3'
+    compileSdk rootProject.ext.bcfg.ver.target_sdk
 
     defaultConfig {
         applicationId "com.masonsoft.imsdk.sample.de4"
-        minSdk 21
-        targetSdk 31
-        // minSdkVersion 21 // rootProject.ext.bcfg.ver.min_sdk
-        // targetSdkVersion 31 // rootProject.ext.bcfg.ver.target_sdk
+        minSdk rootProject.ext.bcfg.ver.min_sdk
+        targetSdk rootProject.ext.bcfg.ver.target_sdk
         versionCode rootProject.ext.bcfg.ver.versionCode
         versionName rootProject.ext.bcfg.ver.versionName
         buildConfigField("String", "LIB_NAME", "\"MSIMSDK_SAMPLE\"")
@@ -79,5 +74,5 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.5.31'
+    implementation bcfg.deps.kotlin_stdlib_jdk8
 }
