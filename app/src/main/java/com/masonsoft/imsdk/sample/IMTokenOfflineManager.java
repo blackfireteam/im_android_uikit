@@ -10,6 +10,7 @@ import com.masonsoft.imsdk.common.TopActivity;
 import com.masonsoft.imsdk.core.I18nResources;
 import com.masonsoft.imsdk.lang.GeneralResult;
 import com.masonsoft.imsdk.sample.app.main.MainActivity;
+import com.masonsoft.imsdk.sample.im.DiscoverUserManager;
 import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 import com.masonsoft.imsdk.uikit.common.simpledialog.SimpleContentNoticeDialog;
 import com.masonsoft.imsdk.util.TimeUtil;
@@ -55,6 +56,9 @@ public class IMTokenOfflineManager {
         public void onConnectSuccess() {
             SampleLog.v("%s onConnectSuccess", this);
             setConnectStateHumanString("onConnectSuccess");
+
+            // 长连接建立成功时，清空旧的在线用户列表
+            DiscoverUserManager.getInstance().clearAllAsync();
         }
 
         @Override
