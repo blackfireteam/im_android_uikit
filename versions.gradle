@@ -65,9 +65,9 @@ def static addRepos(RepositoryHandler handler) {
     handler.maven { url 'https://maven.aliyun.com/repository/google' }
     handler.mavenCentral()
     handler.maven { url 'https://jitpack.io' }
-//    handler.maven { url 'https://dl.bintray.com/idonans/maven/' }
-//    handler.maven { url 'https://dl.bintray.com/thelasterstar/maven/' }
-//    handler.maven { url 'https://dl.bintray.com/scwang90/maven' }
-//    handler.google()
-//    handler.jcenter()
+    // handler.maven { url 'https://dl.bintray.com/idonans/maven/' }
+    // handler.maven { url 'https://dl.bintray.com/thelasterstar/maven/' }
+    // handler.maven { url 'https://dl.bintray.com/scwang90/maven' }
+    // handler.google()
+    // handler.jcenter()
 }
