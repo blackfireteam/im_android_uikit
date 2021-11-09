@@ -7,7 +7,7 @@ import android.widget.TextView;
 
 import com.masonsoft.imsdk.core.I18nResources;
 import com.masonsoft.imsdk.uikit.R;
-import com.masonsoft.imsdk.uikit.databinding.ImsdkSampleCommonSimpleContentConfirmDialogBinding;
+import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitCommonSimpleContentConfirmDialogBinding;
 
 import io.github.idonans.backstack.dialog.ViewDialog;
 import io.github.idonans.lang.util.ViewUtil;
@@ -63,12 +63,12 @@ public class SimpleContentConfirmDialog {
                                       String btnRightText,
                                       boolean dimBackground) {
         mViewDialog = new ViewDialog.Builder(activity)
-                .setContentView(R.layout.imsdk_sample_common_simple_content_confirm_dialog)
+                .setContentView(R.layout.imsdk_uikit_common_simple_content_confirm_dialog)
                 .setParentView(parentView)
                 .dimBackground(dimBackground)
                 .setCancelable(true)
                 .create();
-        final ImsdkSampleCommonSimpleContentConfirmDialogBinding binding = ImsdkSampleCommonSimpleContentConfirmDialogBinding.bind(mViewDialog.getContentView());
+        final ImsdkUikitCommonSimpleContentConfirmDialogBinding binding = ImsdkUikitCommonSimpleContentConfirmDialogBinding.bind(mViewDialog.getContentView());
         mContent = binding.content;
         mBtnLeft = binding.btnLeft;
         mBtnRight = binding.btnRight;

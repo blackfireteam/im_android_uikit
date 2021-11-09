@@ -11,7 +11,7 @@ import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.uikit.R;
 import com.masonsoft.imsdk.uikit.common.ItemClickUnionTypeAdapter;
 import com.masonsoft.imsdk.uikit.common.mediapicker.MediaData;
-import com.masonsoft.imsdk.uikit.databinding.ImsdkSampleUnionTypeImplMediaPickerPagerBinding;
+import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitUnionTypeImplMediaPickerPagerBinding;
 import com.masonsoft.imsdk.uikit.uniontype.DataObject;
 import com.masonsoft.imsdk.util.Objects;
 
@@ -22,11 +22,11 @@ import io.github.idonans.uniontype.UnionTypeViewHolder;
 
 public class MediaPickerPagerViewHolder extends UnionTypeViewHolder {
 
-    private final ImsdkSampleUnionTypeImplMediaPickerPagerBinding mBinding;
+    private final ImsdkUikitUnionTypeImplMediaPickerPagerBinding mBinding;
 
     public MediaPickerPagerViewHolder(@NonNull Host host) {
-        super(host, R.layout.imsdk_sample_union_type_impl_media_picker_pager);
-        mBinding = ImsdkSampleUnionTypeImplMediaPickerPagerBinding.bind(itemView);
+        super(host, R.layout.imsdk_uikit_union_type_impl_media_picker_pager);
+        mBinding = ImsdkUikitUnionTypeImplMediaPickerPagerBinding.bind(itemView);
     }
 
     @Override

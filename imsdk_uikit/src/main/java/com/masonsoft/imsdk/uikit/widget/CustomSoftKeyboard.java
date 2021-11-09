@@ -24,10 +24,10 @@ import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.uikit.R;
 import com.masonsoft.imsdk.uikit.common.mediapicker.MediaData;
 import com.masonsoft.imsdk.uikit.common.mediapicker.MediaPickerDialog;
-import com.masonsoft.imsdk.uikit.databinding.ImsdkSampleWidgetCustomSoftKeyboardBinding;
-import com.masonsoft.imsdk.uikit.databinding.ImsdkSampleWidgetCustomSoftKeyboardLayerEmojiViewHolderBinding;
-import com.masonsoft.imsdk.uikit.databinding.ImsdkSampleWidgetCustomSoftKeyboardLayerMoreItemViewBinding;
-import com.masonsoft.imsdk.uikit.databinding.ImsdkSampleWidgetCustomSoftKeyboardLayerMoreViewHolderBinding;
+import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitWidgetCustomSoftKeyboardBinding;
+import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitWidgetCustomSoftKeyboardLayerEmojiViewHolderBinding;
+import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitWidgetCustomSoftKeyboardLayerMoreItemViewBinding;
+import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitWidgetCustomSoftKeyboardLayerMoreViewHolderBinding;
 import com.masonsoft.imsdk.uikit.util.ActivityUtil;
 import com.tbruyelle.rxpermissions3.RxPermissions;
 
@@ -59,7 +59,7 @@ public class CustomSoftKeyboard extends FrameLayout {
     }
 
     private final DisposableHolder mPermissionRequest = new DisposableHolder();
-    private ImsdkSampleWidgetCustomSoftKeyboardBinding mBinding;
+    private ImsdkUikitWidgetCustomSoftKeyboardBinding mBinding;
 
     private static final String[] IMAGE_PICKER_PERMISSION = {
             Manifest.permission.READ_EXTERNAL_STORAGE
@@ -71,7 +71,7 @@ public class CustomSoftKeyboard extends FrameLayout {
             int defStyleAttr,
             int defStyleRes) {
 
-        mBinding = ImsdkSampleWidgetCustomSoftKeyboardBinding.inflate(
+        mBinding = ImsdkUikitWidgetCustomSoftKeyboardBinding.inflate(
                 LayoutInflater.from(context),
                 this,
                 true);
@@ -152,7 +152,7 @@ public class CustomSoftKeyboard extends FrameLayout {
         @Override
         public LayerEmojiViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             final LayoutInflater inflater = LayoutInflater.from(getContext());
-            return new LayerEmojiViewHolder(inflater.inflate(R.layout.imsdk_sample_widget_custom_soft_keyboard_layer_emoji_view_holder, parent, false));
+            return new LayerEmojiViewHolder(inflater.inflate(R.layout.imsdk_uikit_widget_custom_soft_keyboard_layer_emoji_view_holder, parent, false));
         }
 
         @Override
@@ -172,11 +172,11 @@ public class CustomSoftKeyboard extends FrameLayout {
 
     private class LayerEmojiViewHolder extends RecyclerView.ViewHolder {
 
-        private final ImsdkSampleWidgetCustomSoftKeyboardLayerEmojiViewHolderBinding mBinding;
+        private final ImsdkUikitWidgetCustomSoftKeyboardLayerEmojiViewHolderBinding mBinding;
 
         public LayerEmojiViewHolder(@NonNull View itemView) {
             super(itemView);
-            mBinding = ImsdkSampleWidgetCustomSoftKeyboardLayerEmojiViewHolderBinding.bind(itemView);
+            mBinding = ImsdkUikitWidgetCustomSoftKeyboardLayerEmojiViewHolderBinding.bind(itemView);
             final Context context = getContext();
             final String[] allEmoji = CustomKeyboardDataBuiltin.EMOJI;
             final int columns = context.getResources().getInteger(R.integer.imsdk_sample_widget_custom_soft_keyboard_emoji_columns);
@@ -228,7 +228,7 @@ public class CustomSoftKeyboard extends FrameLayout {
         @Override
         public LayerMoreViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             final LayoutInflater inflater = LayoutInflater.from(getContext());
-            return new LayerMoreViewHolder(inflater.inflate(R.layout.imsdk_sample_widget_custom_soft_keyboard_layer_more_view_holder, parent, false));
+            return new LayerMoreViewHolder(inflater.inflate(R.layout.imsdk_uikit_widget_custom_soft_keyboard_layer_more_view_holder, parent, false));
         }
 
         @Override
@@ -244,13 +244,13 @@ public class CustomSoftKeyboard extends FrameLayout {
 
     private class LayerMoreViewHolder extends RecyclerView.ViewHolder {
 
-        private final ImsdkSampleWidgetCustomSoftKeyboardLayerMoreViewHolderBinding mBinding;
+        private final ImsdkUikitWidgetCustomSoftKeyboardLayerMoreViewHolderBinding mBinding;
         private final int mItemViewWidth = DimenUtil.dp2px(50);
         private final int mItemViewHeight = DimenUtil.dp2px(50);
 
         public LayerMoreViewHolder(@NonNull View itemView) {
             super(itemView);
-            mBinding = ImsdkSampleWidgetCustomSoftKeyboardLayerMoreViewHolderBinding.bind(itemView);
+            mBinding = ImsdkUikitWidgetCustomSoftKeyboardLayerMoreViewHolderBinding.bind(itemView);
             mBinding.gridLayout.setColumnCount(4);
             mBinding.gridLayout.setRowCount(2);
         }
@@ -267,8 +267,8 @@ public class CustomSoftKeyboard extends FrameLayout {
         }
 
         private void inflateMoreItemView(Context context) {
-            final ImsdkSampleWidgetCustomSoftKeyboardLayerMoreItemViewBinding binding =
-                    ImsdkSampleWidgetCustomSoftKeyboardLayerMoreItemViewBinding.inflate(
+            final ImsdkUikitWidgetCustomSoftKeyboardLayerMoreItemViewBinding binding =
+                    ImsdkUikitWidgetCustomSoftKeyboardLayerMoreItemViewBinding.inflate(
                             LayoutInflater.from(context), mBinding.gridLayout, false);
 
             GridLayout.LayoutParams lp = new GridLayout.LayoutParams();

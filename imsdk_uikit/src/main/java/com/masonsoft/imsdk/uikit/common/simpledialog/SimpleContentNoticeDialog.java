@@ -7,7 +7,7 @@ import android.widget.TextView;
 
 import com.masonsoft.imsdk.core.I18nResources;
 import com.masonsoft.imsdk.uikit.R;
-import com.masonsoft.imsdk.uikit.databinding.ImsdkSampleCommonSimpleContentNoticeDialogBinding;
+import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitCommonSimpleContentNoticeDialogBinding;
 
 import io.github.idonans.backstack.ViewBackLayer;
 import io.github.idonans.backstack.dialog.ViewDialog;
@@ -58,7 +58,7 @@ public class SimpleContentNoticeDialog {
                                      String btnText,
                                      boolean dimBackground) {
         mViewDialog = new ViewDialog.Builder(activity)
-                .setContentView(R.layout.imsdk_sample_common_simple_content_notice_dialog)
+                .setContentView(R.layout.imsdk_uikit_common_simple_content_notice_dialog)
                 .setParentView(parentView)
                 .dimBackground(dimBackground)
                 .setOnHideListener(cancel -> {
@@ -68,7 +68,7 @@ public class SimpleContentNoticeDialog {
                 })
                 .setCancelable(true)
                 .create();
-        final ImsdkSampleCommonSimpleContentNoticeDialogBinding binding = ImsdkSampleCommonSimpleContentNoticeDialogBinding.bind(mViewDialog.getContentView());
+        final ImsdkUikitCommonSimpleContentNoticeDialogBinding binding = ImsdkUikitCommonSimpleContentNoticeDialogBinding.bind(mViewDialog.getContentView());
         mContent = binding.content;
         mBtn = binding.btnOk;
         mContent.setText(content);

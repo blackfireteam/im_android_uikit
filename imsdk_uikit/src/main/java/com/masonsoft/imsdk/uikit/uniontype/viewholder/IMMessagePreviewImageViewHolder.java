@@ -27,7 +27,7 @@ public class IMMessagePreviewImageViewHolder extends IMMessageViewHolder {
     private final ThumbPhotoDraweeView mImage;
 
     public IMMessagePreviewImageViewHolder(@NonNull Host host) {
-        super(host, R.layout.imsdk_sample_union_type_impl_im_message_preview_image);
+        super(host, R.layout.imsdk_uikit_union_type_impl_im_message_preview_image);
         mImage = itemView.findViewById(R.id.image);
     }
 

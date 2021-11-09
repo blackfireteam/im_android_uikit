@@ -5,7 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.masonsoft.imsdk.uikit.R;
-import com.masonsoft.imsdk.uikit.databinding.ImsdkSampleCommonImChatMessageMenuDialogBinding;
+import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitCommonImChatMessageMenuDialogBinding;
 
 import java.util.List;
 
@@ -27,7 +27,7 @@ public class IMChatMessageMenuDialog {
                                    List<String> menuList,
                                    List<Integer> menuIdList) {
         mViewDialog = new ViewDialog.Builder(activity)
-                .setContentView(R.layout.imsdk_sample_common_im_chat_message_menu_dialog)
+                .setContentView(R.layout.imsdk_uikit_common_im_chat_message_menu_dialog)
                 .setParentView(parentView)
                 .setOnShowListener(() -> {
                     if (mPopupView != null) {
@@ -45,7 +45,7 @@ public class IMChatMessageMenuDialog {
                 .setCancelable(true)
                 .create();
         Preconditions.checkArgument(menuList.size() == menuIdList.size());
-        final ImsdkSampleCommonImChatMessageMenuDialogBinding binding = ImsdkSampleCommonImChatMessageMenuDialogBinding.bind(mViewDialog.getContentView());
+        final ImsdkUikitCommonImChatMessageMenuDialogBinding binding = ImsdkUikitCommonImChatMessageMenuDialogBinding.bind(mViewDialog.getContentView());
         mPopupView = binding.popupView;
         mPopupView.showForAnchorView(anchorView, coverDrawableResId, menuList, menuIdList);
         mPopupView.setOnMenuClickListener((menuText, menuIndex, menuId) -> {

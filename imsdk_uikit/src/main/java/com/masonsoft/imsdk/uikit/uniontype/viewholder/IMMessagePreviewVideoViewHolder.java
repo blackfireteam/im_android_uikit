@@ -24,7 +24,7 @@ public class IMMessagePreviewVideoViewHolder extends IMMessageViewHolder {
     private LocalMicroLifecycle mLocalMicroLifecycle;
 
     public IMMessagePreviewVideoViewHolder(@NonNull Host host) {
-        super(host, R.layout.imsdk_sample_union_type_impl_im_message_preview_video);
+        super(host, R.layout.imsdk_uikit_union_type_impl_im_message_preview_video);
         mPreviewVideoView = itemView.findViewById(R.id.preview_video_view);
     }
 

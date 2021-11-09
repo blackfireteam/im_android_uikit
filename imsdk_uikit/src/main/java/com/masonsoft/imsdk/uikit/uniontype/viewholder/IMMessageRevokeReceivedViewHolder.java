@@ -9,7 +9,7 @@ import io.github.idonans.uniontype.Host;
 public class IMMessageRevokeReceivedViewHolder extends IMMessageViewHolder {
 
     public IMMessageRevokeReceivedViewHolder(@NonNull Host host) {
-        super(host, R.layout.imsdk_sample_union_type_impl_im_message_revoke_received);
+        super(host, R.layout.imsdk_uikit_union_type_impl_im_message_revoke_received);
     }
 
 }

@@ -7,8 +7,8 @@ import android.view.Window;
 import android.widget.LinearLayout;
 
 import com.masonsoft.imsdk.uikit.R;
-import com.masonsoft.imsdk.uikit.databinding.ImsdkSampleCommonSimpleBottomActionsDialogBinding;
-import com.masonsoft.imsdk.uikit.databinding.ImsdkSampleCommonSimpleBottomActionsDialogItemBinding;
+import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitCommonSimpleBottomActionsDialogBinding;
+import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitCommonSimpleBottomActionsDialogItemBinding;
 
 import java.util.List;
 
@@ -47,7 +47,7 @@ public class SimpleBottomActionsDialog {
         mInflater = activity.getLayoutInflater();
 
         mViewDialog = new ViewDialog.Builder(activity)
-                .setContentView(R.layout.imsdk_sample_common_simple_bottom_actions_dialog)
+                .setContentView(R.layout.imsdk_uikit_common_simple_bottom_actions_dialog)
                 .setParentView(parentView)
                 .defaultAnimation()
                 .dimBackground(dimBackground)
@@ -59,7 +59,7 @@ public class SimpleBottomActionsDialog {
                 .setCancelable(true)
                 .create();
         //noinspection ConstantConditions
-        final ImsdkSampleCommonSimpleBottomActionsDialogBinding binding = ImsdkSampleCommonSimpleBottomActionsDialogBinding.bind(mViewDialog.getContentView());
+        final ImsdkUikitCommonSimpleBottomActionsDialogBinding binding = ImsdkUikitCommonSimpleBottomActionsDialogBinding.bind(mViewDialog.getContentView());
         mActionsContainer = binding.actionsContainer;
         mActions = actions;
 
@@ -72,7 +72,7 @@ public class SimpleBottomActionsDialog {
             for (int i = 0; i < mActions.size(); i++) {
                 final int actionIndex = i;
                 final String actionText = mActions.get(actionIndex);
-                final ImsdkSampleCommonSimpleBottomActionsDialogItemBinding itemBinding = ImsdkSampleCommonSimpleBottomActionsDialogItemBinding.inflate(mInflater);
+                final ImsdkUikitCommonSimpleBottomActionsDialogItemBinding itemBinding = ImsdkUikitCommonSimpleBottomActionsDialogItemBinding.inflate(mInflater);
                 ViewUtil.onClick(itemBinding.getRoot(), v -> {
                     if (mOnActionClickListener != null) {
                         mOnActionClickListener.onActionClick(actionIndex, actionText);

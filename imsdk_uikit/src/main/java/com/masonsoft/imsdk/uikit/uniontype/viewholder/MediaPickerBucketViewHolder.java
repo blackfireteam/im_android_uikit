@@ -5,7 +5,7 @@ import androidx.annotation.NonNull;
 import com.masonsoft.imsdk.uikit.R;
 import com.masonsoft.imsdk.uikit.common.ItemClickUnionTypeAdapter;
 import com.masonsoft.imsdk.uikit.common.mediapicker.MediaData;
-import com.masonsoft.imsdk.uikit.databinding.ImsdkSampleUnionTypeImplMediaPickerBucketBinding;
+import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitUnionTypeImplMediaPickerBucketBinding;
 import com.masonsoft.imsdk.uikit.uniontype.DataObject;
 
 import io.github.idonans.lang.util.ViewUtil;
@@ -14,11 +14,11 @@ import io.github.idonans.uniontype.UnionTypeViewHolder;
 
 public class MediaPickerBucketViewHolder extends UnionTypeViewHolder {
 
-    private final ImsdkSampleUnionTypeImplMediaPickerBucketBinding mBinding;
+    private final ImsdkUikitUnionTypeImplMediaPickerBucketBinding mBinding;
 
     public MediaPickerBucketViewHolder(@NonNull Host host) {
-        super(host, R.layout.imsdk_sample_union_type_impl_media_picker_bucket);
-        mBinding = ImsdkSampleUnionTypeImplMediaPickerBucketBinding.bind(itemView);
+        super(host, R.layout.imsdk_uikit_union_type_impl_media_picker_bucket);
+        mBinding = ImsdkUikitUnionTypeImplMediaPickerBucketBinding.bind(itemView);
     }
 
     @Override

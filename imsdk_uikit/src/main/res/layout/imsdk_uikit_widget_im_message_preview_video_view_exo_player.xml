@@ -104,7 +104,7 @@
         android:id="@id/exo_controller"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:controller_layout_id="@layout/imsdk_sample_widget_im_message_preview_video_view_exo_player_control_view"
+        app:controller_layout_id="@layout/imsdk_uikit_widget_im_message_preview_video_view_exo_player_control_view"
         app:layout_constraintBottom_toTopOf="@id/h_line_bottom"
         app:layout_constraintEnd_toStartOf="@id/v_line_end"
         app:layout_constraintStart_toEndOf="@id/v_line_start"

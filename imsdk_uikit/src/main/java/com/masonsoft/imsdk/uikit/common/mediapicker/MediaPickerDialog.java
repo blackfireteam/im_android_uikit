@@ -15,15 +15,15 @@ import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.masonsoft.imsdk.core.I18nResources;
-import com.masonsoft.imsdk.uikit.widget.GridItemDecoration;
 import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.uikit.R;
 import com.masonsoft.imsdk.uikit.common.ItemClickUnionTypeAdapter;
-import com.masonsoft.imsdk.uikit.databinding.ImsdkSampleCommonMediaPickerDialogBinding;
-import com.masonsoft.imsdk.uikit.databinding.ImsdkSampleCommonMediaPickerDialogBucketViewBinding;
-import com.masonsoft.imsdk.uikit.databinding.ImsdkSampleCommonMediaPickerDialogPagerViewBinding;
+import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitCommonMediaPickerDialogBinding;
+import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitCommonMediaPickerDialogBucketViewBinding;
+import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitCommonMediaPickerDialogPagerViewBinding;
 import com.masonsoft.imsdk.uikit.uniontype.IMUikitUnionTypeMapper;
+import com.masonsoft.imsdk.uikit.widget.GridItemDecoration;
 
 import java.util.List;
 
@@ -42,7 +42,7 @@ public class MediaPickerDialog implements MediaData.MediaLoaderCallback, ViewBac
 
     private final Activity mActivity;
     private final LayoutInflater mInflater;
-    private final ImsdkSampleCommonMediaPickerDialogBinding mBinding;
+    private final ImsdkUikitCommonMediaPickerDialogBinding mBinding;
     private ViewDialog mViewDialog;
     public GridView mGridView;
     private BucketView mBucketView;
@@ -56,13 +56,13 @@ public class MediaPickerDialog implements MediaData.MediaLoaderCallback, ViewBac
         mActivity = activity;
         mInflater = activity.getLayoutInflater();
         mViewDialog = new ViewDialog.Builder(activity)
-                .setContentView(R.layout.imsdk_sample_common_media_picker_dialog)
+                .setContentView(R.layout.imsdk_uikit_common_media_picker_dialog)
                 .defaultAnimation()
                 .setOnBackPressedListener(this)
                 .setParentView(parentView)
                 .dimBackground(true)
                 .create();
-        mBinding = ImsdkSampleCommonMediaPickerDialogBinding.bind(mViewDialog.getContentView());
+        mBinding = ImsdkUikitCommonMediaPickerDialogBinding.bind(mViewDialog.getContentView());
 
         mGridView = new GridView(mBinding);
         mBucketView = new BucketView(mBinding);
@@ -173,7 +173,7 @@ public class MediaPickerDialog implements MediaData.MediaLoaderCallback, ViewBac
 
         private final ItemClickUnionTypeAdapter mDataAdapter;
 
-        private GridView(ImsdkSampleCommonMediaPickerDialogBinding parentBinding) {
+        private GridView(ImsdkUikitCommonMediaPickerDialogBinding parentBinding) {
             mGridTopBarClose = parentBinding.gridTopBarClose;
             mGridTopBarTitle = parentBinding.gridTopBarTitle;
             mRecyclerView = parentBinding.gridRecyclerView;
@@ -254,18 +254,18 @@ public class MediaPickerDialog implements MediaData.MediaLoaderCallback, ViewBac
         private final RecyclerView mRecyclerView;
         private final ItemClickUnionTypeAdapter mDataAdapter;
 
-        private BucketView(ImsdkSampleCommonMediaPickerDialogBinding parentBinding) {
+        private BucketView(ImsdkUikitCommonMediaPickerDialogBinding parentBinding) {
             final ViewGroup parentView = parentBinding.bucketOverlayContainer;
             mBucketViewDialog = new ViewDialog.Builder(mActivity)
                     .setParentView(parentView)
-                    .setContentView(R.layout.imsdk_sample_common_media_picker_dialog_bucket_view)
+                    .setContentView(R.layout.imsdk_uikit_common_media_picker_dialog_bucket_view)
                     .setContentViewShowAnimation(R.anim.backstack_slide_in_from_top)
                     .setContentViewHideAnimation(R.anim.backstack_slide_out_to_top)
                     .dimBackground(true)
                     .create();
             //noinspection ConstantConditions
-            final ImsdkSampleCommonMediaPickerDialogBucketViewBinding binding =
-                    ImsdkSampleCommonMediaPickerDialogBucketViewBinding.bind(mBucketViewDialog.getContentView());
+            final ImsdkUikitCommonMediaPickerDialogBucketViewBinding binding =
+                    ImsdkUikitCommonMediaPickerDialogBucketViewBinding.bind(mBucketViewDialog.getContentView());
             mRecyclerView = binding.recyclerView;
 
             mRecyclerView.setLayoutManager(
@@ -322,18 +322,18 @@ public class MediaPickerDialog implements MediaData.MediaLoaderCallback, ViewBac
 
         private final ViewDialog mPagerViewDialog;
         @SuppressWarnings("FieldCanBeLocal")
-        private final ImsdkSampleCommonMediaPickerDialogPagerViewBinding mBinding;
+        private final ImsdkUikitCommonMediaPickerDialogPagerViewBinding mBinding;
         private final RecyclerView mRecyclerView;
         private final ItemClickUnionTypeAdapter mDataAdapter;
 
-        private PagerView(ImsdkSampleCommonMediaPickerDialogBinding parentBinding) {
+        private PagerView(ImsdkUikitCommonMediaPickerDialogBinding parentBinding) {
             final ViewGroup parentView = parentBinding.pagerOverlayContainer;
             mPagerViewDialog = new ViewDialog.Builder(mActivity)
                     .setParentView(parentView)
-                    .setContentView(R.layout.imsdk_sample_common_media_picker_dialog_pager_view)
+                    .setContentView(R.layout.imsdk_uikit_common_media_picker_dialog_pager_view)
                     .create();
             //noinspection ConstantConditions
-            mBinding = ImsdkSampleCommonMediaPickerDialogPagerViewBinding.bind(mPagerViewDialog.getContentView());
+            mBinding = ImsdkUikitCommonMediaPickerDialogPagerViewBinding.bind(mPagerViewDialog.getContentView());
             mRecyclerView = mBinding.recyclerView;
             mRecyclerView.setLayoutManager(
                     new LinearLayoutManager(mRecyclerView.getContext(), RecyclerView.HORIZONTAL, false));

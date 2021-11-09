@@ -35,7 +35,7 @@ import com.masonsoft.imsdk.uikit.common.microlifecycle.MicroLifecycleComponentMa
 import com.masonsoft.imsdk.uikit.common.microlifecycle.MicroLifecycleComponentManagerHost;
 import com.masonsoft.imsdk.uikit.common.microlifecycle.VisibleRecyclerViewMicroLifecycleComponentManager;
 import com.masonsoft.imsdk.uikit.common.simpledialog.SimpleBottomActionsDialog;
-import com.masonsoft.imsdk.uikit.databinding.ImsdkSampleSingleChatFragmentBinding;
+import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitSingleChatFragmentBinding;
 import com.masonsoft.imsdk.uikit.uniontype.IMUikitUnionTypeMapper;
 import com.masonsoft.imsdk.uikit.util.ActivityUtil;
 import com.masonsoft.imsdk.uikit.util.EditTextUtil;
@@ -84,7 +84,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
 
     private long mTargetUserId;
     @Nullable
-    private ImsdkSampleSingleChatFragmentBinding mBinding;
+    private ImsdkUikitSingleChatFragmentBinding mBinding;
     @Nullable
     private SoftKeyboardHelper mSoftKeyboardHelper;
     private LocalEnqueueCallback mEnqueueCallback;
@@ -119,7 +119,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mBinding = ImsdkSampleSingleChatFragmentBinding.inflate(inflater, container, false);
+        mBinding = ImsdkUikitSingleChatFragmentBinding.inflate(inflater, container, false);
 
         ViewUtil.onClick(mBinding.topBarBack, v -> ActivityUtil.requestBackPressed(SingleChatFragment.this));
         mBinding.topBarTitle.setTargetUserId(mTargetUserId);
@@ -168,7 +168,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
                 mBinding.customSoftKeyboard) {
             @Override
             protected boolean isTouchOutside(float rawX, float rawY) {
-                final ImsdkSampleSingleChatFragmentBinding binding = mBinding;
+                final ImsdkUikitSingleChatFragmentBinding binding = mBinding;
                 if (binding == null) {
                     MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
                     return false;
@@ -186,7 +186,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
 
             @Override
             protected void onSoftKeyboardLayoutShown(boolean customSoftKeyboard, boolean systemSoftKeyboard) {
-                final ImsdkSampleSingleChatFragmentBinding binding = mBinding;
+                final ImsdkUikitSingleChatFragmentBinding binding = mBinding;
                 if (binding == null) {
                     MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
                     return;
@@ -248,7 +248,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
 
             @Override
             protected void onAllSoftKeyboardLayoutHidden() {
-                final ImsdkSampleSingleChatFragmentBinding binding = mBinding;
+                final ImsdkUikitSingleChatFragmentBinding binding = mBinding;
                 if (binding == null) {
                     MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
                     return;
@@ -502,6 +502,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
                                 onVoiceRecordPermissionGranted();
                             } else {
                                 MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.PERMISSION_REQUIRED);
+                                TipUtil.show(MSIMUikitConstants.ErrorLog.PERMISSION_REQUIRED);
                             }
                         }));
     }
@@ -511,7 +512,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
     }
 
     private void submitTextMessage() {
-        final ImsdkSampleSingleChatFragmentBinding binding = mBinding;
+        final ImsdkUikitSingleChatFragmentBinding binding = mBinding;
         if (binding == null) {
             MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
             return;
@@ -535,7 +536,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
     }
 
     private void submitMediaMessage(@NonNull List<MediaData.MediaInfo> mediaInfoList) {
-        final ImsdkSampleSingleChatFragmentBinding binding = mBinding;
+        final ImsdkUikitSingleChatFragmentBinding binding = mBinding;
         if (binding == null) {
             MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
             return;
@@ -559,7 +560,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
     }
 
     private void submitAudioMessage(final String audioFilePath) {
-        final ImsdkSampleSingleChatFragmentBinding binding = mBinding;
+        final ImsdkUikitSingleChatFragmentBinding binding = mBinding;
         if (binding == null) {
             MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
             return;
@@ -743,10 +744,10 @@ public class SingleChatFragment extends SystemInsetsFragment {
                     mBinding.recordingVolumeTip.setText(R.string.imsdk_sample_voice_record_fail);
                 }
 
-                final ImsdkSampleSingleChatFragmentBinding unsafeBinding = mBinding;
+                final ImsdkUikitSingleChatFragmentBinding unsafeBinding = mBinding;
                 unsafeBinding.getRoot().postDelayed(() -> ViewUtil.setVisibilityIfChanged(unsafeBinding.recordingVolumeLayer, View.GONE), 800L);
             } else {
-                final ImsdkSampleSingleChatFragmentBinding unsafeBinding = mBinding;
+                final ImsdkUikitSingleChatFragmentBinding unsafeBinding = mBinding;
                 unsafeBinding.getRoot().postDelayed(() -> ViewUtil.setVisibilityIfChanged(unsafeBinding.recordingVolumeLayer, View.GONE), 300L);
             }
         }
@@ -797,7 +798,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
         public void onInitRequestResult(@NonNull DynamicResult<UnionTypeItemObject, GeneralResult> result) {
             super.onInitRequestResult(result);
 
-            final ImsdkSampleSingleChatFragmentBinding binding = mBinding;
+            final ImsdkUikitSingleChatFragmentBinding binding = mBinding;
             if (binding == null) {
                 MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
                 return;
@@ -807,7 +808,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
                 getAdapter().getData().beginTransaction()
                         .commit(() -> {
                             final int count = getAdapter().getItemCount();
-                            if (count > 0) {
+                            if (count > 0 && isResumed()) {
                                 scrollToPosition(binding.recyclerView, count - 1);
                                 sendMarkAsRead();
                             }
@@ -891,7 +892,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
         public void onNextPageRequestResult(@NonNull DynamicResult<UnionTypeItemObject, GeneralResult> result) {
             super.onNextPageRequestResult(result);
 
-            final ImsdkSampleSingleChatFragmentBinding binding = mBinding;
+            final ImsdkUikitSingleChatFragmentBinding binding = mBinding;
             if (binding == null) {
                 MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
                 return;
@@ -910,7 +911,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
                                     // 当前滚动到最后
                                     autoScroll = true;
                                 }
-                                if (autoScroll) {
+                                if (autoScroll && isResumed()) {
                                     scrollToPosition(binding.recyclerView, count - 1);
                                     sendMarkAsRead();
                                 } else {
@@ -941,7 +942,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
                     return;
                 }
 
-                final ImsdkSampleSingleChatFragmentBinding binding = mBinding;
+                final ImsdkUikitSingleChatFragmentBinding binding = mBinding;
                 if (binding == null) {
                     MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
                     return;

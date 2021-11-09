@@ -4,5 +4,5 @@
     android:id="@+id/video_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:player_layout_id="@layout/imsdk_sample_widget_im_message_preview_video_view_exo_player"
+    app:player_layout_id="@layout/imsdk_uikit_widget_im_message_preview_video_view_exo_player"
     app:surface_type="texture_view" />

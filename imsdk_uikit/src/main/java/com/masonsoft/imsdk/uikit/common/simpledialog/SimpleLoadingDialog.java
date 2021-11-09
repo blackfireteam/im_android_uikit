@@ -28,7 +28,7 @@ public class SimpleLoadingDialog {
                                ViewGroup parentView,
                                boolean dimBackground) {
         mViewDialog = new ViewDialog.Builder(activity)
-                .setContentView(R.layout.imsdk_sample_common_simple_loading_dialog)
+                .setContentView(R.layout.imsdk_uikit_common_simple_loading_dialog)
                 .setParentView(parentView)
                 .dimBackground(dimBackground)
                 .setCancelable(false)

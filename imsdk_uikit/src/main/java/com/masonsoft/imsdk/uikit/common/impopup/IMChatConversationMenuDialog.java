@@ -5,7 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.masonsoft.imsdk.uikit.R;
-import com.masonsoft.imsdk.uikit.databinding.ImsdkSampleCommonImChatConversationMenuDialogBinding;
+import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitCommonImChatConversationMenuDialogBinding;
 
 import java.util.List;
 
@@ -26,7 +26,7 @@ public class IMChatConversationMenuDialog {
                                         List<String> menuList,
                                         List<Integer> menuIdList) {
         mViewDialog = new ViewDialog.Builder(activity)
-                .setContentView(R.layout.imsdk_sample_common_im_chat_conversation_menu_dialog)
+                .setContentView(R.layout.imsdk_uikit_common_im_chat_conversation_menu_dialog)
                 .setParentView(parentView)
                 .setOnShowListener(() -> {
                     if (mPopupView != null) {
@@ -43,7 +43,7 @@ public class IMChatConversationMenuDialog {
                 .dimBackground(false)
                 .setCancelable(true)
                 .create();
-        final ImsdkSampleCommonImChatConversationMenuDialogBinding binding = ImsdkSampleCommonImChatConversationMenuDialogBinding.bind(mViewDialog.getContentView());
+        final ImsdkUikitCommonImChatConversationMenuDialogBinding binding = ImsdkUikitCommonImChatConversationMenuDialogBinding.bind(mViewDialog.getContentView());
         mPopupView = binding.popupView;
         mPopupView.showForAnchorView(anchorView, coverDrawableResId, menuList, menuIdList);
         mPopupView.setOnMenuClickListener((menuId, menuText, menuView) -> {

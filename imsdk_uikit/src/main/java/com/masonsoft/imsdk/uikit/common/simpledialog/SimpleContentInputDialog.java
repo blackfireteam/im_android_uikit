@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import com.masonsoft.imsdk.core.I18nResources;
 import com.masonsoft.imsdk.uikit.R;
-import com.masonsoft.imsdk.uikit.databinding.ImsdkSampleCommonSimpleContentInputDialogBinding;
+import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitCommonSimpleContentInputDialogBinding;
 
 import io.github.idonans.backstack.dialog.ViewDialog;
 import io.github.idonans.lang.util.ViewUtil;
@@ -64,12 +64,12 @@ public class SimpleContentInputDialog {
                                     String btnRightText,
                                     boolean dimBackground) {
         mViewDialog = new ViewDialog.Builder(activity)
-                .setContentView(R.layout.imsdk_sample_common_simple_content_input_dialog)
+                .setContentView(R.layout.imsdk_uikit_common_simple_content_input_dialog)
                 .setParentView(parentView)
                 .dimBackground(dimBackground)
                 .setCancelable(true)
                 .create();
-        final ImsdkSampleCommonSimpleContentInputDialogBinding binding = ImsdkSampleCommonSimpleContentInputDialogBinding.bind(mViewDialog.getContentView());
+        final ImsdkUikitCommonSimpleContentInputDialogBinding binding = ImsdkUikitCommonSimpleContentInputDialogBinding.bind(mViewDialog.getContentView());
         mEditText = binding.editText;
         mBtnLeft = binding.btnLeft;
         mBtnRight = binding.btnRight;

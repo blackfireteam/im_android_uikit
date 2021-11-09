@@ -42,7 +42,7 @@ public class IMImageOrVideoPreviewDialog implements ViewBackLayer.OnBackPressedL
                                        MSIMMessage initMessage,
                                        long targetUserId) {
         mViewDialog = new ViewDialog.Builder(activity)
-                .setContentView(R.layout.imsdk_sample_common_im_image_or_video_preview)
+                .setContentView(R.layout.imsdk_uikit_common_im_image_or_video_preview)
                 .setParentView(parentView)
                 .setOnBackPressedListener(this)
                 .dimBackground(true)

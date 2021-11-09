@@ -8,7 +8,7 @@ import com.masonsoft.imsdk.uikit.R;
 import com.masonsoft.imsdk.uikit.common.ItemClickUnionTypeAdapter;
 import com.masonsoft.imsdk.uikit.common.mediapicker.MediaData;
 import com.masonsoft.imsdk.uikit.common.mediapicker.UnionTypeMediaData;
-import com.masonsoft.imsdk.uikit.databinding.ImsdkSampleUnionTypeImplMediaPickerGridBinding;
+import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitUnionTypeImplMediaPickerGridBinding;
 import com.masonsoft.imsdk.uikit.uniontype.DataObject;
 
 import io.github.idonans.lang.util.ViewUtil;
@@ -17,11 +17,11 @@ import io.github.idonans.uniontype.UnionTypeViewHolder;
 
 public class MediaPickerGridViewHolder extends UnionTypeViewHolder {
 
-    private final ImsdkSampleUnionTypeImplMediaPickerGridBinding mBinding;
+    private final ImsdkUikitUnionTypeImplMediaPickerGridBinding mBinding;
 
     public MediaPickerGridViewHolder(@NonNull Host host) {
-        super(host, R.layout.imsdk_sample_union_type_impl_media_picker_grid);
-        mBinding = ImsdkSampleUnionTypeImplMediaPickerGridBinding.bind(itemView);
+        super(host, R.layout.imsdk_uikit_union_type_impl_media_picker_grid);
+        mBinding = ImsdkUikitUnionTypeImplMediaPickerGridBinding.bind(itemView);
     }
 
     @Override
