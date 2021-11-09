@@ -40,7 +40,11 @@
         <attr name="includeProgressStart" format="boolean" />
         <attr name="includeProgressEnd" format="boolean" />
     </declare-styleable>
+    <attr name="OnlyDrawableBackground" format="boolean" />
     <declare-styleable name="IMConversationUnreadCountView">
-        <attr name="OnlyDrawableBackground" format="boolean" />
+        <attr name="OnlyDrawableBackground" />
+    </declare-styleable>
+    <declare-styleable name="IMConversationAllUnreadCountView">
+        <attr name="OnlyDrawableBackground" />
     </declare-styleable>
 </resources>
