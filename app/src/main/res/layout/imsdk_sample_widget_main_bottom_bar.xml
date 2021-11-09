@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:layout_gravity="bottom"
-    tools:layout_height="@dimen/imsdk_sample_main_bottom_bar_height">
+    tools:layout_height="@dimen/imsdk_uikit_main_bottom_bar_height">
 
     <LinearLayout
         android:id="@+id/tab_home"
@@ -20,7 +20,7 @@
         <ImageView
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:contentDescription="@string/imsdk_sample_empty_text_hint"
+            android:contentDescription="@string/imsdk_uikit_empty_text_hint"
             android:duplicateParentState="true"
             android:scaleType="centerInside"
             android:src="@drawable/imsdk_sample_ic_home_selector" />
@@ -48,7 +48,7 @@
         <ImageView
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:contentDescription="@string/imsdk_sample_empty_text_hint"
+            android:contentDescription="@string/imsdk_uikit_empty_text_hint"
             android:duplicateParentState="true"
             android:scaleType="centerInside"
             android:src="@drawable/imsdk_sample_ic_discover_selector" />
@@ -75,7 +75,7 @@
             android:id="@+id/image"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:contentDescription="@string/imsdk_sample_empty_text_hint"
+            android:contentDescription="@string/imsdk_uikit_empty_text_hint"
             android:duplicateParentState="true"
             android:scaleType="centerInside"
             android:src="@drawable/imsdk_sample_ic_conversation_selector"
@@ -123,7 +123,7 @@
         <ImageView
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:contentDescription="@string/imsdk_sample_empty_text_hint"
+            android:contentDescription="@string/imsdk_uikit_empty_text_hint"
             android:duplicateParentState="true"
             android:scaleType="centerInside"
             android:src="@drawable/imsdk_sample_ic_mine_selector" />

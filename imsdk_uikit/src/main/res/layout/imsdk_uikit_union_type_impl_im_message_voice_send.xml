@@ -75,7 +75,7 @@
                         android:layout_height="match_parent"
                         android:layout_gravity="end"
                         android:layout_marginEnd="10dp"
-                        android:contentDescription="@string/imsdk_sample_empty_text_hint"
+                        android:contentDescription="@string/imsdk_uikit_empty_text_hint"
                         android:scaleType="centerInside"
                         android:src="@drawable/imsdk_sample_voice_msg_playing_3" />
 

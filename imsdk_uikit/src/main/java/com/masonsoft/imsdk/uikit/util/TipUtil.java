@@ -13,7 +13,7 @@ public class TipUtil {
 
     public static void showOrDefault(String message) {
         if (TextUtils.isEmpty(message)) {
-            show(R.string.imsdk_sample_tip_text_error_unknown);
+            show(R.string.imsdk_uikit_tip_text_error_unknown);
         } else {
             show(message);
         }
@@ -32,7 +32,7 @@ public class TipUtil {
     }
 
     public static void showNetworkError() {
-        show(R.string.imsdk_sample_tip_text_network_error);
+        show(R.string.imsdk_uikit_tip_text_network_error);
     }
 
 }

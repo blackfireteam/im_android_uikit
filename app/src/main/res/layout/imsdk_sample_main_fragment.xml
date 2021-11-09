@@ -22,7 +22,7 @@
         <com.masonsoft.imsdk.sample.widget.MainBottomBar
             android:id="@+id/main_bottom_bar"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/imsdk_sample_main_bottom_bar_height" />
+            android:layout_height="@dimen/imsdk_uikit_main_bottom_bar_height" />
 
         <View
             android:layout_width="match_parent"

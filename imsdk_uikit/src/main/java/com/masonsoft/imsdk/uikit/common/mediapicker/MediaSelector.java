@@ -47,12 +47,12 @@ public interface MediaSelector {
             if (info.isImageMimeType()) {
                 // 图片
                 if (info.size <= 0 || info.width <= 0 || info.height <= 0) {
-                    TipUtil.show(R.string.imsdk_sample_tip_image_invalid);
+                    TipUtil.show(R.string.imsdk_uikit_tip_image_invalid);
                     return false;
                 }
                 if (info.isImageMemorySizeTooLarge()
                         || info.size > MSIMUikitConstants.SELECTOR_MAX_IMAGE_FILE_SIZE) {
-                    TipUtil.show(R.string.imsdk_sample_tip_image_too_large);
+                    TipUtil.show(R.string.imsdk_uikit_tip_image_too_large);
                     return false;
                 }
                 return true;
@@ -62,21 +62,21 @@ public interface MediaSelector {
                         || info.width <= 0
                         || info.height <= 0
                         || info.durationMs <= 0) {
-                    TipUtil.show(R.string.imsdk_sample_tip_video_invalid);
+                    TipUtil.show(R.string.imsdk_uikit_tip_video_invalid);
                     return false;
                 }
                 if (info.durationMs < MSIMUikitConstants.SELECTOR_MIN_VIDEO_DURATION) {
-                    TipUtil.show(R.string.imsdk_sample_tip_video_too_short);
+                    TipUtil.show(R.string.imsdk_uikit_tip_video_too_short);
                     return false;
                 }
                 if (info.size > MSIMUikitConstants.SELECTOR_MAX_VIDEO_SIZE
                         || info.durationMs > MSIMUikitConstants.SELECTOR_MAX_VIDEO_DURATION) {
-                    TipUtil.show(R.string.imsdk_sample_tip_video_too_large);
+                    TipUtil.show(R.string.imsdk_uikit_tip_video_too_large);
                     return false;
                 }
                 return true;
             } else {
-                TipUtil.show(R.string.imsdk_sample_tip_only_allow_image_or_video);
+                TipUtil.show(R.string.imsdk_uikit_tip_only_allow_image_or_video);
                 return false;
             }
         }

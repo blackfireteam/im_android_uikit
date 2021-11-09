@@ -75,7 +75,7 @@ public class IMConversationViewHolder extends UnionTypeViewHolder {
 
             final List<String> menuList = new ArrayList<>();
             final List<Integer> menuIdList = new ArrayList<>();
-            menuList.add(I18nResources.getString(R.string.imsdk_sample_menu_delete));
+            menuList.add(I18nResources.getString(R.string.imsdk_uikit_menu_delete));
             menuIdList.add(MENU_ID_DELETE);
 
             final View anchorView = itemView;

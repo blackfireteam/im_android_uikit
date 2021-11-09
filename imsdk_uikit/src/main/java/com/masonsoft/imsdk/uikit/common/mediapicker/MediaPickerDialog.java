@@ -156,7 +156,7 @@ public class MediaPickerDialog implements MediaData.MediaLoaderCallback, ViewBac
                 })
                 .commit();
 
-        String bucketSelectedName = I18nResources.getString(R.string.imsdk_sample_custom_soft_keyboard_item_media);
+        String bucketSelectedName = I18nResources.getString(R.string.imsdk_uikit_custom_soft_keyboard_item_media);
         if (mUnionTypeMediaData.mediaData.bucketSelected != null
                 && !mUnionTypeMediaData.mediaData.bucketSelected.allMediaInfo) {
             bucketSelectedName = mUnionTypeMediaData.mediaData.bucketSelected.bucketDisplayName;
@@ -244,7 +244,7 @@ public class MediaPickerDialog implements MediaData.MediaLoaderCallback, ViewBac
                 count = mUnionTypeMediaData.mediaData.mediaInfoListSelected.size();
                 enable = false;
             }
-            mActionSubmit.setText(I18nResources.getString(R.string.imsdk_sample_custom_soft_keyboard_item_media_picker_submit_format, count));
+            mActionSubmit.setText(I18nResources.getString(R.string.imsdk_uikit_custom_soft_keyboard_item_media_picker_submit_format, count));
             mActionSubmit.setEnabled(enable);
         }
     }

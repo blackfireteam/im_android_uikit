@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <item name="imsdk_sample_widget_custom_soft_keyboard_emoji_columns" type="integer">7</item>
+    <item name="imsdk_uikit_widget_custom_soft_keyboard_emoji_columns" type="integer">7</item>
 </resources>

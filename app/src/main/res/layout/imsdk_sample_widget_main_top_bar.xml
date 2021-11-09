@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:layout_height="@dimen/imsdk_sample_main_top_bar_height">
+    tools:layout_height="@dimen/imsdk_uikit_main_top_bar_height">
 
     <TextView
         android:id="@+id/title_text"

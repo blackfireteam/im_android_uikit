@@ -7,13 +7,13 @@
     </style>
 
     <style name="SessionUserCacheAvatar" parent="UserCacheAvatar">
-        <item name="imagePlaceHolderLoading">@drawable/imsdk_sample_ic_default_avatar</item>
-        <item name="imagePlaceHolderFail">@drawable/imsdk_sample_ic_default_avatar</item>
+        <item name="imagePlaceHolderLoading">@drawable/imsdk_uikit_ic_default_avatar</item>
+        <item name="imagePlaceHolderFail">@drawable/imsdk_uikit_ic_default_avatar</item>
     </style>
 
     <style name="ProgressView">
         <item name="android:progressDrawable">
-            @drawable/imsdk_sample_progress_view_progress_drawable
+            @drawable/imsdk_uikit_progress_view_progress_drawable
         </item>
         <item name="includeProgressStart">true</item>
         <item name="includeProgressEnd">true</item>

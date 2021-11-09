@@ -50,7 +50,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="15dp"
-        android:text="@string/imsdk_sample_select_api_server_lru"
+        android:text="@string/imsdk_uikit_select_api_server_lru"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/api_server"
         app:layout_constraintStart_toEndOf="@id/open_app_settings"

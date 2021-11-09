@@ -30,7 +30,7 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="15dp"
         android:background="@drawable/imsdk_sample_button_background_white"
-        android:contentDescription="@string/imsdk_sample_empty_text_hint"
+        android:contentDescription="@string/imsdk_uikit_empty_text_hint"
         android:scaleType="centerInside"
         android:src="@drawable/imsdk_sample_ic_emoji_delete" />
 </FrameLayout>

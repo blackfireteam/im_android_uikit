@@ -46,7 +46,7 @@
                 android:id="@+id/action_edit_avatar"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
-                android:contentDescription="@string/imsdk_sample_empty_text_hint"
+                android:contentDescription="@string/imsdk_uikit_empty_text_hint"
                 android:scaleType="centerInside"
                 android:src="@drawable/imsdk_sample_ic_profile_edit"
                 app:layout_constraintBottom_toBottomOf="@id/avatar"
@@ -97,7 +97,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical|end"
-                android:contentDescription="@string/imsdk_sample_empty_text_hint"
+                android:contentDescription="@string/imsdk_uikit_empty_text_hint"
                 android:src="@drawable/imsdk_sample_ic_arrow_right_black_tiny" />
         </FrameLayout>
 
@@ -121,7 +121,7 @@
                 android:includeFontPadding="false"
                 android:maxLines="1"
                 android:singleLine="true"
-                android:text="@string/imsdk_sample_profile_modify_gold"
+                android:text="@string/imsdk_uikit_profile_modify_gold"
                 android:textColor="#ff282828"
                 android:textSize="18sp" />
 
@@ -152,7 +152,7 @@
                 android:includeFontPadding="false"
                 android:maxLines="1"
                 android:singleLine="true"
-                android:text="@string/imsdk_sample_profile_modify_verify"
+                android:text="@string/imsdk_uikit_profile_modify_verify"
                 android:textColor="#ff282828"
                 android:textSize="18sp" />
 
@@ -190,7 +190,7 @@
 
             <Space
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/imsdk_sample_main_bottom_bar_height" />
+                android:layout_height="@dimen/imsdk_uikit_main_bottom_bar_height" />
         </io.github.idonans.systeminsets.SystemInsetsFrameLayout>
     </LinearLayout>
 </ScrollView>

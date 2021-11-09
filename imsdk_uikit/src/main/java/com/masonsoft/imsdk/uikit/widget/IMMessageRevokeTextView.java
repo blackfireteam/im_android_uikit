@@ -39,7 +39,7 @@ public class IMMessageRevokeTextView extends UserCacheDynamicTextView {
         a.recycle();
 
         if (isInEditMode()) {
-            setText(R.string.imsdk_sample_recall_send_message);
+            setText(R.string.imsdk_uikit_recall_send_message);
         }
     }
 
@@ -52,9 +52,9 @@ public class IMMessageRevokeTextView extends UserCacheDynamicTextView {
             username = "";
         }
         if (mReceived) {
-            return I18nResources.getString(R.string.imsdk_sample_recall_received_message, username);
+            return I18nResources.getString(R.string.imsdk_uikit_recall_received_message, username);
         } else {
-            return I18nResources.getString(R.string.imsdk_sample_recall_send_message);
+            return I18nResources.getString(R.string.imsdk_uikit_recall_send_message);
         }
     }
 

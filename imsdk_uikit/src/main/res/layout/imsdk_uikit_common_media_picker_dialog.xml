@@ -25,7 +25,7 @@
                 android:id="@+id/grid_top_bar_close"
                 android:layout_width="56dp"
                 android:layout_height="match_parent"
-                android:contentDescription="@string/imsdk_sample_empty_text_hint"
+                android:contentDescription="@string/imsdk_uikit_empty_text_hint"
                 android:scaleType="centerInside"
                 android:src="@drawable/imsdk_sample_ic_common_close_black" />
 
@@ -41,7 +41,7 @@
                 android:paddingStart="60dp"
                 android:paddingEnd="60dp"
                 android:singleLine="true"
-                android:text="@string/imsdk_sample_custom_soft_keyboard_item_media"
+                android:text="@string/imsdk_uikit_custom_soft_keyboard_item_media"
                 android:textColor="#333333"
                 android:textSize="16sp"
                 android:textStyle="bold"
@@ -59,7 +59,7 @@
                 android:includeFontPadding="false"
                 android:maxLines="1"
                 android:singleLine="true"
-                android:text="@string/imsdk_sample_custom_soft_keyboard_item_media_picker_submit_0"
+                android:text="@string/imsdk_uikit_custom_soft_keyboard_item_media_picker_submit_0"
                 android:textColor="@android:color/white"
                 android:textSize="14sp" />
         </FrameLayout>

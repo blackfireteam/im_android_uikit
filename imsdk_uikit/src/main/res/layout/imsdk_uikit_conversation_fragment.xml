@@ -15,12 +15,12 @@
 
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="@dimen/imsdk_sample_main_top_bar_height"
+            android:layout_height="@dimen/imsdk_uikit_main_top_bar_height"
             android:gravity="center"
             android:includeFontPadding="false"
             android:maxLines="1"
             android:singleLine="true"
-            android:text="@string/imsdk_sample_tab_conversation_title"
+            android:text="@string/imsdk_uikit_conversation_title"
             android:textColor="#ff282828"
             android:textSize="18sp"
             android:textStyle="bold" />
@@ -50,6 +50,6 @@
 
         <Space
             android:layout_width="match_parent"
-            android:layout_height="@dimen/imsdk_sample_main_bottom_bar_height" />
+            android:layout_height="@dimen/imsdk_uikit_main_bottom_bar_height" />
     </io.github.idonans.systeminsets.SystemInsetsFrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

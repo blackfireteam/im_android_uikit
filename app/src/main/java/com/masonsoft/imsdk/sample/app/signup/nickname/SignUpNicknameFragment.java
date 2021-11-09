@@ -129,7 +129,7 @@ public class SignUpNicknameFragment extends SignUpFragment {
                 return;
             }
 
-            TipUtil.show(R.string.imsdk_sample_tip_text_error_unknown);
+            TipUtil.show(R.string.imsdk_uikit_tip_text_error_unknown);
         }
 
         public void onSignUpSuccess(long userId) {

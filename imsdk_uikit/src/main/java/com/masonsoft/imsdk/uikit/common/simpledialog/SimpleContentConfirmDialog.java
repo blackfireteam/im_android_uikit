@@ -38,8 +38,8 @@ public class SimpleContentConfirmDialog {
                 activity,
                 parentView,
                 content,
-                I18nResources.getString(R.string.imsdk_sample_button_text_cancel),
-                I18nResources.getString(R.string.imsdk_sample_button_text_submit)
+                I18nResources.getString(R.string.imsdk_uikit_button_text_cancel),
+                I18nResources.getString(R.string.imsdk_uikit_button_text_submit)
         );
     }
 

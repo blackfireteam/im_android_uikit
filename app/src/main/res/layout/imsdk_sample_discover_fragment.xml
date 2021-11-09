@@ -15,7 +15,7 @@
 
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="@dimen/imsdk_sample_main_top_bar_height"
+            android:layout_height="@dimen/imsdk_uikit_main_top_bar_height"
             android:gravity="center"
             android:includeFontPadding="false"
             android:maxLines="1"
@@ -51,6 +51,6 @@
 
         <Space
             android:layout_width="match_parent"
-            android:layout_height="@dimen/imsdk_sample_main_bottom_bar_height" />
+            android:layout_height="@dimen/imsdk_uikit_main_bottom_bar_height" />
     </io.github.idonans.systeminsets.SystemInsetsFrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

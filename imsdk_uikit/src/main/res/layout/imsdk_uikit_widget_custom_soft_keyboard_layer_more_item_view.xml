@@ -21,7 +21,7 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:background="@drawable/imsdk_sample_button_background_white"
-            android:contentDescription="@string/imsdk_sample_empty_text_hint"
+            android:contentDescription="@string/imsdk_uikit_empty_text_hint"
             android:scaleType="centerInside"
             tools:src="@drawable/imsdk_sample_ic_input_more_item_media" />
 

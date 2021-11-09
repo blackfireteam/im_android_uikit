@@ -179,7 +179,7 @@ public class CustomSoftKeyboard extends FrameLayout {
             mBinding = ImsdkUikitWidgetCustomSoftKeyboardLayerEmojiViewHolderBinding.bind(itemView);
             final Context context = getContext();
             final String[] allEmoji = CustomKeyboardDataBuiltin.EMOJI;
-            final int columns = context.getResources().getInteger(R.integer.imsdk_sample_widget_custom_soft_keyboard_emoji_columns);
+            final int columns = context.getResources().getInteger(R.integer.imsdk_uikit_widget_custom_soft_keyboard_emoji_columns);
             final int size = allEmoji.length;
             final int itemViewWidth = DimenUtil.dp2px(30);
             final int itemViewHeight = DimenUtil.dp2px(30);
@@ -279,7 +279,7 @@ public class CustomSoftKeyboard extends FrameLayout {
             binding.getRoot().setLayoutParams(lp);
 
             binding.itemMedia.setImageResource(R.drawable.imsdk_sample_ic_input_more_item_media);
-            binding.itemName.setText(R.string.imsdk_sample_custom_soft_keyboard_item_media);
+            binding.itemName.setText(R.string.imsdk_uikit_custom_soft_keyboard_item_media);
             mBinding.gridLayout.addView(binding.getRoot());
 
             ViewUtil.onClick(binding.getRoot(), v -> {
