@@ -15,7 +15,7 @@
             android:layout_height="match_parent"
             android:background="@drawable/imsdk_sample_home_spark_loading_large_circle_bg"
             android:indeterminate="true"
-            android:indeterminateDrawable="@drawable/imsdk_sample_ic_meet_loading_large_circle_fg_animate"
+            android:indeterminateDrawable="@drawable/imsdk_sample_home_spark_loading_large_circle_fg_animate"
             android:indeterminateOnly="true" />
     </com.masonsoft.imsdk.uikit.widget.AspectRatioFrameLayout>
 
