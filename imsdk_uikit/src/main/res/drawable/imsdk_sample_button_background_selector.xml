@@ -2,13 +2,13 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingDefaultResource">
     <item android:state_enabled="true">
         <shape android:shape="rectangle">
-            <solid android:color="@color/imsdk_sample_color_button_background_enable" />
+            <solid android:color="@color/imsdk_uikit_color_button_background_enable" />
             <corners android:radius="4dp" />
         </shape>
     </item>
     <item>
         <shape android:shape="rectangle">
-            <solid android:color="@color/imsdk_sample_color_button_background_disable" />
+            <solid android:color="@color/imsdk_uikit_color_button_background_disable" />
             <corners android:radius="4dp" />
         </shape>
     </item>

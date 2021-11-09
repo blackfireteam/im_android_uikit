@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="imsdk_sample_color_red_dot">#FFff0000</color>
-    <color name="imsdk_sample_color_white_grey_background">#FFf0f0f0</color>
-    <color name="imsdk_sample_color_button_background_disable">#ffA0D5C0</color>
-    <color name="imsdk_sample_color_button_background_enable">#ff00B26A</color>
-    <color name="imsdk_sample_color_button_text_color_disable">#ffffffff</color>
-    <color name="imsdk_sample_color_button_text_color_enable">#ffffffff</color>
-    <color name="imsdk_sample_color_divider_line">#80CCCCCC</color>
+    <color name="imsdk_uikit_color_red_dot">#FFff0000</color>
+    <color name="imsdk_uikit_color_white_grey_background">#FFf0f0f0</color>
+    <color name="imsdk_uikit_color_button_background_disable">#ffA0D5C0</color>
+    <color name="imsdk_uikit_color_button_background_enable">#ff00B26A</color>
+    <color name="imsdk_uikit_color_button_text_color_disable">#ffffffff</color>
+    <color name="imsdk_uikit_color_button_text_color_enable">#ffffffff</color>
+    <color name="imsdk_uikit_color_divider_line">#80CCCCCC</color>
 </resources>

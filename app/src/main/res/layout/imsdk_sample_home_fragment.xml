@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/imsdk_sample_color_white_grey_background">
+    android:background="@color/imsdk_uikit_color_white_grey_background">
 
     <io.github.idonans.systeminsets.SystemInsetsFrameLayout
         android:id="@+id/top_system_insets"
