@@ -15,7 +15,7 @@ import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.uikit.uniontype.DataObject;
 import com.masonsoft.imsdk.uikit.uniontype.UnionTypeViewHolderListeners;
 import com.masonsoft.imsdk.uikit.uniontype.viewholder.IMMessageViewHolder;
-import com.masonsoft.imsdk.uikit.widget.IMConversationChangedViewHelper;
+import com.masonsoft.imsdk.uikit.widget.MSIMConversationChangedViewHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -45,7 +45,7 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
     private long mConsumedTypedLastMessageSeq;
 
     @SuppressWarnings("FieldCanBeLocal")
-    private final IMConversationChangedViewHelper mConversationChangedViewHelper;
+    private final MSIMConversationChangedViewHelper mConversationChangedViewHelper;
 
     private final DisposableHolder mDefaultRequestHolder = new DisposableHolder();
 
@@ -55,7 +55,7 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
         mSessionUserId = MSIMManager.getInstance().getSessionUserId();
         mTargetUserId = view.getTargetUserId();
 
-        mConversationChangedViewHelper = new IMConversationChangedViewHelper() {
+        mConversationChangedViewHelper = new MSIMConversationChangedViewHelper() {
             @Override
             protected void onConversationChanged(@Nullable MSIMConversation conversation, @Nullable Object customObject) {
                 if (conversation == null) {

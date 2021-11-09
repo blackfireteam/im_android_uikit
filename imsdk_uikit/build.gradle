@@ -3,12 +3,11 @@ plugins {
 }
 
 android {
-    compileSdkVersion rootProject.ext.bcfg.ver.target_sdk
-    buildToolsVersion rootProject.ext.bcfg.ver.build_tools
+    compileSdk rootProject.ext.bcfg.ver.target_sdk
 
     defaultConfig {
-        minSdkVersion rootProject.ext.bcfg.ver.min_sdk
-        targetSdkVersion rootProject.ext.bcfg.ver.target_sdk
+        minSdk rootProject.ext.bcfg.ver.min_sdk
+        targetSdk rootProject.ext.bcfg.ver.target_sdk
         versionCode rootProject.ext.bcfg.ver.versionCode
         versionName rootProject.ext.bcfg.ver.versionName
         buildConfigField("String", "LIB_NAME", "\"MSIMSDK_UIKIT\"")

@@ -37,11 +37,11 @@ public class IMMessageReadStatusView extends IMMessageDynamicFrameLayout {
     }
 
     @SuppressWarnings("FieldCanBeLocal")
-    private IMConversationChangedViewHelper mConversationChangedViewHelper;
+    private MSIMConversationChangedViewHelper mConversationChangedViewHelper;
     private TextView mReadTextView;
 
     private void initFromAttributes(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        mConversationChangedViewHelper = new IMConversationChangedViewHelper() {
+        mConversationChangedViewHelper = new MSIMConversationChangedViewHelper() {
             @Nullable
             @Override
             protected MSIMMessage loadCustomObject() {

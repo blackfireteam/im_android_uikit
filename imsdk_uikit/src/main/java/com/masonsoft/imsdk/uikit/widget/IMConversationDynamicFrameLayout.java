@@ -34,12 +34,12 @@ public abstract class IMConversationDynamicFrameLayout extends FrameLayout {
         initFromAttributes(context, attrs, defStyleAttr, defStyleRes);
     }
 
-    private IMConversationChangedViewHelper mConversationChangedViewHelper;
+    private MSIMConversationChangedViewHelper mConversationChangedViewHelper;
 
     private void initFromAttributes(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         AppContext.setContextInEditMode(this);
 
-        mConversationChangedViewHelper = new IMConversationChangedViewHelper() {
+        mConversationChangedViewHelper = new MSIMConversationChangedViewHelper() {
             @Nullable
             @Override
             protected Object loadCustomObject() {
