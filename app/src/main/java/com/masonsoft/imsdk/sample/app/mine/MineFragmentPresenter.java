@@ -12,6 +12,7 @@ import com.masonsoft.imsdk.sample.LocalSettingsManager;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.api.DefaultApi;
 import com.masonsoft.imsdk.sample.im.DiscoverUserManager;
+import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 import com.masonsoft.imsdk.uikit.widget.SessionUserIdChangedViewHelper;
 import com.masonsoft.imsdk.uikit.widget.UserCacheChangedViewHelper;
 import com.masonsoft.imsdk.user.UserInfoManager;
@@ -196,11 +197,11 @@ public class MineFragmentPresenter extends DynamicPresenter<MineFragment.ViewImp
                     Preconditions.checkNotNull(sessionUserInfo);
 
                     // 是否提交更改
-                    final int gender = sessionUserInfo.getGender(Integer.MIN_VALUE);
+                    final long gender = sessionUserInfo.getGender(Integer.MIN_VALUE);
                     if (isChecked) {
-                        return gender != MSIMConstants.Gender.FEMALE;
+                        return gender != MSIMUikitConstants.Gender.FEMALE;
                     } else {
-                        return gender != MSIMConstants.Gender.MALE;
+                        return gender != MSIMUikitConstants.Gender.MALE;
                     }
                 })
                 .map(submit -> {
@@ -210,7 +211,7 @@ public class MineFragmentPresenter extends DynamicPresenter<MineFragment.ViewImp
 
                     final long sessionUserId = MSIMManager.getInstance().getSessionUserId();
                     Preconditions.checkArgument(sessionUserId > 0);
-                    final int gender = isChecked ? MSIMConstants.Gender.FEMALE : MSIMConstants.Gender.MALE;
+                    final long gender = isChecked ? MSIMUikitConstants.Gender.FEMALE : MSIMUikitConstants.Gender.MALE;
                     DefaultApi.updateGender(sessionUserId, gender);
                     UserInfoManager.getInstance().updateGender(sessionUserId, gender);
                     return new Object();

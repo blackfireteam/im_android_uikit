@@ -9,7 +9,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
-import com.masonsoft.imsdk.MSIMConstants;
 import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.MSIMUserInfo;
 import com.masonsoft.imsdk.core.OtherMessage;
@@ -22,6 +21,7 @@ import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.entity.Init;
 import com.masonsoft.imsdk.sample.entity.Spark;
 import com.masonsoft.imsdk.sample.im.FetchSparkMessagePacket;
+import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 import com.masonsoft.imsdk.uikit.util.OkHttpClientUtil;
 import com.masonsoft.imsdk.uikit.util.RequestSignUtil;
 
@@ -129,7 +129,7 @@ public class DefaultApi {
         requestArgs.put("uid", userId);
         requestArgs.put("nick_name", nickname);
         requestArgs.put("avatar", "https://msim-test-1252460681.cos.na-siliconvalley.myqcloud.com/pers/612FA7A3-144E-4978-A75C-9D9277167292.jpeg");
-        requestArgs.put("gender", MSIMConstants.Gender.FEMALE);
+        requestArgs.put("gender", MSIMUikitConstants.Gender.FEMALE);
 
         requestApiServer(url, requestArgs, null);
         return new Object();
@@ -160,7 +160,7 @@ public class DefaultApi {
     }
 
     @NonNull
-    public static Object updateGender(long userId, int gender) {
+    public static Object updateGender(long userId, long gender) {
         final String url = "/user/update";
 
         final Map<String, Object> requestArgs = new HashMap<>();

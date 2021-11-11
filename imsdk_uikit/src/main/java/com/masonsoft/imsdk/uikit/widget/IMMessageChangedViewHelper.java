@@ -11,6 +11,7 @@ import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.MSIMMessage;
 import com.masonsoft.imsdk.MSIMMessageListener;
 import com.masonsoft.imsdk.MSIMMessageListenerProxy;
+import com.masonsoft.imsdk.MSIMMessagePageContext;
 import com.masonsoft.imsdk.lang.ObjectWrapper;
 import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.util.Objects;
@@ -32,7 +33,10 @@ public abstract class IMMessageChangedViewHelper {
     private long mLocalMessageId = Long.MIN_VALUE / 2;
 
     public IMMessageChangedViewHelper() {
-        MSIMManager.getInstance().getMessageManager().addMessageListener(mMessageListener);
+        MSIMManager.getInstance().getMessageManager().addMessageListener(
+                MSIMMessagePageContext.GLOBAL,
+                mMessageListener
+        );
     }
 
     public void setMessage(@NonNull MSIMMessage message) {
@@ -136,16 +140,6 @@ public abstract class IMMessageChangedViewHelper {
             onMessageChangedInternal(sessionUserId, conversationType, targetUserId, localMessageId);
         }
 
-        @Override
-        public void onMessageCreated(long sessionUserId, int conversationType, long targetUserId, long localMessageId) {
-            onMessageChangedInternal(sessionUserId, conversationType, targetUserId, localMessageId);
-        }
-
-        @Override
-        public void onMultiMessageChanged(long sessionUserId) {
-            onMessageChangedInternal(sessionUserId, MSIMConstants.ID_ANY, MSIMConstants.ID_ANY, MSIMConstants.ID_ANY);
-        }
-
         private void onMessageChangedInternal(long sessionUserId, int conversationType, long targetUserId, long localMessageId) {
             if (notMatch(sessionUserId, conversationType, targetUserId, localMessageId)) {
                 return;
@@ -158,12 +152,6 @@ public abstract class IMMessageChangedViewHelper {
                 requestLoadData(false);
             });
         }
-    }) {
-        @Nullable
-        @Override
-        protected String getOnMessageChangedTag(long sessionUserId, int conversationType, long targetUserId, long localMessageId) {
-            return super.getOnMessageCreatedTag(sessionUserId, conversationType, targetUserId, localMessageId);
-        }
-    };
+    });
 
 }

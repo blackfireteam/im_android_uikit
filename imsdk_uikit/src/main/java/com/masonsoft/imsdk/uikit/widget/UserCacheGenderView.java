@@ -6,8 +6,8 @@ import android.util.AttributeSet;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.masonsoft.imsdk.MSIMConstants;
 import com.masonsoft.imsdk.MSIMUserInfo;
+import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 import com.masonsoft.imsdk.uikit.R;
 
 public class UserCacheGenderView extends UserCacheDynamicImageView {
@@ -31,20 +31,20 @@ public class UserCacheGenderView extends UserCacheDynamicImageView {
 
     private void initFromAttributes(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         setScaleType(ScaleType.CENTER_INSIDE);
-        setGender(MSIMConstants.Gender.FEMALE);
+        setGender(MSIMUikitConstants.Gender.FEMALE);
     }
 
     @Override
     protected void onUserCacheUpdate(@Nullable MSIMUserInfo userInfo) {
         if (userInfo == null) {
-            setGender(MSIMConstants.Gender.FEMALE);
+            setGender(MSIMUikitConstants.Gender.FEMALE);
         } else {
-            setGender(userInfo.getGender(MSIMConstants.Gender.MALE));
+            setGender(userInfo.getGender(MSIMUikitConstants.Gender.MALE));
         }
     }
 
-    private void setGender(int gender) {
-        if (gender == MSIMConstants.Gender.MALE) {
+    private void setGender(long gender) {
+        if (gender == MSIMUikitConstants.Gender.MALE) {
             setImageResource(R.drawable.imsdk_uikit_ic_gender_male);
         } else {
             // default female

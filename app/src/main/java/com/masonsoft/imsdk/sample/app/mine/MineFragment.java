@@ -15,7 +15,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentActivity;
 
-import com.masonsoft.imsdk.MSIMConstants;
 import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.MSIMUserInfo;
 import com.masonsoft.imsdk.core.I18nResources;
@@ -316,13 +315,13 @@ public class MineFragment extends SystemInsetsFragment {
                 return;
             }
 
-            int gender = MSIMConstants.Gender.MALE;
+            long gender = MSIMUikitConstants.Gender.MALE;
             if (userInfo != null) {
                 gender = userInfo.getGender(gender);
             }
 
             clearCheckedChangeListener();
-            mBinding.modifyGenderSwitch.setChecked(gender == MSIMConstants.Gender.FEMALE);
+            mBinding.modifyGenderSwitch.setChecked(gender == MSIMUikitConstants.Gender.FEMALE);
             bindCheckedChangeListener();
 
             mBinding.actionSignOut.setEnabled(MSIMManager.getInstance().hasSession());

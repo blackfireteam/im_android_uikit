@@ -9,6 +9,7 @@ import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.MSIMMessage;
 import com.masonsoft.imsdk.MSIMMessageListener;
 import com.masonsoft.imsdk.MSIMMessageListenerAdapter;
+import com.masonsoft.imsdk.MSIMMessagePageContext;
 import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.uikit.entity.CustomMessagePayload;
 import com.masonsoft.imsdk.uikit.entity.RtcMessagePayload;
@@ -19,7 +20,10 @@ import io.github.idonans.core.thread.Threads;
 public abstract class IMReceivedRtcMessageViewHelper extends IMReceivedCustomSignalingMessageViewHelper {
 
     public IMReceivedRtcMessageViewHelper() {
-        MSIMManager.getInstance().getMessageManager().addMessageListener(mMessageListener);
+        MSIMManager.getInstance().getMessageManager().addMessageListener(
+                MSIMMessagePageContext.GLOBAL,
+                mMessageListener
+        );
     }
 
     @Override
@@ -48,7 +52,7 @@ public abstract class IMReceivedRtcMessageViewHelper extends IMReceivedCustomSig
         }
 
         @Override
-        public void onMessageCreated(long sessionUserId, int conversationType, long targetUserId, long localMessageId) {
+        public void onMessageChanged(long sessionUserId, int conversationType, long targetUserId, long localMessageId) {
             if (notMatch(sessionUserId, targetUserId)) {
                 return;
             }
