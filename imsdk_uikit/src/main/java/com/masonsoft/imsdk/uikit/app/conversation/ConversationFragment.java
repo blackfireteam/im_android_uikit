@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.masonsoft.imsdk.MSIMConversation;
+import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.lang.GeneralResult;
 import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.uikit.app.SystemInsetsFragment;
@@ -22,12 +23,13 @@ import com.masonsoft.imsdk.uikit.widget.DividerItemDecoration;
 import com.masonsoft.imsdk.util.Objects;
 import com.masonsoft.imsdk.util.TimeDiffDebugHelper;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import io.github.idonans.core.thread.Threads;
 import io.github.idonans.core.util.DimenUtil;
 import io.github.idonans.core.util.Preconditions;
+import io.github.idonans.dynamic.DynamicResult;
 import io.github.idonans.dynamic.page.UnionTypeStatusPageView;
 import io.github.idonans.uniontype.Host;
 import io.github.idonans.uniontype.UnionTypeAdapter;
@@ -90,6 +92,13 @@ public class ConversationFragment extends SystemInsetsFragment {
         return mBinding.getRoot();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        MSIMManager.getInstance().syncManual();
+    }
+
     private void clearPresenter() {
         if (mPresenter != null) {
             mPresenter.setAbort();
@@ -122,32 +131,39 @@ public class ConversationFragment extends SystemInsetsFragment {
             setAlwaysHideNoMoreData(true);
         }
 
+        @Override
+        public void onInitRequestResult(@NonNull DynamicResult<UnionTypeItemObject, GeneralResult> result) {
+            if (result.items != null) {
+                mergeConversationList(new ArrayList<>(result.items));
+            }
+        }
+
+        @Override
+        public void onPrePageRequestResult(@NonNull DynamicResult<UnionTypeItemObject, GeneralResult> result) {
+            if (result.items != null) {
+                mergeConversationList(new ArrayList<>(result.items));
+            }
+        }
+
+        @Override
+        public void onNextPageRequestResult(@NonNull DynamicResult<UnionTypeItemObject, GeneralResult> result) {
+            if (result.items != null) {
+                mergeConversationList(new ArrayList<>(result.items));
+            }
+        }
+
         @WorkerThread
-        void mergeSortedConversationList(@NonNull final List<UnionTypeItemObject> unionTypeItemObjectList) {
-            final String tag = Objects.defaultObjectTag(this) + "[mergeSortedConversationList][" + System.currentTimeMillis() + "][size:]" + unionTypeItemObjectList.size();
+        void mergeConversationList(@NonNull final List<UnionTypeItemObject> unionTypeItemObjectList) {
+            final String tag = Objects.defaultObjectTag(this) + "[mergeConversationList][" + System.currentTimeMillis() + "][size:]" + unionTypeItemObjectList.size();
             MSIMUikitLog.v(tag);
             final boolean[] autoScrollToTop = {false};
             getAdapter().getData().beginTransaction()
                     .add((transaction, groupArrayList) -> {
-                        if (groupArrayList.getGroupItemsSize(getGroupContent()) == 0) {
-                            // request init page
-                            MSIMUikitLog.v(tag + " try use requestInit instead of merge");
-                            ConversationFragmentPresenter presenter = mPresenter;
-                            if (presenter != null && !presenter.getInitRequestStatus().isLoading()) {
-                                Threads.postUi(() -> {
-                                    if (mPresenter != null) {
-                                        if (!mPresenter.getInitRequestStatus().isLoading()) {
-                                            MSIMUikitLog.v(tag + " use requestInit instead of merge");
-                                            mPresenter.requestInit(true);
-                                        }
-                                    }
-                                });
-                            }
-                            return;
-                        }
-
                         final TimeDiffDebugHelper innerMergeTimeDiffDebugHelper = new TimeDiffDebugHelper("innerMergeTimeDiffDebugHelper[" + tag + "]");
 
+                        if (groupArrayList.getGroupItemsSize(getGroupContent()) == 0) {
+                            groupArrayList.setGroupItems(getGroupContent(), new ArrayList<>());
+                        }
                         final List<UnionTypeItemObject> currentList = groupArrayList.getGroupItems(getGroupContent());
                         Preconditions.checkNotNull(currentList);
 
@@ -170,13 +186,13 @@ public class ConversationFragment extends SystemInsetsFragment {
                         innerMergeTimeDiffDebugHelper.mark();
                         for (int i = unionTypeItemObjectList.size() - 1; i >= 0; i--) {
                             final MSIMConversation updateConversation = (MSIMConversation) ((DataObject<?>) unionTypeItemObjectList.get(i).itemObject).object;
-                            if (updateConversation.isDelete()) {
+                            if (updateConversation.isHidden()) {
                                 unionTypeItemObjectList.remove(i);
                             }
                         }
                         innerMergeTimeDiffDebugHelper.print("rm delete");
 
-                        // 第三步，将 unionTypeItemObjectList 与 currentList 合并(这两个都是有序列表，且其中不包含重复元素)
+                        // 第三步，将 unionTypeItemObjectList 与 currentList 合并(这两个不包含重复元素)
                         innerMergeTimeDiffDebugHelper.mark();
                         currentList.addAll(0, unionTypeItemObjectList);
                         innerMergeTimeDiffDebugHelper.mark();
@@ -193,6 +209,7 @@ public class ConversationFragment extends SystemInsetsFragment {
                         innerMergeTimeDiffDebugHelper.print("sort current list size:" + currentList.size());
 
                         groupArrayList.removeGroup(getGroupHeader());
+                        groupArrayList.removeGroup(getGroupFooter());
                     })
                     .commit(() -> {
                         final ImsdkUikitConversationFragmentBinding binding = mBinding;

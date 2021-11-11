@@ -4,12 +4,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 import androidx.annotation.WorkerThread;
-import androidx.core.util.Pair;
 
 import com.masonsoft.imsdk.MSIMConstants;
 import com.masonsoft.imsdk.MSIMConversation;
 import com.masonsoft.imsdk.MSIMConversationListener;
 import com.masonsoft.imsdk.MSIMConversationListenerProxy;
+import com.masonsoft.imsdk.MSIMConversationPageContext;
 import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.lang.GeneralResult;
 import com.masonsoft.imsdk.lang.GeneralResultException;
@@ -21,13 +21,11 @@ import com.masonsoft.imsdk.util.Objects;
 import com.masonsoft.imsdk.util.TimeDiffDebugHelper;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import io.github.idonans.core.thread.TaskQueue;
-import io.github.idonans.core.util.Preconditions;
+import io.github.idonans.core.thread.BatchQueue;
 import io.github.idonans.dynamic.DynamicResult;
 import io.github.idonans.dynamic.page.PagePresenter;
 import io.github.idonans.lang.DisposableHolder;
@@ -45,10 +43,11 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
     private final MSIMConversationListener mConversationListener;
     private final int mConversationType = MSIMConstants.ConversationType.C2C;
     private final int mPageSize = 20;
-    private long mFirstConversationSeq = -1;
-    private long mLastConversationSeq = -1;
 
+    private final MSIMConversationPageContext mConversationPageContext = new MSIMConversationPageContext();
     private final DisposableHolder mDefaultRequestHolder = new DisposableHolder();
+
+    private final BatchQueue<MSIMConversation> mBatchQueueAddOrUpdateConversation = new BatchQueue<>();
 
     @UiThread
     public ConversationFragmentPresenter(@NonNull ConversationFragment.ViewImpl view) {
@@ -64,20 +63,9 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
             public void onConversationChanged(long sessionUserId, long conversationId, int conversationType, long targetUserId) {
                 addOrUpdateConversation(sessionUserId, conversationId);
             }
-
-            @Override
-            public void onConversationCreated(long sessionUserId, long conversationId, int conversationType, long targetUserId) {
-                addOrUpdateConversation(sessionUserId, conversationId);
-            }
-        }) {
-            @Nullable
-            @Override
-            protected Object getOnConversationCreatedTag(long sessionUserId, long conversationId, int conversationType, long targetUserId) {
-                // merge created, changed callback
-                return super.getOnConversationChangedTag(sessionUserId, conversationId, conversationType, targetUserId);
-            }
-        };
-        MSIMManager.getInstance().getConversationManager().addConversationListener(mConversationListener);
+        });
+        MSIMManager.getInstance().getConversationManager().addConversationListener(mConversationPageContext, mConversationListener);
+        mBatchQueueAddOrUpdateConversation.setConsumer(this::addOrUpdateConversation);
     }
 
     private long getSessionUserId() {
@@ -98,56 +86,15 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
         return getView() == null;
     }
 
-    @NonNull
-    private final Object mAddOrUpdateConversationMergeLock = new Object();
-    @NonNull
-    private Set<Pair<Long, Long>> mAddOrUpdateConversationDataSet = new HashSet<>();
-    private final TaskQueue mAddOrUpdateConversationActionQueue = new TaskQueue(1);
-
     private void addOrUpdateConversation(long sessionUserId, long conversationId) {
         if (isAbort(sessionUserId)) {
             return;
         }
 
-        synchronized (mAddOrUpdateConversationMergeLock) {
-            mAddOrUpdateConversationDataSet.add(Pair.create(sessionUserId, conversationId));
+        final MSIMConversation conversation = MSIMManager.getInstance().getConversationManager().getConversation(sessionUserId, conversationId);
+        if (conversation != null) {
+            mBatchQueueAddOrUpdateConversation.add(conversation);
         }
-
-        mAddOrUpdateConversationActionQueue.skipQueue();
-        mAddOrUpdateConversationActionQueue.enqueue(() -> {
-            final Set<Pair<Long, Long>> dataSet;
-            synchronized (mAddOrUpdateConversationMergeLock) {
-                dataSet = mAddOrUpdateConversationDataSet;
-                mAddOrUpdateConversationDataSet = new HashSet<>();
-            }
-
-            final long bestSessionUserId = getSessionUserId();
-            final List<MSIMConversation> updateList = new ArrayList<>();
-            for (Pair<Long, Long> dataPair : dataSet) {
-                Preconditions.checkNotNull(dataPair.first);
-                Preconditions.checkNotNull(dataPair.second);
-                if (bestSessionUserId != dataPair.first) {
-                    continue;
-                }
-                final MSIMConversation conversation = MSIMManager.getInstance().getConversationManager().getConversation(dataPair.first, dataPair.second);
-                if (conversation != null) {
-                    updateList.add(conversation);
-                }
-            }
-            if (!updateList.isEmpty()) {
-                Collections.sort(updateList, (o1Object, o2Object) -> {
-                    final long o1ObjectSeq = o1Object.getSeq();
-                    final long o2ObjectSeq = o2Object.getSeq();
-                    final long diff = o1ObjectSeq - o2ObjectSeq;
-                    return diff == 0 ? 0 : (diff < 0 ? 1 : -1);
-                });
-
-                if (isAbort(bestSessionUserId)) {
-                    return;
-                }
-                addOrUpdateConversation(updateList);
-            }
-        });
     }
 
     @WorkerThread
@@ -156,8 +103,17 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
             return;
         }
 
+        // 移除重复的会话
+        final Set<String> duplicate = new HashSet<>();
+
         final List<UnionTypeItemObject> unionTypeItemObjectList = new ArrayList<>();
         for (MSIMConversation conversation : updateList) {
+            final String key = conversation.getSessionUserId() + "_" + conversation.getConversationId();
+            if (duplicate.contains(key)) {
+                continue;
+            }
+            duplicate.add(key);
+
             final UnionTypeItemObject unionTypeItemObject = createDefault(conversation);
             if (unionTypeItemObject != null) {
                 unionTypeItemObjectList.add(unionTypeItemObject);
@@ -174,9 +130,9 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
         }
         final TimeDiffDebugHelper timeDiffDebugHelper = new TimeDiffDebugHelper(Objects.defaultObjectTag(this));
         timeDiffDebugHelper.mark();
-        view.mergeSortedConversationList(unionTypeItemObjectList);
+        view.mergeConversationList(unionTypeItemObjectList);
         timeDiffDebugHelper.mark();
-        timeDiffDebugHelper.print("mergeSortedConversationList unionTypeItemObjectList size:" + unionTypeItemObjectList.size());
+        timeDiffDebugHelper.print("mergeConversationList unionTypeItemObjectList size:" + unionTypeItemObjectList.size());
     }
 
     @Nullable
@@ -196,10 +152,16 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
         );
     }
 
+    @Override
+    protected void onInitRequest(@NonNull ConversationFragment.ViewImpl view) {
+        MSIMUikitLog.v("%s onInitRequest", Objects.defaultObjectTag(this));
+        super.onInitRequest(view);
+    }
+
     @Nullable
     @Override
     protected SingleSource<DynamicResult<UnionTypeItemObject, GeneralResult>> createInitRequest() throws Exception {
-        MSIMUikitLog.v(Objects.defaultObjectTag(this) + " createInitRequest");
+        MSIMUikitLog.v("%s createInitRequest", Objects.defaultObjectTag(this));
         if (DEBUG) {
             MSIMUikitLog.v(Objects.defaultObjectTag(this) + " createInitRequest sessionUserId:%s, mConversationType:%s, pageSize:%s",
                     getSessionUserId(),
@@ -208,9 +170,10 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
         }
 
         return Single.just("")
-                .map(input -> MSIMManager.getInstance().getConversationManager().pageQueryConversation(
+                .map(input -> MSIMManager.getInstance().getConversationManager().pageQueryNextConversation(
+                        mConversationPageContext,
+                        true,
                         getSessionUserId(),
-                        0,
                         mPageSize,
                         mConversationType))
                 .map(page -> {
@@ -239,42 +202,39 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
 
     @Override
     protected void onInitRequestResult(@NonNull ConversationFragment.ViewImpl view, @NonNull DynamicResult<UnionTypeItemObject, GeneralResult> result) {
-        MSIMUikitLog.v(Objects.defaultObjectTag(this) + " onInitRequestResult");
+        MSIMUikitLog.v("%s onInitRequestResult", Objects.defaultObjectTag(this));
         // 记录上一页，下一页参数
         if (result.items == null || result.items.isEmpty()) {
-            mFirstConversationSeq = -1;
-            mLastConversationSeq = -1;
             setNextPageRequestEnable(false);
         } else {
-            mFirstConversationSeq = ((MSIMConversation) ((DataObject) ((UnionTypeItemObject) ((List) result.items).get(0)).itemObject).object).getSeq();
-            mLastConversationSeq = ((MSIMConversation) ((DataObject) ((UnionTypeItemObject) ((List) result.items).get(result.items.size() - 1)).itemObject).object).getSeq();
             setNextPageRequestEnable(true);
         }
 
         super.onInitRequestResult(view, result);
     }
 
+    @Override
+    protected void onNextPageRequest(@NonNull ConversationFragment.ViewImpl view) {
+        MSIMUikitLog.v("%s onNextPageRequest", Objects.defaultObjectTag(this));
+        super.onNextPageRequest(view);
+    }
+
     @Nullable
     @Override
     protected SingleSource<DynamicResult<UnionTypeItemObject, GeneralResult>> createNextPageRequest() throws Exception {
-        MSIMUikitLog.v(Objects.defaultObjectTag(this) + " createNextPageRequest");
+        MSIMUikitLog.v("%s createNextPageRequest", Objects.defaultObjectTag(this));
         if (DEBUG) {
-            MSIMUikitLog.v(Objects.defaultObjectTag(this) + " createNextPageRequest sessionUserId:%s, mConversationType:%s, pageSize:%s, mLastConversationSeq:%s",
+            MSIMUikitLog.v(Objects.defaultObjectTag(this) + " createNextPageRequest sessionUserId:%s, mConversationType:%s, pageSize:%s",
                     getSessionUserId(),
                     mConversationType,
-                    mPageSize,
-                    mLastConversationSeq);
-        }
-
-        if (mLastConversationSeq <= 0) {
-            MSIMUikitLog.e(Objects.defaultObjectTag(this) + " createNextPageRequest invalid mLastConversationSeq:%s", mLastConversationSeq);
-            return null;
+                    mPageSize);
         }
 
         return Single.just("")
-                .map(input -> MSIMManager.getInstance().getConversationManager().pageQueryConversation(
+                .map(input -> MSIMManager.getInstance().getConversationManager().pageQueryNextConversation(
+                        mConversationPageContext,
+                        false,
                         getSessionUserId(),
-                        mLastConversationSeq,
                         mPageSize,
                         mConversationType))
                 .map(page -> {
@@ -303,12 +263,7 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
 
     @Override
     protected void onNextPageRequestResult(@NonNull ConversationFragment.ViewImpl view, @NonNull DynamicResult<UnionTypeItemObject, GeneralResult> result) {
-        MSIMUikitLog.v(Objects.defaultObjectTag(this) + " onNextPageRequestResult");
-        // 记录上一页，下一页参数
-        if (result.items != null && !result.items.isEmpty()) {
-            mLastConversationSeq = ((MSIMConversation) ((DataObject) ((UnionTypeItemObject) ((List) result.items).get(result.items.size() - 1)).itemObject).object).getSeq();
-        }
-
+        MSIMUikitLog.v("%s onNextPageRequestResult", Objects.defaultObjectTag(this));
         super.onNextPageRequestResult(view, result);
     }
 

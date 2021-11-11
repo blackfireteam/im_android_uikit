@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<io.github.idonans.systeminsets.SystemInsetsFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom"
+    android:background="@android:color/white"
+    android:clickable="true"
+    android:focusable="true"
+    app:systemInsetPaddingBottom="all"
+    app:systemInsetPaddingBottomNotConsume="true">
+
+    <LinearLayout
+        android:id="@+id/actions_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:minHeight="300dp" />
+
+</io.github.idonans.systeminsets.SystemInsetsFrameLayout>

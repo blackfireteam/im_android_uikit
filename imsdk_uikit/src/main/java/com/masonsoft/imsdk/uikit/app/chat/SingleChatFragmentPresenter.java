@@ -6,8 +6,10 @@ import androidx.annotation.UiThread;
 
 import com.masonsoft.imsdk.MSIMConstants;
 import com.masonsoft.imsdk.MSIMConversation;
+import com.masonsoft.imsdk.MSIMConversationPageContext;
 import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.MSIMMessage;
+import com.masonsoft.imsdk.MSIMMessagePageContext;
 import com.masonsoft.imsdk.lang.GeneralResult;
 import com.masonsoft.imsdk.lang.GeneralResultException;
 import com.masonsoft.imsdk.uikit.CustomIMMessageFactory;
@@ -37,13 +39,12 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
     private final int mConversationType = MSIMConstants.ConversationType.C2C;
     private final long mTargetUserId;
     private final int mPageSize = 20;
-    private long mFirstMessageSeq = -1;
-    private long mLastMessageSeq = -1;
 
     @Nullable
     private MSIMMessage mLastMessage;
     private long mConsumedTypedLastMessageSeq;
 
+    private final MSIMMessagePageContext mMessagePageContext = new MSIMMessagePageContext();
     @SuppressWarnings("FieldCanBeLocal")
     private final MSIMConversationChangedViewHelper mConversationChangedViewHelper;
 
@@ -55,7 +56,7 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
         mSessionUserId = MSIMManager.getInstance().getSessionUserId();
         mTargetUserId = view.getTargetUserId();
 
-        mConversationChangedViewHelper = new MSIMConversationChangedViewHelper() {
+        mConversationChangedViewHelper = new MSIMConversationChangedViewHelper(MSIMConversationPageContext.GLOBAL) {
             @Override
             protected void onConversationChanged(@Nullable MSIMConversation conversation, @Nullable Object customObject) {
                 if (conversation == null) {
@@ -86,14 +87,21 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
     }
 
     private void reloadOrRequestMoreMessage() {
-        if (mLastMessageSeq > 0) {
-            if (!getNextPageRequestStatus().isLoading()) {
-                requestNextPage(true);
-            }
+        MSIMUikitLog.v("reloadOrRequestMoreMessage");
+        if (getInitRequestStatus().isLoading()) {
+            MSIMUikitLog.v("reloadOrRequestMoreMessage abort getInitRequestStatus().isLoading()");
+            return;
+        }
+        if (getNextPageRequestStatus().isLoading()) {
+            MSIMUikitLog.v("reloadOrRequestMoreMessage abort getNextPageRequestStatus().isLoading()");
+            return;
+        }
+        if (isNextPageRequestEnable()) {
+            MSIMUikitLog.v("reloadOrRequestMoreMessage start requestNextPage(true)");
+            requestNextPage(true);
         } else {
-            if (!getInitRequestStatus().isLoading()) {
-                requestInit(true);
-            }
+            MSIMUikitLog.v("reloadOrRequestMoreMessage start requestInit(true)");
+            requestInit(true);
         }
     }
 
@@ -122,6 +130,12 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
         return IMMessageViewHolder.Helper.createDefault(dataObject, mSessionUserId);
     }
 
+    @Override
+    protected void onInitRequest(@NonNull SingleChatFragment.ViewImpl view) {
+        MSIMUikitLog.v("onInitRequest");
+        super.onInitRequest(view);
+    }
+
     @Nullable
     @Override
     protected SingleSource<DynamicResult<UnionTypeItemObject, GeneralResult>> createInitRequest() throws Exception {
@@ -136,8 +150,9 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
 
         return Single.just("")
                 .map(input -> MSIMManager.getInstance().getMessageManager().pageQueryHistoryMessage(
+                        mMessagePageContext,
+                        true,
                         mSessionUserId,
-                        0,
                         mPageSize,
                         mConversationType,
                         mTargetUserId))
@@ -168,17 +183,13 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
 
     @Override
     protected void onInitRequestResult(@NonNull SingleChatFragment.ViewImpl view, @NonNull DynamicResult<UnionTypeItemObject, GeneralResult> result) {
-        // 记录上一页，下一页参数
+        MSIMUikitLog.v("onInitRequestResult");
         if (result.items == null || result.items.isEmpty()) {
-            mFirstMessageSeq = -1;
             mLastMessage = null;
-            mLastMessageSeq = -1;
             setPrePageRequestEnable(false);
             setNextPageRequestEnable(false);
         } else {
-            mFirstMessageSeq = ((MSIMMessage) ((DataObject) ((UnionTypeItemObject) ((List) result.items).get(0)).itemObject).object).getSeq();
             mLastMessage = (MSIMMessage) ((DataObject) ((UnionTypeItemObject) ((List) result.items).get(result.items.size() - 1)).itemObject).object;
-            mLastMessageSeq = mLastMessage.getSeq();
             setPrePageRequestEnable(true);
             setNextPageRequestEnable(true);
         }
@@ -186,28 +197,29 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
         super.onInitRequestResult(view, result);
     }
 
+    @Override
+    protected void onPrePageRequest(@NonNull SingleChatFragment.ViewImpl view) {
+        MSIMUikitLog.v("onPrePageRequest");
+        super.onPrePageRequest(view);
+    }
+
     @Nullable
     @Override
     protected SingleSource<DynamicResult<UnionTypeItemObject, GeneralResult>> createPrePageRequest() throws Exception {
         MSIMUikitLog.v("createPrePageRequest");
         if (DEBUG) {
-            MSIMUikitLog.v("createPrePageRequest sessionUserId:%s, mConversationType:%s, targetUserId:%s, pageSize:%s, firstMessageSeq:%s",
+            MSIMUikitLog.v("createPrePageRequest sessionUserId:%s, mConversationType:%s, targetUserId:%s, pageSize:%s",
                     mSessionUserId,
                     mConversationType,
                     mTargetUserId,
-                    mPageSize,
-                    mFirstMessageSeq);
-        }
-
-        if (mFirstMessageSeq <= 0) {
-            MSIMUikitLog.e("createPrePageRequest invalid firstMessageSeq:%s", mFirstMessageSeq);
-            return null;
+                    mPageSize);
         }
 
         return Single.just("")
                 .map(input -> MSIMManager.getInstance().getMessageManager().pageQueryHistoryMessage(
+                        mMessagePageContext,
+                        false,
                         mSessionUserId,
-                        mFirstMessageSeq,
                         mPageSize,
                         mConversationType,
                         mTargetUserId))
@@ -238,11 +250,14 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
 
     @Override
     protected void onPrePageRequestResult(@NonNull SingleChatFragment.ViewImpl view, @NonNull DynamicResult<UnionTypeItemObject, GeneralResult> result) {
-        // 记录上一页，下一页参数
-        if (result.items != null && !result.items.isEmpty()) {
-            mFirstMessageSeq = ((MSIMMessage) ((DataObject) ((UnionTypeItemObject) ((List) result.items).get(0)).itemObject).object).getSeq();
-        }
+        MSIMUikitLog.v("onPrePageRequestResult");
         super.onPrePageRequestResult(view, result);
+    }
+
+    @Override
+    protected void onNextPageRequest(@NonNull SingleChatFragment.ViewImpl view) {
+        MSIMUikitLog.v("onNextPageRequest");
+        super.onNextPageRequest(view);
     }
 
     @Nullable
@@ -250,23 +265,18 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
     protected SingleSource<DynamicResult<UnionTypeItemObject, GeneralResult>> createNextPageRequest() throws Exception {
         MSIMUikitLog.v("createNextPageRequest");
         if (DEBUG) {
-            MSIMUikitLog.v("createNextPageRequest sessionUserId:%s, mConversationType:%s, targetUserId:%s, pageSize:%s, lastMessageSeq:%s",
+            MSIMUikitLog.v("createNextPageRequest sessionUserId:%s, mConversationType:%s, targetUserId:%s, pageSize:%s",
                     mSessionUserId,
                     mConversationType,
                     mTargetUserId,
-                    mPageSize,
-                    mLastMessageSeq);
-        }
-
-        if (mLastMessageSeq <= 0) {
-            MSIMUikitLog.e("createNextPageRequest invalid lastMessageSeq:%s", mLastMessageSeq);
-            return null;
+                    mPageSize);
         }
 
         return Single.just("")
                 .map(input -> MSIMManager.getInstance().getMessageManager().pageQueryNewMessage(
+                        mMessagePageContext,
+                        false,
                         mSessionUserId,
-                        mLastMessageSeq,
                         mPageSize,
                         mConversationType,
                         mTargetUserId))
@@ -296,11 +306,12 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
 
     @Override
     protected void onNextPageRequestResult(@NonNull SingleChatFragment.ViewImpl view, @NonNull DynamicResult<UnionTypeItemObject, GeneralResult> result) {
-        // 记录上一页，下一页参数
+        MSIMUikitLog.v("onNextPageRequestResult");
+
         if (result.items != null && !result.items.isEmpty()) {
             mLastMessage = ((MSIMMessage) ((DataObject) ((UnionTypeItemObject) ((List) result.items).get(result.items.size() - 1)).itemObject).object);
-            mLastMessageSeq = mLastMessage.getSeq();
         }
+
         super.onNextPageRequestResult(view, result);
     }
 

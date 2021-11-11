@@ -36,6 +36,7 @@ import com.masonsoft.imsdk.uikit.common.mediapicker.MediaData;
 import com.masonsoft.imsdk.uikit.common.microlifecycle.MicroLifecycleComponentManager;
 import com.masonsoft.imsdk.uikit.common.microlifecycle.MicroLifecycleComponentManagerHost;
 import com.masonsoft.imsdk.uikit.common.microlifecycle.VisibleRecyclerViewMicroLifecycleComponentManager;
+import com.masonsoft.imsdk.uikit.common.simpledialog.SimpleBottomActionsDialog;
 import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitSingleChatFragmentBinding;
 import com.masonsoft.imsdk.uikit.uniontype.IMUikitUnionTypeMapper;
 import com.masonsoft.imsdk.uikit.util.ActivityUtil;
@@ -45,7 +46,10 @@ import com.masonsoft.imsdk.uikit.widget.CustomSoftKeyboard;
 import com.masonsoft.imsdk.util.Objects;
 import com.tbruyelle.rxpermissions3.RxPermissions;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import io.github.idonans.core.AbortSignal;
 import io.github.idonans.core.FormValidator;
@@ -122,6 +126,8 @@ public class SingleChatFragment extends SystemInsetsFragment {
         ViewUtil.onClick(mBinding.topBarBack, v -> ActivityUtil.requestBackPressed(SingleChatFragment.this));
         mBinding.topBarTitle.setTargetUserId(mTargetUserId);
         mBinding.beingTypedView.setTarget(MSIMManager.getInstance().getSessionUserId(), mTargetUserId);
+
+        ViewUtil.onClick(mBinding.topBarMore, v -> showBottomActions());
 
         final RecyclerView recyclerView = mBinding.recyclerView;
         LinearLayoutManager layoutManager = new LinearLayoutManager(
@@ -458,6 +464,45 @@ public class SingleChatFragment extends SystemInsetsFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         sendMarkAsRead();
+    }
+
+    private void showBottomActions() {
+        final Activity activity = ActivityUtil.getActiveAppCompatActivity(getContext());
+        if (activity == null) {
+            MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.ACTIVITY_IS_NULL);
+            return;
+        }
+
+        final List<String> actions = Lists.newArrayList("模拟并发消息");
+        final SimpleBottomActionsDialog dialog = new SimpleBottomActionsDialog(
+                activity,
+                actions
+        );
+        dialog.setOnActionClickListener((index, actionText) -> {
+            if (index == 0) {
+                // 模拟并发消息
+                final long targetUserId = mTargetUserId;
+                mockMultiMessages(targetUserId);
+            }
+        });
+        dialog.show();
+    }
+
+    private static void mockMultiMessages(final long targetUserId) {
+        final String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
+        final int size = 10;
+        for (int i = 1; i <= size; i++) {
+            final int index = i;
+            Threads.postBackground(() -> {
+                final long sessionUserId = MSIMManager.getInstance().getSessionUserId();
+                final MSIMMessage message = MSIMMessageFactory.createTextMessage("[" + time + "] mock concurrent message [" + index + "/" + size + "]");
+                MSIMManager.getInstance().getMessageManager().sendMessage(
+                        sessionUserId,
+                        message,
+                        targetUserId
+                );
+            });
+        }
     }
 
     private boolean hasVoiceRecordPermission() {
