@@ -33,6 +33,7 @@
     <string name="imsdk_uikit_hint_network_error">网络错误</string>
     <string name="imsdk_uikit_hint_refresh_retry">点击刷新试试</string>
     <string name="imsdk_uikit_hint_no_more">没有更多了</string>
+    <string name="imsdk_uikit_select_api_server_lru">选择最近使用的地址</string>
     <string name="imsdk_uikit_button_text_cancel">取消</string>
     <string name="imsdk_uikit_button_text_submit">确认</string>
     <string name="imsdk_uikit_tip_message_delivered">已送达</string>

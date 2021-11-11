@@ -29,7 +29,7 @@
         android:layout_margin="15dp"
         android:text="@string/imsdk_sample_switch_setting"
         android:visibility="visible"
-        app:layout_constraintBottom_toTopOf="@id/reset_server"
+        app:layout_constraintBottom_toTopOf="@id/open_app_settings"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/edit_text" />
 
@@ -40,18 +40,20 @@
         android:layout_margin="15dp"
         android:text="@string/imsdk_sample_open_app_setting"
         android:visibility="gone"
-        app:layout_constraintBaseline_toBaselineOf="@id/settings_switch"
-        app:layout_constraintStart_toEndOf="@id/settings_switch" />
+        app:layout_constraintBottom_toTopOf="@id/api_server"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/settings_switch"
+        tools:visibility="visible" />
 
     <Button
-        android:id="@+id/reset_server"
+        android:id="@+id/select_api_server_lru"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="15dp"
-        android:text="@string/imsdk_sample_switch_internet_server_default"
+        android:text="@string/imsdk_uikit_select_api_server_lru"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/api_server"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toEndOf="@id/open_app_settings"
         app:layout_constraintTop_toBottomOf="@id/settings_switch"
         tools:visibility="visible" />
 
@@ -68,7 +70,7 @@
         android:singleLine="true"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/submit"
-        app:layout_constraintTop_toBottomOf="@id/reset_server"
+        app:layout_constraintTop_toBottomOf="@id/open_app_settings"
         tools:visibility="visible" />
 
     <Button
