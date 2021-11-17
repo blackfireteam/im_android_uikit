@@ -58,7 +58,7 @@ public class IMMessageSendStatusView extends IMMessageDynamicFrameLayout {
         {
             mSendFailView = new ImageView(context);
             mSendFailView.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
-            mSendFailView.setImageResource(R.drawable.imsdk_sample_ic_message_send_fail);
+            mSendFailView.setImageResource(R.drawable.imsdk_uikit_ic_message_send_fail);
             LayoutParams layoutParams = generateDefaultLayoutParams();
             layoutParams.width = LayoutParams.WRAP_CONTENT;
             layoutParams.height = LayoutParams.WRAP_CONTENT;

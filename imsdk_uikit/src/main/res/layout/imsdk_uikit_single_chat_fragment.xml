@@ -36,7 +36,7 @@
                 android:paddingStart="15dp"
                 android:paddingEnd="15dp"
                 android:scaleType="centerInside"
-                android:src="@drawable/imsdk_sample_ic_arrow_left" />
+                android:src="@drawable/imsdk_uikit_ic_arrow_left" />
 
             <com.masonsoft.imsdk.uikit.widget.UserCacheName
                 android:id="@+id/top_bar_title"
@@ -64,7 +64,7 @@
                 android:paddingStart="15dp"
                 android:paddingEnd="15dp"
                 android:scaleType="centerInside"
-                android:src="@drawable/imsdk_sample_ic_more" />
+                android:src="@drawable/imsdk_uikit_ic_more" />
         </FrameLayout>
 
         <View
@@ -125,7 +125,7 @@
                 android:contentDescription="@string/imsdk_uikit_empty_text_hint"
                 android:focusable="true"
                 android:scaleType="centerInside"
-                android:src="@drawable/imsdk_sample_ic_input_keyboard_selector"
+                android:src="@drawable/imsdk_uikit_ic_input_keyboard_selector"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/keyboard_voice"
                 app:layout_constraintStart_toStartOf="parent" />
@@ -138,7 +138,7 @@
                 android:contentDescription="@string/imsdk_uikit_empty_text_hint"
                 android:focusable="true"
                 android:scaleType="centerInside"
-                android:src="@drawable/imsdk_sample_ic_input_voice_selector"
+                android:src="@drawable/imsdk_uikit_ic_input_voice_selector"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/keyboard_edit_text_container"
                 app:layout_constraintStart_toEndOf="@id/keyboard_voice_system_soft_keyboard" />
@@ -158,7 +158,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="10dp"
-                    android:background="@drawable/imsdk_sample_input_background"
+                    android:background="@drawable/imsdk_uikit_input_background"
                     android:hint="@string/imsdk_uikit_chat_input_hint"
                     android:includeFontPadding="false"
                     android:lineSpacingMultiplier="1.2"
@@ -177,7 +177,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="10dp"
-                    android:background="@drawable/imsdk_sample_input_background_selector"
+                    android:background="@drawable/imsdk_uikit_input_background_selector"
                     android:gravity="center"
                     android:includeFontPadding="false"
                     android:maxLines="1"
@@ -198,7 +198,7 @@
                 android:contentDescription="@string/imsdk_uikit_empty_text_hint"
                 android:focusable="true"
                 android:scaleType="centerInside"
-                android:src="@drawable/imsdk_sample_ic_input_emoji_selector"
+                android:src="@drawable/imsdk_uikit_ic_input_emoji_selector"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/keyboard_emoji_system_soft_keyboard"
                 app:layout_constraintStart_toEndOf="@id/keyboard_edit_text_container" />
@@ -211,7 +211,7 @@
                 android:contentDescription="@string/imsdk_uikit_empty_text_hint"
                 android:focusable="true"
                 android:scaleType="centerInside"
-                android:src="@drawable/imsdk_sample_ic_input_keyboard_selector"
+                android:src="@drawable/imsdk_uikit_ic_input_keyboard_selector"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/keyboard_more"
                 app:layout_constraintStart_toEndOf="@id/keyboard_emoji" />
@@ -224,7 +224,7 @@
                 android:contentDescription="@string/imsdk_uikit_empty_text_hint"
                 android:focusable="true"
                 android:scaleType="centerInside"
-                android:src="@drawable/imsdk_sample_ic_input_more_selector"
+                android:src="@drawable/imsdk_uikit_ic_input_more_selector"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/keyboard_submit"
                 app:layout_constraintStart_toEndOf="@id/keyboard_emoji_system_soft_keyboard" />
@@ -236,7 +236,7 @@
                 android:layout_marginTop="13dp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginBottom="13dp"
-                android:background="@drawable/imsdk_sample_button_background_selector"
+                android:background="@drawable/imsdk_uikit_button_background_selector"
                 android:clickable="true"
                 android:focusable="true"
                 android:gravity="center"
@@ -268,7 +268,7 @@
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:background="@drawable/imsdk_sample_ic_volume_dialog_bg"
+        android:background="@drawable/imsdk_uikit_ic_volume_dialog_bg"
         android:gravity="center_horizontal"
         android:orientation="vertical"
         android:visibility="gone"

@@ -681,7 +681,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
             }
 
             ViewUtil.setVisibilityIfChanged(mBinding.recordingVolumeLayer, View.VISIBLE);
-            mBinding.recordingVolumeIcon.setImageResource(R.drawable.imsdk_sample_recording_volume);
+            mBinding.recordingVolumeIcon.setImageResource(R.drawable.imsdk_uikit_recording_volume);
             final Drawable drawable = mBinding.recordingVolumeIcon.getDrawable();
             if (drawable instanceof AnimationDrawable) {
                 ((AnimationDrawable) drawable).start();
@@ -702,7 +702,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
             if (inside) {
                 Drawable drawable = mBinding.recordingVolumeIcon.getDrawable();
                 if (!(drawable instanceof AnimationDrawable)) {
-                    mBinding.recordingVolumeIcon.setImageResource(R.drawable.imsdk_sample_recording_volume);
+                    mBinding.recordingVolumeIcon.setImageResource(R.drawable.imsdk_uikit_recording_volume);
                     drawable = mBinding.recordingVolumeIcon.getDrawable();
                 }
 
@@ -711,7 +711,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
                 }
                 mBinding.recordingVolumeTip.setText(R.string.imsdk_uikit_voice_record_down_cancel_send);
             } else {
-                mBinding.recordingVolumeIcon.setImageResource(R.drawable.imsdk_sample_ic_volume_dialog_cancel);
+                mBinding.recordingVolumeIcon.setImageResource(R.drawable.imsdk_uikit_ic_volume_dialog_cancel);
                 mBinding.recordingVolumeTip.setText(R.string.imsdk_uikit_voice_record_up_cancel_send);
             }
         }
@@ -737,7 +737,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
             }
 
             if (tooShort || fail) {
-                mBinding.recordingVolumeIcon.setImageResource(R.drawable.imsdk_sample_ic_volume_dialog_length_short);
+                mBinding.recordingVolumeIcon.setImageResource(R.drawable.imsdk_uikit_ic_volume_dialog_length_short);
                 if (tooShort) {
                     mBinding.recordingVolumeTip.setText(R.string.imsdk_uikit_voice_record_say_time_short);
                 } else {

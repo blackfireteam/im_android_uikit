@@ -278,7 +278,7 @@ public class CustomSoftKeyboard extends FrameLayout {
             lp.rowSpec = GridLayout.spec(GridLayout.UNDEFINED, 1, 1.0f);
             binding.getRoot().setLayoutParams(lp);
 
-            binding.itemMedia.setImageResource(R.drawable.imsdk_sample_ic_input_more_item_media);
+            binding.itemMedia.setImageResource(R.drawable.imsdk_uikit_ic_input_more_item_media);
             binding.itemName.setText(R.string.imsdk_uikit_custom_soft_keyboard_item_media);
             mBinding.gridLayout.addView(binding.getRoot());
 

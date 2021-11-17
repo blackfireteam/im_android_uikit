@@ -59,7 +59,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="72dp"
-                android:background="@drawable/imsdk_sample_chat_bubble_received"
+                android:background="@drawable/imsdk_uikit_chat_bubble_received"
                 android:includeFontPadding="false"
                 android:lineSpacingMultiplier="1.2"
                 android:minHeight="40dp"

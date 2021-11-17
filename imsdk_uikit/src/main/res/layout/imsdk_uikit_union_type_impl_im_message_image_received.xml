@@ -60,7 +60,7 @@
                 android:id="@+id/resize_image_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/imsdk_sample_ic_common_rect_corners_16dp_white"
+                android:background="@drawable/imsdk_uikit_ic_common_rect_corners_16dp_white"
                 android:minWidth="93dp"
                 android:minHeight="93dp"
                 app:layout_flexGrow="0"

@@ -17,7 +17,7 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="57dp"
-            android:background="@drawable/imsdk_sample_ic_common_rect_top_corners_16dp_white"
+            android:background="@drawable/imsdk_uikit_ic_common_rect_top_corners_16dp_white"
             android:clickable="true"
             android:focusable="true">
 
@@ -27,7 +27,7 @@
                 android:layout_height="match_parent"
                 android:contentDescription="@string/imsdk_uikit_empty_text_hint"
                 android:scaleType="centerInside"
-                android:src="@drawable/imsdk_sample_ic_common_close_black" />
+                android:src="@drawable/imsdk_uikit_ic_common_close_black" />
 
             <TextView
                 android:id="@+id/grid_top_bar_title"
@@ -45,7 +45,7 @@
                 android:textColor="#333333"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                app:drawableEndCompat="@drawable/imsdk_sample_ic_common_arrow_down_black" />
+                app:drawableEndCompat="@drawable/imsdk_uikit_ic_common_arrow_down_black" />
 
             <TextView
                 android:id="@+id/action_submit"
@@ -53,7 +53,7 @@
                 android:layout_height="30dp"
                 android:layout_gravity="center_vertical|end"
                 android:layout_marginEnd="15dp"
-                android:background="@drawable/imsdk_sample_ic_common_rect_corners_4dp_fill_enable_black_normal_cccccc"
+                android:background="@drawable/imsdk_uikit_ic_common_rect_corners_4dp_fill_enable_black_normal_cccccc"
                 android:enabled="false"
                 android:gravity="center"
                 android:includeFontPadding="false"

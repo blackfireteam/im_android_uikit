@@ -98,7 +98,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical|end"
                 android:contentDescription="@string/imsdk_uikit_empty_text_hint"
-                android:src="@drawable/imsdk_sample_ic_arrow_right_black_tiny" />
+                android:src="@drawable/imsdk_uikit_ic_arrow_right_black_tiny" />
         </FrameLayout>
 
         <View
@@ -177,7 +177,7 @@
             android:layout_width="match_parent"
             android:layout_height="45dp"
             android:layout_margin="15dp"
-            android:background="@drawable/imsdk_sample_button_background_selector"
+            android:background="@drawable/imsdk_uikit_button_background_selector"
             android:text="@string/imsdk_sample_button_text_sign_out"
             android:textColor="@color/imsdk_sample_button_text_selector" />
 

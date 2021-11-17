@@ -75,7 +75,7 @@ public class IMChatConversationPopupView extends ViewGroup {
 
     private void initFromAttributes(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         mMenuLayout = new LinearLayout(context);
-        mMenuLayout.setBackgroundResource(R.drawable.imsdk_sample_ic_common_rect_corners_8dp_333333);
+        mMenuLayout.setBackgroundResource(R.drawable.imsdk_uikit_ic_common_rect_corners_8dp_333333);
         mMenuLayout.setOrientation(LinearLayout.HORIZONTAL);
         mMenuLayout.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE);
 

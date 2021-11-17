@@ -32,7 +32,7 @@ public class UserCacheVerifiedFlagView extends UserCacheDynamicImageView {
     }
 
     private void initFromAttributes(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        setImageResource(R.drawable.imsdk_sample_ic_profile_verified);
+        setImageResource(R.drawable.imsdk_uikit_ic_profile_verified);
         setScaleType(ScaleType.CENTER_INSIDE);
     }
 

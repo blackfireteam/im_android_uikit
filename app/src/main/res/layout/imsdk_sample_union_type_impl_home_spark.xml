@@ -77,7 +77,7 @@
             android:layout_marginBottom="20dp"
             android:contentDescription="@string/imsdk_uikit_empty_text_hint"
             android:scaleType="centerInside"
-            android:src="@drawable/imsdk_sample_ic_chat"
+            android:src="@drawable/imsdk_uikit_ic_chat"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/action_like" />
     </androidx.constraintlayout.widget.ConstraintLayout>
