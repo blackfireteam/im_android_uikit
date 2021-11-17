@@ -123,7 +123,7 @@ public class AudioRecordManager {
             try {
                 stopAudioRecordInternal();
 
-                final File audioRecorderFile = TmpFileManager.getInstance().createNewTmpFileQuietly("imsdk_sample_audio_record", ".m4a");
+                final File audioRecorderFile = TmpFileManager.getInstance().createNewTmpFileQuietly("imsdk_uikit_audio_record", ".m4a");
                 Preconditions.checkNotNull(audioRecorderFile);
                 mAudioRecorderFile = audioRecorderFile.getAbsolutePath();
                 mAudioRecorder = new MediaRecorder();
