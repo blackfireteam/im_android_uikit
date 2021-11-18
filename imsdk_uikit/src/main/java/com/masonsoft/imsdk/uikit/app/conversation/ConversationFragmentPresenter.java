@@ -283,7 +283,8 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
         public boolean isSameItem(@Nullable Object other) {
             if (other instanceof DeepDiffDataObject) {
                 final DeepDiffDataObject otherDataObject = (DeepDiffDataObject) other;
-                return this.object.getConversationId() == otherDataObject.object.getConversationId();
+                return this.object.getConversationId() == otherDataObject.object.getConversationId()
+                        && this.object.getSessionUserId() == otherDataObject.object.getSessionUserId();
             }
             return false;
         }
@@ -292,7 +293,8 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
         public boolean isSameContent(@Nullable Object other) {
             if (other instanceof DeepDiffDataObject) {
                 final DeepDiffDataObject otherDataObject = (DeepDiffDataObject) other;
-                return this.object.getConversationId() == otherDataObject.object.getConversationId();
+                return this.object.getConversationId() == otherDataObject.object.getConversationId()
+                        && this.object.getSessionUserId() == otherDataObject.object.getSessionUserId();
             }
             return false;
         }
