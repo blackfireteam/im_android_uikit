@@ -127,8 +127,8 @@ public class LocalSettingsManager {
 
         private ApiServerLru() {
             // 添加默认值
-            mCache.add("https://im.ekfree.com:18788");
-            mCache.add("https://192.168.50.189:18788");
+            mCache.add("https://im.ekfree.com:18789");
+            mCache.add("https://192.168.50.189:18789");
         }
 
         public void addApiServer(@Nullable String apiServer) {
