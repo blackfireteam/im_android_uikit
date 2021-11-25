@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
-import com.masonsoft.imsdk.uikit.app.SystemInsetsFragment;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleHomeFragmentBinding;
 import com.masonsoft.imsdk.sample.entity.Spark;
 import com.masonsoft.imsdk.sample.uniontype.SampleUnionTypeMapper;
@@ -23,6 +22,7 @@ import com.masonsoft.imsdk.sample.widget.cardlayoutmanager.CardLayoutItemTouchHe
 import com.masonsoft.imsdk.sample.widget.cardlayoutmanager.CardLayoutManager;
 import com.masonsoft.imsdk.sample.widget.cardlayoutmanager.CardTouchCallbackImpl;
 import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
+import com.masonsoft.imsdk.uikit.app.SystemInsetsFragment;
 import com.masonsoft.imsdk.uikit.common.microlifecycle.MicroLifecycleComponentManager;
 import com.masonsoft.imsdk.uikit.common.microlifecycle.MicroLifecycleComponentManagerHost;
 import com.masonsoft.imsdk.uikit.common.microlifecycle.TopVisibleRecyclerViewMicroLifecycleComponentManager;
