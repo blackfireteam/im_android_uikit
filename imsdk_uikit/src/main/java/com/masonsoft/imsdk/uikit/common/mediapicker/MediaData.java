@@ -1,5 +1,6 @@
 package com.masonsoft.imsdk.uikit.common.mediapicker;
 
+import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.database.Cursor;
 import android.net.Uri;
@@ -32,6 +33,7 @@ import io.github.idonans.core.util.IOUtil;
 
 public class MediaData {
 
+    @SuppressLint("AnnotateVersionCheck")
     private static final boolean USE_CONTENT_URI = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q;
 
     @NonNull
@@ -97,7 +99,7 @@ public class MediaData {
          * 估算图片解码到内存之后的 byte 大小
          */
         public long getImageMemorySize() {
-            return this.width * this.height * 4;
+            return this.width * this.height * 4L;
         }
 
         public boolean isImageMemorySizeTooLarge() {
@@ -308,7 +310,7 @@ public class MediaData {
                         MediaStore.MediaColumns.TITLE,
                         MediaStore.MediaColumns.DATE_ADDED,     // 添加时间
                         MediaStore.MediaColumns._ID,            // id
-                        MediaStore.MediaColumns.DURATION,       // video duration
+                        MediaStore.Video.VideoColumns.DURATION, // video duration
                         //////////////////////////////////////////////////////
                         //////////////////////////////////////////////////////
                         MediaStore.MediaColumns.BUCKET_ID,
@@ -327,7 +329,7 @@ public class MediaData {
                         MediaStore.MediaColumns.TITLE,
                         MediaStore.MediaColumns.DATE_ADDED,     // 添加时间
                         MediaStore.MediaColumns._ID,            // id
-                        MediaStore.MediaColumns.DURATION,       // video duration
+                        MediaStore.Video.VideoColumns.DURATION, // video duration
                         //////////////////////////////////////////////////////
                         //////////////////////////////////////////////////////
                         MediaStore.MediaColumns.DATA,           // 媒体的真实路径  /storage/emulated/0/pp/downloader/wallpaper/aaa.jpg
@@ -369,10 +371,11 @@ public class MediaData {
                 final File dir = new File(path).getParentFile();
                 if (dir == null) {
                     target.bucketId = "";
+                    target.bucketDisplayName = "";
                 } else {
                     target.bucketId = dir.getAbsolutePath();
+                    target.bucketDisplayName = dir.getName();
                 }
-                target.bucketDisplayName = dir.getName();
                 target.uri = Uri.fromFile(new File(path));
             }
 
