@@ -13,6 +13,7 @@ import com.masonsoft.imsdk.uikit.uniontype.DataObject;
 import com.masonsoft.imsdk.uikit.uniontype.UnionTypeViewHolderListeners;
 import com.masonsoft.imsdk.uikit.widget.IMMessagePreviewVideoView;
 
+import io.github.idonans.core.util.Preconditions;
 import io.github.idonans.uniontype.Host;
 import io.github.idonans.uniontype.UnionTypeAdapter;
 
@@ -29,9 +30,12 @@ public class IMMessagePreviewVideoViewHolder extends IMMessageViewHolder {
     }
 
     @Override
-    protected void onBindItemObject(int position, @NonNull DataObject<MSIMMessage> itemObject) {
-        super.onBindItemObject(position, itemObject);
+    public void onBindUpdate() {
+        super.onBindUpdate();
 
+        //noinspection unchecked
+        final DataObject<MSIMMessage> itemObject = (DataObject<MSIMMessage>) this.itemObject;
+        Preconditions.checkNotNull(itemObject);
         final MSIMMessage message = itemObject.object;
 
         mPreviewVideoView.setMessage(message);

@@ -24,6 +24,7 @@ import com.masonsoft.imsdk.uikit.uniontype.UnionTypeViewHolderListeners;
 import com.masonsoft.imsdk.uikit.widget.AudioPlayerView;
 import com.masonsoft.imsdk.uikit.widget.IMMessageAudioView;
 
+import io.github.idonans.core.util.Preconditions;
 import io.github.idonans.uniontype.Host;
 import io.github.idonans.uniontype.UnionTypeAdapter;
 
@@ -52,8 +53,12 @@ public abstract class IMMessageVoiceViewHolder extends IMMessageViewHolder {
 
     @SuppressLint("SetTextI18n")
     @Override
-    protected void onBindItemObject(int position, @NonNull DataObject<MSIMMessage> itemObject) {
-        super.onBindItemObject(position, itemObject);
+    public void onBindUpdate() {
+        super.onBindUpdate();
+
+        //noinspection unchecked
+        final DataObject<MSIMMessage> itemObject = (DataObject<MSIMMessage>) this.itemObject;
+        Preconditions.checkNotNull(itemObject);
         final MSIMMessage message = itemObject.object;
 
         mAudioView.setMessage(message);

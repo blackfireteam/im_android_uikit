@@ -14,6 +14,7 @@ import com.masonsoft.imsdk.uikit.R;
 import com.masonsoft.imsdk.uikit.uniontype.DataObject;
 import com.masonsoft.imsdk.uikit.uniontype.UnionTypeViewHolderListeners;
 
+import io.github.idonans.core.util.Preconditions;
 import io.github.idonans.uniontype.Host;
 
 public abstract class IMMessageDefaultViewHolder extends IMMessageViewHolder {
@@ -30,10 +31,13 @@ public abstract class IMMessageDefaultViewHolder extends IMMessageViewHolder {
         mMessageText = itemView.findViewById(R.id.message_text);
     }
 
-    @SuppressLint({"ClickableViewAccessibility", "SetTextI18n"})
+    @SuppressLint({"SetTextI18n", "ClickableViewAccessibility"})
     @Override
-    protected void onBindItemObject(int position, @NonNull DataObject<MSIMMessage> itemObject) {
-        super.onBindItemObject(position, itemObject);
+    public void onBindUpdate() {
+        super.onBindUpdate();
+        //noinspection unchecked
+        final DataObject<MSIMMessage> itemObject = (DataObject<MSIMMessage>) this.itemObject;
+        Preconditions.checkNotNull(itemObject);
         final MSIMMessage message = itemObject.object;
 
         mMessageText.setText("[default]type:" + message.getMessageType() + ", body:" + message.getBody());

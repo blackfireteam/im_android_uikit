@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.github.idonans.core.util.DimenUtil;
+import io.github.idonans.core.util.Preconditions;
 import io.github.idonans.uniontype.Host;
 
 public class IMMessagePreviewImageViewHolder extends IMMessageViewHolder {
@@ -32,9 +33,12 @@ public class IMMessagePreviewImageViewHolder extends IMMessageViewHolder {
     }
 
     @Override
-    protected void onBindItemObject(int position, @NonNull DataObject<MSIMMessage> itemObject) {
-        super.onBindItemObject(position, itemObject);
+    public void onBindUpdate() {
+        super.onBindUpdate();
 
+        //noinspection unchecked
+        final DataObject<MSIMMessage> itemObject = (DataObject<MSIMMessage>) this.itemObject;
+        Preconditions.checkNotNull(itemObject);
         final MSIMMessage message = itemObject.object;
 
         final List<String> firstAvailableUrls = new ArrayList<>();

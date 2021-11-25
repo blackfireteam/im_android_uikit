@@ -17,8 +17,7 @@ import com.masonsoft.imsdk.uikit.app.chat.SingleChatActivity;
 import com.masonsoft.imsdk.uikit.uniontype.DataObject;
 import com.masonsoft.imsdk.util.Objects;
 
-import java.lang.ref.WeakReference;
-
+import io.github.idonans.core.util.Preconditions;
 import io.github.idonans.lang.util.ViewUtil;
 import io.github.idonans.uniontype.Host;
 import io.github.idonans.uniontype.UnionTypeViewHolder;
@@ -29,8 +28,6 @@ import io.github.idonans.uniontype.UnionTypeViewHolder;
 public class HomeSparkViewHolder extends UnionTypeViewHolder {
 
     private final ImsdkSampleUnionTypeImplHomeSparkBinding mBinding;
-    @NonNull
-    private WeakReference<DataObject<Spark>> mUnsafeLastBindItemObject = new WeakReference<>(null);
 
     public HomeSparkViewHolder(@NonNull Host host) {
         super(host, R.layout.imsdk_sample_union_type_impl_home_spark);
@@ -42,11 +39,13 @@ public class HomeSparkViewHolder extends UnionTypeViewHolder {
     }
 
     private void updateLikeAndDislike(@FloatRange(from = -1, to = 1) float progress, boolean setValue) {
-        final DataObject<Spark> itemObject = mUnsafeLastBindItemObject.get();
-        if (itemObject == null) {
+        if (this.itemObject == null) {
             SampleLog.e("unexpected. item object is null");
             return;
         }
+
+        //noinspection unchecked
+        final DataObject<Spark> itemObject = (DataObject<Spark>) this.itemObject;
         final ExtraUiData extraUiData = ExtraUiData.valueOf(itemObject);
         if (setValue) {
             extraUiData.mLikeAndDislikeProgress = progress;
@@ -65,10 +64,10 @@ public class HomeSparkViewHolder extends UnionTypeViewHolder {
     }
 
     @Override
-    public void onBind(int position, @NonNull Object originObject) {
+    public void onBindUpdate() {
         //noinspection unchecked
-        final DataObject<Spark> itemObject = (DataObject<Spark>) originObject;
-        mUnsafeLastBindItemObject = new WeakReference<>(itemObject);
+        final DataObject<Spark> itemObject = (DataObject<Spark>) this.itemObject;
+        Preconditions.checkNotNull(itemObject);
         final Spark spark = itemObject.object;
 
         mBinding.imageLayout.setImageUrl(null, spark.pic);
