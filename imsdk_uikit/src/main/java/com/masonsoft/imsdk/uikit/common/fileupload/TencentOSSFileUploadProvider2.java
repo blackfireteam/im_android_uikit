@@ -145,6 +145,7 @@ public class TencentOSSFileUploadProvider2 implements FileUploadProvider {
         if (target instanceof CosXmlResult) {
             final String accessUrl = ((CosXmlResult) target).accessUrl;
             Verify.verifyNotNull(accessUrl);
+
             return accessUrl;
         } else if (target instanceof Throwable) {
             throw (Throwable) target;

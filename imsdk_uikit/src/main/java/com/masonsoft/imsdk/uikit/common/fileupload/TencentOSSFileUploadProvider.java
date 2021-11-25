@@ -111,6 +111,7 @@ public class TencentOSSFileUploadProvider implements FileUploadProvider {
 
         final String accessUrl = putObjectResult.accessUrl;
         Preconditions.checkNotNull(accessUrl);
+
         return accessUrl;
     }
 

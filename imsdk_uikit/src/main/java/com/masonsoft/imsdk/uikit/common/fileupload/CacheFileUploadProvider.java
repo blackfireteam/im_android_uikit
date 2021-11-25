@@ -80,6 +80,7 @@ public class CacheFileUploadProvider implements FileUploadProvider {
         if (cache != null) {
             IMLog.v(Objects.defaultObjectTag(this) + " uploadFile cache hit. %s -> %s",
                     filePath, cache);
+
             return cache.accessUrl;
         }
 
