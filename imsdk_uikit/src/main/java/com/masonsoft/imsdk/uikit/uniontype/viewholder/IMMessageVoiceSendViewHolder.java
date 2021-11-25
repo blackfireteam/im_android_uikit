@@ -11,6 +11,7 @@ import com.masonsoft.imsdk.uikit.R;
 import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitUnionTypeImplImMessageVoiceSendBinding;
 import com.masonsoft.imsdk.uikit.uniontype.DataObject;
 
+import io.github.idonans.core.util.Preconditions;
 import io.github.idonans.lang.util.ViewUtil;
 import io.github.idonans.uniontype.Host;
 
@@ -24,8 +25,12 @@ public class IMMessageVoiceSendViewHolder extends IMMessageVoiceViewHolder {
     }
 
     @Override
-    protected void onBindItemObject(int position, @NonNull DataObject<MSIMMessage> itemObject) {
-        super.onBindItemObject(position, itemObject);
+    public void onBindUpdate() {
+        super.onBindUpdate();
+
+        //noinspection unchecked
+        final DataObject<MSIMMessage> itemObject = (DataObject<MSIMMessage>) this.itemObject;
+        Preconditions.checkNotNull(itemObject);
         final MSIMMessage message = itemObject.object;
 
         mBinding.sendStatusView.setMessage(message);

@@ -185,7 +185,7 @@ public class HomeFragment extends SystemInsetsFragment {
         }
 
         @Override
-        public void onBind(int position, @NonNull Object itemObject) {
+        public void onBindUpdate() {
             View retry = itemView.findViewById(R.id.retry);
             if (retry != null) {
                 ViewUtil.onClick(retry, v -> {

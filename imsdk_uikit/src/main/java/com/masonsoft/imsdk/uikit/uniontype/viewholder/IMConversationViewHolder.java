@@ -20,6 +20,7 @@ import com.masonsoft.imsdk.uikit.uniontype.DataObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.github.idonans.core.util.Preconditions;
 import io.github.idonans.lang.util.ViewUtil;
 import io.github.idonans.uniontype.Host;
 import io.github.idonans.uniontype.UnionTypeViewHolder;
@@ -34,9 +35,10 @@ public class IMConversationViewHolder extends UnionTypeViewHolder {
     }
 
     @Override
-    public void onBind(int position, @NonNull Object originObject) {
+    public void onBindUpdate() {
         //noinspection unchecked
-        final DataObject<MSIMConversation> itemObject = (DataObject<MSIMConversation>) originObject;
+        final DataObject<MSIMConversation> itemObject = (DataObject<MSIMConversation>) this.itemObject;
+        Preconditions.checkNotNull(itemObject);
         final MSIMConversation conversation = itemObject.object;
 
         final long sessionUserId = conversation.getSessionUserId();

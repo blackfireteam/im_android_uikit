@@ -11,6 +11,7 @@ import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 import com.masonsoft.imsdk.uikit.uniontype.DataObject;
 import com.masonsoft.imsdk.uikit.uniontype.UnionTypeViewHolderListeners;
 
+import io.github.idonans.core.util.Preconditions;
 import io.github.idonans.lang.util.ViewUtil;
 import io.github.idonans.uniontype.Host;
 import io.github.idonans.uniontype.UnionTypeViewHolder;
@@ -28,9 +29,10 @@ public class SimpleTextViewHolder extends UnionTypeViewHolder {
     }
 
     @Override
-    public void onBind(int position, @NonNull Object originObject) {
+    public void onBindUpdate() {
         //noinspection unchecked
-        final DataObject<String> itemObject = (DataObject<String>) originObject;
+        final DataObject<String> itemObject = (DataObject<String>) this.itemObject;
+        Preconditions.checkNotNull(itemObject);
         final String text = itemObject.object;
 
         mBinding.text.setText(text);

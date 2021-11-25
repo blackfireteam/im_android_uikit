@@ -11,6 +11,7 @@ import com.masonsoft.imsdk.uikit.common.mediapicker.UnionTypeMediaData;
 import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitUnionTypeImplMediaPickerGridBinding;
 import com.masonsoft.imsdk.uikit.uniontype.DataObject;
 
+import io.github.idonans.core.util.Preconditions;
 import io.github.idonans.lang.util.ViewUtil;
 import io.github.idonans.uniontype.Host;
 import io.github.idonans.uniontype.UnionTypeViewHolder;
@@ -25,9 +26,10 @@ public class MediaPickerGridViewHolder extends UnionTypeViewHolder {
     }
 
     @Override
-    public void onBind(int position, @NonNull Object originObject) {
+    public void onBindUpdate() {
         //noinspection unchecked
-        final DataObject<MediaData.MediaInfo> itemObject = (DataObject<MediaData.MediaInfo>) originObject;
+        final DataObject<MediaData.MediaInfo> itemObject = (DataObject<MediaData.MediaInfo>) this.itemObject;
+        Preconditions.checkNotNull(itemObject);
         MediaData.MediaInfo mediaInfo = itemObject.object;
         MediaData mediaData = itemObject.getExtObjectObject1(null);
         UnionTypeMediaData unionTypeMediaData = itemObject.getExtObjectObject2(null);

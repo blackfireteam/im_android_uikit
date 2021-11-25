@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
 
-import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -43,6 +42,7 @@ import java.util.concurrent.TimeUnit;
 
 import io.github.idonans.core.thread.Threads;
 import io.github.idonans.core.util.NetUtil;
+import io.github.idonans.core.util.Preconditions;
 import io.github.idonans.core.util.SystemUtil;
 import io.github.idonans.lang.util.ViewUtil;
 import io.github.idonans.uniontype.Host;
@@ -131,13 +131,10 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
     }
 
     @Override
-    public final void onBind(int position, @NonNull Object originObject) {
+    public void onBindUpdate() {
         //noinspection unchecked
-        onBindItemObject(position, (DataObject<MSIMMessage>) originObject);
-    }
-
-    @CallSuper
-    protected void onBindItemObject(int position, @NonNull DataObject<MSIMMessage> itemObject) {
+        final DataObject<MSIMMessage> itemObject = (DataObject<MSIMMessage>) this.itemObject;
+        Preconditions.checkNotNull(itemObject);
         final MSIMMessage message = itemObject.object;
 
         final long sessionUserId = message.getSessionUserId();

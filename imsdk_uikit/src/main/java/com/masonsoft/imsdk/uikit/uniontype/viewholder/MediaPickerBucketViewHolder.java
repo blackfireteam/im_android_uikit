@@ -8,6 +8,7 @@ import com.masonsoft.imsdk.uikit.common.mediapicker.MediaData;
 import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitUnionTypeImplMediaPickerBucketBinding;
 import com.masonsoft.imsdk.uikit.uniontype.DataObject;
 
+import io.github.idonans.core.util.Preconditions;
 import io.github.idonans.lang.util.ViewUtil;
 import io.github.idonans.uniontype.Host;
 import io.github.idonans.uniontype.UnionTypeViewHolder;
@@ -22,10 +23,10 @@ public class MediaPickerBucketViewHolder extends UnionTypeViewHolder {
     }
 
     @Override
-    public void onBind(int position, @NonNull Object originObject) {
+    public void onBindUpdate() {
         //noinspection unchecked
-        final DataObject<MediaData.MediaBucket> itemObject = (DataObject<MediaData.MediaBucket>) originObject;
-        //
+        final DataObject<MediaData.MediaBucket> itemObject = (DataObject<MediaData.MediaBucket>) this.itemObject;
+        Preconditions.checkNotNull(itemObject);
         final MediaData.MediaBucket mediaBucket = itemObject.object;
         final MediaData mediaData = itemObject.getExtObjectObject1(null);
         String url = null;
