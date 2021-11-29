@@ -14,7 +14,7 @@ android {
     compileSdk rootProject.ext.bcfg.ver.target_sdk
 
     defaultConfig {
-        applicationId "com.masonsoft.imsdk.sample"
+        applicationId "com.masonsoft.imsdk.sample.app3"
         minSdk rootProject.ext.bcfg.ver.min_sdk
         targetSdk rootProject.ext.bcfg.ver.target_sdk
         versionCode rootProject.ext.bcfg.ver.versionCode
