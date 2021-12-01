@@ -114,7 +114,12 @@ public class IMMessageSendStatusTextView extends IMMessageDynamicFrameLayout {
                 messageText = "[已撤回]";
                 break;
             default:
-                messageText = "[default]type:" + messageType + ", body:" + message.getBody();
+                if (MSIMConstants.MessageType.isVisibleMessage(messageType)) {
+                    messageText = "[default]type:" + messageType + ", body:" + message.getBody();
+                } else {
+                    // 不可见消息不予展示(例如刚好删除了 showMessage)
+                    messageText = "";
+                }
         }
 
         if (MSIMConstants.MessageType.isCustomMessage(messageType)) {
