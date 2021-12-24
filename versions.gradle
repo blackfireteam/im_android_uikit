@@ -49,9 +49,9 @@ bcfg.deps.idonans_backstack = "io.github.idonans.backstack:backstack:2.0.2"
 bcfg.deps.idonans_uniontype = "io.github.idonans.uniontype:uniontype:4.0.0"
 bcfg.deps.idonans_dynamic = "io.github.idonans.dynamic:dynamic:3.0.6"
 
-bcfg.deps.msimsdk = "io.github.blackfireteam.msimsdk:imsdk:1.0-SNAPSHOT"
-bcfg.deps.msimsdk_push_fcm = "io.github.blackfireteam.msimsdk:imsdk-push-fcm:1.0-SNAPSHOT"
-bcfg.deps.msimsdk_gradle_plugin = "io.github.blackfireteam.msimsdk:imsdk-gradle-plugin:1.0-SNAPSHOT"
+bcfg.deps.msimsdk = "io.github.blackfireteam.msimsdk:imsdk:2.0-SNAPSHOT"
+bcfg.deps.msimsdk_push_fcm = "io.github.blackfireteam.msimsdk:imsdk-push-fcm:2.0-SNAPSHOT"
+bcfg.deps.msimsdk_gradle_plugin = "io.github.blackfireteam.msimsdk:imsdk-gradle-plugin:2.0-SNAPSHOT"
 
 bcfg.addRepos = this.&addRepos
 
