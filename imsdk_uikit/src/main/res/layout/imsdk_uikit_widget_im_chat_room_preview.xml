@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    tools:parentTag="android.widget.FrameLayout">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -48,9 +48,9 @@
             app:alignItems="center"
             app:layout_constraintBottom_toTopOf="@id/h_line_1"
             app:layout_constraintEnd_toStartOf="@id/time"
-            app:layout_constraintStart_toEndOf="@id/avatar">
+            app:layout_constraintStart_toEndOf="@id/chat_room_logo">
 
-            <com.masonsoft.imsdk.uikit.widget.UserCacheName
+            <com.masonsoft.imsdk.uikit.widget.IMChatRoomName
                 android:id="@+id/name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -63,19 +63,10 @@
                 android:textSize="16sp"
                 app:layout_flexGrow="0"
                 app:layout_flexShrink="1"
-                tools:text="大师兄大师兄大师兄大师兄大师兄大师兄大师兄大师兄大师兄大师兄大师兄" />
-
-            <com.masonsoft.imsdk.uikit.widget.UserCacheGenderView
-                android:id="@+id/user_gender"
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:layout_marginStart="5dp"
-                app:layout_flexGrow="0"
-                app:layout_flexShrink="0"
-                tools:src="@drawable/imsdk_uikit_ic_gender_female" />
+                tools:text="聊天室聊天室聊天室聊天室聊天室" />
         </com.google.android.flexbox.FlexboxLayout>
 
-        <com.masonsoft.imsdk.uikit.widget.IMConversationUnreadCountView
+        <com.masonsoft.imsdk.uikit.widget.IMChatRoomUnreadCountView
             android:id="@+id/unread_count_view"
             android:layout_width="wrap_content"
             android:layout_height="18dp"
@@ -85,7 +76,7 @@
             app:layout_constraintTop_toBottomOf="@id/h_line_1"
             tools:layout_width="18dp" />
 
-        <com.masonsoft.imsdk.uikit.widget.IMConversationLastMessage
+        <com.masonsoft.imsdk.uikit.widget.IMChatRoomLastMessage
             android:id="@+id/msg"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -93,7 +84,7 @@
             android:paddingStart="10dp"
             android:paddingEnd="10dp"
             app:layout_constraintEnd_toStartOf="@id/unread_count_view"
-            app:layout_constraintStart_toEndOf="@id/avatar"
+            app:layout_constraintStart_toEndOf="@id/chat_room_logo"
             app:layout_constraintTop_toBottomOf="@id/h_line_1" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-</LinearLayout>
+</merge>

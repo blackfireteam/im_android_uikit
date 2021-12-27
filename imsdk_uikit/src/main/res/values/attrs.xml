@@ -47,4 +47,7 @@
     <declare-styleable name="IMConversationAllUnreadCountView">
         <attr name="OnlyDrawableBackground" />
     </declare-styleable>
+    <declare-styleable name="IMChatRoomUnreadCountView">
+        <attr name="OnlyDrawableBackground" />
+    </declare-styleable>
 </resources>
