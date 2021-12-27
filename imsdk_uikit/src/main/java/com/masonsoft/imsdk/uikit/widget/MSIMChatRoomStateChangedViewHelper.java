@@ -1,6 +1,5 @@
 package com.masonsoft.imsdk.uikit.widget;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 import androidx.annotation.WorkerThread;
@@ -27,8 +26,7 @@ public abstract class MSIMChatRoomStateChangedViewHelper {
 
     private MSIMChatRoomContext mChatRoomContext;
 
-    public MSIMChatRoomStateChangedViewHelper(@NonNull MSIMChatRoomContext chatRoomContext) {
-        chatRoomContext.getChatRoomManager().addChatRoomStateListener(mChatRoomStateListener);
+    public MSIMChatRoomStateChangedViewHelper() {
     }
 
     public void setChatRoomContext(MSIMChatRoomContext chatRoomContext) {
