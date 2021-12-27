@@ -40,6 +40,7 @@ public class GlobalChatRoomManager {
         return INSTANCE.get();
     }
 
+    private static final long DEFAULT_CHAT_ROOM_ID = 25L;
     private final Map<String, StaticChatRoomContext> mStaticChatRoomContextMap = new HashMap<>();
 
     private GlobalChatRoomManager() {
@@ -47,7 +48,7 @@ public class GlobalChatRoomManager {
 
     @Nullable
     public StaticChatRoomContext getStaticChatRoomContext() {
-        return getStaticChatRoomContext(25L);
+        return getStaticChatRoomContext(DEFAULT_CHAT_ROOM_ID);
     }
 
     @Nullable
@@ -69,6 +70,10 @@ public class GlobalChatRoomManager {
             }
         }
         return null;
+    }
+
+    public void removeStaticChatRoomContext(long sessionUserId) {
+        this.removeStaticChatRoomContext(sessionUserId, DEFAULT_CHAT_ROOM_ID);
     }
 
     public void removeStaticChatRoomContext(long sessionUserId, long chatRoomId) {
