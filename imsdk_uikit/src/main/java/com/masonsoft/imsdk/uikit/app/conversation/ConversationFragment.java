@@ -11,9 +11,11 @@ import androidx.annotation.WorkerThread;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.masonsoft.imsdk.MSIMChatRoomContext;
 import com.masonsoft.imsdk.MSIMConversation;
 import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.lang.GeneralResult;
+import com.masonsoft.imsdk.uikit.GlobalChatRoomManager;
 import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.uikit.app.SystemInsetsFragment;
 import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitConversationFragmentBinding;
@@ -27,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import io.github.idonans.core.thread.Threads;
 import io.github.idonans.core.util.DimenUtil;
 import io.github.idonans.core.util.Preconditions;
 import io.github.idonans.dynamic.DynamicResult;
@@ -129,6 +132,20 @@ public class ConversationFragment extends SystemInsetsFragment {
         public ViewImpl(@NonNull UnionTypeAdapter adapter) {
             super(adapter);
             setAlwaysHideNoMoreData(true);
+        }
+
+        public void onSessionUserIdChanged(long sessionUserId) {
+            Preconditions.checkArgument(Threads.mustUi());
+            if (mBinding == null) {
+                return;
+            }
+            final GlobalChatRoomManager.StaticChatRoomContext context = GlobalChatRoomManager.getInstance().getStaticChatRoomContext();
+            MSIMChatRoomContext chatRoomContext = null;
+            if (context != null) {
+                chatRoomContext = context.getChatRoomContext();
+            }
+
+            mBinding.chatRoomPreview.setChatRoomContext(chatRoomContext);
         }
 
         @Override

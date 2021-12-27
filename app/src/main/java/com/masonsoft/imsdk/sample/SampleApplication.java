@@ -6,6 +6,7 @@ import android.util.Log;
 import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.sample.im.DiscoverUserManager;
+import com.masonsoft.imsdk.uikit.GlobalChatRoomManager;
 import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.uikit.MSIMUikitManager;
 
@@ -37,6 +38,9 @@ public class SampleApplication extends Application {
             MSIMUikitManager.getInstance().start();
 
             LocalSettingsManager.getInstance().start();
+
+            // 程序启动时，自动加入指定聊天室(如果有登录信息)
+            GlobalChatRoomManager.getInstance().start();
         }
     }
 

@@ -56,6 +56,7 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
             @Override
             protected void onSessionUserIdChanged(long sessionUserId) {
                 reloadWithNewSessionUserId();
+                view.onSessionUserIdChanged(sessionUserId);
             }
         };
         mConversationListener = new MSIMConversationListenerProxy(new MSIMConversationListener() {
@@ -66,6 +67,7 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
         });
         MSIMManager.getInstance().getConversationManager().addConversationListener(mConversationPageContext, mConversationListener);
         mBatchQueueAddOrUpdateConversation.setConsumer(this::addOrUpdateConversation);
+        view.onSessionUserIdChanged(getSessionUserId());
     }
 
     private long getSessionUserId() {

@@ -1,4 +1,4 @@
-package com.masonsoft.imsdk.sample.im;
+package com.masonsoft.imsdk.uikit;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -10,8 +10,9 @@ import com.masonsoft.imsdk.MSIMChatRoomMessageListener;
 import com.masonsoft.imsdk.MSIMChatRoomMessageListenerProxy;
 import com.masonsoft.imsdk.MSIMConstants;
 import com.masonsoft.imsdk.MSIMManager;
+import com.masonsoft.imsdk.MSIMSessionListener;
+import com.masonsoft.imsdk.MSIMSessionListenerAdapter;
 import com.masonsoft.imsdk.core.RuntimeMode;
-import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.util.WeakObservable;
 
 import java.util.ArrayList;
@@ -26,6 +27,7 @@ import io.github.idonans.core.Singleton;
 import io.github.idonans.core.manager.StorageManager;
 import io.github.idonans.core.thread.BatchQueue;
 import io.github.idonans.core.thread.TaskQueue;
+import io.github.idonans.core.util.Preconditions;
 
 public class GlobalChatRoomManager {
 
@@ -42,8 +44,29 @@ public class GlobalChatRoomManager {
 
     private static final long DEFAULT_CHAT_ROOM_ID = 25L;
     private final Map<String, StaticChatRoomContext> mStaticChatRoomContextMap = new HashMap<>();
+    @SuppressWarnings("FieldCanBeLocal")
+    private final MSIMSessionListener mSessionListener = new MSIMSessionListenerAdapter() {
+        @Override
+        public void onSessionUserIdChanged() {
+            GlobalChatRoomManager.this.onSessionUserIdChanged();
+        }
+    };
 
     private GlobalChatRoomManager() {
+        MSIMManager.getInstance().addSessionListener(mSessionListener);
+        onSessionUserIdChanged();
+    }
+
+    public void start() {
+    }
+
+    private void onSessionUserIdChanged() {
+        // 登录成功后自动加入聊天室
+        final long sessionUserId = MSIMManager.getInstance().getSessionUserId();
+        if (sessionUserId > 0) {
+            final StaticChatRoomContext context = getStaticChatRoomContext();
+            Preconditions.checkNotNull(context);
+        }
     }
 
     @Nullable
