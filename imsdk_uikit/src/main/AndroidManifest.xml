@@ -14,5 +14,6 @@
     <application>
         <activity android:name=".app.chat.SingleChatActivity" />
         <activity android:name=".app.rtc.SingleRtcChatActivity" />
+        <activity android:name=".app.chatroom.ChatRoomActivity" />
     </application>
 </manifest>

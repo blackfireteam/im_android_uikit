@@ -1,5 +1,6 @@
 package com.masonsoft.imsdk.uikit.app.conversation;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,11 +17,14 @@ import com.masonsoft.imsdk.MSIMConversation;
 import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.lang.GeneralResult;
 import com.masonsoft.imsdk.uikit.GlobalChatRoomManager;
+import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.uikit.app.SystemInsetsFragment;
+import com.masonsoft.imsdk.uikit.app.chatroom.ChatRoomActivity;
 import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitConversationFragmentBinding;
 import com.masonsoft.imsdk.uikit.uniontype.DataObject;
 import com.masonsoft.imsdk.uikit.uniontype.IMUikitUnionTypeMapper;
+import com.masonsoft.imsdk.uikit.util.ActivityUtil;
 import com.masonsoft.imsdk.uikit.widget.DividerItemDecoration;
 import com.masonsoft.imsdk.util.Objects;
 import com.masonsoft.imsdk.util.TimeDiffDebugHelper;
@@ -34,6 +38,7 @@ import io.github.idonans.core.util.DimenUtil;
 import io.github.idonans.core.util.Preconditions;
 import io.github.idonans.dynamic.DynamicResult;
 import io.github.idonans.dynamic.page.UnionTypeStatusPageView;
+import io.github.idonans.lang.util.ViewUtil;
 import io.github.idonans.uniontype.Host;
 import io.github.idonans.uniontype.UnionTypeAdapter;
 import io.github.idonans.uniontype.UnionTypeItemObject;
@@ -146,6 +151,14 @@ public class ConversationFragment extends SystemInsetsFragment {
             }
 
             mBinding.chatRoomPreview.setChatRoomContext(chatRoomContext);
+            ViewUtil.onClick(mBinding.chatRoomPreview, v -> {
+                final Activity activity = ActivityUtil.getActiveAppCompatActivity(getContext());
+                if (activity == null) {
+                    MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.ACTIVITY_IS_NULL);
+                    return;
+                }
+                ChatRoomActivity.start(activity);
+            });
         }
 
         @Override
@@ -202,7 +215,7 @@ public class ConversationFragment extends SystemInsetsFragment {
                         // 第二步，去除 unionTypeItemObjectList 中已删除的元素
                         innerMergeTimeDiffDebugHelper.mark();
                         for (int i = unionTypeItemObjectList.size() - 1; i >= 0; i--) {
-                            final MSIMConversation updateConversation = (MSIMConversation) ((DataObject<?>) unionTypeItemObjectList.get(i).itemObject).object;
+                            final MSIMConversation updateConversation = (MSIMConversation) ((DataObject) unionTypeItemObjectList.get(i).itemObject).object;
                             if (updateConversation.isHidden()) {
                                 unionTypeItemObjectList.remove(i);
                             }
@@ -215,8 +228,8 @@ public class ConversationFragment extends SystemInsetsFragment {
                         innerMergeTimeDiffDebugHelper.mark();
                         innerMergeTimeDiffDebugHelper.print("add all");
                         Collections.sort(currentList, (o1, o2) -> {
-                            final MSIMConversation o1Object = (MSIMConversation) ((DataObject<?>) o1.itemObject).object;
-                            final MSIMConversation o2Object = (MSIMConversation) ((DataObject<?>) o2.itemObject).object;
+                            final MSIMConversation o1Object = (MSIMConversation) ((DataObject) o1.itemObject).object;
+                            final MSIMConversation o2Object = (MSIMConversation) ((DataObject) o2.itemObject).object;
                             final long o1ObjectSeq = o1Object.getSeq();
                             final long o2ObjectSeq = o2Object.getSeq();
                             final long diff = o1ObjectSeq - o2ObjectSeq;

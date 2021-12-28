@@ -147,7 +147,7 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
         if (conversation == null) {
             return null;
         }
-        final DataObject<MSIMConversation> dataObject = new DeepDiffDataObject(conversation);
+        final DataObject dataObject = new DeepDiffDataObject(conversation);
         return new UnionTypeItemObject(
                 IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_CONVERSATION,
                 dataObject
@@ -275,7 +275,7 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
         mDefaultRequestHolder.clear();
     }
 
-    private static class DeepDiffDataObject extends DataObject<MSIMConversation> implements DeepDiff {
+    private static class DeepDiffDataObject extends DataObject implements DeepDiff {
 
         public DeepDiffDataObject(@NonNull MSIMConversation object) {
             super(object);
@@ -285,8 +285,8 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
         public boolean isSameItem(@Nullable Object other) {
             if (other instanceof DeepDiffDataObject) {
                 final DeepDiffDataObject otherDataObject = (DeepDiffDataObject) other;
-                return this.object.getConversationId() == otherDataObject.object.getConversationId()
-                        && this.object.getSessionUserId() == otherDataObject.object.getSessionUserId();
+                return ((MSIMConversation) this.object).getConversationId() == ((MSIMConversation) otherDataObject.object).getConversationId()
+                        && ((MSIMConversation) this.object).getSessionUserId() == ((MSIMConversation) otherDataObject.object).getSessionUserId();
             }
             return false;
         }
@@ -295,8 +295,8 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
         public boolean isSameContent(@Nullable Object other) {
             if (other instanceof DeepDiffDataObject) {
                 final DeepDiffDataObject otherDataObject = (DeepDiffDataObject) other;
-                return this.object.getConversationId() == otherDataObject.object.getConversationId()
-                        && this.object.getSessionUserId() == otherDataObject.object.getSessionUserId();
+                return ((MSIMConversation) this.object).getConversationId() == ((MSIMConversation) otherDataObject.object).getConversationId()
+                        && ((MSIMConversation) this.object).getSessionUserId() == ((MSIMConversation) otherDataObject.object).getSessionUserId();
             }
             return false;
         }
