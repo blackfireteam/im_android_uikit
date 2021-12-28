@@ -1,4 +1,4 @@
-package com.masonsoft.imsdk.uikit.app.chat;
+package com.masonsoft.imsdk.uikit.common.softkeyboard;
 
 import android.view.MotionEvent;
 import android.view.View;
