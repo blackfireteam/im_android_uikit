@@ -38,6 +38,7 @@ import com.masonsoft.imsdk.uikit.common.microlifecycle.MicroLifecycleComponentMa
 import com.masonsoft.imsdk.uikit.common.microlifecycle.VisibleRecyclerViewMicroLifecycleComponentManager;
 import com.masonsoft.imsdk.uikit.common.simpledialog.SimpleBottomActionsDialog;
 import com.masonsoft.imsdk.uikit.common.softkeyboard.SoftKeyboardHelper;
+import com.masonsoft.imsdk.uikit.common.voicerecordgesture.VoiceRecordGestureHelper;
 import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitSingleChatFragmentBinding;
 import com.masonsoft.imsdk.uikit.uniontype.IMUikitUnionTypeMapper;
 import com.masonsoft.imsdk.uikit.util.ActivityUtil;

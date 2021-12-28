@@ -1,4 +1,4 @@
-package com.masonsoft.imsdk.uikit.app.chat;
+package com.masonsoft.imsdk.uikit.common.voicerecordgesture;
 
 import android.annotation.SuppressLint;
 import android.graphics.RectF;
