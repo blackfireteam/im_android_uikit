@@ -15,23 +15,23 @@ import com.masonsoft.imsdk.MSIMConversation;
 import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 import com.masonsoft.imsdk.uikit.util.FormatUtil;
 
-public class IMConversationTimeView extends IMConversationDynamicFrameLayout {
+public class MSIMConversationTimeView extends MSIMConversationDynamicFrameLayout {
 
     private final boolean DEBUG = MSIMUikitConstants.DEBUG_WIDGET;
 
-    public IMConversationTimeView(Context context) {
+    public MSIMConversationTimeView(Context context) {
         this(context, null);
     }
 
-    public IMConversationTimeView(Context context, AttributeSet attrs) {
+    public MSIMConversationTimeView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public IMConversationTimeView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public MSIMConversationTimeView(Context context, AttributeSet attrs, int defStyleAttr) {
         this(context, attrs, defStyleAttr, 0);
     }
 
-    public IMConversationTimeView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public MSIMConversationTimeView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         initFromAttributes(context, attrs, defStyleAttr, defStyleRes);
     }
@@ -60,7 +60,7 @@ public class IMConversationTimeView extends IMConversationDynamicFrameLayout {
     }
 
     @Override
-    protected void onConversationChanged(@Nullable MSIMConversation conversation, @Nullable Object customObject) {
+    protected void onConversationChanged(@Nullable MSIMConversation conversation) {
         if (conversation == null) {
             setTime(null);
         } else {

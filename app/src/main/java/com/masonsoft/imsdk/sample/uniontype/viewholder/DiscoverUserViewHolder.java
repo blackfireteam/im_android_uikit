@@ -30,10 +30,9 @@ public class DiscoverUserViewHolder extends UnionTypeViewHolder {
 
     @Override
     public void onBindUpdate() {
-        //noinspection unchecked
-        final DataObject<Long> itemObject = (DataObject<Long>) this.itemObject;
+        final DataObject itemObject = (DataObject) this.itemObject;
         Preconditions.checkNotNull(itemObject);
-        final long userId = itemObject.object;
+        final long userId = (long) itemObject.object;
 
         mBinding.avatar.setTargetUserId(userId);
         mBinding.username.setTargetUserId(userId);

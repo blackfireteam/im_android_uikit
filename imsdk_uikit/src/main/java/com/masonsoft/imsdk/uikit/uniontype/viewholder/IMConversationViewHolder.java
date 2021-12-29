@@ -40,8 +40,6 @@ public class IMConversationViewHolder extends UnionTypeViewHolder {
         Preconditions.checkNotNull(itemObject);
         final MSIMConversation conversation = (MSIMConversation) itemObject.object;
 
-        final long sessionUserId = conversation.getSessionUserId();
-        final long conversationId = conversation.getConversationId();
         final long targetUserId = conversation.getTargetUserId();
 
         mBinding.avatar.setTargetUserId(targetUserId);
@@ -49,10 +47,10 @@ public class IMConversationViewHolder extends UnionTypeViewHolder {
         mBinding.name.setTargetUserId(targetUserId);
         mBinding.userGender.setTargetUserId(targetUserId);
 
-        mBinding.unreadCountView.setConversation(sessionUserId, conversationId);
+        mBinding.unreadCountView.setConversation(conversation);
 
-        mBinding.time.setConversation(sessionUserId, conversationId);
-        mBinding.msg.setConversation(sessionUserId, conversationId);
+        mBinding.time.setConversation(conversation);
+        mBinding.msg.setConversation(conversation);
 
         ViewUtil.onClick(itemView, v -> {
             final Activity innerActivity = host.getActivity();

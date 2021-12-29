@@ -8,28 +8,26 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.masonsoft.imsdk.MSIMBaseMessage;
 import com.masonsoft.imsdk.MSIMConversation;
-import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 
 import io.github.idonans.lang.util.ViewUtil;
 
-public class IMConversationLastMessage extends IMConversationDynamicFrameLayout {
+public class MSIMConversationLastMessage extends MSIMConversationDynamicFrameLayout {
 
-    private final boolean DEBUG = MSIMUikitConstants.DEBUG_WIDGET;
-
-    public IMConversationLastMessage(Context context) {
+    public MSIMConversationLastMessage(Context context) {
         this(context, null);
     }
 
-    public IMConversationLastMessage(Context context, AttributeSet attrs) {
+    public MSIMConversationLastMessage(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public IMConversationLastMessage(Context context, AttributeSet attrs, int defStyleAttr) {
+    public MSIMConversationLastMessage(Context context, AttributeSet attrs, int defStyleAttr) {
         this(context, attrs, defStyleAttr, 0);
     }
 
-    public IMConversationLastMessage(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public MSIMConversationLastMessage(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         initFromAttributes(context, attrs, defStyleAttr, defStyleRes);
     }
@@ -42,17 +40,17 @@ public class IMConversationLastMessage extends IMConversationDynamicFrameLayout 
     }
 
     @Override
-    protected void onConversationChanged(@Nullable MSIMConversation conversation, @Nullable Object customObject) {
-        if (conversation == null) {
+    protected void onConversationChanged(@Nullable MSIMConversation conversation) {
+        MSIMBaseMessage showMessage = null;
+        if (conversation != null) {
+            showMessage = conversation.getShowMessage();
+        }
+
+        if (showMessage == null) {
             ViewUtil.setVisibilityIfChanged(mLastMessageView, View.GONE);
         } else {
             ViewUtil.setVisibilityIfChanged(mLastMessageView, View.VISIBLE);
-            mLastMessageView.setBaseMessage(
-                    conversation.getSessionUserId(),
-                    conversation.getConversationType(),
-                    conversation.getTargetUserId(),
-                    conversation.getShowMessageId()
-            );
+            mLastMessageView.setBaseMessage(showMessage);
         }
     }
 

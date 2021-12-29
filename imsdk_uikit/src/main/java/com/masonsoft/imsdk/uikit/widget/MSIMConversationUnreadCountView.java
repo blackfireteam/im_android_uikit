@@ -20,23 +20,23 @@ import io.github.idonans.appcontext.AppContext;
 import io.github.idonans.core.util.DimenUtil;
 import io.github.idonans.lang.util.ViewUtil;
 
-public class IMConversationUnreadCountView extends IMConversationDynamicFrameLayout {
+public class MSIMConversationUnreadCountView extends MSIMConversationDynamicFrameLayout {
 
     private final boolean DEBUG = MSIMUikitConstants.DEBUG_WIDGET;
 
-    public IMConversationUnreadCountView(Context context) {
+    public MSIMConversationUnreadCountView(Context context) {
         this(context, null);
     }
 
-    public IMConversationUnreadCountView(Context context, AttributeSet attrs) {
+    public MSIMConversationUnreadCountView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public IMConversationUnreadCountView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public MSIMConversationUnreadCountView(Context context, AttributeSet attrs, int defStyleAttr) {
         this(context, attrs, defStyleAttr, 0);
     }
 
-    public IMConversationUnreadCountView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public MSIMConversationUnreadCountView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         initFromAttributes(context, attrs, defStyleAttr, defStyleRes);
     }
@@ -95,7 +95,7 @@ public class IMConversationUnreadCountView extends IMConversationDynamicFrameLay
     }
 
     @Override
-    protected void onConversationChanged(@Nullable MSIMConversation conversation, @Nullable Object customObject) {
+    protected void onConversationChanged(@Nullable MSIMConversation conversation) {
         long unreadCount = 0L;
         if (conversation != null) {
             unreadCount = conversation.getUnreadCount();
