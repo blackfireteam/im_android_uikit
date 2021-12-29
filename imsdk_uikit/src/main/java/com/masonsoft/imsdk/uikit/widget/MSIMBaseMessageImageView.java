@@ -8,7 +8,6 @@ import androidx.annotation.Nullable;
 import com.masonsoft.imsdk.MSIMBaseMessage;
 import com.masonsoft.imsdk.MSIMConstants;
 import com.masonsoft.imsdk.MSIMImageElement;
-import com.masonsoft.imsdk.MSIMSelfUpdateListener;
 import com.masonsoft.imsdk.MSIMVideoElement;
 import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 import com.masonsoft.imsdk.uikit.MSIMUikitLog;
@@ -40,24 +39,10 @@ public class MSIMBaseMessageImageView extends ImageLayout {
         initFromAttributes(context, attrs, defStyleAttr, 0);
     }
 
-    @Nullable
-    protected MSIMBaseMessage mBaseMessage;
-    @SuppressWarnings("FieldCanBeLocal")
-    private MSIMSelfUpdateListener mSelfUpdateListener;
-
     private void initFromAttributes(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
     }
 
     public void setBaseMessage(@Nullable MSIMBaseMessage baseMessage) {
-        mBaseMessage = baseMessage;
-        mSelfUpdateListener = () -> onBaseMessageChanged(mBaseMessage);
-        if (mBaseMessage != null) {
-            mBaseMessage.addOnSelfUpdateListener(mSelfUpdateListener);
-        }
-        onBaseMessageChanged(mBaseMessage);
-    }
-
-    protected void onBaseMessageChanged(@Nullable MSIMBaseMessage baseMessage) {
         final List<String> firstAvailableUrls = new ArrayList<>();
 
         if (baseMessage != null) {
