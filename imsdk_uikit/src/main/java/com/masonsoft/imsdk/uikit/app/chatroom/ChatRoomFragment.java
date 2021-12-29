@@ -23,8 +23,6 @@ import com.masonsoft.imsdk.MSIMCallback;
 import com.masonsoft.imsdk.MSIMChatRoomMessage;
 import com.masonsoft.imsdk.MSIMChatRoomMessageFactory;
 import com.masonsoft.imsdk.MSIMManager;
-import com.masonsoft.imsdk.MSIMMessage;
-import com.masonsoft.imsdk.MSIMMessageFactory;
 import com.masonsoft.imsdk.MSIMWeakCallback;
 import com.masonsoft.imsdk.lang.GeneralResult;
 import com.masonsoft.imsdk.uikit.GlobalChatRoomManager;
@@ -462,25 +460,32 @@ public class ChatRoomFragment extends SystemInsetsFragment {
         dialog.setOnActionClickListener((index, actionText) -> {
             if (index == 0) {
                 // 模拟并发消息
-                final long targetUserId = mChatRoomId;
-                mockMultiMessages(targetUserId);
+                if (mPresenter == null) {
+                    MSIMUikitLog.e("unexpected. presenter is null");
+                    return;
+                }
+                final long chatRoomId = mChatRoomId;
+                mockMultiMessages(mPresenter.getChatRoomContext(), chatRoomId);
             }
         });
         dialog.show();
     }
 
-    private static void mockMultiMessages(final long targetUserId) {
+    private static void mockMultiMessages(final GlobalChatRoomManager.StaticChatRoomContext chatRoomContext, final long chatRoomId) {
+        if (chatRoomContext == null) {
+            MSIMUikitLog.e("unexpected. chat room context is null");
+            return;
+        }
         final String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
         final int size = 10;
         for (int i = 1; i <= size; i++) {
             final int index = i;
             Threads.postBackground(() -> {
                 final long sessionUserId = MSIMManager.getInstance().getSessionUserId();
-                final MSIMMessage message = MSIMMessageFactory.createTextMessage("[" + time + "] mock concurrent message [" + index + "/" + size + "]");
-                MSIMManager.getInstance().getMessageManager().sendMessage(
+                final MSIMChatRoomMessage message = MSIMChatRoomMessageFactory.createTextMessage("[" + time + "] mock concurrent message [" + index + "/" + size + "]");
+                chatRoomContext.getChatRoomContext().getChatRoomManager().sendChatRoomMessage(
                         sessionUserId,
-                        message,
-                        targetUserId
+                        message
                 );
             });
         }
