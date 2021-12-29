@@ -32,58 +32,55 @@ public class GetCosKeyMessagePacket extends NotNullTimeoutMessagePacket {
     protected boolean doNotNullProcess(@NonNull SessionProtoByteMessageWrapper target) {
         Threads.mustNotUi();
 
-        final Object protoMessageObject = target.getProtoByteMessageWrapper().getProtoMessageObject();
-        if (protoMessageObject == null) {
-            return false;
-        }
+        {
+            // 接收 Result 消息
+            final ProtoMessage.Result result = target.getProtoByteMessageWrapper().getProtoMessageObject(ProtoMessage.Result.class);
+            if (result != null) {
+                // 校验 sign 是否相等
+                if (result.getSign() == getSign()) {
+                    synchronized (getStateLock()) {
+                        final int state = getState();
+                        if (state != STATE_WAIT_RESULT) {
+                            MSIMUikitLog.e(Objects.defaultObjectTag(this)
+                                    + " unexpected. accept with same sign:%s and invalid state:%s", getSign(), stateToString(state));
+                            return false;
+                        }
 
-        // 接收 Result 消息
-        if (protoMessageObject instanceof ProtoMessage.Result) {
-            final ProtoMessage.Result result = (ProtoMessage.Result) protoMessageObject;
-
-            // 校验 sign 是否相等
-            if (result.getSign() == getSign()) {
-                synchronized (getStateLock()) {
-                    final int state = getState();
-                    if (state != STATE_WAIT_RESULT) {
-                        MSIMUikitLog.e(Objects.defaultObjectTag(this)
-                                + " unexpected. accept with same sign:%s and invalid state:%s", getSign(), stateToString(state));
-                        return false;
+                        if (result.getCode() != 0) {
+                            setErrorCode((int) result.getCode());
+                            setErrorMessage(result.getMsg());
+                            MSIMUikitLog.e(Objects.defaultObjectTag(this) +
+                                    " unexpected. errorCode:%s, errorMessage:%s", result.getCode(), result.getMsg());
+                        } else {
+                            final Throwable e = new IllegalArgumentException(Objects.defaultObjectTag(this) + " unexpected. result code is 0.");
+                            MSIMUikitLog.e(e);
+                        }
+                        moveToState(STATE_FAIL);
                     }
-
-                    if (result.getCode() != 0) {
-                        setErrorCode((int) result.getCode());
-                        setErrorMessage(result.getMsg());
-                        MSIMUikitLog.e(Objects.defaultObjectTag(this) +
-                                " unexpected. errorCode:%s, errorMessage:%s", result.getCode(), result.getMsg());
-                    } else {
-                        final Throwable e = new IllegalArgumentException(Objects.defaultObjectTag(this) + " unexpected. result code is 0.");
-                        MSIMUikitLog.e(e);
-                    }
-                    moveToState(STATE_FAIL);
+                    return true;
                 }
-                return true;
             }
         }
 
-        // 接收 CosKey 消息
-        if (protoMessageObject instanceof ProtoMessage.CosKey) {
-            final ProtoMessage.CosKey cosKey = (ProtoMessage.CosKey) protoMessageObject;
+        {
+            // 接收 CosKey 消息
+            final ProtoMessage.CosKey cosKey = target.getProtoByteMessageWrapper().getProtoMessageObject(ProtoMessage.CosKey.class);
+            if (cosKey != null) {
+                // 校验 sign 是否相等
+                if (cosKey.getSign() == getSign()) {
+                    synchronized (getStateLock()) {
+                        final int state = getState();
+                        if (state != STATE_WAIT_RESULT) {
+                            MSIMUikitLog.e(Objects.defaultObjectTag(this)
+                                    + " unexpected. accept with same sign:%s and invalid state:%s", getSign(), stateToString(state));
+                            return false;
+                        }
 
-            // 校验 sign 是否相等
-            if (cosKey.getSign() == getSign()) {
-                synchronized (getStateLock()) {
-                    final int state = getState();
-                    if (state != STATE_WAIT_RESULT) {
-                        MSIMUikitLog.e(Objects.defaultObjectTag(this)
-                                + " unexpected. accept with same sign:%s and invalid state:%s", getSign(), stateToString(state));
-                        return false;
+                        mCosKeyInfo = CosKeyInfo.valueOf(cosKey, target.getSessionUserId());
+                        moveToState(STATE_SUCCESS);
                     }
-
-                    mCosKeyInfo = CosKeyInfo.valueOf(cosKey, target.getSessionUserId());
-                    moveToState(STATE_SUCCESS);
+                    return true;
                 }
-                return true;
             }
         }
 
