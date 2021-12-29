@@ -146,7 +146,6 @@ public class ChatRoomFragment extends SystemInsetsFragment {
                         if (lastPosition == mDataAdapter.getItemCount() - 1) {
                             // 滚动到最底部
                             hideNewMessagesTipView();
-                            sendMarkAsRead();
                         }
                     }
                 }
@@ -446,7 +445,6 @@ public class ChatRoomFragment extends SystemInsetsFragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        sendMarkAsRead();
     }
 
     private void showBottomActions() {
@@ -635,14 +633,6 @@ public class ChatRoomFragment extends SystemInsetsFragment {
         public MicroLifecycleComponentManager getMicroLifecycleComponentManager() {
             return mMicroLifecycleComponentManager;
         }
-    }
-
-    private void sendMarkAsRead() {
-        MSIMUikitLog.v(Objects.defaultObjectTag(this) + " sendMarkAsRead targetUserId:%s", mChatRoomId);
-        MSIMManager.getInstance().getMessageManager().markAsRead(
-                MSIMManager.getInstance().getSessionUserId(),
-                mChatRoomId
-        );
     }
 
     private class OnAudioRecordListenerImpl implements AudioRecordManager.OnAudioRecordListener {
