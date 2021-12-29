@@ -30,7 +30,7 @@ public class IMBaseMessageDefaultSendViewHolder extends IMBaseMessageDefaultView
         super.onBindUpdate();
         final DataObject itemObject = (DataObject) this.itemObject;
         Preconditions.checkNotNull(itemObject);
-        final MSIMBaseMessage message = itemObject.getObject();
+        final MSIMBaseMessage baseMessage = itemObject.getObject();
 
         final MSIMConversation conversation;
         final Object extObject1 = itemObject.getExtObjectObject1(null);
@@ -40,12 +40,12 @@ public class IMBaseMessageDefaultSendViewHolder extends IMBaseMessageDefaultView
             conversation = null;
         }
 
-        mBinding.sendStatusView.setBaseMessage(message);
+        mBinding.sendStatusView.setBaseMessage(baseMessage);
 
-        mBinding.avatar.setTargetUserId(message.getFromUserId());
+        mBinding.avatar.setTargetUserId(baseMessage.getFromUserId());
         mBinding.avatar.setShowBorder(false);
 
-        mBinding.readStatusView.setMessageAndConversation(message, conversation);
+        mBinding.readStatusView.setMessageAndConversation(baseMessage, conversation);
 
         ViewUtil.onClick(mBinding.avatar, v -> {
             Activity innerActivity = host.getActivity();

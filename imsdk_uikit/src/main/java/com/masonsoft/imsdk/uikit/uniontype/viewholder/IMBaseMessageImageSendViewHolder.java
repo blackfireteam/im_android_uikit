@@ -31,7 +31,7 @@ public class IMBaseMessageImageSendViewHolder extends IMBaseMessageImageViewHold
 
         final DataObject itemObject = (DataObject) this.itemObject;
         Preconditions.checkNotNull(itemObject);
-        final MSIMBaseMessage message = (MSIMBaseMessage) itemObject.object;
+        final MSIMBaseMessage baseMessage = (MSIMBaseMessage) itemObject.object;
 
         final MSIMConversation conversation;
         final Object extObject1 = itemObject.getExtObjectObject1(null);
@@ -41,13 +41,13 @@ public class IMBaseMessageImageSendViewHolder extends IMBaseMessageImageViewHold
             conversation = null;
         }
 
-        mBinding.sendStatusView.setBaseMessage(message);
-        mBinding.progressView.setBaseMessage(message);
+        mBinding.sendStatusView.setBaseMessage(baseMessage);
+        mBinding.progressView.setBaseMessage(baseMessage);
 
-        mBinding.avatar.setTargetUserId(message.getFromUserId());
+        mBinding.avatar.setTargetUserId(baseMessage.getFromUserId());
         mBinding.avatar.setShowBorder(false);
 
-        mBinding.readStatusView.setMessageAndConversation(message, conversation);
+        mBinding.readStatusView.setMessageAndConversation(baseMessage, conversation);
 
         ViewUtil.onClick(mBinding.avatar, v -> {
             final Activity innerActivity = host.getActivity();

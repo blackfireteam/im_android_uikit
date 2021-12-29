@@ -42,7 +42,9 @@ public class MSIMBaseMessageReadStatusView extends FrameLayout {
 
     private TextView mReadTextView;
 
-    protected MSIMBaseMessage mMessage;
+    @Nullable
+    protected MSIMBaseMessage mBaseMessage;
+    @Nullable
     protected MSIMConversation mConversation;
     @SuppressWarnings("FieldCanBeLocal")
     private MSIMSelfUpdateListener mSelfUpdateListener;
@@ -65,29 +67,31 @@ public class MSIMBaseMessageReadStatusView extends FrameLayout {
         }
     }
 
-    public void setMessageAndConversation(@NonNull MSIMBaseMessage message, @Nullable MSIMConversation conversation) {
-        mMessage = message;
+    public void setMessageAndConversation(@Nullable MSIMBaseMessage baseMessage, @Nullable MSIMConversation conversation) {
+        mBaseMessage = baseMessage;
         mConversation = conversation;
-        mSelfUpdateListener = () -> onConversationOrMessageChanged(mConversation, mMessage);
-        mMessage.addOnSelfUpdateListener(mSelfUpdateListener);
-
+        mSelfUpdateListener = () -> onConversationOrMessageChanged(mConversation, mBaseMessage);
+        if (mBaseMessage != null) {
+            mBaseMessage.addOnSelfUpdateListener(mSelfUpdateListener);
+        }
         if (mConversation != null) {
             mConversation.addOnSelfUpdateListener(mSelfUpdateListener);
         }
+        onConversationOrMessageChanged(mConversation, mBaseMessage);
     }
 
-    private void onConversationOrMessageChanged(@Nullable MSIMConversation conversation, @Nullable MSIMBaseMessage message) {
+    protected void onConversationOrMessageChanged(@Nullable MSIMConversation conversation, @Nullable MSIMBaseMessage baseMessage) {
         if (DEBUG) {
-            MSIMUikitLog.v("onConversationOrMessageChanged conversation:%s message:%s", conversation, message);
+            MSIMUikitLog.v("onConversationOrMessageChanged conversation:%s baseMessage:%s", conversation, baseMessage);
         }
 
-        if (message == null) {
+        if (baseMessage == null) {
             mReadTextView.setText(null);
             return;
         }
 
-        final int messageSendStatus = message.getSendStatus(MSIMConstants.SendStatus.SUCCESS);
-        final long serverMessageId = message.getServerMessageId();
+        final int messageSendStatus = baseMessage.getSendStatus(MSIMConstants.SendStatus.SUCCESS);
+        final long serverMessageId = baseMessage.getServerMessageId();
 
         boolean read;
         if (conversation == null) {

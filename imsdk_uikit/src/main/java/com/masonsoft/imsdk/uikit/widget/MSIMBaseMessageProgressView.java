@@ -4,7 +4,6 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.view.View;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.masonsoft.imsdk.MSIMBaseMessage;
@@ -37,6 +36,7 @@ public class MSIMBaseMessageProgressView extends ProgressView {
         initFromAttributes(context, attrs, defStyleAttr, defStyleRes);
     }
 
+    @Nullable
     protected MSIMBaseMessage mBaseMessage;
     @SuppressWarnings("FieldCanBeLocal")
     private MSIMSelfUpdateListener mSelfUpdateListener;
@@ -78,10 +78,13 @@ public class MSIMBaseMessageProgressView extends ProgressView {
         ViewUtil.setVisibilityIfChanged(this, View.GONE);
     }
 
-    public void setBaseMessage(@NonNull MSIMBaseMessage baseMessage) {
+    public void setBaseMessage(@Nullable MSIMBaseMessage baseMessage) {
         mBaseMessage = baseMessage;
         mSelfUpdateListener = () -> onBaseMessageChanged(mBaseMessage);
-        mBaseMessage.addOnSelfUpdateListener(mSelfUpdateListener);
+        if (mBaseMessage != null) {
+            mBaseMessage.addOnSelfUpdateListener(mSelfUpdateListener);
+        }
+        onBaseMessageChanged(mBaseMessage);
     }
 
     protected void onBaseMessageChanged(@Nullable MSIMBaseMessage baseMessage) {

@@ -65,18 +65,18 @@ public class IMImageOrVideoPreviewPresenter extends PagePresenter<UnionTypeItemO
     };
 
     @Nullable
-    private UnionTypeItemObject create(MSIMBaseMessage message) {
-        return create(message, false);
+    private UnionTypeItemObject create(MSIMBaseMessage baseMessage) {
+        return create(baseMessage, false);
     }
 
     @Nullable
-    private UnionTypeItemObject create(MSIMBaseMessage message, boolean autoPlay) {
-        if (message == null) {
+    private UnionTypeItemObject create(MSIMBaseMessage baseMessage, boolean autoPlay) {
+        if (baseMessage == null) {
             return null;
         }
 
         return IMBaseMessageViewHolder.Helper.createPreviewDefault(
-                new DataObject(message)
+                new DataObject(baseMessage)
                         .putExtObjectBoolean1(autoPlay)
                         .putExtHolderItemClick1(mOnHolderItemClickListener)
         );

@@ -31,9 +31,9 @@ public class IMMessageFirstCustomBaseMessageReceivedViewHolder extends IMMessage
 
         final DataObject itemObject = (DataObject) this.itemObject;
         Preconditions.checkNotNull(itemObject);
-        final MSIMBaseMessage message = (MSIMBaseMessage) itemObject.object;
+        final MSIMBaseMessage baseMessage = (MSIMBaseMessage) itemObject.object;
 
-        mBinding.avatar.setTargetUserId(message.getFromUserId());
+        mBinding.avatar.setTargetUserId(baseMessage.getFromUserId());
         mBinding.avatar.setShowBorder(false);
 
         ViewUtil.onClick(mBinding.avatar, v -> {

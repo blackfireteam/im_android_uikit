@@ -3,9 +3,12 @@ package com.masonsoft.imsdk.uikit.widget;
 import android.content.Context;
 import android.util.AttributeSet;
 
+import androidx.annotation.Nullable;
+
 import com.masonsoft.imsdk.MSIMBaseMessage;
 import com.masonsoft.imsdk.MSIMConstants;
 import com.masonsoft.imsdk.MSIMImageElement;
+import com.masonsoft.imsdk.MSIMSelfUpdateListener;
 import com.masonsoft.imsdk.MSIMVideoElement;
 import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 import com.masonsoft.imsdk.uikit.MSIMUikitLog;
@@ -37,17 +40,31 @@ public class MSIMBaseMessageImageView extends ImageLayout {
         initFromAttributes(context, attrs, defStyleAttr, 0);
     }
 
+    @Nullable
+    protected MSIMBaseMessage mBaseMessage;
+    @SuppressWarnings("FieldCanBeLocal")
+    private MSIMSelfUpdateListener mSelfUpdateListener;
+
     private void initFromAttributes(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
     }
 
-    public void setBaseMessage(MSIMBaseMessage message) {
+    public void setBaseMessage(@Nullable MSIMBaseMessage baseMessage) {
+        mBaseMessage = baseMessage;
+        mSelfUpdateListener = () -> onBaseMessageChanged(mBaseMessage);
+        if (mBaseMessage != null) {
+            mBaseMessage.addOnSelfUpdateListener(mSelfUpdateListener);
+        }
+        onBaseMessageChanged(mBaseMessage);
+    }
+
+    protected void onBaseMessageChanged(@Nullable MSIMBaseMessage baseMessage) {
         final List<String> firstAvailableUrls = new ArrayList<>();
 
-        if (message != null) {
-            final int messageType = message.getMessageType();
+        if (baseMessage != null) {
+            final int messageType = baseMessage.getMessageType();
 
             if (messageType == MSIMConstants.MessageType.IMAGE) {
-                final MSIMImageElement element = message.getImageElement();
+                final MSIMImageElement element = baseMessage.getImageElement();
                 Preconditions.checkNotNull(element);
                 final String localPath = element.getPath();
                 if (localPath != null) {
@@ -62,7 +79,7 @@ public class MSIMBaseMessageImageView extends ImageLayout {
                             localPath, url);
                 }
             } else if (messageType == MSIMConstants.MessageType.VIDEO) {
-                final MSIMVideoElement element = message.getVideoElement();
+                final MSIMVideoElement element = baseMessage.getVideoElement();
                 Preconditions.checkNotNull(element);
                 final String localThumbPath = element.getThumbPath();
                 if (localThumbPath != null) {

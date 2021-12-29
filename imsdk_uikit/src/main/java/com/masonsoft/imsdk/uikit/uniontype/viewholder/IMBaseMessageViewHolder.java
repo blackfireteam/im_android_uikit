@@ -137,13 +137,13 @@ public abstract class IMBaseMessageViewHolder extends UnionTypeViewHolder {
     public void onBindUpdate() {
         final DataObject itemObject = (DataObject) this.itemObject;
         Preconditions.checkNotNull(itemObject);
-        final MSIMBaseMessage message = (MSIMBaseMessage) itemObject.object;
+        final MSIMBaseMessage baseMessage = (MSIMBaseMessage) itemObject.object;
 
         if (mMessageRevokeStateFrameLayout != null) {
-            mMessageRevokeStateFrameLayout.setBaseMessage(message);
+            mMessageRevokeStateFrameLayout.setBaseMessage(baseMessage);
         }
         if (mMessageRevokeTextView != null) {
-            mMessageRevokeTextView.setTargetUserId(message.getFromUserId());
+            mMessageRevokeTextView.setTargetUserId(baseMessage.getFromUserId());
         }
 
         if (mMessageTime != null) {
@@ -235,9 +235,9 @@ public abstract class IMBaseMessageViewHolder extends UnionTypeViewHolder {
         @Nullable
         public static UnionTypeItemObject createDefault(DataObject dataObject) {
             // 区分消息是收到的还是发送的
-            final MSIMBaseMessage message = dataObject.getObject();
-            final boolean received = message.isReceived();
-            final int messageType = message.getMessageType();
+            final MSIMBaseMessage baseMessage = dataObject.getObject();
+            final boolean received = baseMessage.isReceived();
+            final int messageType = baseMessage.getMessageType();
 
             // 已撤回的消息
             if (messageType == MSIMConstants.MessageType.REVOKED) {
@@ -315,10 +315,10 @@ public abstract class IMBaseMessageViewHolder extends UnionTypeViewHolder {
          */
         @Nullable
         public static UnionTypeItemObject createPreviewDefault(DataObject dataObject) {
-            final MSIMBaseMessage message = dataObject.getObject();
+            final MSIMBaseMessage baseMessage = dataObject.getObject();
             // 区分消息是收到的还是发送的
-            final boolean received = message.isReceived();
-            final long messageType = message.getMessageType();
+            final boolean received = baseMessage.isReceived();
+            final long messageType = baseMessage.getMessageType();
 
             // 视频消息
             if (messageType == MSIMConstants.MessageType.VIDEO) {
@@ -364,7 +364,7 @@ public abstract class IMBaseMessageViewHolder extends UnionTypeViewHolder {
                 return null;
             }
 
-            final MSIMBaseMessage message = (MSIMBaseMessage) dataObject.object;
+            final MSIMBaseMessage baseMessage = (MSIMBaseMessage) dataObject.object;
             int count = adapter.getItemCount();
             final int maxOffset = 10;
             // 向前选择 [position - maxOffset, position)
@@ -440,13 +440,13 @@ public abstract class IMBaseMessageViewHolder extends UnionTypeViewHolder {
             }
 
             // 区分消息是收到的还是发送的
-            final boolean received = message.isReceived();
+            final boolean received = baseMessage.isReceived();
             HolderFinder holderFinder = new HolderFinder();
             holderFinder.holder = holder;
             holderFinder.position = position;
             holderFinder.itemObject = itemObject;
             holderFinder.dataObject = dataObject;
-            holderFinder.message = message;
+            holderFinder.baseMessage = baseMessage;
             holderFinder.innerActivity = innerActivity;
             holderFinder.lifecycle = lifecycle;
             holderFinder.received = received;
@@ -469,9 +469,9 @@ public abstract class IMBaseMessageViewHolder extends UnionTypeViewHolder {
                 }
 
                 final MSIMBaseMessage baseMessage;
-                if (input.message instanceof MSIMMessage) {
+                if (input.baseMessage instanceof MSIMMessage) {
                     // MSIMMessage 从数据库中读取最新的值
-                    final MSIMMessage message = (MSIMMessage) input.message;
+                    final MSIMMessage message = (MSIMMessage) input.baseMessage;
                     baseMessage = MSIMManager.getInstance().getMessageManager().getMessage(
                             message.getSessionUserId(),
                             message.getConversationType(),
@@ -480,7 +480,7 @@ public abstract class IMBaseMessageViewHolder extends UnionTypeViewHolder {
                     );
                 } else {
                     // 使用当前值
-                    baseMessage = input.message;
+                    baseMessage = input.baseMessage;
                 }
 
                 if (isHolderFinderTagChanged(input.holder, tag)) {
@@ -495,7 +495,7 @@ public abstract class IMBaseMessageViewHolder extends UnionTypeViewHolder {
                     if (baseMessage == null) {
                         callback.onHolderFinderRefresh(null);
                     } else {
-                        input.message = baseMessage;
+                        input.baseMessage = baseMessage;
                         callback.onHolderFinderRefresh(input);
                     }
                 });
@@ -507,7 +507,7 @@ public abstract class IMBaseMessageViewHolder extends UnionTypeViewHolder {
             public int position;
             public UnionTypeItemObject itemObject;
             public DataObject dataObject;
-            public MSIMBaseMessage message;
+            public MSIMBaseMessage baseMessage;
             public List<MSIMBaseMessage> preMessageList;
             public List<MSIMBaseMessage> nextMessageList;
             public Activity innerActivity;
@@ -528,13 +528,13 @@ public abstract class IMBaseMessageViewHolder extends UnionTypeViewHolder {
                 return;
             }
 
-            final long messageType = holderFinder.message.getMessageType();
+            final long messageType = holderFinder.baseMessage.getMessageType();
             if (messageType == MSIMConstants.MessageType.IMAGE
                     || messageType == MSIMConstants.MessageType.VIDEO) {
                 // 图片或者视频
                 final int index = holderFinder.preMessageList.size();
                 final List<MSIMBaseMessage> messageList = new ArrayList<>(holderFinder.preMessageList);
-                messageList.add(holderFinder.message);
+                messageList.add(holderFinder.baseMessage);
                 messageList.addAll(holderFinder.nextMessageList);
                 new IMImageOrVideoPreviewDialog(
                         holderFinder.lifecycle,
@@ -546,7 +546,7 @@ public abstract class IMBaseMessageViewHolder extends UnionTypeViewHolder {
                 return;
             }
 
-            MSIMUikitLog.e("showPreview other message type %s", holderFinder.message);
+            MSIMUikitLog.e("showPreview other message type %s", holderFinder.baseMessage);
         }
 
         private static void clearHolderFinderTag(UnionTypeViewHolder holder) {
@@ -579,7 +579,7 @@ public abstract class IMBaseMessageViewHolder extends UnionTypeViewHolder {
         }
 
         private static boolean showMenuInternal(@NonNull final HolderFinder holderFinder) {
-            final long messageType = holderFinder.message.getMessageType();
+            final long messageType = holderFinder.baseMessage.getMessageType();
             final int MENU_ID_COPY = 1;
             final int MENU_ID_RECALL = 2;
             if (messageType == MSIMConstants.MessageType.TEXT) {
@@ -601,7 +601,7 @@ public abstract class IMBaseMessageViewHolder extends UnionTypeViewHolder {
                 menuList.add(I18nResources.getString(R.string.imsdk_uikit_menu_copy));
                 menuIdList.add(MENU_ID_COPY);
                 if (!holderFinder.received) {
-                    if (holderFinder.message.getSendStatus(MSIMConstants.SendStatus.SUCCESS) == MSIMConstants.SendStatus.SUCCESS) {
+                    if (holderFinder.baseMessage.getSendStatus(MSIMConstants.SendStatus.SUCCESS) == MSIMConstants.SendStatus.SUCCESS) {
                         menuList.add(I18nResources.getString(R.string.imsdk_uikit_menu_recall));
                         menuIdList.add(MENU_ID_RECALL);
                     }
@@ -617,7 +617,7 @@ public abstract class IMBaseMessageViewHolder extends UnionTypeViewHolder {
                 menuDialog.setOnIMMenuClickListener((menuId, menuText, menuView) -> {
                     if (menuId == MENU_ID_COPY) {
                         // 复制
-                        ClipboardUtil.copy(holderFinder.message.getTextElement().getText());
+                        ClipboardUtil.copy(holderFinder.baseMessage.getTextElement().getText());
                     } else if (menuId == MENU_ID_RECALL) {
                         // 撤回
                         revoke(holderFinder.holder);
@@ -646,7 +646,7 @@ public abstract class IMBaseMessageViewHolder extends UnionTypeViewHolder {
                 final List<Integer> menuIdList = new ArrayList<>();
 
                 if (!holderFinder.received) {
-                    if (holderFinder.message.getSendStatus(MSIMConstants.SendStatus.SUCCESS) == MSIMConstants.SendStatus.SUCCESS) {
+                    if (holderFinder.baseMessage.getSendStatus(MSIMConstants.SendStatus.SUCCESS) == MSIMConstants.SendStatus.SUCCESS) {
                         menuList.add(I18nResources.getString(R.string.imsdk_uikit_menu_recall));
                         menuIdList.add(MENU_ID_RECALL);
                     }
@@ -675,7 +675,7 @@ public abstract class IMBaseMessageViewHolder extends UnionTypeViewHolder {
                 return true;
             }
 
-            MSIMUikitLog.e("imMessage type is unknown %s", holderFinder.message);
+            MSIMUikitLog.e("imMessage type is unknown %s", holderFinder.baseMessage);
             return false;
         }
 
@@ -688,15 +688,15 @@ public abstract class IMBaseMessageViewHolder extends UnionTypeViewHolder {
                 MSIMUikitLog.e("revoke getHolderFinder return null");
                 return;
             }
-            final MSIMBaseMessage message = holderFinder.message;
-            if (message instanceof MSIMMessage) {
+            final MSIMBaseMessage baseMessage = holderFinder.baseMessage;
+            if (baseMessage instanceof MSIMMessage) {
                 MSIMManager.getInstance().getMessageManager().revoke(
-                        message.getSessionUserId(),
-                        (MSIMMessage) message
+                        baseMessage.getSessionUserId(),
+                        (MSIMMessage) baseMessage
                 );
             } else {
                 // TODO FIXME
-                MSIMUikitLog.e("revoke MSIMBaseMessage not impl: %s", message);
+                MSIMUikitLog.e("revoke MSIMBaseMessage not impl: %s", baseMessage);
             }
         }
 

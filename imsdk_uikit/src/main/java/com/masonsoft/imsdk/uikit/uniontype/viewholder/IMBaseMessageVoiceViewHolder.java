@@ -58,12 +58,12 @@ public abstract class IMBaseMessageVoiceViewHolder extends IMBaseMessageViewHold
 
         final DataObject itemObject = (DataObject) this.itemObject;
         Preconditions.checkNotNull(itemObject);
-        final MSIMBaseMessage message = (MSIMBaseMessage) itemObject.object;
+        final MSIMBaseMessage baseMessage = (MSIMBaseMessage) itemObject.object;
 
-        mAudioView.setBaseMessage(message);
+        mAudioView.setBaseMessage(baseMessage);
 
         long durationMs = 0L;
-        final MSIMAudioElement element = message.getAudioElement();
+        final MSIMAudioElement element = baseMessage.getAudioElement();
         if (element != null) {
             durationMs = element.getDurationMs();
         }

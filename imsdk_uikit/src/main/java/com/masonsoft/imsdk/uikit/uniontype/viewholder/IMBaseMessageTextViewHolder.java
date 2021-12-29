@@ -39,10 +39,10 @@ public abstract class IMBaseMessageTextViewHolder extends IMBaseMessageViewHolde
 
         final DataObject itemObject = (DataObject) this.itemObject;
         Preconditions.checkNotNull(itemObject);
-        final MSIMBaseMessage message = (MSIMBaseMessage) itemObject.object;
+        final MSIMBaseMessage baseMessage = (MSIMBaseMessage) itemObject.object;
 
         String text = null;
-        final MSIMTextElement element = message.getTextElement();
+        final MSIMTextElement element = baseMessage.getTextElement();
         if (element != null) {
             text = element.getText();
         }

@@ -38,17 +38,17 @@ public abstract class IMBaseMessageImageViewHolder extends IMBaseMessageViewHold
         super.onBindUpdate();
         final DataObject itemObject = (DataObject) this.itemObject;
         Preconditions.checkNotNull(itemObject);
-        final MSIMBaseMessage message = (MSIMBaseMessage) itemObject.object;
+        final MSIMBaseMessage baseMessage = (MSIMBaseMessage) itemObject.object;
 
         long width = 0;
         long height = 0;
-        final MSIMImageElement element = message.getImageElement();
+        final MSIMImageElement element = baseMessage.getImageElement();
         if (element != null) {
             width = element.getWidth();
             height = element.getHeight();
         }
         mResizeImageView.setImageSize(width, height);
-        mImage.setBaseMessage(message);
+        mImage.setBaseMessage(baseMessage);
 
         mResizeImageView.setOnLongClickListener(v -> {
             final UnionTypeViewHolderListeners.OnItemLongClickListener listener = itemObject.getExtHolderItemLongClick1();

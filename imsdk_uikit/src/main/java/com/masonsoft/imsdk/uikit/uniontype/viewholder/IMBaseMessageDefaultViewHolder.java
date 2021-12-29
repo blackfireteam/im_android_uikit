@@ -37,9 +37,9 @@ public abstract class IMBaseMessageDefaultViewHolder extends IMBaseMessageViewHo
         super.onBindUpdate();
         final DataObject itemObject = (DataObject) this.itemObject;
         Preconditions.checkNotNull(itemObject);
-        final MSIMBaseMessage message = (MSIMBaseMessage) itemObject.object;
+        final MSIMBaseMessage baseMessage = (MSIMBaseMessage) itemObject.object;
 
-        mMessageText.setText("[default]type:" + message.getMessageType() + ", body:" + message.getBody());
+        mMessageText.setText("[default]type:" + baseMessage.getMessageType() + ", body:" + baseMessage.getBody());
 
         GestureDetectorCompat gestureDetectorCompat = new GestureDetectorCompat(mMessageText.getContext(), new GestureDetector.SimpleOnGestureListener() {
             @Override

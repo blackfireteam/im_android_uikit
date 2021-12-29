@@ -38,10 +38,10 @@ public class IMBaseMessagePreviewImageViewHolder extends IMBaseMessageViewHolder
 
         final DataObject itemObject = (DataObject) this.itemObject;
         Preconditions.checkNotNull(itemObject);
-        final MSIMBaseMessage message = (MSIMBaseMessage) itemObject.object;
+        final MSIMBaseMessage baseMessage = (MSIMBaseMessage) itemObject.object;
 
         final List<String> firstAvailableUrls = new ArrayList<>();
-        final MSIMImageElement element = message.getImageElement();
+        final MSIMImageElement element = baseMessage.getImageElement();
         if (element != null) {
             final String localPath = element.getPath();
             if (localPath != null) {

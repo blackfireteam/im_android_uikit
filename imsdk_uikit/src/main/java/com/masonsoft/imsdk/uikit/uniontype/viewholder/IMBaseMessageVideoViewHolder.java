@@ -39,17 +39,17 @@ public abstract class IMBaseMessageVideoViewHolder extends IMBaseMessageViewHold
 
         final DataObject itemObject = (DataObject) this.itemObject;
         Preconditions.checkNotNull(itemObject);
-        final MSIMBaseMessage message = (MSIMBaseMessage) itemObject.object;
+        final MSIMBaseMessage baseMessage = (MSIMBaseMessage) itemObject.object;
 
         long width = 0;
         long height = 0;
-        final MSIMVideoElement element = message.getVideoElement();
+        final MSIMVideoElement element = baseMessage.getVideoElement();
         if (element != null) {
             width = element.getWidth();
             height = element.getHeight();
         }
         mResizeImageView.setImageSize(width, height);
-        mImage.setBaseMessage(message);
+        mImage.setBaseMessage(baseMessage);
 
         mResizeImageView.setOnLongClickListener(v -> {
             final UnionTypeViewHolderListeners.OnItemLongClickListener listener = itemObject.getExtHolderItemLongClick1();

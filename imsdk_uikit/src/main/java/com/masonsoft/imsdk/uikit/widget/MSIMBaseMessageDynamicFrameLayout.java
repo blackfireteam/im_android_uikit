@@ -32,6 +32,7 @@ public abstract class MSIMBaseMessageDynamicFrameLayout extends FrameLayout {
         initFromAttributes(context, attrs, defStyleAttr, defStyleRes);
     }
 
+    @Nullable
     protected MSIMBaseMessage mBaseMessage;
     @SuppressWarnings("FieldCanBeLocal")
     private MSIMSelfUpdateListener mSelfUpdateListener;
@@ -39,10 +40,12 @@ public abstract class MSIMBaseMessageDynamicFrameLayout extends FrameLayout {
     private void initFromAttributes(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
     }
 
-    public void setBaseMessage(@NonNull MSIMBaseMessage baseMessage) {
+    public void setBaseMessage(@Nullable MSIMBaseMessage baseMessage) {
         mBaseMessage = baseMessage;
         mSelfUpdateListener = () -> onBaseMessageChanged(mBaseMessage);
-        mBaseMessage.addOnSelfUpdateListener(mSelfUpdateListener);
+        if (mBaseMessage != null) {
+            mBaseMessage.addOnSelfUpdateListener(mSelfUpdateListener);
+        }
         onBaseMessageChanged(mBaseMessage);
     }
 
