@@ -26,7 +26,6 @@ import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.MSIMWeakCallback;
 import com.masonsoft.imsdk.lang.GeneralResult;
 import com.masonsoft.imsdk.uikit.GlobalChatRoomManager;
-import com.masonsoft.imsdk.uikit.MSIMRtcMessageManager;
 import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.uikit.R;
@@ -382,7 +381,7 @@ public class ChatRoomFragment extends SystemInsetsFragment {
             mBinding.customSoftKeyboard.showLayerMore();
             mSoftKeyboardHelper.requestShowCustomSoftKeyboard();
         });
-        mBinding.customSoftKeyboard.setOnInputListener(new CustomSoftKeyboard.OnInputListener() {
+        mBinding.customSoftKeyboard.setOnInputListener(new CustomSoftKeyboard.OnInputListenerAdapter() {
             @Override
             public void onInputText(CharSequence text) {
                 if (mBinding == null) {
@@ -414,16 +413,6 @@ public class ChatRoomFragment extends SystemInsetsFragment {
                 }
                 mSoftKeyboardHelper.requestHideAllSoftKeyboard();
                 submitMediaMessage(mediaInfoList);
-            }
-
-            @Override
-            public void onClickRtcAudio() {
-                MSIMRtcMessageManager.getInstance().startRtcMessage(mChatRoomId, null, false);
-            }
-
-            @Override
-            public void onClickRtcVideo() {
-                MSIMRtcMessageManager.getInstance().startRtcMessage(mChatRoomId, null, true);
             }
         });
 

@@ -164,6 +164,34 @@ public class CustomSoftKeyboard extends FrameLayout {
         mOnInputListener = onInputListener;
     }
 
+    public static class OnInputListenerAdapter implements OnInputListener {
+
+        @Override
+        public void onInputText(CharSequence text) {
+            // ignore
+        }
+
+        @Override
+        public void onDeleteOne() {
+            // ignore
+        }
+
+        @Override
+        public void onMediaPicked(@NonNull List<MediaData.MediaInfo> mediaInfoList) {
+            // ignore
+        }
+
+        @Override
+        public void onClickRtcAudio() {
+            // ignore
+        }
+
+        @Override
+        public void onClickRtcVideo() {
+            // ignore
+        }
+    }
+
     private class LayerEmojiPagerAdapter extends RecyclerView.Adapter<LayerEmojiViewHolder> {
 
         @NonNull
