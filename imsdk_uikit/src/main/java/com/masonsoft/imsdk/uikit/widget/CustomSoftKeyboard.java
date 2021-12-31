@@ -1,6 +1,7 @@
 package com.masonsoft.imsdk.uikit.widget;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.TypedValue;
@@ -61,6 +62,7 @@ public class CustomSoftKeyboard extends FrameLayout {
 
     private final DisposableHolder mPermissionRequest = new DisposableHolder();
     private ImsdkUikitWidgetCustomSoftKeyboardBinding mBinding;
+    private boolean mShowRtc = true;
 
     private static final String[] IMAGE_PICKER_PERMISSION = {
             Manifest.permission.READ_EXTERNAL_STORAGE
@@ -91,6 +93,17 @@ public class CustomSoftKeyboard extends FrameLayout {
     public void showLayerMore() {
         ViewUtil.setVisibilityIfChanged(mBinding.layerEmoji, View.GONE);
         ViewUtil.setVisibilityIfChanged(mBinding.layerMore, View.VISIBLE);
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    public void setShowRtc(boolean showRtc) {
+        if (mShowRtc != showRtc) {
+            mShowRtc = showRtc;
+            final RecyclerView.Adapter<?> adapter = mBinding.layerMorePager.getAdapter();
+            if (adapter != null) {
+                adapter.notifyDataSetChanged();
+            }
+        }
     }
 
     public boolean isLayerEmojiShown() {
@@ -271,12 +284,16 @@ public class CustomSoftKeyboard extends FrameLayout {
                 inflateMediaItemView(context);
             }
             {
-                start++;
-                inflateRtcAudioItemView(context);
+                if (mShowRtc) {
+                    start++;
+                    inflateRtcAudioItemView(context);
+                }
             }
             {
-                start++;
-                inflateRtcVideoItemView(context);
+                if (mShowRtc) {
+                    start++;
+                    inflateRtcVideoItemView(context);
+                }
             }
             for (int i = start; i < count; i++) {
                 inflateMoreEmptyItemView(context);
