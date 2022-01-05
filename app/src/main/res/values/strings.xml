@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">msimsdk</string>
+    <string name="app_name">msimsdk_app100</string>
     <string name="imsdk_sample_base_on">BaseOn</string>
     <string name="imsdk_sample_tab_home">首页</string>
     <string name="imsdk_sample_tab_discover">探索</string>
