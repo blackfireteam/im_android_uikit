@@ -19,6 +19,8 @@ import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitChatRoomEditTodFragmentBi
 import com.masonsoft.imsdk.uikit.util.ActivityUtil;
 import com.masonsoft.imsdk.uikit.util.TipUtil;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 import io.github.idonans.dynamic.DynamicView;
 import io.github.idonans.lang.util.ViewUtil;
 
@@ -119,6 +121,8 @@ public class ChatRoomEditTodFragment extends SystemInsetsFragment {
 
     class ViewImpl implements DynamicView {
 
+        private AtomicBoolean mSetTodOnce = new AtomicBoolean(false);
+
         public ViewImpl() {
         }
 
@@ -137,6 +141,10 @@ public class ChatRoomEditTodFragment extends SystemInsetsFragment {
             final MSIMChatRoomInfo chatRoomInfo = chatRoomContext.getChatRoomContext().getChatRoomInfo();
             if (chatRoomInfo != null) {
                 allowEditTod = chatRoomInfo.hasActionTod();
+
+                if (mSetTodOnce.compareAndSet(false, true)) {
+                    binding.editText.setText(chatRoomContext.getChatRoomContext().getTipsOfDay());
+                }
             }
             binding.editText.setEnabled(allowEditTod);
             binding.submitTod.setEnabled(allowEditTod);
