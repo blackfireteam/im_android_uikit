@@ -33,8 +33,8 @@ import com.masonsoft.imsdk.uikit.util.ClipboardUtil;
 import com.masonsoft.imsdk.uikit.util.FileDownloadHelper;
 import com.masonsoft.imsdk.uikit.util.FormatUtil;
 import com.masonsoft.imsdk.uikit.util.TipUtil;
-import com.masonsoft.imsdk.uikit.widget.MSIMBaseMessageRevokeTextView;
 import com.masonsoft.imsdk.uikit.widget.MSIMBaseMessageRevokeStateFrameLayout;
+import com.masonsoft.imsdk.uikit.widget.MSIMBaseMessageRevokeTextView;
 import com.tbruyelle.rxpermissions3.RxPermissions;
 
 import java.io.File;
@@ -147,7 +147,7 @@ public abstract class IMBaseMessageViewHolder extends UnionTypeViewHolder {
         }
 
         if (mMessageTime != null) {
-            updateMessageTimeView(mMessageTime, itemObject);
+            updateMessageTimeView(mMessageTime);
         }
     }
 
@@ -158,15 +158,16 @@ public abstract class IMBaseMessageViewHolder extends UnionTypeViewHolder {
         return TimeUnit.MINUTES.toMillis(5);
     }
 
-    protected boolean needShowTime(DataObject dataObject) {
+    protected boolean needShowTime(@Nullable DataObject dataObject) {
         final long showTimeDuration = getShowTimeDuration();
         if (showTimeDuration <= 0) {
             return true;
         }
 
-        boolean needShowTime = true;
+        boolean needShowTime;
         if (dataObject != null) {
-            if (dataObject.object != null) {
+            needShowTime = true;
+            if (dataObject.object instanceof MSIMBaseMessage) {
                 final MSIMBaseMessage baseMessage = (MSIMBaseMessage) dataObject.object;
                 final long currentMessageTime = baseMessage.getTimeMs();
                 if (currentMessageTime <= 0) {
@@ -175,7 +176,8 @@ public abstract class IMBaseMessageViewHolder extends UnionTypeViewHolder {
                 }
 
                 int position = getAdapterPosition();
-                if (position > 0) {
+                while (position > 0) {
+                    // 找到前一个 MSIMBaseMessage
                     UnionTypeItemObject preObject = host.getAdapter().getItem(position - 1);
                     if (preObject != null) {
                         if (preObject.itemObject instanceof DataObject
@@ -187,32 +189,49 @@ public abstract class IMBaseMessageViewHolder extends UnionTypeViewHolder {
                                 MSIMUikitLog.e(e);
                             }
                             needShowTime = currentMessageTime - preMessageTime >= showTimeDuration;
+                            break;
                         }
                     }
+                    position--;
                 }
+            } else {
+                // 当前条目的内容不是 MSIMBaseMessage，不需要显示时间。例如：是一个 text tip message
+                needShowTime = false;
             }
+        } else {
+            // 当前条目为 null, 不显示时间
+            needShowTime = false;
         }
 
         return needShowTime;
     }
 
-    protected void updateMessageTimeView(TextView messageTimeView, DataObject dataObject) {
+    protected void updateMessageTimeView(@Nullable TextView messageTimeView) {
         if (messageTimeView == null) {
             MSIMUikitLog.v("updateMessageTimeView ignore null messageTimeView");
             return;
         }
+
+        if (!(this.itemObject instanceof DataObject)) {
+            MSIMUikitLog.v("updateMessageTimeView current itemObject is not DataObject");
+            ViewUtil.setVisibilityIfChanged(messageTimeView, View.GONE);
+            return;
+        }
+
+        @NonNull final DataObject dataObject = (DataObject) this.itemObject;
+        if (!(dataObject.object instanceof MSIMBaseMessage)) {
+            MSIMUikitLog.v("updateMessageTimeView current dataObject's object is not MSIMBaseMessage");
+            ViewUtil.setVisibilityIfChanged(messageTimeView, View.GONE);
+            return;
+        }
+
         final boolean needShowTime = needShowTime(dataObject);
         if (!needShowTime) {
             ViewUtil.setVisibilityIfChanged(messageTimeView, View.GONE);
             return;
         }
 
-        long currentMessageTime = -1;
-        if (dataObject != null && dataObject.object != null) {
-            if (dataObject.object instanceof MSIMBaseMessage) {
-                currentMessageTime = ((MSIMBaseMessage) dataObject.object).getTimeMs();
-            }
-        }
+        long currentMessageTime = ((MSIMBaseMessage) dataObject.object).getTimeMs();
         if (currentMessageTime <= 0) {
             MSIMUikitLog.v("invalid current message time: %s", currentMessageTime);
             ViewUtil.setVisibilityIfChanged(messageTimeView, View.GONE);
@@ -315,6 +334,11 @@ public abstract class IMBaseMessageViewHolder extends UnionTypeViewHolder {
          */
         @Nullable
         public static UnionTypeItemObject createPreviewDefault(DataObject dataObject) {
+            if (!(dataObject.object instanceof MSIMBaseMessage)) {
+                MSIMUikitLog.e("unexpected. createPreviewDefault dataObject.object is not MSIMBaseMessage: %s", dataObject.object);
+                return null;
+            }
+
             final MSIMBaseMessage baseMessage = dataObject.getObject();
             // 区分消息是收到的还是发送的
             final boolean received = baseMessage.isReceived();

@@ -1,5 +1,7 @@
 package com.masonsoft.imsdk.uikit.app.chatroom;
 
+import android.text.TextUtils;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
@@ -14,6 +16,7 @@ import com.masonsoft.imsdk.MSIMSessionListenerProxy;
 import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.uikit.GlobalChatRoomManager;
 import com.masonsoft.imsdk.uikit.uniontype.DataObject;
+import com.masonsoft.imsdk.uikit.uniontype.IMUikitUnionTypeMapper;
 import com.masonsoft.imsdk.uikit.uniontype.UnionTypeViewHolderListeners;
 import com.masonsoft.imsdk.uikit.uniontype.viewholder.IMBaseMessageViewHolder;
 import com.masonsoft.imsdk.uikit.widget.MSIMChatRoomStateChangedViewHelper;
@@ -71,6 +74,14 @@ public class ChatRoomFragmentPresenter extends DynamicPresenter<ChatRoomFragment
             }
         }
     };
+    private final GlobalChatRoomManager.StaticChatRoomContext.OnStaticChatRoomReceivedTipMessageListener mOnStaticChatRoomReceivedTipMessageListener = new GlobalChatRoomManager.StaticChatRoomContext.OnStaticChatRoomReceivedTipMessageListener() {
+        @Override
+        public void onStaticChatRoomReceivedTipMessage(@NonNull List<CharSequence> tipMessageList) {
+            if (!tipMessageList.isEmpty()) {
+                onReceivedTipMessageListInternal(tipMessageList);
+            }
+        }
+    };
 
     private final BatchQueue<Object> mChatRoomStateChangedBatchQueue = new BatchQueue<>(false);
 
@@ -112,6 +123,7 @@ public class ChatRoomFragmentPresenter extends DynamicPresenter<ChatRoomFragment
         }
         mChatRoomStateChangedViewHelper.setChatRoomContext(mChatRoomContext.getChatRoomContext());
         mChatRoomContext.addOnStaticChatRoomContextChangedListener(mOnStaticChatRoomContextChangedListener);
+        mChatRoomContext.addOnStaticChatRoomReceivedTipMessageListener(mOnStaticChatRoomReceivedTipMessageListener);
         return true;
     }
 
@@ -158,6 +170,19 @@ public class ChatRoomFragmentPresenter extends DynamicPresenter<ChatRoomFragment
         });
     }
 
+    private void onReceivedTipMessageListInternal(@NonNull List<CharSequence> tipMessageList) {
+        Threads.postUi(() -> {
+            final ChatRoomFragment.ViewImpl view = getView();
+            if (view == null) {
+                return;
+            }
+            if (mChatRoomContext == null) {
+                return;
+            }
+            view.onReceivedTipMessageList(tipMessageList);
+        });
+    }
+
     public long getChatRoomId() {
         return mChatRoomId;
     }
@@ -190,6 +215,22 @@ public class ChatRoomFragmentPresenter extends DynamicPresenter<ChatRoomFragment
                 .putExtHolderItemClick1(mOnHolderItemClickListener)
                 .putExtHolderItemLongClick1(mOnHolderItemLongClickListener);
         return IMBaseMessageViewHolder.Helper.createDefault(dataObject);
+    }
+
+    @Nullable
+    public UnionTypeItemObject createTipMessageDefault(@Nullable CharSequence tipMessage) {
+        if (tipMessage == null) {
+            return null;
+        }
+        if (TextUtils.isEmpty(tipMessage)) {
+            return null;
+        }
+
+        final DataObject dataObject = new DataObject(tipMessage);
+        return UnionTypeItemObject.valueOf(
+                IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_TIP_TEXT,
+                dataObject
+        );
     }
 
 }

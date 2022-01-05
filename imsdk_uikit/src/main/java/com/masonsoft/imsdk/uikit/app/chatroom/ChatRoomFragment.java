@@ -816,7 +816,53 @@ public class ChatRoomFragment extends SystemInsetsFragment {
                             if (unionTypeItemObject != null) {
                                 contentList.add(unionTypeItemObject);
                             } else {
-                                MSIMUikitLog.e("unexpected. create UnionTypeItemObject is null. MSIMChatRoomMessage:%s", message);
+                                MSIMUikitLog.e("unexpected. onAppendMessages create UnionTypeItemObject is null. MSIMChatRoomMessage:%s", message);
+                            }
+                        }
+                        groupArrayList.appendGroupItems(GROUP_CONTENT, contentList);
+                    })
+                    .commit(() -> {
+                        final int count = mAdapter.getItemCount();
+                        if (count <= 0) {
+                            autoScrollToEnd.setObject(Boolean.TRUE);
+                        } else {
+                            //noinspection ConstantConditions
+                            int lastPosition = ((LinearLayoutManager) binding.recyclerView.getLayoutManager()).findLastVisibleItemPosition();
+                            if (lastPosition < 0) {
+                                autoScrollToEnd.setObject(Boolean.TRUE);
+                            } else {
+                                if (lastPosition >= count - 1) {
+                                    autoScrollToEnd.setObject(Boolean.TRUE);
+                                }
+                            }
+                        }
+                    }, () -> {
+                        if (autoScrollToEnd.getObject() == Boolean.TRUE && isResumed()) {
+                            scrollToPosition(binding.recyclerView, mAdapter.getItemCount() - 1);
+                        } else {
+                            // 有新消息，显示向下的箭头
+                            showNewMessagesTipView();
+                        }
+                    });
+        }
+
+        public void onReceivedTipMessageList(@NonNull List<CharSequence> tipMessageList) {
+            final ImsdkUikitChatRoomFragmentBinding binding = mBinding;
+            if (binding == null) {
+                MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
+                return;
+            }
+
+            final ObjectWrapper autoScrollToEnd = new ObjectWrapper(null);
+            mAdapter.getData().beginTransaction()
+                    .add((transaction, groupArrayList) -> {
+                        final List<UnionTypeItemObject> contentList = new ArrayList<>();
+                        for (CharSequence tipMessage : tipMessageList) {
+                            final UnionTypeItemObject unionTypeItemObject = mPresenter.createTipMessageDefault(tipMessage);
+                            if (unionTypeItemObject != null) {
+                                contentList.add(unionTypeItemObject);
+                            } else {
+                                MSIMUikitLog.e("unexpected. onReceivedTipMessageList create UnionTypeItemObject is null. tipMessage:%s", tipMessage);
                             }
                         }
                         groupArrayList.appendGroupItems(GROUP_CONTENT, contentList);

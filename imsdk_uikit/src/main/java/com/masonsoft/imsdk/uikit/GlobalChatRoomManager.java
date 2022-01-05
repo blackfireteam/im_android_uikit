@@ -2,7 +2,6 @@ package com.masonsoft.imsdk.uikit;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.util.Consumer;
 
 import com.masonsoft.imsdk.MSIMChatRoomContext;
 import com.masonsoft.imsdk.MSIMChatRoomMessage;
@@ -182,11 +181,17 @@ public class GlobalChatRoomManager {
         private final long mChatRoomId;
         private final MSIMChatRoomContext mChatRoomContext;
         private final WeakObservable<OnStaticChatRoomContextChangedListener> mListeners = new WeakObservable<>();
+        private final WeakObservable<OnStaticChatRoomReceivedTipMessageListener> mTipMessageListeners = new WeakObservable<>();
         private final MSIMChatRoomMessageCache mMessageCache = new MSIMChatRoomMessageCache();
         private final BatchQueue<Object> mNotifyOnStaticChatRoomContextChangedListenerBatchQueue = new BatchQueue<>();
+        private final BatchQueue<CharSequence> mNotifyOnStaticChatRoomReceivedTipMessageBatchQueue = new BatchQueue<>();
 
         public interface OnStaticChatRoomContextChangedListener {
             void onStaticChatRoomContextChanged(@NonNull StaticChatRoomContext context);
+        }
+
+        public interface OnStaticChatRoomReceivedTipMessageListener {
+            void onStaticChatRoomReceivedTipMessage(@NonNull List<CharSequence> tipMessageList);
         }
 
         public StaticChatRoomContext(long sessionUserId, long chatRoomId, boolean autoJoinIn) {
@@ -195,16 +200,23 @@ public class GlobalChatRoomManager {
             mChatRoomContext = MSIMManager.getInstance().getOrCreateChatRoomContext(mChatRoomId);
             mChatRoomContext.getChatRoomManager().addChatRoomMessageListener(mChatRoomMessageListener);
 
-            mNotifyOnStaticChatRoomContextChangedListenerBatchQueue.setConsumer(new Consumer<List<Object>>() {
-                @Override
-                public void accept(List<Object> objects) {
-                    if (mListeners != null) {
-                        mListeners.forEach(listener -> {
-                            if (listener != null) {
-                                listener.onStaticChatRoomContextChanged(StaticChatRoomContext.this);
-                            }
-                        });
-                    }
+            mNotifyOnStaticChatRoomContextChangedListenerBatchQueue.setConsumer(objects -> {
+                if (mListeners != null) {
+                    mListeners.forEach(listener -> {
+                        if (listener != null) {
+                            listener.onStaticChatRoomContextChanged(StaticChatRoomContext.this);
+                        }
+                    });
+                }
+            });
+
+            mNotifyOnStaticChatRoomReceivedTipMessageBatchQueue.setConsumer(objects -> {
+                if (mTipMessageListeners != null) {
+                    mTipMessageListeners.forEach(listener -> {
+                        if (listener != null) {
+                            listener.onStaticChatRoomReceivedTipMessage(objects);
+                        }
+                    });
                 }
             });
 
@@ -238,6 +250,18 @@ public class GlobalChatRoomManager {
             }
         }
 
+        public void addOnStaticChatRoomReceivedTipMessageListener(OnStaticChatRoomReceivedTipMessageListener listener) {
+            if (listener != null) {
+                mTipMessageListeners.registerObserver(listener);
+            }
+        }
+
+        public void removeOnStaticChatRoomReceivedTipMessageListener(OnStaticChatRoomReceivedTipMessageListener listener) {
+            if (listener != null) {
+                mTipMessageListeners.unregisterObserver(listener);
+            }
+        }
+
         @Nonnull
         public List<MSIMChatRoomMessage> getMessageList() {
             return mMessageCache.getMessageList();
@@ -264,7 +288,9 @@ public class GlobalChatRoomManager {
 
             @Override
             public void onReceivedTipMessageList(@NonNull List<CharSequence> list) {
-                // ignore
+                for (CharSequence tipMessage : list) {
+                    mNotifyOnStaticChatRoomReceivedTipMessageBatchQueue.add(tipMessage);
+                }
             }
         });
 
