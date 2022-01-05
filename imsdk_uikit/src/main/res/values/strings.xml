@@ -55,7 +55,7 @@
     <string name="imsdk_uikit_rtc_state_hint_text_connecting">正在建立链接..</string>
     <string name="imsdk_uikit_rtc_state_hint_text_connected">已接通</string>
     <string name="imsdk_uikit_rtc_state_hint_text_error_myself">遇到系统错误</string>
-    <string name="imsdk_uikit_rtc_state_hint_text_error_target">对方发送系统错误</string>
+    <string name="imsdk_uikit_rtc_state_hint_text_error_target">对方发生系统错误</string>
     <string name="imsdk_uikit_rtc_state_hint_text_unknown_myself">遇到未知错误</string>
     <string name="imsdk_uikit_rtc_state_hint_text_unknown_target">对方发生未知错误</string>
     <string name="imsdk_uikit_rtc_state_hint_text_cancel_myself">已取消</string>
@@ -67,4 +67,9 @@
     <string name="imsdk_uikit_rtc_state_hint_text_hangup_myself">已挂断</string>
     <string name="imsdk_uikit_rtc_state_hint_text_hangup_target">对方已挂断</string>
     <string name="imsdk_uikit_rtc_state_hint_text_linebusy_target">对方正忙</string>
+    <string name="imsdk_uikit_chat_room_settings_title">聊天室设置</string>
+    <string name="imsdk_uikit_chat_room_settings_member_list">成员列表</string>
+    <string name="imsdk_uikit_chat_room_settings_name">聊天室名称</string>
+    <string name="imsdk_uikit_chat_room_settings_tod">聊天室公告</string>
+    <string name="imsdk_uikit_tip_chat_room_context_is_null">你当前不在聊天室内</string>
 </resources>

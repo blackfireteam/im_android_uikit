@@ -31,6 +31,7 @@ import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.uikit.R;
 import com.masonsoft.imsdk.uikit.app.SystemInsetsFragment;
+import com.masonsoft.imsdk.uikit.app.chatroom.settings.ChatRoomSettingsActivity;
 import com.masonsoft.imsdk.uikit.common.media.audio.AudioRecordManager;
 import com.masonsoft.imsdk.uikit.common.mediapicker.MediaData;
 import com.masonsoft.imsdk.uikit.common.microlifecycle.MicroLifecycleComponentManager;
@@ -441,13 +442,20 @@ public class ChatRoomFragment extends SystemInsetsFragment {
             return;
         }
 
-        final List<String> actions = Lists.newArrayList("模拟并发消息");
+        final List<String> actions = Lists.newArrayList("设置", "模拟并发消息");
         final SimpleBottomActionsDialog dialog = new SimpleBottomActionsDialog(
                 activity,
                 actions
         );
         dialog.setOnActionClickListener((index, actionText) -> {
             if (index == 0) {
+                // 设置
+                if (mChatRoomId <= 0) {
+                    MSIMUikitLog.e("unexpected. chat room id:" + mChatRoomId);
+                    return;
+                }
+                ChatRoomSettingsActivity.start(activity, mChatRoomId);
+            } else if (index == 1) {
                 // 模拟并发消息
                 if (mPresenter == null) {
                     MSIMUikitLog.e("unexpected. presenter is null");

@@ -1,4 +1,4 @@
-package com.masonsoft.imsdk.uikit.app.chatroom;
+package com.masonsoft.imsdk.uikit.app.chatroom.settings;
 
 import android.content.Context;
 import android.content.Intent;
@@ -13,20 +13,20 @@ import com.masonsoft.imsdk.uikit.util.TipUtil;
 
 import io.github.idonans.systeminsets.SystemUiHelper;
 
-public class ChatRoomActivity extends FragmentDelegateActivity {
+public class ChatRoomSettingsActivity extends FragmentDelegateActivity {
 
     public static void start(Context context) {
         start(context, GlobalChatRoomManager.DEFAULT_CHAT_ROOM_ID);
     }
 
     public static void start(Context context, long chatRoomId) {
-        Intent starter = new Intent(context, ChatRoomActivity.class);
+        Intent starter = new Intent(context, ChatRoomSettingsActivity.class);
         starter.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         starter.putExtra(MSIMUikitConstants.ExtrasKey.KEY_ROOM_ID, chatRoomId);
         context.startActivity(starter);
     }
 
-    private static final String FRAGMENT_TAG_SINGLE_CHAT = "fragment_chat_room_20211228";
+    private static final String FRAGMENT_TAG_CHAT_ROOM_SETTINGS = "fragment_chat_room_settings_20220105";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -46,7 +46,7 @@ public class ChatRoomActivity extends FragmentDelegateActivity {
             finish();
             return;
         }
-        setFragmentDelegate(FRAGMENT_TAG_SINGLE_CHAT, () -> ChatRoomFragment.newInstance(chatRoomId));
+        setFragmentDelegate(FRAGMENT_TAG_CHAT_ROOM_SETTINGS, () -> ChatRoomSettingsFragment.newInstance(chatRoomId));
     }
 
 }
