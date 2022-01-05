@@ -35,62 +35,59 @@ public class FetchSparkMessagePacket extends NotNullTimeoutMessagePacket {
     protected boolean doNotNullProcess(@NonNull SessionProtoByteMessageWrapper target) {
         Preconditions.checkArgument(!Threads.isUi());
 
-        final Object protoMessageObject = target.getProtoByteMessageWrapper().getProtoMessageObject();
-        if (protoMessageObject == null) {
-            return false;
-        }
+        {
+            // 接收 Result 消息
+            final ProtoMessage.Result result = target.getProtoByteMessageWrapper().getProtoMessageObject(ProtoMessage.Result.class);
+            if (result != null) {
+                // 校验 sign 是否相等
+                if (result.getSign() == getSign()) {
+                    synchronized (getStateLock()) {
+                        final int state = getState();
+                        if (state != STATE_WAIT_RESULT) {
+                            SampleLog.e(Objects.defaultObjectTag(this)
+                                    + " unexpected. accept with same sign:%s and invalid state:%s", getSign(), stateToString(state));
+                            return false;
+                        }
 
-        // 接收 Result 消息
-        if (protoMessageObject instanceof ProtoMessage.Result) {
-            final ProtoMessage.Result result = (ProtoMessage.Result) protoMessageObject;
-
-            // 校验 sign 是否相等
-            if (result.getSign() == getSign()) {
-                synchronized (getStateLock()) {
-                    final int state = getState();
-                    if (state != STATE_WAIT_RESULT) {
-                        SampleLog.e(Objects.defaultObjectTag(this)
-                                + " unexpected. accept with same sign:%s and invalid state:%s", getSign(), stateToString(state));
-                        return false;
+                        if (result.getCode() != 0) {
+                            setErrorCode((int) result.getCode());
+                            setErrorMessage(result.getMsg());
+                            SampleLog.e(Objects.defaultObjectTag(this) +
+                                    " unexpected. errorCode:%s, errorMessage:%s", result.getCode(), result.getMsg());
+                        } else {
+                            final Throwable e = new IllegalArgumentException(Objects.defaultObjectTag(this) + " unexpected. result code is 0.");
+                            SampleLog.e(e);
+                        }
+                        moveToState(STATE_FAIL);
                     }
-
-                    if (result.getCode() != 0) {
-                        setErrorCode((int) result.getCode());
-                        setErrorMessage(result.getMsg());
-                        SampleLog.e(Objects.defaultObjectTag(this) +
-                                " unexpected. errorCode:%s, errorMessage:%s", result.getCode(), result.getMsg());
-                    } else {
-                        final Throwable e = new IllegalArgumentException(Objects.defaultObjectTag(this) + " unexpected. result code is 0.");
-                        SampleLog.e(e);
-                    }
-                    moveToState(STATE_FAIL);
+                    return true;
                 }
-                return true;
             }
         }
 
-        // 接收 Sparks 消息
-        if (protoMessageObject instanceof ProtoMessage.Sparks) {
-            final ProtoMessage.Sparks sparks = (ProtoMessage.Sparks) protoMessageObject;
+        {
+            // 接收 Sparks 消息
+            final ProtoMessage.Sparks sparks = target.getProtoByteMessageWrapper().getProtoMessageObject(ProtoMessage.Sparks.class);
+            if (sparks != null) {
+                // 校验 sign 是否相等
+                if (sparks.getSign() == getSign()) {
+                    synchronized (getStateLock()) {
+                        final int state = getState();
+                        if (state != STATE_WAIT_RESULT) {
+                            SampleLog.e(Objects.defaultObjectTag(this)
+                                    + " unexpected. accept with same sign:%s and invalid state:%s", getSign(), stateToString(state));
+                            return false;
+                        }
 
-            // 校验 sign 是否相等
-            if (sparks.getSign() == getSign()) {
-                synchronized (getStateLock()) {
-                    final int state = getState();
-                    if (state != STATE_WAIT_RESULT) {
-                        SampleLog.e(Objects.defaultObjectTag(this)
-                                + " unexpected. accept with same sign:%s and invalid state:%s", getSign(), stateToString(state));
-                        return false;
+                        final List<ProtoMessage.Spark> sparkList = sparks.getSparksList();
+                        if (sparkList != null) {
+                            mSparkList.addAll(Spark.valueOf(sparkList));
+                        }
+
+                        moveToState(STATE_SUCCESS);
                     }
-
-                    final List<ProtoMessage.Spark> sparkList = sparks.getSparksList();
-                    if (sparkList != null) {
-                        mSparkList.addAll(Spark.valueOf(sparkList));
-                    }
-
-                    moveToState(STATE_SUCCESS);
+                    return true;
                 }
-                return true;
             }
         }
 

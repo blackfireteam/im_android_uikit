@@ -140,9 +140,9 @@ public class HomeFragment extends SystemInsetsFragment {
                     SampleLog.e(MSIMUikitConstants.ErrorLog.INVALID_TARGET);
                     return;
                 }
-                //noinspection unchecked
-                final DataObject<Spark> itemObject = (DataObject<Spark>) originObject.itemObject;
-                final Spark spark = itemObject.object;
+                final DataObject itemObject = (DataObject) originObject.itemObject;
+                //noinspection ConstantConditions
+                final Spark spark = (Spark) itemObject.object;
 
                 adapter.getData().beginTransaction()
                         .add((transaction, groupArrayList) -> groupArrayList.removeItem(position))

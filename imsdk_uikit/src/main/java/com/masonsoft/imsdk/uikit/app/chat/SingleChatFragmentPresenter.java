@@ -16,7 +16,7 @@ import com.masonsoft.imsdk.uikit.CustomIMMessageFactory;
 import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.uikit.uniontype.DataObject;
 import com.masonsoft.imsdk.uikit.uniontype.UnionTypeViewHolderListeners;
-import com.masonsoft.imsdk.uikit.uniontype.viewholder.IMMessageViewHolder;
+import com.masonsoft.imsdk.uikit.uniontype.viewholder.IMBaseMessageViewHolder;
 import com.masonsoft.imsdk.uikit.widget.MSIMConversationChangedViewHelper;
 
 import java.util.ArrayList;
@@ -108,14 +108,14 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
     private final UnionTypeViewHolderListeners.OnItemClickListener mOnHolderItemClickListener = viewHolder -> {
         SingleChatFragment.ViewImpl view = getView();
         if (view != null) {
-            IMMessageViewHolder.Helper.showPreview(viewHolder, view.getTargetUserId());
+            IMBaseMessageViewHolder.Helper.showPreview(viewHolder);
         }
     };
 
     private final UnionTypeViewHolderListeners.OnItemLongClickListener mOnHolderItemLongClickListener = viewHolder -> {
         SingleChatFragment.ViewImpl view = getView();
         if (view != null) {
-            IMMessageViewHolder.Helper.showMenu(viewHolder);
+            IMBaseMessageViewHolder.Helper.showMenu(viewHolder);
         }
     };
 
@@ -124,10 +124,10 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
         if (message == null) {
             return null;
         }
-        final DataObject<MSIMMessage> dataObject = new DataObject<>(message)
+        final DataObject dataObject = new DataObject(message)
                 .putExtHolderItemClick1(mOnHolderItemClickListener)
                 .putExtHolderItemLongClick1(mOnHolderItemLongClickListener);
-        return IMMessageViewHolder.Helper.createDefault(dataObject, mSessionUserId);
+        return IMBaseMessageViewHolder.Helper.createDefault(dataObject);
     }
 
     @Override

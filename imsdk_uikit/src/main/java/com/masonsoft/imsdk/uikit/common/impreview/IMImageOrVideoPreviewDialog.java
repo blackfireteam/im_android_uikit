@@ -9,14 +9,16 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.masonsoft.imsdk.MSIMMessage;
-import com.masonsoft.imsdk.uikit.widget.PagerRecyclerView;
+import com.masonsoft.imsdk.MSIMBaseMessage;
 import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 import com.masonsoft.imsdk.uikit.R;
 import com.masonsoft.imsdk.uikit.common.microlifecycle.CenterRecyclerViewMicroLifecycleComponentManager;
 import com.masonsoft.imsdk.uikit.common.microlifecycle.MicroLifecycleComponentManager;
 import com.masonsoft.imsdk.uikit.common.microlifecycle.MicroLifecycleComponentManagerHost;
 import com.masonsoft.imsdk.uikit.uniontype.IMUikitUnionTypeMapper;
+import com.masonsoft.imsdk.uikit.widget.PagerRecyclerView;
+
+import java.util.List;
 
 import io.github.idonans.backstack.ViewBackLayer;
 import io.github.idonans.backstack.dialog.ViewDialog;
@@ -39,8 +41,8 @@ public class IMImageOrVideoPreviewDialog implements ViewBackLayer.OnBackPressedL
     public IMImageOrVideoPreviewDialog(Lifecycle lifecycle,
                                        Activity activity,
                                        ViewGroup parentView,
-                                       MSIMMessage initMessage,
-                                       long targetUserId) {
+                                       List<MSIMBaseMessage> messageList,
+                                       int index) {
         mViewDialog = new ViewDialog.Builder(activity)
                 .setContentView(R.layout.imsdk_uikit_common_im_image_or_video_preview)
                 .setParentView(parentView)
@@ -48,6 +50,7 @@ public class IMImageOrVideoPreviewDialog implements ViewBackLayer.OnBackPressedL
                 .dimBackground(true)
                 .setCancelable(false)
                 .create();
+        //noinspection ConstantConditions
         mRecyclerView = mViewDialog.getContentView().findViewById(R.id.recycler_view);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(
@@ -67,10 +70,9 @@ public class IMImageOrVideoPreviewDialog implements ViewBackLayer.OnBackPressedL
         mViewImpl = new ViewImpl(adapter);
         clearPresenter();
 
-        final long initMessageSeq = initMessage.getSeq();
-        mPresenter = new IMImageOrVideoPreviewPresenter(mViewImpl, targetUserId, initMessageSeq);
+        mPresenter = new IMImageOrVideoPreviewPresenter(mViewImpl, messageList, index);
         mViewImpl.setPresenter(mPresenter);
-        mPresenter.showInitMessage(initMessage);
+        mPresenter.showInitMessage();
         mRecyclerView.setAdapter(adapter);
     }
 

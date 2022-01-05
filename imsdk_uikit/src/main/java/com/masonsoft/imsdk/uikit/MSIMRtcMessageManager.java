@@ -31,6 +31,7 @@ import com.masonsoft.imsdk.MSIMMessageFactory;
 import com.masonsoft.imsdk.MSIMSdkListener;
 import com.masonsoft.imsdk.MSIMSdkListenerAdapter;
 import com.masonsoft.imsdk.common.TopActivity;
+import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.core.KeyValueStorage;
 import com.masonsoft.imsdk.core.OtherMessage;
 import com.masonsoft.imsdk.core.OtherMessageManager;
@@ -176,8 +177,13 @@ public class MSIMRtcMessageManager {
 
     @Nullable
     private AgoraTokenInfo fetchAgoraTokenInfo(final String roomId) {
-        final SingleSubject<ObjectWrapper> subject = SingleSubject.create();
         final long sessionUserId = MSIMManager.getInstance().getSessionUserId();
+        if (sessionUserId <= 0) {
+            IMLog.v("fast return: session user id is invalid: %s", sessionUserId);
+            return null;
+        }
+
+        final SingleSubject<ObjectWrapper> subject = SingleSubject.create();
         final long originSign = SignGenerator.nextSign();
         final GetAgoraTokenMessagePacket messagePacket = GetAgoraTokenMessagePacket.create(originSign, roomId);
         final OtherMessage otherMessage = new OtherMessage(sessionUserId, messagePacket);

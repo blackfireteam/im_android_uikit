@@ -44,8 +44,7 @@ public class HomeSparkViewHolder extends UnionTypeViewHolder {
             return;
         }
 
-        //noinspection unchecked
-        final DataObject<Spark> itemObject = (DataObject<Spark>) this.itemObject;
+        final DataObject itemObject = (DataObject) this.itemObject;
         final ExtraUiData extraUiData = ExtraUiData.valueOf(itemObject);
         if (setValue) {
             extraUiData.mLikeAndDislikeProgress = progress;
@@ -65,10 +64,9 @@ public class HomeSparkViewHolder extends UnionTypeViewHolder {
 
     @Override
     public void onBindUpdate() {
-        //noinspection unchecked
-        final DataObject<Spark> itemObject = (DataObject<Spark>) this.itemObject;
+        final DataObject itemObject = (DataObject) this.itemObject;
         Preconditions.checkNotNull(itemObject);
-        final Spark spark = itemObject.object;
+        final Spark spark = (Spark) itemObject.object;
 
         mBinding.imageLayout.setImageUrl(null, spark.pic);
         mBinding.username.setTargetUserId(spark.userId);
@@ -136,7 +134,7 @@ public class HomeSparkViewHolder extends UnionTypeViewHolder {
         private float mLikeAndDislikeProgress;
         private boolean mSendCustomLikedMessage;
 
-        private static ExtraUiData valueOf(DataObject<?> dataObject) {
+        private static ExtraUiData valueOf(DataObject dataObject) {
             ExtraUiData extraUiData = dataObject.getExtObject(KEY_UI_DATA, null);
             if (extraUiData == null) {
                 extraUiData = new ExtraUiData();

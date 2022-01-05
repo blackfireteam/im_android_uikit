@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    tools:background="#fff2f4f5">
+
+    <TextView
+        android:id="@+id/message_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:includeFontPadding="false"
+        android:maxLines="1"
+        android:padding="10dp"
+        android:singleLine="true"
+        android:textColor="#999999"
+        android:textSize="12sp"
+        tools:text="17:30" />
+
+    <com.masonsoft.imsdk.uikit.widget.MSIMBaseMessageRevokeStateFrameLayout
+        android:id="@+id/message_revoke_state_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.masonsoft.imsdk.uikit.widget.MSIMBaseMessageRevokeTextView
+            android:id="@+id/message_revoke_text_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:lineSpacingMultiplier="1.2"
+            android:textColor="#ffb2b2b2"
+            android:textSize="12sp"
+            app:received="true" />
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="0dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="65dp"
+            android:layout_marginBottom="10dp"
+            app:alignItems="flex_start"
+            app:flexDirection="row">
+
+            <com.masonsoft.imsdk.uikit.widget.UserCacheAvatar
+                android:id="@+id/avatar"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="10dp"
+                app:layout_flexGrow="0"
+                app:layout_flexShrink="0" />
+
+            <com.masonsoft.imsdk.uikit.widget.ResizeImageView
+                android:id="@+id/resize_image_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/imsdk_uikit_ic_common_rect_corners_16dp_white"
+                android:minWidth="93dp"
+                android:minHeight="93dp"
+                app:layout_flexGrow="0"
+                app:layout_flexShrink="1">
+
+                <com.masonsoft.imsdk.uikit.widget.MSIMBaseMessageImageView
+                    android:id="@+id/image"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:imagePlaceHolderFail="#d1d1d1"
+                    app:imagePlaceHolderLoading="#d1d1d1"
+                    app:roundSize="16dp" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:contentDescription="@string/imsdk_uikit_empty_text_hint"
+                    android:scaleType="centerInside"
+                    android:src="@android:drawable/ic_media_play" />
+            </com.masonsoft.imsdk.uikit.widget.ResizeImageView>
+        </com.google.android.flexbox.FlexboxLayout>
+    </com.masonsoft.imsdk.uikit.widget.MSIMBaseMessageRevokeStateFrameLayout>
+</LinearLayout>
