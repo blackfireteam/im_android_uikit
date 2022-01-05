@@ -52,12 +52,52 @@ public class GlobalChatRoomManager {
         }
     };
 
+    private final Map<String, Boolean> mDisallowAutoJoinChatRoomRecord = new HashMap<>();
+
     private GlobalChatRoomManager() {
         MSIMManager.getInstance().addSessionListener(mSessionListener);
         onSessionUserIdChanged();
     }
 
     public void start() {
+    }
+
+    private String buildDisallowAutoJoinChatRoomKey(long sessionUserId, long chatRoomId) {
+        return "DisallowAutoJoinChatRoomKey_sessionUserId:" + sessionUserId + "_chatRoomId:" + chatRoomId;
+    }
+
+    /**
+     * 设置不要自动加入该聊天室
+     *
+     * @param sessionUserId 当前登录用户 id
+     * @param chatRoomId    聊天室 id
+     */
+    public void setDisallowAutoJoinChatRoom(long sessionUserId, long chatRoomId) {
+        final String key = buildDisallowAutoJoinChatRoomKey(sessionUserId, chatRoomId);
+        mDisallowAutoJoinChatRoomRecord.put(key, Boolean.TRUE);
+    }
+
+    /**
+     * 是否记录过不要自动加入该聊天室
+     *
+     * @param sessionUserId 当前登录用户 id
+     * @param chatRoomId    聊天室 id
+     * @return
+     */
+    public boolean isDisallowAutoJoinChatRoom(long sessionUserId, long chatRoomId) {
+        final String key = buildDisallowAutoJoinChatRoomKey(sessionUserId, chatRoomId);
+        return mDisallowAutoJoinChatRoomRecord.get(key) == Boolean.TRUE;
+    }
+
+    /**
+     * 清除禁止自动加入聊天室（允许自动加入聊天室）
+     *
+     * @param sessionUserId 当前登录用户 id
+     * @param chatRoomId    聊天室 id
+     */
+    public void clearDisallowAutoJoinChatRoom(long sessionUserId, long chatRoomId) {
+        final String key = buildDisallowAutoJoinChatRoomKey(sessionUserId, chatRoomId);
+        mDisallowAutoJoinChatRoomRecord.remove(key);
     }
 
     private void onSessionUserIdChanged() {
@@ -86,13 +126,40 @@ public class GlobalChatRoomManager {
                 final String key = sessionUserId + "_" + chatRoomId;
                 StaticChatRoomContext context = mStaticChatRoomContextMap.get(key);
                 if (context == null && autoCreate) {
-                    context = new StaticChatRoomContext(sessionUserId, chatRoomId);
+
+                    final boolean autoJoinIn = !isDisallowAutoJoinChatRoom(sessionUserId, chatRoomId);
+                    context = new StaticChatRoomContext(sessionUserId, chatRoomId, autoJoinIn);
                     mStaticChatRoomContextMap.put(key, context);
                 }
                 return context;
             }
         }
         return null;
+    }
+
+    /**
+     * 手动加入聊天室
+     */
+    public void joinChatRoomManual(long sessionUserId, long chatRoomId) {
+        GlobalChatRoomManager.getInstance().clearDisallowAutoJoinChatRoom(sessionUserId, chatRoomId);
+        final StaticChatRoomContext chatRoomContext = getStaticChatRoomContext(sessionUserId, chatRoomId, false);
+        if (chatRoomContext != null) {
+            chatRoomContext.getChatRoomContext().getChatRoomManager().joinChatRoom();
+        } else {
+            // auto create with auto join in
+            getStaticChatRoomContext(sessionUserId, chatRoomId, true);
+        }
+    }
+
+    /**
+     * 手动离开聊天室
+     */
+    public void leaveChatRoomManual(long sessionUserId, long chatRoomId) {
+        GlobalChatRoomManager.getInstance().setDisallowAutoJoinChatRoom(sessionUserId, chatRoomId);
+        final StaticChatRoomContext chatRoomContext = getStaticChatRoomContext(sessionUserId, chatRoomId, false);
+        if (chatRoomContext != null) {
+            chatRoomContext.getChatRoomContext().getChatRoomManager().leaveChatRoom();
+        }
     }
 
     public void removeStaticChatRoomContext(long sessionUserId) {
@@ -122,7 +189,7 @@ public class GlobalChatRoomManager {
             void onStaticChatRoomContextChanged(@NonNull StaticChatRoomContext context);
         }
 
-        public StaticChatRoomContext(long sessionUserId, long chatRoomId) {
+        public StaticChatRoomContext(long sessionUserId, long chatRoomId, boolean autoJoinIn) {
             mSessionUserId = sessionUserId;
             mChatRoomId = chatRoomId;
             mChatRoomContext = MSIMManager.getInstance().getOrCreateChatRoomContext(mChatRoomId);
@@ -141,7 +208,9 @@ public class GlobalChatRoomManager {
                 }
             });
 
-            mChatRoomContext.getChatRoomManager().joinChatRoom();
+            if (autoJoinIn) {
+                mChatRoomContext.getChatRoomManager().joinChatRoom();
+            }
         }
 
         public long getSessionUserId() {

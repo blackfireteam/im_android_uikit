@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<io.github.idonans.systeminsets.SystemInsetsLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:orientation="vertical"
+    app:systemInsetPaddingBottom="all"
+    app:systemInsetPaddingBottomNotConsume="true"
+    app:systemInsetPaddingTop="all"
+    app:systemInsetPaddingTopNotConsume="true">
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#FFF2F4F5"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:id="@+id/top_bar"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="@android:color/white"
+            android:clickable="true"
+            android:focusable="true">
+
+            <ImageView
+                android:id="@+id/top_bar_back"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="start"
+                android:contentDescription="@string/imsdk_uikit_empty_text_hint"
+                android:paddingStart="15dp"
+                android:paddingEnd="15dp"
+                android:scaleType="centerInside"
+                android:src="@drawable/imsdk_uikit_ic_arrow_left" />
+
+            <TextView
+                android:id="@+id/top_bar_title"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_marginStart="100dp"
+                android:layout_marginEnd="100dp"
+                android:ellipsize="end"
+                android:gravity="center"
+                android:includeFontPadding="false"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:text="@string/imsdk_uikit_chat_room_edit_tod_title"
+                android:textColor="#333333"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+        </FrameLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/imsdk_uikit_color_divider_line" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="10dp" />
+
+        <androidx.emoji.widget.EmojiAppCompatEditText
+            android:id="@+id/edit_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white"
+            android:hint="@string/imsdk_uikit_hint_chat_room_tod_edit_text"
+            android:lineSpacingMultiplier="1.2"
+            android:maxLines="6"
+            android:minLines="3"
+            android:padding="20dp"
+            android:textColor="#333333"
+            android:textSize="16sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/imsdk_uikit_color_divider_line" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="10dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="20dp"
+            android:text="@string/imsdk_uikit_hint_chat_room_tod_only_edit_by_admin"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="12sp" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="10dp" />
+
+        <Button
+            android:id="@+id/submit_tod"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="15dp"
+            android:background="@drawable/imsdk_uikit_button_background_selector"
+            android:includeFontPadding="false"
+            android:text="@string/imsdk_uikit_chat_room_edit_tod_submit"
+            android:textColor="@android:color/white"
+            android:textSize="16sp" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="10dp" />
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</io.github.idonans.systeminsets.SystemInsetsLinearLayout>

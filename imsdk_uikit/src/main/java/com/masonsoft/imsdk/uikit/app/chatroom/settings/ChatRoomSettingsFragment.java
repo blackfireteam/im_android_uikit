@@ -9,11 +9,15 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.masonsoft.imsdk.MSIMManager;
+import com.masonsoft.imsdk.core.I18nResources;
 import com.masonsoft.imsdk.uikit.GlobalChatRoomManager;
 import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.uikit.R;
 import com.masonsoft.imsdk.uikit.app.SystemInsetsFragment;
+import com.masonsoft.imsdk.uikit.app.chatroom.edittod.ChatRoomEditTodActivity;
+import com.masonsoft.imsdk.uikit.common.simpledialog.SimpleContentConfirmDialog;
 import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitChatRoomSettingsFragmentBinding;
 import com.masonsoft.imsdk.uikit.util.ActivityUtil;
 import com.masonsoft.imsdk.uikit.util.TipUtil;
@@ -61,6 +65,7 @@ public class ChatRoomSettingsFragment extends SystemInsetsFragment {
         ViewUtil.onClick(mBinding.memberList, v -> onMemberListClick());
         ViewUtil.onClick(mBinding.chatRoomName, v -> onChatRoomNameClick());
         ViewUtil.onClick(mBinding.chatRoomTod, v -> onChatRoomTodClick());
+        ViewUtil.onClick(mBinding.leaveChatRoom, v -> onLeaveChatRoomClick());
 
         mViewImpl = new ViewImpl();
         clearPresenter();
@@ -103,7 +108,7 @@ public class ChatRoomSettingsFragment extends SystemInsetsFragment {
             return;
         }
 
-        // TODO
+        TipUtil.show(R.string.imsdk_uikit_tip_chat_room_name_modify_limit);
     }
 
     private void onChatRoomTodClick() {
@@ -116,13 +121,50 @@ public class ChatRoomSettingsFragment extends SystemInsetsFragment {
             MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.PRESENTER_IS_NULL);
             return;
         }
+        if (mChatRoomId <= 0) {
+            MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.INVALID_CHAT_ROOM_ID);
+            return;
+        }
         final GlobalChatRoomManager.StaticChatRoomContext chatRoomContext = mPresenter.getChatRoomContext();
         if (chatRoomContext == null) {
             TipUtil.show(R.string.imsdk_uikit_tip_chat_room_context_is_null);
             return;
         }
 
-        // TODO
+        ChatRoomEditTodActivity.start(activity, mChatRoomId);
+    }
+
+    private void onLeaveChatRoomClick() {
+        final Activity activity = ActivityUtil.getActiveAppCompatActivity(getContext());
+        if (activity == null) {
+            MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.ACTIVITY_IS_NULL);
+            return;
+        }
+        if (mPresenter == null) {
+            MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.PRESENTER_IS_NULL);
+            return;
+        }
+
+        final long sessionUserId = MSIMManager.getInstance().getSessionUserId();
+        if (sessionUserId <= 0) {
+            MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.INVALID_SESSION_USER_ID);
+            return;
+        }
+
+        if (mChatRoomId <= 0) {
+            MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.INVALID_CHAT_ROOM_ID);
+            return;
+        }
+
+        final SimpleContentConfirmDialog dialog = new SimpleContentConfirmDialog(
+                activity,
+                I18nResources.getString(R.string.imsdk_uikit_chat_room_leave_confirm_text)
+        );
+        dialog.setOnBtnRightClickListener(() -> {
+            GlobalChatRoomManager.getInstance().leaveChatRoomManual(sessionUserId, mChatRoomId);
+            activity.finish();
+        });
+        dialog.show();
     }
 
     private void clearPresenter() {
