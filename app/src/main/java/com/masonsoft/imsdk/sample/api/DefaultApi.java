@@ -87,6 +87,7 @@ public class DefaultApi {
         //noinspection UnnecessaryLocalVariable
         final OkHttpClient okHttpClient = SHARE_HTTP_CLIENT;
         try (final Response response = okHttpClient.newCall(request).execute()) {
+            //noinspection ConstantConditions
             final String json = response.body().string();
             final JsonObject jsonObject = new Gson().fromJson(json, new TypeToken<JsonObject>() {
             }.getType());
@@ -167,6 +168,18 @@ public class DefaultApi {
         final Map<String, Object> requestArgs = new HashMap<>();
         requestArgs.put("uid", userId);
         requestArgs.put("gender", gender);
+
+        requestApiServer(url, requestArgs, null);
+        return new Object();
+    }
+
+    @NonNull
+    public static Object updateCustom(long userId, String custom) {
+        final String url = "/user/update";
+
+        final Map<String, Object> requestArgs = new HashMap<>();
+        requestArgs.put("uid", userId);
+        requestArgs.put("custom", custom);
 
         requestApiServer(url, requestArgs, null);
         return new Object();
