@@ -804,7 +804,12 @@ public class ChatRoomFragment extends SystemInsetsFragment {
                     .add((transaction, groupArrayList) -> {
                         final List<UnionTypeItemObject> contentList = new ArrayList<>();
                         for (MSIMChatRoomMessage message : messageList) {
-                            contentList.add(mPresenter.createDefault(message));
+                            final UnionTypeItemObject unionTypeItemObject = mPresenter.createDefault(message);
+                            if (unionTypeItemObject != null) {
+                                contentList.add(unionTypeItemObject);
+                            } else {
+                                MSIMUikitLog.e("unexpected. create UnionTypeItemObject is null. MSIMChatRoomMessage:%s", message);
+                            }
                         }
                         groupArrayList.appendGroupItems(GROUP_CONTENT, contentList);
                     })

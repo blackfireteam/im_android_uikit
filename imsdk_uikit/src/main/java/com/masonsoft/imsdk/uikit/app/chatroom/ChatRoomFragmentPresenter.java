@@ -7,6 +7,7 @@ import androidx.annotation.WorkerThread;
 
 import com.masonsoft.imsdk.MSIMChatRoomContext;
 import com.masonsoft.imsdk.MSIMChatRoomMessage;
+import com.masonsoft.imsdk.MSIMConstants;
 import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.MSIMSessionListener;
 import com.masonsoft.imsdk.MSIMSessionListenerProxy;
@@ -120,7 +121,6 @@ public class ChatRoomFragmentPresenter extends DynamicPresenter<ChatRoomFragment
 
     @WorkerThread
     private void onChatRoomStateChangedInternal() {
-        // 计算是否有新消息
         if (mChatRoomContext == null) {
             return;
         }
@@ -128,8 +128,13 @@ public class ChatRoomFragmentPresenter extends DynamicPresenter<ChatRoomFragment
         final List<MSIMChatRoomMessage> messageList = mChatRoomContext.getMessageList();
         Collections.sort(messageList, (o1, o2) -> Long.compare(o1.getMessageId(), o2.getMessageId()));
 
+        // 计算是否有可见的新消息
         final List<MSIMChatRoomMessage> newMessageList = new ArrayList<>();
         for (MSIMChatRoomMessage message : messageList) {
+            if (!MSIMConstants.MessageType.isVisibleMessage(message.getMessageType())) {
+                continue;
+            }
+
             if (message.getMessageId() > mMaxLocalMessageId) {
                 newMessageList.add(message);
                 mMaxLocalMessageId = message.getMessageId();
