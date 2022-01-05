@@ -3,6 +3,7 @@ package com.masonsoft.imsdk.uikit.app.chatroom;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
+import androidx.annotation.WorkerThread;
 
 import com.masonsoft.imsdk.MSIMChatRoomContext;
 import com.masonsoft.imsdk.MSIMChatRoomMessage;
@@ -10,26 +11,30 @@ import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.MSIMSessionListener;
 import com.masonsoft.imsdk.MSIMSessionListenerProxy;
 import com.masonsoft.imsdk.core.IMLog;
-import com.masonsoft.imsdk.lang.GeneralResult;
 import com.masonsoft.imsdk.uikit.GlobalChatRoomManager;
 import com.masonsoft.imsdk.uikit.uniontype.DataObject;
 import com.masonsoft.imsdk.uikit.uniontype.UnionTypeViewHolderListeners;
 import com.masonsoft.imsdk.uikit.uniontype.viewholder.IMBaseMessageViewHolder;
 import com.masonsoft.imsdk.uikit.widget.MSIMChatRoomStateChangedViewHelper;
 
-import io.github.idonans.core.thread.BatchQueue;
-import io.github.idonans.dynamic.DynamicResult;
-import io.github.idonans.dynamic.single.SinglePresenter;
-import io.github.idonans.uniontype.UnionTypeItemObject;
-import io.reactivex.rxjava3.core.SingleSource;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-public class ChatRoomFragmentPresenter extends SinglePresenter<UnionTypeItemObject, GeneralResult, ChatRoomFragment.ViewImpl> {
+import io.github.idonans.core.thread.BatchQueue;
+import io.github.idonans.core.thread.Threads;
+import io.github.idonans.dynamic.DynamicPresenter;
+import io.github.idonans.uniontype.UnionTypeItemObject;
+
+public class ChatRoomFragmentPresenter extends DynamicPresenter<ChatRoomFragment.ViewImpl> {
 
     private static final boolean DEBUG = true;
 
     private long mSessionUserId;
     @SuppressWarnings("FieldCanBeLocal")
     private long mChatRoomId;
+
+    private long mMaxLocalMessageId = 0L;
 
     @Nullable
     private GlobalChatRoomManager.StaticChatRoomContext mChatRoomContext;
@@ -66,7 +71,7 @@ public class ChatRoomFragmentPresenter extends SinglePresenter<UnionTypeItemObje
         }
     };
 
-    private final BatchQueue<Object> mChatRoomStateChangedBatchQueue = new BatchQueue<>(true);
+    private final BatchQueue<Object> mChatRoomStateChangedBatchQueue = new BatchQueue<>(false);
 
     @UiThread
     public ChatRoomFragmentPresenter(@NonNull ChatRoomFragment.ViewImpl view) {
@@ -78,7 +83,7 @@ public class ChatRoomFragmentPresenter extends SinglePresenter<UnionTypeItemObje
     }
 
     private void init() {
-        if (!reInit()) {
+        if (reInit()) {
             notifyChatRoomStateChanged();
         }
     }
@@ -113,16 +118,39 @@ public class ChatRoomFragmentPresenter extends SinglePresenter<UnionTypeItemObje
         mChatRoomStateChangedBatchQueue.add(Boolean.TRUE);
     }
 
+    @WorkerThread
     private void onChatRoomStateChangedInternal() {
-        final ChatRoomFragment.ViewImpl view = getView();
-        if (view != null) {
-            view.onChatRoomStateChanged(mChatRoomContext);
+        // 计算是否有新消息
+        if (mChatRoomContext == null) {
+            return;
         }
-    }
 
-    @Nullable
-    public ChatRoomFragment.ViewImpl getView() {
-        return (ChatRoomFragment.ViewImpl) super.getView();
+        final List<MSIMChatRoomMessage> messageList = mChatRoomContext.getMessageList();
+        Collections.sort(messageList, (o1, o2) -> Long.compare(o1.getMessageId(), o2.getMessageId()));
+
+        final List<MSIMChatRoomMessage> newMessageList = new ArrayList<>();
+        for (MSIMChatRoomMessage message : messageList) {
+            if (message.getMessageId() > mMaxLocalMessageId) {
+                newMessageList.add(message);
+                mMaxLocalMessageId = message.getMessageId();
+            }
+        }
+
+        Threads.postUi(() -> {
+            final ChatRoomFragment.ViewImpl view = getView();
+            if (view == null) {
+                return;
+            }
+            if (mChatRoomContext == null) {
+                return;
+            }
+
+            if (!newMessageList.isEmpty()) {
+                view.onAppendMessages(messageList, mChatRoomContext);
+            }
+
+            view.onChatRoomStateChanged(mChatRoomContext);
+        });
     }
 
     public long getChatRoomId() {
@@ -157,12 +185,6 @@ public class ChatRoomFragmentPresenter extends SinglePresenter<UnionTypeItemObje
                 .putExtHolderItemClick1(mOnHolderItemClickListener)
                 .putExtHolderItemLongClick1(mOnHolderItemLongClickListener);
         return IMBaseMessageViewHolder.Helper.createDefault(dataObject);
-    }
-
-    @Nullable
-    @Override
-    protected SingleSource<DynamicResult<UnionTypeItemObject, GeneralResult>> createInitRequest() throws Exception {
-        return null;
     }
 
 }

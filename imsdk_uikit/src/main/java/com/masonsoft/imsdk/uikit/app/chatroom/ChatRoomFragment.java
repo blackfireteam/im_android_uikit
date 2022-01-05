@@ -25,6 +25,7 @@ import com.masonsoft.imsdk.MSIMChatRoomMessageFactory;
 import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.MSIMWeakCallback;
 import com.masonsoft.imsdk.lang.GeneralResult;
+import com.masonsoft.imsdk.lang.ObjectWrapper;
 import com.masonsoft.imsdk.uikit.GlobalChatRoomManager;
 import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 import com.masonsoft.imsdk.uikit.MSIMUikitLog;
@@ -57,7 +58,7 @@ import io.github.idonans.core.AbortSignal;
 import io.github.idonans.core.FormValidator;
 import io.github.idonans.core.thread.Threads;
 import io.github.idonans.core.util.PermissionUtil;
-import io.github.idonans.dynamic.single.UnionTypeStatusSingleView;
+import io.github.idonans.dynamic.DynamicView;
 import io.github.idonans.lang.DisposableHolder;
 import io.github.idonans.lang.util.ViewUtil;
 import io.github.idonans.uniontype.Host;
@@ -155,11 +156,11 @@ public class ChatRoomFragment extends SystemInsetsFragment {
         adapter.setHost(Host.Factory.create(this, recyclerView, adapter));
         adapter.setUnionTypeMapper(new IMUikitUnionTypeMapper());
         mDataAdapter = adapter;
+        recyclerView.setAdapter(adapter);
+
         mViewImpl = new ViewImpl(adapter);
         clearPresenter();
         mPresenter = new ChatRoomFragmentPresenter(mViewImpl);
-        mViewImpl.setPresenter(mPresenter);
-        recyclerView.setAdapter(adapter);
 
         mBinding.keyboardEditText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3000)});
         mSoftKeyboardHelper = new SoftKeyboardHelper(
@@ -425,8 +426,6 @@ public class ChatRoomFragment extends SystemInsetsFragment {
         ViewUtil.setVisibilityIfChanged(mBinding.keyboardEmoji, View.VISIBLE);
         ViewUtil.setVisibilityIfChanged(mBinding.keyboardEmojiSystemSoftKeyboard, View.GONE);
 
-        mPresenter.requestInit();
-
         return mBinding.getRoot();
     }
 
@@ -454,14 +453,13 @@ public class ChatRoomFragment extends SystemInsetsFragment {
                     MSIMUikitLog.e("unexpected. presenter is null");
                     return;
                 }
-                final long chatRoomId = mChatRoomId;
-                mockMultiMessages(mPresenter.getChatRoomContext(), chatRoomId);
+                mockMultiMessages(mPresenter.getChatRoomContext());
             }
         });
         dialog.show();
     }
 
-    private static void mockMultiMessages(final GlobalChatRoomManager.StaticChatRoomContext chatRoomContext, final long chatRoomId) {
+    private static void mockMultiMessages(final GlobalChatRoomManager.StaticChatRoomContext chatRoomContext) {
         if (chatRoomContext == null) {
             MSIMUikitLog.e("unexpected. chat room context is null");
             return;
@@ -472,7 +470,10 @@ public class ChatRoomFragment extends SystemInsetsFragment {
             final int index = i;
             Threads.postBackground(() -> {
                 final long sessionUserId = MSIMManager.getInstance().getSessionUserId();
-                final MSIMChatRoomMessage message = MSIMChatRoomMessageFactory.createTextMessage("[" + time + "] mock concurrent message [" + index + "/" + size + "]");
+                final MSIMChatRoomMessage message = MSIMChatRoomMessageFactory.createTextMessage(
+                        "[" + time + "] mock concurrent message [" + index + "/" + size + "]",
+                        chatRoomContext.getChatRoomContext()
+                );
                 chatRoomContext.getChatRoomContext().getChatRoomManager().sendChatRoomMessage(
                         sessionUserId,
                         message
@@ -537,7 +538,10 @@ public class ChatRoomFragment extends SystemInsetsFragment {
 
         mEnqueueCallback = new LocalEnqueueCallback(true);
         final String text = editable.toString().trim();
-        final MSIMChatRoomMessage message = MSIMChatRoomMessageFactory.createTextMessage(text);
+        final MSIMChatRoomMessage message = MSIMChatRoomMessageFactory.createTextMessage(
+                text,
+                chatRoomContext.getChatRoomContext()
+        );
         chatRoomContext.getChatRoomContext().getChatRoomManager().sendChatRoomMessage(
                 chatRoomContext.getSessionUserId(),
                 message,
@@ -561,9 +565,15 @@ public class ChatRoomFragment extends SystemInsetsFragment {
             mEnqueueCallback = new LocalEnqueueCallback(false);
             final MSIMChatRoomMessage message;
             if (mediaInfo.isVideoMimeType()) {
-                message = MSIMChatRoomMessageFactory.createVideoMessage(mediaInfo.uri);
+                message = MSIMChatRoomMessageFactory.createVideoMessage(
+                        mediaInfo.uri,
+                        chatRoomContext.getChatRoomContext()
+                );
             } else {
-                message = MSIMChatRoomMessageFactory.createImageMessage(mediaInfo.uri);
+                message = MSIMChatRoomMessageFactory.createImageMessage(
+                        mediaInfo.uri,
+                        chatRoomContext.getChatRoomContext()
+                );
             }
             chatRoomContext.getChatRoomContext().getChatRoomManager().sendChatRoomMessage(
                     chatRoomContext.getSessionUserId(),
@@ -586,7 +596,10 @@ public class ChatRoomFragment extends SystemInsetsFragment {
         }
 
         mEnqueueCallback = new LocalEnqueueCallback(true);
-        final MSIMChatRoomMessage message = MSIMChatRoomMessageFactory.createAudioMessage(audioFilePath);
+        final MSIMChatRoomMessage message = MSIMChatRoomMessageFactory.createAudioMessage(
+                audioFilePath,
+                chatRoomContext.getChatRoomContext()
+        );
         chatRoomContext.getChatRoomContext().getChatRoomManager().sendChatRoomMessage(
                 chatRoomContext.getSessionUserId(),
                 message,
@@ -673,10 +686,14 @@ public class ChatRoomFragment extends SystemInsetsFragment {
         }
     }
 
-    class ViewImpl extends UnionTypeStatusSingleView<GeneralResult> {
+    class ViewImpl implements DynamicView {
+
+        @NonNull
+        private final UnionTypeAdapter mAdapter;
+        private final int GROUP_CONTENT = 0;
 
         public ViewImpl(@NonNull UnionTypeAdapter adapter) {
-            super(adapter);
+            mAdapter = adapter;
         }
 
         public long getChatRoomId() {
@@ -765,37 +782,54 @@ public class ChatRoomFragment extends SystemInsetsFragment {
             }
         }
 
-        public void onChatRoomStateChanged(@Nullable GlobalChatRoomManager.StaticChatRoomContext chatRoomContext) {
+        public void onChatRoomStateChanged(@NonNull GlobalChatRoomManager.StaticChatRoomContext chatRoomContext) {
             final ImsdkUikitChatRoomFragmentBinding binding = mBinding;
             if (binding == null) {
                 MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
                 return;
             }
 
-            getAdapter().getData().beginTransaction()
+            binding.topBarTitle.setChatRoomContext(chatRoomContext.getChatRoomContext());
+        }
+
+        public void onAppendMessages(@NonNull List<MSIMChatRoomMessage> messageList, @NonNull GlobalChatRoomManager.StaticChatRoomContext chatRoomContext) {
+            final ImsdkUikitChatRoomFragmentBinding binding = mBinding;
+            if (binding == null) {
+                MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
+                return;
+            }
+
+            final ObjectWrapper autoScrollToEnd = new ObjectWrapper(null);
+            mAdapter.getData().beginTransaction()
                     .add((transaction, groupArrayList) -> {
-                        final List<UnionTypeItemObject> list = new ArrayList<>();
-                        if (chatRoomContext != null) {
-                            final List<MSIMChatRoomMessage> messageList = chatRoomContext.getMessageList();
-                            for (MSIMChatRoomMessage message : messageList) {
-                                if (mPresenter != null) {
-                                    final UnionTypeItemObject itemObject = mPresenter.createDefault(message);
-                                    if (itemObject != null) {
-                                        list.add(itemObject);
-                                    }
+                        final List<UnionTypeItemObject> contentList = new ArrayList<>();
+                        for (MSIMChatRoomMessage message : messageList) {
+                            contentList.add(mPresenter.createDefault(message));
+                        }
+                        groupArrayList.appendGroupItems(GROUP_CONTENT, contentList);
+                    })
+                    .commit(() -> {
+                        final int count = mAdapter.getItemCount();
+                        if (count <= 0) {
+                            autoScrollToEnd.setObject(Boolean.TRUE);
+                        } else {
+                            //noinspection ConstantConditions
+                            int lastPosition = ((LinearLayoutManager) binding.recyclerView.getLayoutManager()).findLastVisibleItemPosition();
+                            if (lastPosition < 0) {
+                                autoScrollToEnd.setObject(Boolean.TRUE);
+                            } else {
+                                if (lastPosition >= count - 1) {
+                                    autoScrollToEnd.setObject(Boolean.TRUE);
                                 }
                             }
                         }
-
-                        groupArrayList.removeGroup(getGroupHeader());
-                        groupArrayList.removeGroup(getGroupFooter());
-                        groupArrayList.setGroupItems(getGroupContent(), list);
-                    })
-                    // 如果之前在页面底部，则自动滚动到末尾
-                    .commit(() -> {
-                        // TODO check is end ?
                     }, () -> {
-                        // TODO auto scroll to end if pre is end
+                        if (autoScrollToEnd.getObject() == Boolean.TRUE && isResumed()) {
+                            scrollToPosition(binding.recyclerView, mAdapter.getItemCount() - 1);
+                        } else {
+                            // 有新消息，显示向下的箭头
+                            showNewMessagesTipView();
+                        }
                     });
         }
     }

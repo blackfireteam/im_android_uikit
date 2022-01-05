@@ -192,6 +192,11 @@ public class GlobalChatRoomManager {
             public void onMessageChanged(MSIMChatRoomMessage msimChatRoomMessage) {
                 mMessageCache.appendOrUpdateMessage(msimChatRoomMessage);
             }
+
+            @Override
+            public void onReceivedTipMessageList(@NonNull List<CharSequence> list) {
+                // ignore
+            }
         });
 
         // 缓存最新的 2000 条聊天室消息
