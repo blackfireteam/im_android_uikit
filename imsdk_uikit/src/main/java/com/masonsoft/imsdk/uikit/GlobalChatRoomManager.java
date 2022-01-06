@@ -27,6 +27,7 @@ import io.github.idonans.core.Singleton;
 import io.github.idonans.core.manager.StorageManager;
 import io.github.idonans.core.thread.BatchQueue;
 import io.github.idonans.core.thread.TaskQueue;
+import io.github.idonans.core.util.IOUtil;
 import io.github.idonans.core.util.Preconditions;
 
 public class GlobalChatRoomManager {
@@ -127,6 +128,7 @@ public class GlobalChatRoomManager {
             final List<StaticChatRoomContext> copyList = new ArrayList<>(collections);
             for (StaticChatRoomContext chatRoomContext : copyList) {
                 if (chatRoomContext != null) {
+                    IOUtil.closeQuietly(chatRoomContext.getChatRoomContext());
                     final long sessionUserId = chatRoomContext.getSessionUserId();
                     final long chatRoomId = chatRoomContext.getChatRoomId();
                     removeStaticChatRoomContext(sessionUserId, chatRoomId);
