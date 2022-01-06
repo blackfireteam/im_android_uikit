@@ -127,10 +127,10 @@ public class GlobalChatRoomManager {
             final List<StaticChatRoomContext> copyList = new ArrayList<>(collections);
             for (StaticChatRoomContext chatRoomContext : copyList) {
                 if (chatRoomContext != null) {
-                    removeStaticChatRoomContext(
-                            chatRoomContext.getSessionUserId(),
-                            chatRoomContext.getChatRoomId()
-                    );
+                    final long sessionUserId = chatRoomContext.getSessionUserId();
+                    final long chatRoomId = chatRoomContext.getChatRoomId();
+                    removeStaticChatRoomContext(sessionUserId, chatRoomId);
+                    clearDisallowAutoJoinChatRoom(sessionUserId, chatRoomId);
                 }
             }
         }
