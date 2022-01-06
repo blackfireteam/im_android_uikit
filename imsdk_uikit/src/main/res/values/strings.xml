@@ -79,4 +79,9 @@
     <string name="imsdk_uikit_chat_room_edit_tod_title">编辑聊天室公告</string>
     <string name="imsdk_uikit_chat_room_edit_tod_submit">保存</string>
     <string name="imsdk_uikit_hint_chat_room_tod_edit_text">编辑聊天室公告</string>
+    <string name="imsdk_uikit_chat_room_member_list_title">聊天室在线用户</string>
+    <string name="imsdk_uikit_chat_room_member_list_title_format">聊天室在线用户（%s）</string>
+    <string name="imsdk_uikit_chat_room_member_role_admin">管理员</string>
+    <string name="imsdk_uikit_chat_room_member_role_tmp_admin">临时管理员</string>
+    <string name="imsdk_uikit_chat_room_member_mute">禁言</string>
 </resources>

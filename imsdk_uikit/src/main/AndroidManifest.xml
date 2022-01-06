@@ -17,5 +17,6 @@
         <activity android:name=".app.chatroom.ChatRoomActivity" />
         <activity android:name=".app.chatroom.settings.ChatRoomSettingsActivity" />
         <activity android:name=".app.chatroom.edittod.ChatRoomEditTodActivity" />
+        <activity android:name=".app.chatroom.memberlist.ChatRoomMemberListActivity" />
     </application>
 </manifest>

@@ -17,6 +17,7 @@ import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.uikit.R;
 import com.masonsoft.imsdk.uikit.app.SystemInsetsFragment;
 import com.masonsoft.imsdk.uikit.app.chatroom.edittod.ChatRoomEditTodActivity;
+import com.masonsoft.imsdk.uikit.app.chatroom.memberlist.ChatRoomMemberListActivity;
 import com.masonsoft.imsdk.uikit.common.simpledialog.SimpleContentConfirmDialog;
 import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitChatRoomSettingsFragmentBinding;
 import com.masonsoft.imsdk.uikit.util.ActivityUtil;
@@ -84,12 +85,17 @@ public class ChatRoomSettingsFragment extends SystemInsetsFragment {
             MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.PRESENTER_IS_NULL);
             return;
         }
+        if (mChatRoomId <= 0) {
+            MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.INVALID_CHAT_ROOM_ID);
+            return;
+        }
         final GlobalChatRoomManager.StaticChatRoomContext chatRoomContext = mPresenter.getChatRoomContext();
         if (chatRoomContext == null) {
             TipUtil.show(R.string.imsdk_uikit_tip_chat_room_context_is_null);
             return;
         }
-        // TODO
+
+        ChatRoomMemberListActivity.start(activity, mChatRoomId);
     }
 
     private void onChatRoomNameClick() {
