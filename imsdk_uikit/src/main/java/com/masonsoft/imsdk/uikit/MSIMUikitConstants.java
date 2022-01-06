@@ -36,6 +36,7 @@ public class MSIMUikitConstants {
         String INVALID_ARGS = "one or more args is invalid";
         String INVALID_CHAT_ROOM_ID = "chat room id is invalid";
         String INVALID_SESSION_USER_ID = "session user id is invalid";
+        String INVALID_CHAT_ROOM_INFO = "chat room info is invalid";
     }
 
     ///////////////////////////////////////////////////////////////////////

@@ -13,6 +13,7 @@ import com.masonsoft.imsdk.MSIMSessionListener;
 import com.masonsoft.imsdk.MSIMSessionListenerProxy;
 import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.uikit.GlobalChatRoomManager;
+import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.uikit.uniontype.DataObject;
 import com.masonsoft.imsdk.uikit.uniontype.IMUikitUnionTypeMapper;
 import com.masonsoft.imsdk.uikit.uniontype.UnionTypeViewHolderListeners;
@@ -170,7 +171,17 @@ public class ChatRoomMemberListFragmentPresenter extends DynamicPresenter<ChatRo
             return;
         }
 
-        // TODO
+        if (mChatRoomContext == null) {
+            MSIMUikitLog.e("unexpected. chat room context is null");
+            return;
+        }
+
+        if (viewHolder.itemObject instanceof DataObject) {
+            final Object object = ((DataObject) viewHolder.itemObject).object;
+            if (object instanceof MSIMChatRoomMember) {
+                view.showMenu(((MSIMChatRoomMember) object), mChatRoomContext);
+            }
+        }
     };
 
     @Nullable
