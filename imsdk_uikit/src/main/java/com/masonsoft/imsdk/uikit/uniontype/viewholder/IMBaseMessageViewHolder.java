@@ -17,6 +17,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Lifecycle;
 
 import com.masonsoft.imsdk.MSIMBaseMessage;
+import com.masonsoft.imsdk.MSIMChatRoomMessage;
 import com.masonsoft.imsdk.MSIMConstants;
 import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.MSIMMessage;
@@ -714,12 +715,18 @@ public abstract class IMBaseMessageViewHolder extends UnionTypeViewHolder {
             }
             final MSIMBaseMessage baseMessage = holderFinder.baseMessage;
             if (baseMessage instanceof MSIMMessage) {
+                final MSIMMessage message = (MSIMMessage) baseMessage;
                 MSIMManager.getInstance().getMessageManager().revoke(
-                        baseMessage.getSessionUserId(),
-                        (MSIMMessage) baseMessage
+                        message.getSessionUserId(),
+                        message
+                );
+            } else if (baseMessage instanceof MSIMChatRoomMessage) {
+                final MSIMChatRoomMessage message = (MSIMChatRoomMessage) baseMessage;
+                message.getChatRoomContext().getChatRoomManager().revokeMessage(
+                        message.getSessionUserId(),
+                        message
                 );
             } else {
-                // TODO FIXME
                 MSIMUikitLog.e("revoke MSIMBaseMessage not impl: %s", baseMessage);
             }
         }
