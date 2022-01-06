@@ -138,15 +138,17 @@ public class ChatRoomFragmentPresenter extends DynamicPresenter<ChatRoomFragment
         }
 
         final List<MSIMChatRoomMessage> messageList = mChatRoomContext.getMessageList();
-        Collections.sort(messageList, (o1, o2) -> Long.compare(o1.getMessageId(), o2.getMessageId()));
+        final List<MSIMChatRoomMessage> visibleMessageList = new ArrayList<>();
+        for (MSIMChatRoomMessage message : messageList) {
+            if (MSIMConstants.MessageType.isVisibleMessage(message.getMessageType())) {
+                visibleMessageList.add(message);
+            }
+        }
+        Collections.sort(visibleMessageList, (o1, o2) -> Long.compare(o1.getMessageId(), o2.getMessageId()));
 
         // 计算是否有可见的新消息
         final List<MSIMChatRoomMessage> newMessageList = new ArrayList<>();
-        for (MSIMChatRoomMessage message : messageList) {
-            if (!MSIMConstants.MessageType.isVisibleMessage(message.getMessageType())) {
-                continue;
-            }
-
+        for (MSIMChatRoomMessage message : visibleMessageList) {
             if (message.getMessageId() > mMaxLocalMessageId) {
                 newMessageList.add(message);
                 mMaxLocalMessageId = message.getMessageId();
