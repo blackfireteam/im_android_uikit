@@ -15,6 +15,7 @@ import com.masonsoft.imsdk.core.RuntimeMode;
 import com.masonsoft.imsdk.util.WeakObservable;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -49,6 +50,11 @@ public class GlobalChatRoomManager {
         public void onSessionUserIdChanged() {
             GlobalChatRoomManager.this.onSessionUserIdChanged();
         }
+
+        @Override
+        public void onSessionChanged() {
+            GlobalChatRoomManager.this.onSessionChanged();
+        }
     };
 
     private final Map<String, Boolean> mDisallowAutoJoinChatRoomRecord = new HashMap<>();
@@ -81,7 +87,7 @@ public class GlobalChatRoomManager {
      *
      * @param sessionUserId 当前登录用户 id
      * @param chatRoomId    聊天室 id
-     * @return
+     * @return 是否记录过不要自动加入该聊天室
      */
     public boolean isDisallowAutoJoinChatRoom(long sessionUserId, long chatRoomId) {
         final String key = buildDisallowAutoJoinChatRoomKey(sessionUserId, chatRoomId);
@@ -105,6 +111,28 @@ public class GlobalChatRoomManager {
         if (sessionUserId > 0) {
             final StaticChatRoomContext context = getStaticChatRoomContext();
             Preconditions.checkNotNull(context);
+        }
+    }
+
+    private void onSessionChanged() {
+        // 登录信息发生变更，当退出登录时（没有登录信息），关闭所有聊天室
+        if (!MSIMManager.getInstance().hasSession()) {
+            closeAllChatRoom();
+        }
+    }
+
+    private void closeAllChatRoom() {
+        synchronized (mStaticChatRoomContextMap) {
+            final Collection<StaticChatRoomContext> collections = mStaticChatRoomContextMap.values();
+            final List<StaticChatRoomContext> copyList = new ArrayList<>(collections);
+            for (StaticChatRoomContext chatRoomContext : copyList) {
+                if (chatRoomContext != null) {
+                    removeStaticChatRoomContext(
+                            chatRoomContext.getSessionUserId(),
+                            chatRoomContext.getChatRoomId()
+                    );
+                }
+            }
         }
     }
 
@@ -169,6 +197,10 @@ public class GlobalChatRoomManager {
         synchronized (mStaticChatRoomContextMap) {
             final StaticChatRoomContext context = getStaticChatRoomContext(sessionUserId, chatRoomId, false);
             if (context != null) {
+                MSIMUikitLog.v(
+                        "removeStaticChatRoomContext sessionUserId:%s, chatRoomId:%s",
+                        sessionUserId, chatRoomId
+                );
                 final String key = sessionUserId + "_" + chatRoomId;
                 mStaticChatRoomContextMap.remove(key);
             }
