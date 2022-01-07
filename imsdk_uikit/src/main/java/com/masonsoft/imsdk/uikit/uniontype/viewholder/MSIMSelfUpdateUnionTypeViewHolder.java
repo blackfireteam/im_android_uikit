@@ -5,7 +5,6 @@ import android.view.View;
 import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 
-import com.masonsoft.imsdk.MSIMBaseMessage;
 import com.masonsoft.imsdk.MSIMSelfUpdateListener;
 import com.masonsoft.imsdk.MSIMSelfUpdater;
 import com.masonsoft.imsdk.uikit.uniontype.DataObject;
@@ -48,8 +47,8 @@ public abstract class MSIMSelfUpdateUnionTypeViewHolder extends UnionTypeViewHol
         if (validateUnionType()) {
             final DataObject dataObject = getItemObject(DataObject.class);
             if (dataObject != null) {
-                final MSIMBaseMessage baseMessage = dataObject.getObject(MSIMBaseMessage.class);
-                if (baseMessage != null) {
+                final MSIMSelfUpdater selfUpdater = dataObject.getObject(MSIMSelfUpdater.class);
+                if (selfUpdater != null) {
                     onBindUpdate();
                 }
             }
