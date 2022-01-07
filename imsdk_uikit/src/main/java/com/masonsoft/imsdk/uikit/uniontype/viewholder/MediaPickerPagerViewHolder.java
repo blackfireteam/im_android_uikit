@@ -32,9 +32,9 @@ public class MediaPickerPagerViewHolder extends UnionTypeViewHolder {
 
     @Override
     public void onBindUpdate() {
-        final DataObject itemObject = (DataObject) this.itemObject;
+        final DataObject itemObject = getItemObject(DataObject.class);
         Preconditions.checkNotNull(itemObject);
-        final MediaData.MediaInfo mediaInfo = (MediaData.MediaInfo) itemObject.object;
+        final MediaData.MediaInfo mediaInfo = itemObject.getObject(MediaData.MediaInfo.class);
         final MediaData mediaData = itemObject.getExtObjectObject1(null);
 
         MSIMUikitLog.v(Objects.defaultObjectTag(this) + " onBindUpdate uri:%s", mediaInfo.uri);

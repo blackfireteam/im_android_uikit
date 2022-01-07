@@ -36,9 +36,9 @@ public class IMBaseMessagePreviewImageViewHolder extends IMBaseMessageViewHolder
     public void onBindUpdate() {
         super.onBindUpdate();
 
-        final DataObject itemObject = (DataObject) this.itemObject;
+        final DataObject itemObject = getItemObject(DataObject.class);
         Preconditions.checkNotNull(itemObject);
-        final MSIMBaseMessage baseMessage = (MSIMBaseMessage) itemObject.object;
+        final MSIMBaseMessage baseMessage = itemObject.getObject(MSIMBaseMessage.class);
 
         final List<String> firstAvailableUrls = new ArrayList<>();
         final MSIMImageElement element = baseMessage.getImageElement();

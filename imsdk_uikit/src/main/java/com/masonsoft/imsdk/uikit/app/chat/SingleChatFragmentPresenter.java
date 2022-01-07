@@ -28,6 +28,7 @@ import io.github.idonans.dynamic.DynamicResult;
 import io.github.idonans.dynamic.page.PagePresenter;
 import io.github.idonans.lang.DisposableHolder;
 import io.github.idonans.uniontype.UnionTypeItemObject;
+import io.github.idonans.uniontype.UnionTypeMapper;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.core.SingleSource;
 
@@ -127,7 +128,11 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
         final DataObject dataObject = new DataObject(message)
                 .putExtHolderItemClick1(mOnHolderItemClickListener)
                 .putExtHolderItemLongClick1(mOnHolderItemLongClickListener);
-        return IMBaseMessageViewHolder.Helper.createDefault(dataObject);
+        final int unionType = IMBaseMessageViewHolder.Helper.getDefaultUnionType(dataObject);
+        if (unionType != UnionTypeMapper.UNION_TYPE_NULL) {
+            return new UnionTypeItemObject(unionType, dataObject);
+        }
+        return null;
     }
 
     @Override

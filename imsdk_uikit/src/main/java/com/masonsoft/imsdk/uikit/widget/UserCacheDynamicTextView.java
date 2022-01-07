@@ -33,6 +33,10 @@ public abstract class UserCacheDynamicTextView extends AppCompatTextView {
     }
 
     private void initFromAttributes(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        if (isInEditMode()) {
+            return;
+        }
+
         mUserCacheChangedViewHelper = new UserCacheChangedViewHelper() {
             @Override
             protected void onUserCacheChanged(@Nullable MSIMUserInfo userInfo) {

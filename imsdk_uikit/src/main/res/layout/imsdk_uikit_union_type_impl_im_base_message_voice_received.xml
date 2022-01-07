@@ -20,73 +20,55 @@
         android:textSize="12sp"
         tools:text="17:30" />
 
-    <com.masonsoft.imsdk.uikit.widget.MSIMBaseMessageRevokeStateFrameLayout
-        android:id="@+id/message_revoke_state_layout"
+    <com.google.android.flexbox.FlexboxLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="65dp"
+        android:layout_marginBottom="10dp"
+        app:alignItems="flex_start"
+        app:flexDirection="row">
 
-        <com.masonsoft.imsdk.uikit.widget.MSIMBaseMessageRevokeTextView
-            android:id="@+id/message_revoke_text_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:gravity="center"
-            android:includeFontPadding="false"
-            android:lineSpacingMultiplier="1.2"
-            android:textColor="#ffb2b2b2"
-            android:textSize="12sp"
-            app:received="true" />
+        <com.masonsoft.imsdk.uikit.widget.UserCacheAvatar
+            android:id="@+id/avatar"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="10dp"
+            app:layout_flexGrow="0"
+            app:layout_flexShrink="0" />
 
-        <com.google.android.flexbox.FlexboxLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="0dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="65dp"
-            android:layout_marginBottom="10dp"
-            app:alignItems="flex_start"
-            app:flexDirection="row">
+        <com.masonsoft.imsdk.uikit.widget.MSIMBaseMessageAudioView
+            android:id="@+id/audio_view"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:background="@drawable/imsdk_uikit_chat_bubble_received"
+            android:padding="0dp"
+            app:layout_flexGrow="0"
+            app:layout_flexShrink="1">
 
-            <com.masonsoft.imsdk.uikit.widget.UserCacheAvatar
-                android:id="@+id/avatar"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginStart="15dp"
+            <ImageView
+                android:id="@+id/audio_image_flag"
+                android:layout_width="30dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="end"
                 android:layout_marginEnd="10dp"
-                app:layout_flexGrow="0"
-                app:layout_flexShrink="0" />
+                android:contentDescription="@string/imsdk_uikit_empty_text_hint"
+                android:scaleType="centerInside"
+                android:src="@drawable/imsdk_uikit_voice_msg_playing_3" />
 
-            <com.masonsoft.imsdk.uikit.widget.MSIMBaseMessageAudioView
-                android:id="@+id/audio_view"
+            <TextView
+                android:id="@+id/audio_duration_text"
                 android:layout_width="wrap_content"
-                android:layout_height="40dp"
-                android:background="@drawable/imsdk_uikit_chat_bubble_received"
-                android:padding="0dp"
-                app:layout_flexGrow="0"
-                app:layout_flexShrink="1">
-
-                <ImageView
-                    android:id="@+id/audio_image_flag"
-                    android:layout_width="30dp"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="end"
-                    android:layout_marginEnd="10dp"
-                    android:contentDescription="@string/imsdk_uikit_empty_text_hint"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/imsdk_uikit_voice_msg_playing_3" />
-
-                <TextView
-                    android:id="@+id/audio_duration_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end|center_vertical"
-                    android:layout_marginEnd="45dp"
-                    android:paddingStart="20dp"
-                    android:paddingEnd="0dp"
-                    android:textColor="@android:color/black"
-                    android:textSize="14sp"
-                    tools:text="120''" />
-            </com.masonsoft.imsdk.uikit.widget.MSIMBaseMessageAudioView>
-        </com.google.android.flexbox.FlexboxLayout>
-    </com.masonsoft.imsdk.uikit.widget.MSIMBaseMessageRevokeStateFrameLayout>
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|center_vertical"
+                android:layout_marginEnd="45dp"
+                android:paddingStart="20dp"
+                android:paddingEnd="0dp"
+                android:textColor="@android:color/black"
+                android:textSize="14sp"
+                tools:text="120''" />
+        </com.masonsoft.imsdk.uikit.widget.MSIMBaseMessageAudioView>
+    </com.google.android.flexbox.FlexboxLayout>
 </LinearLayout>

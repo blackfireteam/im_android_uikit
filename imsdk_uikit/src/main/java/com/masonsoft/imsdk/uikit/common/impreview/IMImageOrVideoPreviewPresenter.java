@@ -19,6 +19,7 @@ import io.github.idonans.core.util.Preconditions;
 import io.github.idonans.dynamic.DynamicResult;
 import io.github.idonans.dynamic.page.PagePresenter;
 import io.github.idonans.uniontype.UnionTypeItemObject;
+import io.github.idonans.uniontype.UnionTypeMapper;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.core.SingleSource;
 
@@ -75,11 +76,14 @@ public class IMImageOrVideoPreviewPresenter extends PagePresenter<UnionTypeItemO
             return null;
         }
 
-        return IMBaseMessageViewHolder.Helper.createPreviewDefault(
-                new DataObject(baseMessage)
-                        .putExtObjectBoolean1(autoPlay)
-                        .putExtHolderItemClick1(mOnHolderItemClickListener)
-        );
+        final DataObject dataObject = new DataObject(baseMessage)
+                .putExtObjectBoolean1(autoPlay)
+                .putExtHolderItemClick1(mOnHolderItemClickListener);
+        final int unionType = IMBaseMessageViewHolder.Helper.getPreviewUnionType(dataObject);
+        if (unionType != UnionTypeMapper.UNION_TYPE_NULL) {
+            return new UnionTypeItemObject(unionType, dataObject);
+        }
+        return null;
     }
 
     @Nullable

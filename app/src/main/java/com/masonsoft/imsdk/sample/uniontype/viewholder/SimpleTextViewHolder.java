@@ -30,7 +30,7 @@ public class SimpleTextViewHolder extends UnionTypeViewHolder {
 
     @Override
     public void onBindUpdate() {
-        final DataObject itemObject = (DataObject) this.itemObject;
+        final DataObject itemObject = getItemObject(DataObject.class);
         Preconditions.checkNotNull(itemObject);
         final String text = (String) itemObject.object;
 

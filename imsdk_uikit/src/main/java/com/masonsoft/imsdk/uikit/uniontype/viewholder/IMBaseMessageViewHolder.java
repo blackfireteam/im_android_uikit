@@ -21,6 +21,7 @@ import com.masonsoft.imsdk.MSIMChatRoomMessage;
 import com.masonsoft.imsdk.MSIMConstants;
 import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.MSIMMessage;
+import com.masonsoft.imsdk.MSIMSelfUpdateListener;
 import com.masonsoft.imsdk.common.TopActivity;
 import com.masonsoft.imsdk.core.I18nResources;
 import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
@@ -34,8 +35,6 @@ import com.masonsoft.imsdk.uikit.util.ClipboardUtil;
 import com.masonsoft.imsdk.uikit.util.FileDownloadHelper;
 import com.masonsoft.imsdk.uikit.util.FormatUtil;
 import com.masonsoft.imsdk.uikit.util.TipUtil;
-import com.masonsoft.imsdk.uikit.widget.MSIMBaseMessageRevokeStateFrameLayout;
-import com.masonsoft.imsdk.uikit.widget.MSIMBaseMessageRevokeTextView;
 import com.tbruyelle.rxpermissions3.RxPermissions;
 
 import java.io.File;
@@ -51,6 +50,7 @@ import io.github.idonans.lang.util.ViewUtil;
 import io.github.idonans.uniontype.Host;
 import io.github.idonans.uniontype.UnionTypeAdapter;
 import io.github.idonans.uniontype.UnionTypeItemObject;
+import io.github.idonans.uniontype.UnionTypeMapper;
 import io.github.idonans.uniontype.UnionTypeViewHolder;
 
 public abstract class IMBaseMessageViewHolder extends UnionTypeViewHolder {
@@ -111,45 +111,78 @@ public abstract class IMBaseMessageViewHolder extends UnionTypeViewHolder {
     }
 
     @Nullable
-    private final MSIMBaseMessageRevokeStateFrameLayout mMessageRevokeStateFrameLayout;
-    @Nullable
-    private final MSIMBaseMessageRevokeTextView mMessageRevokeTextView;
-
-    @Nullable
     private final TextView mMessageTime;
 
     public IMBaseMessageViewHolder(@NonNull Host host, int layout) {
         super(host, layout);
-        mMessageRevokeStateFrameLayout = itemView.findViewById(R.id.message_revoke_state_layout);
-        mMessageRevokeTextView = itemView.findViewById(R.id.message_revoke_text_view);
-
         mMessageTime = itemView.findViewById(R.id.message_time);
     }
 
     public IMBaseMessageViewHolder(@NonNull Host host, @NonNull View itemView) {
         super(host, itemView);
-        mMessageRevokeStateFrameLayout = itemView.findViewById(R.id.message_revoke_state_layout);
-        mMessageRevokeTextView = itemView.findViewById(R.id.message_revoke_text_view);
-
         mMessageTime = itemView.findViewById(R.id.message_time);
+    }
+
+    @SuppressWarnings("FieldCanBeLocal")
+    private MSIMSelfUpdateListener mBaseMessageSelfUpdateListener;
+
+    protected void bindSelfUpdate() {
+        mBaseMessageSelfUpdateListener = () -> Threads.postUi(this::onSelfUpdate);
+        final DataObject dataObject = getItemObject(DataObject.class);
+        if (dataObject == null) {
+            return;
+        }
+        if (!(dataObject.object instanceof MSIMBaseMessage)) {
+            return;
+        }
+
+        final MSIMBaseMessage baseMessage = (MSIMBaseMessage) dataObject.object;
+        baseMessage.addOnSelfUpdateListener(mBaseMessageSelfUpdateListener);
+    }
+
+    protected void onSelfUpdate() {
+        if (validateUnionType()) {
+            final DataObject dataObject = getItemObject(DataObject.class);
+            if (dataObject != null) {
+                final MSIMBaseMessage baseMessage = dataObject.getObject(MSIMBaseMessage.class);
+                if (baseMessage != null) {
+                    onBindUpdate();
+                }
+            }
+        }
+    }
+
+    @Override
+    public int getBestUnionType() {
+        final DataObject dataObject = getItemObject(DataObject.class);
+        if (dataObject != null) {
+            return getBestUnionTypeAndApplyUpdate(dataObject);
+        }
+
+        return super.getBestUnionType();
+    }
+
+    protected int getBestUnionTypeAndApplyUpdate(@NonNull final DataObject dataObject) {
+        final int unionType = Helper.getDefaultUnionType(dataObject);
+        Preconditions.checkNotNull(unionTypeItemObject);
+        if (unionTypeItemObject.unionType != unionType) {
+            unionTypeItemObject.update(unionType, dataObject);
+        }
+        return unionType;
     }
 
     @Override
     public void onBindUpdate() {
-        final DataObject itemObject = (DataObject) this.itemObject;
-        Preconditions.checkNotNull(itemObject);
-        final MSIMBaseMessage baseMessage = (MSIMBaseMessage) itemObject.object;
-
-        if (mMessageRevokeStateFrameLayout != null) {
-            mMessageRevokeStateFrameLayout.setBaseMessage(baseMessage);
-        }
-        if (mMessageRevokeTextView != null) {
-            mMessageRevokeTextView.setTargetUserId(baseMessage.getFromUserId());
-        }
+        final DataObject dataObject = getItemObject(DataObject.class);
+        Preconditions.checkNotNull(dataObject);
+        final MSIMBaseMessage baseMessage = dataObject.getObject(MSIMBaseMessage.class);
+        Preconditions.checkNotNull(baseMessage);
 
         if (mMessageTime != null) {
             updateMessageTimeView(mMessageTime);
         }
+
+        bindSelfUpdate();
     }
 
     /**
@@ -213,13 +246,13 @@ public abstract class IMBaseMessageViewHolder extends UnionTypeViewHolder {
             return;
         }
 
-        if (!(this.itemObject instanceof DataObject)) {
+        final DataObject dataObject = getItemObject(DataObject.class);
+        if (dataObject == null) {
             MSIMUikitLog.v("updateMessageTimeView current itemObject is not DataObject");
             ViewUtil.setVisibilityIfChanged(messageTimeView, View.GONE);
             return;
         }
 
-        @NonNull final DataObject dataObject = (DataObject) this.itemObject;
         if (!(dataObject.object instanceof MSIMBaseMessage)) {
             MSIMUikitLog.v("updateMessageTimeView current dataObject's object is not MSIMBaseMessage");
             ViewUtil.setVisibilityIfChanged(messageTimeView, View.GONE);
@@ -251,116 +284,99 @@ public abstract class IMBaseMessageViewHolder extends UnionTypeViewHolder {
 
         /**
          * 竖向默认消息模式
+         *
+         * @see io.github.idonans.uniontype.UnionTypeMapper#UNION_TYPE_NULL
          */
-        @Nullable
-        public static UnionTypeItemObject createDefault(DataObject dataObject) {
-            // 区分消息是收到的还是发送的
-            final MSIMBaseMessage baseMessage = dataObject.getObject();
+        public static int getDefaultUnionType(DataObject dataObject) {
+            if (dataObject == null) {
+                return UnionTypeMapper.UNION_TYPE_NULL;
+            }
+
+            final MSIMBaseMessage baseMessage = dataObject.getObject(MSIMBaseMessage.class);
+            if (baseMessage == null) {
+                return UnionTypeMapper.UNION_TYPE_NULL;
+            }
+
             final boolean received = baseMessage.isReceived();
             final int messageType = baseMessage.getMessageType();
 
             // 已撤回的消息
             if (messageType == MSIMConstants.MessageType.REVOKED) {
                 return received
-                        ? UnionTypeItemObject.valueOf(
-                        IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_REVOKE_RECEIVED,
-                        dataObject)
-                        : UnionTypeItemObject.valueOf(
-                        IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_REVOKE_SEND,
-                        dataObject);
+                        ? IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_REVOKE_RECEIVED
+                        : IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_REVOKE_SEND;
             }
 
             // 文本消息
             if (messageType == MSIMConstants.MessageType.TEXT) {
                 return received
-                        ? UnionTypeItemObject.valueOf(
-                        IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_TEXT_RECEIVED,
-                        dataObject)
-                        : UnionTypeItemObject.valueOf(
-                        IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_TEXT_SEND,
-                        dataObject);
+                        ? IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_TEXT_RECEIVED
+                        : IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_TEXT_SEND;
             }
 
             // 图片消息
             if (messageType == MSIMConstants.MessageType.IMAGE) {
-                return received ? UnionTypeItemObject.valueOf(
-                        IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_IMAGE_RECEIVED,
-                        dataObject)
-                        : UnionTypeItemObject.valueOf(
-                        IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_IMAGE_SEND,
-                        dataObject);
+                return received
+                        ? IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_IMAGE_RECEIVED
+                        : IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_IMAGE_SEND;
             }
 
             // 语音消息
             if (messageType == MSIMConstants.MessageType.AUDIO) {
-                return received ? UnionTypeItemObject.valueOf(
-                        IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_VOICE_RECEIVED,
-                        dataObject)
-                        : UnionTypeItemObject.valueOf(
-                        IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_VOICE_SEND,
-                        dataObject);
+                return received
+                        ? IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_VOICE_RECEIVED
+                        : IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_VOICE_SEND;
             }
 
             // 视频消息
             if (messageType == MSIMConstants.MessageType.VIDEO) {
-                return received ? UnionTypeItemObject.valueOf(
-                        IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_VIDEO_RECEIVED,
-                        dataObject)
-                        : UnionTypeItemObject.valueOf(
-                        IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_VIDEO_SEND,
-                        dataObject);
+                return received
+                        ? IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_VIDEO_RECEIVED
+                        : IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_VIDEO_SEND;
             }
 
             // 自定义消息
             if (MSIMConstants.MessageType.isCustomMessage(messageType)) {
-                return received ? UnionTypeItemObject.valueOf(
-                        IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_FIRST_CUSTOM_MESSAGE_RECEIVED,
-                        dataObject)
-                        : UnionTypeItemObject.valueOf(
-                        IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_FIRST_CUSTOM_MESSAGE_SEND,
-                        dataObject);
+                return received
+                        ? IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_FIRST_CUSTOM_MESSAGE_RECEIVED
+                        : IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_FIRST_CUSTOM_MESSAGE_SEND;
             }
 
             // fallback
-            return received ? UnionTypeItemObject.valueOf(
-                    IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_DEFAULT_RECEIVED,
-                    dataObject)
-                    : UnionTypeItemObject.valueOf(
-                    IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_DEFAULT_SEND,
-                    dataObject);
+            return received
+                    ? IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_DEFAULT_RECEIVED
+                    : IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_DEFAULT_SEND;
         }
 
         /**
          * 横向全屏预览模式
+         *
+         * @see io.github.idonans.uniontype.UnionTypeMapper#UNION_TYPE_NULL
          */
-        @Nullable
-        public static UnionTypeItemObject createPreviewDefault(DataObject dataObject) {
-            if (!(dataObject.object instanceof MSIMBaseMessage)) {
-                MSIMUikitLog.e("unexpected. createPreviewDefault dataObject.object is not MSIMBaseMessage: %s", dataObject.object);
-                return null;
+        public static int getPreviewUnionType(DataObject dataObject) {
+            if (dataObject == null) {
+                return UnionTypeMapper.UNION_TYPE_NULL;
             }
 
-            final MSIMBaseMessage baseMessage = dataObject.getObject();
-            // 区分消息是收到的还是发送的
-            final boolean received = baseMessage.isReceived();
-            final long messageType = baseMessage.getMessageType();
+            final MSIMBaseMessage baseMessage = dataObject.getObject(MSIMBaseMessage.class);
+            if (baseMessage == null) {
+                return UnionTypeMapper.UNION_TYPE_NULL;
+            }
+
+            final int messageType = baseMessage.getMessageType();
 
             // 视频消息
             if (messageType == MSIMConstants.MessageType.VIDEO) {
-                return UnionTypeItemObject.valueOf(
-                        IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_PREVIEW_VIDEO,
-                        dataObject);
+                return IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_PREVIEW_VIDEO;
             }
 
             // 图片消息
             if (messageType == MSIMConstants.MessageType.IMAGE) {
-                return UnionTypeItemObject.valueOf(
-                        IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_PREVIEW_IMAGE,
-                        dataObject);
+                return IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_PREVIEW_IMAGE;
             }
 
-            MSIMUikitLog.e("createPreviewDefault unknown message type %s", dataObject.object);
-            return null;
+            MSIMUikitLog.e("getPreviewUnionType unexpected message type:%s", messageType);
+            return UnionTypeMapper.UNION_TYPE_NULL;
         }
 
         @Nullable

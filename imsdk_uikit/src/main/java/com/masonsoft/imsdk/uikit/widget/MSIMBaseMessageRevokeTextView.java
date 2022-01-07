@@ -10,6 +10,8 @@ import com.masonsoft.imsdk.MSIMUserInfo;
 import com.masonsoft.imsdk.core.I18nResources;
 import com.masonsoft.imsdk.uikit.R;
 
+import io.github.idonans.appcontext.AppContext;
+
 public class MSIMBaseMessageRevokeTextView extends UserCacheDynamicTextView {
 
     public MSIMBaseMessageRevokeTextView(Context context) {
@@ -33,13 +35,18 @@ public class MSIMBaseMessageRevokeTextView extends UserCacheDynamicTextView {
     private boolean mReceived;
 
     private void initFromAttributes(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.IMBaseMessageRevokeTextView, defStyleAttr,
+        final TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.MSIMBaseMessageRevokeTextView, defStyleAttr,
                 defStyleRes);
-        mReceived = a.getBoolean(R.styleable.IMBaseMessageRevokeTextView_received, mReceived);
+        mReceived = a.getBoolean(R.styleable.MSIMBaseMessageRevokeTextView_received, mReceived);
         a.recycle();
 
         if (isInEditMode()) {
-            setText(R.string.imsdk_uikit_recall_send_message);
+            AppContext.setContextInEditMode(this);
+            if (mReceived) {
+                setText(I18nResources.getString(R.string.imsdk_uikit_recall_received_message, "xxx"));
+            } else {
+                setText(R.string.imsdk_uikit_recall_send_message);
+            }
         }
     }
 

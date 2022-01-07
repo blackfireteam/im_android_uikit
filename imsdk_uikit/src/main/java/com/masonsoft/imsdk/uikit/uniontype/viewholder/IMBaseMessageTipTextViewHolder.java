@@ -21,7 +21,7 @@ public class IMBaseMessageTipTextViewHolder extends UnionTypeViewHolder {
 
     @Override
     public void onBindUpdate() {
-        final DataObject itemObject = (DataObject) this.itemObject;
+        final DataObject itemObject = getItemObject(DataObject.class);
         Preconditions.checkNotNull(itemObject);
         final String text = String.valueOf(itemObject.object);
         mBinding.text.setText(text);

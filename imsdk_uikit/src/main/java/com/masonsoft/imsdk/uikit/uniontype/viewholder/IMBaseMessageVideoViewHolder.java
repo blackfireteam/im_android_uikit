@@ -37,9 +37,9 @@ public abstract class IMBaseMessageVideoViewHolder extends IMBaseMessageViewHold
     public void onBindUpdate() {
         super.onBindUpdate();
 
-        final DataObject itemObject = (DataObject) this.itemObject;
+        final DataObject itemObject = getItemObject(DataObject.class);
         Preconditions.checkNotNull(itemObject);
-        final MSIMBaseMessage baseMessage = (MSIMBaseMessage) itemObject.object;
+        final MSIMBaseMessage baseMessage = itemObject.getObject(MSIMBaseMessage.class);
 
         long width = 0;
         long height = 0;

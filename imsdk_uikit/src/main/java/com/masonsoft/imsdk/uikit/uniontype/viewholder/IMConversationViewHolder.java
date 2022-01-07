@@ -36,9 +36,9 @@ public class IMConversationViewHolder extends UnionTypeViewHolder {
 
     @Override
     public void onBindUpdate() {
-        final DataObject itemObject = (DataObject) this.itemObject;
+        final DataObject itemObject = getItemObject(DataObject.class);
         Preconditions.checkNotNull(itemObject);
-        final MSIMConversation conversation = (MSIMConversation) itemObject.object;
+        final MSIMConversation conversation = itemObject.getObject(MSIMConversation.class);
 
         final long targetUserId = conversation.getTargetUserId();
 

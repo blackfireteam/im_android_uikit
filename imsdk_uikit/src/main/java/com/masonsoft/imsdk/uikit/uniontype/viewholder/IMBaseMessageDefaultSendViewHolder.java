@@ -28,9 +28,10 @@ public class IMBaseMessageDefaultSendViewHolder extends IMBaseMessageDefaultView
     @Override
     public void onBindUpdate() {
         super.onBindUpdate();
-        final DataObject itemObject = (DataObject) this.itemObject;
+
+        final DataObject itemObject = getItemObject(DataObject.class);
         Preconditions.checkNotNull(itemObject);
-        final MSIMBaseMessage baseMessage = itemObject.getObject();
+        final MSIMBaseMessage baseMessage = itemObject.getObject(MSIMBaseMessage.class);
 
         final MSIMConversation conversation;
         final Object extObject1 = itemObject.getExtObjectObject1(null);

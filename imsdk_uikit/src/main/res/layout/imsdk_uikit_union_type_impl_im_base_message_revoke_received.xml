@@ -19,27 +19,21 @@
         android:textSize="12sp"
         tools:text="17:30" />
 
-    <com.masonsoft.imsdk.uikit.widget.MSIMBaseMessageRevokeStateFrameLayout
-        android:id="@+id/message_revoke_state_layout"
+    <com.masonsoft.imsdk.uikit.widget.MSIMBaseMessageRevokeTextView
+        android:id="@+id/message_revoke_text_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:gravity="center"
+        android:includeFontPadding="false"
+        android:lineSpacingMultiplier="1.2"
+        android:textColor="#ffb2b2b2"
+        android:textSize="12sp"
+        app:received="true" />
 
-        <com.masonsoft.imsdk.uikit.widget.MSIMBaseMessageRevokeTextView
-            android:id="@+id/message_revoke_text_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:gravity="center"
-            android:includeFontPadding="false"
-            android:lineSpacingMultiplier="1.2"
-            android:textColor="#ffb2b2b2"
-            android:textSize="12sp"
-            app:received="true" />
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp" />
 
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp" />
-
-    </com.masonsoft.imsdk.uikit.widget.MSIMBaseMessageRevokeStateFrameLayout>
 </LinearLayout>

@@ -33,9 +33,9 @@ public class IMBaseMessagePreviewVideoViewHolder extends IMBaseMessageViewHolder
     public void onBindUpdate() {
         super.onBindUpdate();
 
-        final DataObject itemObject = (DataObject) this.itemObject;
+        final DataObject itemObject = getItemObject(DataObject.class);
         Preconditions.checkNotNull(itemObject);
-        final MSIMBaseMessage baseMessage = (MSIMBaseMessage) itemObject.object;
+        final MSIMBaseMessage baseMessage = itemObject.getObject(MSIMBaseMessage.class);
 
         mPreviewVideoView.setBaseMessage(baseMessage);
         mPreviewVideoView.setOnActionCloseClickListener(() -> {

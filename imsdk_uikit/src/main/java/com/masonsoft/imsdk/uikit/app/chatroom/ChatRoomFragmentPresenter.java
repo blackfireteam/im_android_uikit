@@ -29,6 +29,7 @@ import io.github.idonans.core.thread.BatchQueue;
 import io.github.idonans.core.thread.Threads;
 import io.github.idonans.dynamic.DynamicPresenter;
 import io.github.idonans.uniontype.UnionTypeItemObject;
+import io.github.idonans.uniontype.UnionTypeMapper;
 
 public class ChatRoomFragmentPresenter extends DynamicPresenter<ChatRoomFragment.ViewImpl> {
 
@@ -216,7 +217,12 @@ public class ChatRoomFragmentPresenter extends DynamicPresenter<ChatRoomFragment
         final DataObject dataObject = new DataObject(message)
                 .putExtHolderItemClick1(mOnHolderItemClickListener)
                 .putExtHolderItemLongClick1(mOnHolderItemLongClickListener);
-        return IMBaseMessageViewHolder.Helper.createDefault(dataObject);
+
+        final int unionType = IMBaseMessageViewHolder.Helper.getDefaultUnionType(dataObject);
+        if (unionType != UnionTypeMapper.UNION_TYPE_NULL) {
+            return new UnionTypeItemObject(unionType, dataObject);
+        }
+        return null;
     }
 
     @Nullable
@@ -229,7 +235,7 @@ public class ChatRoomFragmentPresenter extends DynamicPresenter<ChatRoomFragment
         }
 
         final DataObject dataObject = new DataObject(tipMessage);
-        return UnionTypeItemObject.valueOf(
+        return new UnionTypeItemObject(
                 IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_TIP_TEXT,
                 dataObject
         );

@@ -34,9 +34,9 @@ public class IMChatRoomMemberViewHolder extends UnionTypeViewHolder {
 
     @Override
     public void onBindUpdate() {
-        final DataObject itemObject = (DataObject) this.itemObject;
+        final DataObject itemObject = getItemObject(DataObject.class);
         Preconditions.checkNotNull(itemObject);
-        final MSIMChatRoomMember member = (MSIMChatRoomMember) itemObject.object;
+        final MSIMChatRoomMember member = itemObject.getObject(MSIMChatRoomMember.class);
 
         final long userId = member.getUserId();
         mBinding.avatar.setTargetUserId(userId);

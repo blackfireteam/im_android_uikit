@@ -38,9 +38,9 @@ public abstract class IMMessageFirstCustomBaseMessageViewHolder extends IMBaseMe
     @Override
     public void onBindUpdate() {
         super.onBindUpdate();
-        final DataObject itemObject = (DataObject) this.itemObject;
+        final DataObject itemObject = getItemObject(DataObject.class);
         Preconditions.checkNotNull(itemObject);
-        final MSIMBaseMessage baseMessage = (MSIMBaseMessage) itemObject.object;
+        final MSIMBaseMessage baseMessage = itemObject.getObject(MSIMBaseMessage.class);
         String text = null;
 
         if (baseMessage instanceof MSIMMessage) {

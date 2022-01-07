@@ -1,5 +1,7 @@
 package com.masonsoft.imsdk.uikit.uniontype;
 
+import androidx.annotation.NonNull;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,9 +25,12 @@ public class DataObject {
         this.object = object;
     }
 
-    public <T> T getObject() {
-        //noinspection unchecked
-        return (T) this.object;
+    public <T> T getObject(@NonNull Class<T> clazz) {
+        if (clazz.isInstance(this.object)) {
+            //noinspection unchecked
+            return (T) this.object;
+        }
+        return null;
     }
 
     public DataObject putExtObject(String extKey, Object extObject) {

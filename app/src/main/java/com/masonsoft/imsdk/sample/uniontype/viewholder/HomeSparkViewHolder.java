@@ -39,12 +39,11 @@ public class HomeSparkViewHolder extends UnionTypeViewHolder {
     }
 
     private void updateLikeAndDislike(@FloatRange(from = -1, to = 1) float progress, boolean setValue) {
-        if (this.itemObject == null) {
+        final DataObject itemObject = getItemObject(DataObject.class);
+        if (itemObject == null) {
             SampleLog.e("unexpected. item object is null");
             return;
         }
-
-        final DataObject itemObject = (DataObject) this.itemObject;
         final ExtraUiData extraUiData = ExtraUiData.valueOf(itemObject);
         if (setValue) {
             extraUiData.mLikeAndDislikeProgress = progress;
@@ -64,7 +63,7 @@ public class HomeSparkViewHolder extends UnionTypeViewHolder {
 
     @Override
     public void onBindUpdate() {
-        final DataObject itemObject = (DataObject) this.itemObject;
+        final DataObject itemObject = getItemObject(DataObject.class);
         Preconditions.checkNotNull(itemObject);
         final Spark spark = (Spark) itemObject.object;
 

@@ -28,9 +28,10 @@ public class IMBaseMessageTextReceivedViewHolder extends IMBaseMessageTextViewHo
     public void onBindUpdate() {
         super.onBindUpdate();
 
-        final DataObject itemObject = (DataObject) this.itemObject;
+        final DataObject itemObject = getItemObject(DataObject.class);
         Preconditions.checkNotNull(itemObject);
-        final MSIMBaseMessage baseMessage = (MSIMBaseMessage) itemObject.object;
+        final MSIMBaseMessage baseMessage = itemObject.getObject(MSIMBaseMessage.class);
+        Preconditions.checkNotNull(baseMessage);
 
         mBinding.avatar.setTargetUserId(baseMessage.getFromUserId());
         mBinding.avatar.setShowBorder(false);

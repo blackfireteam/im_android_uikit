@@ -30,9 +30,9 @@ public class IMMessageFirstCustomBaseMessageSendViewHolder extends IMMessageFirs
     public void onBindUpdate() {
         super.onBindUpdate();
 
-        final DataObject itemObject = (DataObject) this.itemObject;
+        final DataObject itemObject = getItemObject(DataObject.class);
         Preconditions.checkNotNull(itemObject);
-        final MSIMBaseMessage baseMessage = (MSIMBaseMessage) itemObject.object;
+        final MSIMBaseMessage baseMessage = itemObject.getObject(MSIMBaseMessage.class);
 
         final MSIMConversation conversation;
         final Object extObject1 = itemObject.getExtObjectObject1(null);

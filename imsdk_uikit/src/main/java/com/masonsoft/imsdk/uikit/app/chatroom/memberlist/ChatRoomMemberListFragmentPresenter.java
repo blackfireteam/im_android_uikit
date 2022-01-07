@@ -176,10 +176,11 @@ public class ChatRoomMemberListFragmentPresenter extends DynamicPresenter<ChatRo
             return;
         }
 
-        if (viewHolder.itemObject instanceof DataObject) {
-            final Object object = ((DataObject) viewHolder.itemObject).object;
-            if (object instanceof MSIMChatRoomMember) {
-                view.showMenu(((MSIMChatRoomMember) object), mChatRoomContext);
+        final DataObject dataObject = viewHolder.getItemObject(DataObject.class);
+        if (dataObject != null) {
+            final MSIMChatRoomMember member = dataObject.getObject(MSIMChatRoomMember.class);
+            if (member != null) {
+                view.showMenu(member, mChatRoomContext);
             }
         }
     };
@@ -194,7 +195,7 @@ public class ChatRoomMemberListFragmentPresenter extends DynamicPresenter<ChatRo
         dataObject
                 .putExtHolderItemClick1(mOnHolderItemClickListener)
                 .putExtHolderItemLongClick1(mOnHolderItemLongClickListener);
-        return UnionTypeItemObject.valueOf(
+        return new UnionTypeItemObject(
                 IMUikitUnionTypeMapper.UNION_TYPE_IMPL_CHAT_ROOM_MEMBER,
                 dataObject
         );

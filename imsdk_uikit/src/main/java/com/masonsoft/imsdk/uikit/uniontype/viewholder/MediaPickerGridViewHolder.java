@@ -27,9 +27,9 @@ public class MediaPickerGridViewHolder extends UnionTypeViewHolder {
 
     @Override
     public void onBindUpdate() {
-        final DataObject itemObject = (DataObject) this.itemObject;
+        final DataObject itemObject = getItemObject(DataObject.class);
         Preconditions.checkNotNull(itemObject);
-        MediaData.MediaInfo mediaInfo = (MediaData.MediaInfo) itemObject.object;
+        MediaData.MediaInfo mediaInfo = itemObject.getObject(MediaData.MediaInfo.class);
         MediaData mediaData = itemObject.getExtObjectObject1(null);
         UnionTypeMediaData unionTypeMediaData = itemObject.getExtObjectObject2(null);
 
