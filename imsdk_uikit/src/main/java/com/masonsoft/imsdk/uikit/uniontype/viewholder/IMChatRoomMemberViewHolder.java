@@ -18,12 +18,11 @@ import com.masonsoft.imsdk.uikit.uniontype.UnionTypeViewHolderListeners;
 import io.github.idonans.core.util.Preconditions;
 import io.github.idonans.lang.util.ViewUtil;
 import io.github.idonans.uniontype.Host;
-import io.github.idonans.uniontype.UnionTypeViewHolder;
 
 /**
  * 聊天室用户
  */
-public class IMChatRoomMemberViewHolder extends UnionTypeViewHolder {
+public class IMChatRoomMemberViewHolder extends MSIMSelfUpdateUnionTypeViewHolder {
 
     private final ImsdkUikitUnionTypeImplChatRoomMemberBinding mBinding;
 
@@ -34,6 +33,7 @@ public class IMChatRoomMemberViewHolder extends UnionTypeViewHolder {
 
     @Override
     public void onBindUpdate() {
+        super.onBindUpdate();
         final DataObject itemObject = getItemObject(DataObject.class);
         Preconditions.checkNotNull(itemObject);
         final MSIMChatRoomMember member = itemObject.getObject(MSIMChatRoomMember.class);

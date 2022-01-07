@@ -21,7 +21,6 @@ import com.masonsoft.imsdk.MSIMChatRoomMessage;
 import com.masonsoft.imsdk.MSIMConstants;
 import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.MSIMMessage;
-import com.masonsoft.imsdk.MSIMSelfUpdateListener;
 import com.masonsoft.imsdk.common.TopActivity;
 import com.masonsoft.imsdk.core.I18nResources;
 import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
@@ -53,7 +52,7 @@ import io.github.idonans.uniontype.UnionTypeItemObject;
 import io.github.idonans.uniontype.UnionTypeMapper;
 import io.github.idonans.uniontype.UnionTypeViewHolder;
 
-public abstract class IMBaseMessageViewHolder extends UnionTypeViewHolder {
+public abstract class IMBaseMessageViewHolder extends MSIMSelfUpdateUnionTypeViewHolder {
 
     protected static final boolean DEBUG = true;
 
@@ -123,56 +122,14 @@ public abstract class IMBaseMessageViewHolder extends UnionTypeViewHolder {
         mMessageTime = itemView.findViewById(R.id.message_time);
     }
 
-    @SuppressWarnings("FieldCanBeLocal")
-    private MSIMSelfUpdateListener mBaseMessageSelfUpdateListener;
-
-    protected void bindSelfUpdate() {
-        mBaseMessageSelfUpdateListener = () -> Threads.postUi(this::onSelfUpdate);
-        final DataObject dataObject = getItemObject(DataObject.class);
-        if (dataObject == null) {
-            return;
-        }
-        if (!(dataObject.object instanceof MSIMBaseMessage)) {
-            return;
-        }
-
-        final MSIMBaseMessage baseMessage = (MSIMBaseMessage) dataObject.object;
-        baseMessage.addOnSelfUpdateListener(mBaseMessageSelfUpdateListener);
-    }
-
-    protected void onSelfUpdate() {
-        if (validateUnionType()) {
-            final DataObject dataObject = getItemObject(DataObject.class);
-            if (dataObject != null) {
-                final MSIMBaseMessage baseMessage = dataObject.getObject(MSIMBaseMessage.class);
-                if (baseMessage != null) {
-                    onBindUpdate();
-                }
-            }
-        }
-    }
-
     @Override
-    public int getBestUnionType() {
-        final DataObject dataObject = getItemObject(DataObject.class);
-        if (dataObject != null) {
-            return getBestUnionTypeAndApplyUpdate(dataObject);
-        }
-
-        return super.getBestUnionType();
-    }
-
-    protected int getBestUnionTypeAndApplyUpdate(@NonNull final DataObject dataObject) {
-        final int unionType = Helper.getDefaultUnionType(dataObject);
-        Preconditions.checkNotNull(unionTypeItemObject);
-        if (unionTypeItemObject.unionType != unionType) {
-            unionTypeItemObject.update(unionType, dataObject);
-        }
-        return unionType;
+    protected int getBestUnionType(@NonNull DataObject dataObject) {
+        return Helper.getDefaultUnionType(dataObject);
     }
 
     @Override
     public void onBindUpdate() {
+        super.onBindUpdate();
         final DataObject dataObject = getItemObject(DataObject.class);
         Preconditions.checkNotNull(dataObject);
         final MSIMBaseMessage baseMessage = dataObject.getObject(MSIMBaseMessage.class);
@@ -181,8 +138,6 @@ public abstract class IMBaseMessageViewHolder extends UnionTypeViewHolder {
         if (mMessageTime != null) {
             updateMessageTimeView(mMessageTime);
         }
-
-        bindSelfUpdate();
     }
 
     /**
