@@ -166,7 +166,7 @@ public class ChatRoomFragmentPresenter extends DynamicPresenter<ChatRoomFragment
             }
 
             if (!newMessageList.isEmpty()) {
-                view.onAppendMessages(messageList, mChatRoomContext);
+                view.onAppendMessages(newMessageList, mChatRoomContext);
             }
 
             view.onChatRoomStateChanged(mChatRoomContext);
