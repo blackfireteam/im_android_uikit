@@ -15,12 +15,12 @@ import io.github.idonans.core.util.Preconditions;
 /**
  * 长按一个消息的弹框, 内部基于 IMChatMessagePopupView 实现
  */
-public class IMChatMessageMenuDialog {
+public class IMBaseMessageMenuDialog {
 
     private final ViewDialog mViewDialog;
     private IMChatMessagePopupView mPopupView;
 
-    public IMChatMessageMenuDialog(Activity activity,
+    public IMBaseMessageMenuDialog(Activity activity,
                                    ViewGroup parentView,
                                    View anchorView,
                                    int coverDrawableResId,

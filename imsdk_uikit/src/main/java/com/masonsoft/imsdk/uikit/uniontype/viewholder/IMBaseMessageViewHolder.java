@@ -16,7 +16,10 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Lifecycle;
 
+import com.google.common.collect.Lists;
 import com.masonsoft.imsdk.MSIMBaseMessage;
+import com.masonsoft.imsdk.MSIMChatRoomContext;
+import com.masonsoft.imsdk.MSIMChatRoomInfo;
 import com.masonsoft.imsdk.MSIMChatRoomMessage;
 import com.masonsoft.imsdk.MSIMConstants;
 import com.masonsoft.imsdk.MSIMManager;
@@ -26,7 +29,7 @@ import com.masonsoft.imsdk.core.I18nResources;
 import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.uikit.R;
-import com.masonsoft.imsdk.uikit.common.impopup.IMChatMessageMenuDialog;
+import com.masonsoft.imsdk.uikit.common.impopup.IMBaseMessageMenuDialog;
 import com.masonsoft.imsdk.uikit.common.impreview.IMImageOrVideoPreviewDialog;
 import com.masonsoft.imsdk.uikit.uniontype.DataObject;
 import com.masonsoft.imsdk.uikit.uniontype.IMUikitUnionTypeMapper;
@@ -581,8 +584,30 @@ public abstract class IMBaseMessageViewHolder extends MSIMSelfUpdateUnionTypeVie
 
         private static boolean showMenuInternal(@NonNull final HolderFinder holderFinder) {
             final long messageType = holderFinder.baseMessage.getMessageType();
-            final int MENU_ID_COPY = 1;
-            final int MENU_ID_RECALL = 2;
+            final long serverMessageId = holderFinder.baseMessage.getServerMessageId();
+
+            // 复制
+            final int menuIdCopy = 0;
+            // 撤回
+            final int menuIdRecall = 1;
+            // 删除
+            final int menuIdDelete = 2;
+            final String[] menuArray = {
+                    I18nResources.getString(R.string.imsdk_uikit_menu_copy),
+                    I18nResources.getString(R.string.imsdk_uikit_menu_recall),
+                    I18nResources.getString(R.string.imsdk_uikit_menu_delete),
+            };
+
+            // 是否有删除消息的权限
+            boolean canDeleteMessage = false;
+            if (holderFinder.baseMessage instanceof MSIMChatRoomMessage) {
+                final MSIMChatRoomContext chatRoomContext = ((MSIMChatRoomMessage) holderFinder.baseMessage).getChatRoomContext();
+                final MSIMChatRoomInfo chatRoomInfo = chatRoomContext.getChatRoomInfo();
+                if (chatRoomInfo != null) {
+                    canDeleteMessage = chatRoomInfo.hasActionDeleteMessage();
+                }
+            }
+
             if (messageType == MSIMConstants.MessageType.TEXT) {
                 // 文字
                 View anchorView = holderFinder.holder.itemView.findViewById(R.id.message_text);
@@ -599,16 +624,21 @@ public abstract class IMBaseMessageViewHolder extends MSIMSelfUpdateUnionTypeVie
                 final List<String> menuList = new ArrayList<>();
                 final List<Integer> menuIdList = new ArrayList<>();
 
-                menuList.add(I18nResources.getString(R.string.imsdk_uikit_menu_copy));
-                menuIdList.add(MENU_ID_COPY);
+                menuList.add(menuArray[menuIdCopy]);
+                menuIdList.add(menuIdCopy);
                 if (!holderFinder.received) {
                     if (holderFinder.baseMessage.getSendStatus(MSIMConstants.SendStatus.SUCCESS) == MSIMConstants.SendStatus.SUCCESS) {
-                        menuList.add(I18nResources.getString(R.string.imsdk_uikit_menu_recall));
-                        menuIdList.add(MENU_ID_RECALL);
+                        menuList.add(menuArray[menuIdRecall]);
+                        menuIdList.add(menuIdRecall);
                     }
                 }
 
-                final IMChatMessageMenuDialog menuDialog = new IMChatMessageMenuDialog(
+                if (canDeleteMessage && serverMessageId > 0) {
+                    menuList.add(menuArray[menuIdDelete]);
+                    menuIdList.add(menuIdDelete);
+                }
+
+                final IMBaseMessageMenuDialog menuDialog = new IMBaseMessageMenuDialog(
                         holderFinder.innerActivity,
                         holderFinder.innerActivity.findViewById(Window.ID_ANDROID_CONTENT),
                         anchorView,
@@ -616,14 +646,17 @@ public abstract class IMBaseMessageViewHolder extends MSIMSelfUpdateUnionTypeVie
                         menuList,
                         menuIdList);
                 menuDialog.setOnIMMenuClickListener((menuId, menuText, menuView) -> {
-                    if (menuId == MENU_ID_COPY) {
+                    if (menuId == menuIdCopy) {
                         // 复制
                         ClipboardUtil.copy(holderFinder.baseMessage.getTextElement().getText());
-                    } else if (menuId == MENU_ID_RECALL) {
+                    } else if (menuId == menuIdRecall) {
                         // 撤回
                         revoke(holderFinder.holder);
+                    } else if (menuId == menuIdDelete) {
+                        // 删除
+                        delete(holderFinder.holder);
                     } else {
-                        MSIMUikitLog.e("IMChatMessageMenuDialog onItemMenuClick invalid menuId:%s, menuText:%s, menuView:%s",
+                        MSIMUikitLog.e("IMBaseMessageMenuDialog onItemMenuClick invalid menuId:%s, menuText:%s, menuView:%s",
                                 menuId, menuText, menuView);
                     }
                 });
@@ -648,15 +681,20 @@ public abstract class IMBaseMessageViewHolder extends MSIMSelfUpdateUnionTypeVie
 
                 if (!holderFinder.received) {
                     if (holderFinder.baseMessage.getSendStatus(MSIMConstants.SendStatus.SUCCESS) == MSIMConstants.SendStatus.SUCCESS) {
-                        menuList.add(I18nResources.getString(R.string.imsdk_uikit_menu_recall));
-                        menuIdList.add(MENU_ID_RECALL);
+                        menuList.add(menuArray[menuIdRecall]);
+                        menuIdList.add(menuIdRecall);
                     }
+                }
+
+                if (canDeleteMessage && serverMessageId > 0) {
+                    menuList.add(menuArray[menuIdDelete]);
+                    menuIdList.add(menuIdDelete);
                 }
 
                 if (menuList.size() <= 0) {
                     return false;
                 }
-                IMChatMessageMenuDialog menuDialog = new IMChatMessageMenuDialog(
+                final IMBaseMessageMenuDialog menuDialog = new IMBaseMessageMenuDialog(
                         holderFinder.innerActivity,
                         holderFinder.innerActivity.findViewById(Window.ID_ANDROID_CONTENT),
                         anchorView,
@@ -664,11 +702,14 @@ public abstract class IMBaseMessageViewHolder extends MSIMSelfUpdateUnionTypeVie
                         menuList,
                         menuIdList);
                 menuDialog.setOnIMMenuClickListener((menuId, menuText, menuView) -> {
-                    if (menuId == MENU_ID_RECALL) {
+                    if (menuId == menuIdRecall) {
                         // 撤回
                         revoke(holderFinder.holder);
+                    } else if (menuId == menuIdDelete) {
+                        // 删除
+                        delete(holderFinder.holder);
                     } else {
-                        MSIMUikitLog.e("showMenu onItemMenuClick invalid menuId:%s, menuText:%s, menuView:%s",
+                        MSIMUikitLog.e("IMBaseMessageMenuDialog onItemMenuClick invalid menuId:%s, menuText:%s, menuView:%s",
                                 menuId, menuText, menuView);
                     }
                 });
@@ -676,7 +717,7 @@ public abstract class IMBaseMessageViewHolder extends MSIMSelfUpdateUnionTypeVie
                 return true;
             }
 
-            MSIMUikitLog.e("imMessage type is unknown %s", holderFinder.baseMessage);
+            MSIMUikitLog.e("showMenuInternal message type is unknown %s", holderFinder.baseMessage);
             return false;
         }
 
@@ -704,6 +745,32 @@ public abstract class IMBaseMessageViewHolder extends MSIMSelfUpdateUnionTypeVie
                 );
             } else {
                 MSIMUikitLog.e("revoke MSIMBaseMessage not impl: %s", baseMessage);
+            }
+        }
+
+        /**
+         * 删除
+         */
+        private static void delete(UnionTypeViewHolder holder) {
+            final HolderFinder holderFinder = getHolderFinder(holder, null);
+            if (holderFinder == null) {
+                MSIMUikitLog.e("delete getHolderFinder return null");
+                return;
+            }
+            final MSIMBaseMessage baseMessage = holderFinder.baseMessage;
+            if (baseMessage instanceof MSIMChatRoomMessage) {
+                final MSIMChatRoomMessage message = (MSIMChatRoomMessage) baseMessage;
+                final long serverMessageId = message.getServerMessageId();
+                if (serverMessageId > 0) {
+                    message.getChatRoomContext().getChatRoomManager().deleteMessages(
+                            message.getSessionUserId(),
+                            Lists.newArrayList(serverMessageId)
+                    );
+                } else {
+                    MSIMUikitLog.e("delete MSIMChatRoomMessage's server message id is invalid:%s", serverMessageId);
+                }
+            } else {
+                MSIMUikitLog.e("delete MSIMBaseMessage is not MSIMChatRoomMessage");
             }
         }
 
