@@ -255,6 +255,11 @@ public abstract class IMBaseMessageViewHolder extends MSIMSelfUpdateUnionTypeVie
             final boolean received = baseMessage.isReceived();
             final int messageType = baseMessage.getMessageType();
 
+            // 不可见消息
+            if (!MSIMConstants.MessageType.isVisibleMessage(messageType)) {
+                return UnionTypeMapper.UNION_TYPE_NULL;
+            }
+
             // 已撤回的消息
             if (messageType == MSIMConstants.MessageType.REVOKED) {
                 return received

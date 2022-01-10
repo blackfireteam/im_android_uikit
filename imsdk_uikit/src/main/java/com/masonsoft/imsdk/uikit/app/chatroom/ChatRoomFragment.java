@@ -41,6 +41,7 @@ import com.masonsoft.imsdk.uikit.common.simpledialog.SimpleBottomActionsDialog;
 import com.masonsoft.imsdk.uikit.common.softkeyboard.SoftKeyboardHelper;
 import com.masonsoft.imsdk.uikit.common.voicerecordgesture.VoiceRecordGestureHelper;
 import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitChatRoomFragmentBinding;
+import com.masonsoft.imsdk.uikit.uniontype.DataObject;
 import com.masonsoft.imsdk.uikit.uniontype.IMUikitUnionTypeMapper;
 import com.masonsoft.imsdk.uikit.util.ActivityUtil;
 import com.masonsoft.imsdk.uikit.util.EditTextUtil;
@@ -844,6 +845,44 @@ public class ChatRoomFragment extends SystemInsetsFragment {
                             showNewMessagesTipView();
                         }
                     });
+        }
+
+        public void onUpdateMessages(@NonNull List<MSIMChatRoomMessage> messageList, @NonNull GlobalChatRoomManager.StaticChatRoomContext chatRoomContext) {
+            final ImsdkUikitChatRoomFragmentBinding binding = mBinding;
+            if (binding == null) {
+                MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
+                return;
+            }
+
+            mAdapter.getData().beginTransaction()
+                    .add((transaction, groupArrayList) -> {
+                        for (MSIMChatRoomMessage message : messageList) {
+                            final UnionTypeItemObject unionTypeItemObject = mPresenter.createDefault(message);
+                            final List<UnionTypeItemObject> list = groupArrayList.getGroupItems(GROUP_CONTENT);
+                            if (list != null) {
+                                for (int i = list.size() - 1; i >= 0; i--) {
+                                    final UnionTypeItemObject object = list.get(i);
+                                    final DataObject dataObject = object.getItemObject(DataObject.class);
+                                    if (dataObject != null) {
+                                        final MSIMChatRoomMessage m = dataObject.getObject(MSIMChatRoomMessage.class);
+                                        if (m != null) {
+                                            if (m.equals(message)) {
+                                                if (unionTypeItemObject == null) {
+                                                    // 该消息不可见
+                                                    list.remove(i);
+                                                } else {
+                                                    // 该消息可见但是内容可能发生了变化
+                                                    list.set(i, unionTypeItemObject);
+                                                }
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    })
+                    .commit();
         }
 
         public void onReceivedTipMessageList(@NonNull List<CharSequence> tipMessageList) {

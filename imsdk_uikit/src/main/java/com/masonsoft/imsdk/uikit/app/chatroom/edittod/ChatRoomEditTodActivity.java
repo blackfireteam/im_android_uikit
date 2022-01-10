@@ -26,7 +26,7 @@ public class ChatRoomEditTodActivity extends FragmentDelegateActivity {
         context.startActivity(starter);
     }
 
-    private static final String FRAGMENT_TAG_CHAT_ROOM_SETTINGS = "fragment_chat_room_edit_tod_20220105";
+    private static final String FRAGMENT_TAG_CHAT_ROOM_EDIT_TOD = "fragment_chat_room_edit_tod_20220105";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -46,7 +46,7 @@ public class ChatRoomEditTodActivity extends FragmentDelegateActivity {
             finish();
             return;
         }
-        setFragmentDelegate(FRAGMENT_TAG_CHAT_ROOM_SETTINGS, () -> ChatRoomEditTodFragment.newInstance(chatRoomId));
+        setFragmentDelegate(FRAGMENT_TAG_CHAT_ROOM_EDIT_TOD, () -> ChatRoomEditTodFragment.newInstance(chatRoomId));
     }
 
 }

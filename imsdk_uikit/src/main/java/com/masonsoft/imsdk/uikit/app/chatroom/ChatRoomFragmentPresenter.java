@@ -15,6 +15,7 @@ import com.masonsoft.imsdk.MSIMSessionListener;
 import com.masonsoft.imsdk.MSIMSessionListenerProxy;
 import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.uikit.GlobalChatRoomManager;
+import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.uikit.uniontype.DataObject;
 import com.masonsoft.imsdk.uikit.uniontype.IMUikitUnionTypeMapper;
 import com.masonsoft.imsdk.uikit.uniontype.UnionTypeViewHolderListeners;
@@ -24,6 +25,7 @@ import com.masonsoft.imsdk.uikit.widget.MSIMChatRoomStateChangedViewHelper;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import io.github.idonans.core.thread.BatchQueue;
 import io.github.idonans.core.thread.Threads;
@@ -75,6 +77,12 @@ public class ChatRoomFragmentPresenter extends DynamicPresenter<ChatRoomFragment
             }
         }
     };
+    private final GlobalChatRoomManager.StaticChatRoomContext.OnStaticChatRoomMessageChangedListener mOnStaticChatRoomMessageChangedListener = new GlobalChatRoomManager.StaticChatRoomContext.OnStaticChatRoomMessageChangedListener() {
+        @Override
+        public void onStaticChatRoomMessageChanged(@NonNull List<MSIMChatRoomMessage> messageList) {
+            notifyChatRoomMessageChanged(messageList);
+        }
+    };
     private final GlobalChatRoomManager.StaticChatRoomContext.OnStaticChatRoomReceivedTipMessageListener mOnStaticChatRoomReceivedTipMessageListener = new GlobalChatRoomManager.StaticChatRoomContext.OnStaticChatRoomReceivedTipMessageListener() {
         @Override
         public void onStaticChatRoomReceivedTipMessage(@NonNull List<CharSequence> tipMessageList) {
@@ -85,12 +93,14 @@ public class ChatRoomFragmentPresenter extends DynamicPresenter<ChatRoomFragment
     };
 
     private final BatchQueue<Object> mChatRoomStateChangedBatchQueue = new BatchQueue<>(false);
+    private final BatchQueue<MSIMChatRoomMessage> mChatRoomMessageBatchQueue = new BatchQueue<>(false);
 
     @UiThread
     public ChatRoomFragmentPresenter(@NonNull ChatRoomFragment.ViewImpl view) {
         super(view);
         MSIMManager.getInstance().addSessionListener(mSessionListener);
         mChatRoomStateChangedBatchQueue.setConsumer(objects -> ChatRoomFragmentPresenter.this.onChatRoomStateChangedInternal());
+        mChatRoomMessageBatchQueue.setConsumer(ChatRoomFragmentPresenter.this::onChatRoomMessageChangedInternal);
 
         init();
     }
@@ -98,6 +108,7 @@ public class ChatRoomFragmentPresenter extends DynamicPresenter<ChatRoomFragment
     private void init() {
         if (reInit()) {
             notifyChatRoomStateChanged();
+            notifyChatRoomMessageChanged(null);
         }
     }
 
@@ -124,6 +135,7 @@ public class ChatRoomFragmentPresenter extends DynamicPresenter<ChatRoomFragment
         }
         mChatRoomStateChangedViewHelper.setChatRoomContext(mChatRoomContext.getChatRoomContext());
         mChatRoomContext.addOnStaticChatRoomContextChangedListener(mOnStaticChatRoomContextChangedListener);
+        mChatRoomContext.addOnStaticChatRoomMessageChangedListener(mOnStaticChatRoomMessageChangedListener);
         mChatRoomContext.addOnStaticChatRoomReceivedTipMessageListener(mOnStaticChatRoomReceivedTipMessageListener);
         return true;
     }
@@ -138,21 +150,82 @@ public class ChatRoomFragmentPresenter extends DynamicPresenter<ChatRoomFragment
             return;
         }
 
-        final List<MSIMChatRoomMessage> messageList = mChatRoomContext.getMessageList();
-        final List<MSIMChatRoomMessage> visibleMessageList = new ArrayList<>();
-        for (MSIMChatRoomMessage message : messageList) {
-            if (MSIMConstants.MessageType.isVisibleMessage(message.getMessageType())) {
-                visibleMessageList.add(message);
+        Threads.postUi(() -> {
+            final ChatRoomFragment.ViewImpl view = getView();
+            if (view == null) {
+                return;
+            }
+            if (mChatRoomContext == null) {
+                return;
+            }
+
+            view.onChatRoomStateChanged(mChatRoomContext);
+        });
+    }
+
+
+    private void notifyChatRoomMessageChanged(@Nullable List<MSIMChatRoomMessage> messageList) {
+        if (messageList != null) {
+            for (MSIMChatRoomMessage message : messageList) {
+                mChatRoomMessageBatchQueue.add(message);
+            }
+        } else {
+            // 读取最新一条 cache 触发页面初始显示历史消息
+            if (mChatRoomContext != null) {
+                final List<MSIMChatRoomMessage> cacheMessageList = mChatRoomContext.getMessageList();
+                if (!cacheMessageList.isEmpty()) {
+                    mChatRoomMessageBatchQueue.add(cacheMessageList.get(cacheMessageList.size() - 1));
+                }
+            } else {
+                MSIMUikitLog.e("unexpected. notifyChatRoomMessageChanged with null, chat room context is null");
             }
         }
-        Collections.sort(visibleMessageList, (o1, o2) -> Long.compare(o1.getMessageId(), o2.getMessageId()));
+    }
 
-        // 计算是否有可见的新消息
+    private final AtomicBoolean mAppendCacheMessage = new AtomicBoolean(false);
+
+    @WorkerThread
+    private void onChatRoomMessageChangedInternal(@Nullable List<MSIMChatRoomMessage> messageList) {
+        if (mChatRoomContext == null) {
+            return;
+        }
+
+        // 去重
+        final List<MSIMChatRoomMessage> duplicate = new ArrayList<>();
+        if (mAppendCacheMessage.compareAndSet(false, true)) {
+            final List<MSIMChatRoomMessage> cacheList = mChatRoomContext.getMessageList();
+            for (MSIMChatRoomMessage message : cacheList) {
+                duplicate.remove(message);
+                duplicate.add(message);
+            }
+        }
+        if (messageList != null) {
+            for (MSIMChatRoomMessage message : messageList) {
+                duplicate.remove(message);
+                duplicate.add(message);
+            }
+        }
+
+        // 按照本地消息 id 排序
+        Collections.sort(duplicate, (o1, o2) -> Long.compare(o1.getMessageId(), o2.getMessageId()));
+
+        // 有可见的新消息
         final List<MSIMChatRoomMessage> newMessageList = new ArrayList<>();
-        for (MSIMChatRoomMessage message : visibleMessageList) {
-            if (message.getMessageId() > mMaxLocalMessageId) {
-                newMessageList.add(message);
-                mMaxLocalMessageId = message.getMessageId();
+        // 可见的或者不可见的变更的消息
+        final List<MSIMChatRoomMessage> updateMessageList = new ArrayList<>();
+
+        for (MSIMChatRoomMessage message : duplicate) {
+            final long messageId = message.getMessageId();
+            if (messageId > mMaxLocalMessageId) {
+                // 新消息
+                if (MSIMConstants.MessageType.isVisibleMessage(message.getMessageType())) {
+                    // 新消息需要是可见的（例如：指令形的新消息不通知）
+                    newMessageList.add(message);
+                    mMaxLocalMessageId = messageId;
+                }
+            } else {
+                // 消息可能已经上屏
+                updateMessageList.add(message);
             }
         }
 
@@ -165,11 +238,13 @@ public class ChatRoomFragmentPresenter extends DynamicPresenter<ChatRoomFragment
                 return;
             }
 
+            if (!updateMessageList.isEmpty()) {
+                view.onUpdateMessages(updateMessageList, mChatRoomContext);
+            }
+
             if (!newMessageList.isEmpty()) {
                 view.onAppendMessages(newMessageList, mChatRoomContext);
             }
-
-            view.onChatRoomStateChanged(mChatRoomContext);
         });
     }
 

@@ -215,13 +215,19 @@ public class GlobalChatRoomManager {
         private final long mChatRoomId;
         private final MSIMChatRoomContext mChatRoomContext;
         private final WeakObservable<OnStaticChatRoomContextChangedListener> mListeners = new WeakObservable<>();
+        private final WeakObservable<OnStaticChatRoomMessageChangedListener> mMessageChangedListeners = new WeakObservable<>();
         private final WeakObservable<OnStaticChatRoomReceivedTipMessageListener> mTipMessageListeners = new WeakObservable<>();
         private final MSIMChatRoomMessageCache mMessageCache = new MSIMChatRoomMessageCache();
-        private final BatchQueue<Object> mNotifyOnStaticChatRoomContextChangedListenerBatchQueue = new BatchQueue<>();
+        private final BatchQueue<Boolean> mNotifyOnStaticChatRoomContextChangedListenerBatchQueue = new BatchQueue<>();
+        private final BatchQueue<MSIMChatRoomMessage> mNotifyOnStaticChatRoomMessageChangedListenerBatchQueue = new BatchQueue<>();
         private final BatchQueue<CharSequence> mNotifyOnStaticChatRoomReceivedTipMessageBatchQueue = new BatchQueue<>();
 
         public interface OnStaticChatRoomContextChangedListener {
             void onStaticChatRoomContextChanged(@NonNull StaticChatRoomContext context);
+        }
+
+        public interface OnStaticChatRoomMessageChangedListener {
+            void onStaticChatRoomMessageChanged(@NonNull List<MSIMChatRoomMessage> messageList);
         }
 
         public interface OnStaticChatRoomReceivedTipMessageListener {
@@ -239,6 +245,22 @@ public class GlobalChatRoomManager {
                     mListeners.forEach(listener -> {
                         if (listener != null) {
                             listener.onStaticChatRoomContextChanged(StaticChatRoomContext.this);
+                        }
+                    });
+                }
+            });
+
+            mNotifyOnStaticChatRoomMessageChangedListenerBatchQueue.setConsumer(objects -> {
+                if (mMessageChangedListeners != null) {
+                    final List<MSIMChatRoomMessage> duplicate = new ArrayList<>();
+                    for (MSIMChatRoomMessage message : objects) {
+                        duplicate.remove(message);
+                        duplicate.add(message);
+                    }
+
+                    mMessageChangedListeners.forEach(listener -> {
+                        if (listener != null) {
+                            listener.onStaticChatRoomMessageChanged(duplicate);
                         }
                     });
                 }
@@ -284,6 +306,18 @@ public class GlobalChatRoomManager {
             }
         }
 
+        public void addOnStaticChatRoomMessageChangedListener(OnStaticChatRoomMessageChangedListener listener) {
+            if (listener != null) {
+                mMessageChangedListeners.registerObserver(listener);
+            }
+        }
+
+        public void removeOnStaticChatRoomMessageChangedListener(OnStaticChatRoomMessageChangedListener listener) {
+            if (listener != null) {
+                mMessageChangedListeners.unregisterObserver(listener);
+            }
+        }
+
         public void addOnStaticChatRoomReceivedTipMessageListener(OnStaticChatRoomReceivedTipMessageListener listener) {
             if (listener != null) {
                 mTipMessageListeners.registerObserver(listener);
@@ -318,6 +352,7 @@ public class GlobalChatRoomManager {
             @Override
             public void onMessageChanged(MSIMChatRoomMessage msimChatRoomMessage) {
                 mMessageCache.appendOrUpdateMessage(msimChatRoomMessage);
+                mNotifyOnStaticChatRoomMessageChangedListenerBatchQueue.add(msimChatRoomMessage);
             }
 
             @Override

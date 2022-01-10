@@ -26,7 +26,7 @@ public class ChatRoomActivity extends FragmentDelegateActivity {
         context.startActivity(starter);
     }
 
-    private static final String FRAGMENT_TAG_SINGLE_CHAT = "fragment_chat_room_20211228";
+    private static final String FRAGMENT_TAG_CHAT_ROOM = "fragment_chat_room_20211228";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -46,7 +46,7 @@ public class ChatRoomActivity extends FragmentDelegateActivity {
             finish();
             return;
         }
-        setFragmentDelegate(FRAGMENT_TAG_SINGLE_CHAT, () -> ChatRoomFragment.newInstance(chatRoomId));
+        setFragmentDelegate(FRAGMENT_TAG_CHAT_ROOM, () -> ChatRoomFragment.newInstance(chatRoomId));
     }
 
 }
