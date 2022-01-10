@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 
 import com.masonsoft.imsdk.MSIMBaseMessage;
 import com.masonsoft.imsdk.MSIMCallback;
+import com.masonsoft.imsdk.MSIMChatRoomMessage;
 import com.masonsoft.imsdk.MSIMConstants;
 import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.MSIMMessage;
@@ -84,15 +85,21 @@ public class MSIMBaseMessageSendStatusView extends MSIMBaseMessageDynamicFrameLa
             if (baseMessage != null) {
                 final int sendState = baseMessage.getSendStatus(MSIMConstants.SendStatus.SUCCESS);
                 if (sendState == MSIMConstants.SendStatus.FAIL) {
-
                     if (baseMessage instanceof MSIMMessage) {
                         final MSIMMessage message = (MSIMMessage) baseMessage;
                         MSIMManager.getInstance().getMessageManager().resendMessage(
                                 message.getSessionUserId(),
                                 message,
                                 new MSIMWeakCallback<>(mEnqueueCallback));
+                    } else if (baseMessage instanceof MSIMChatRoomMessage) {
+                        final MSIMChatRoomMessage message = (MSIMChatRoomMessage) baseMessage;
+                        message.getChatRoomContext().getChatRoomManager().resendChatRoomMessage(
+                                message.getSessionUserId(),
+                                message,
+                                new MSIMWeakCallback<>(mEnqueueCallback)
+                        );
                     } else {
-                        // TODO FIXME for MSIMChatRoomMessage?
+                        MSIMUikitLog.v("not impl. resend %s", baseMessage);
                     }
                 }
             }
