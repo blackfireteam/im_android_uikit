@@ -31,6 +31,7 @@ import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.uikit.R;
 import com.masonsoft.imsdk.uikit.app.SystemInsetsFragment;
+import com.masonsoft.imsdk.uikit.common.locationpicker.LocationInfo;
 import com.masonsoft.imsdk.uikit.common.media.audio.AudioRecordManager;
 import com.masonsoft.imsdk.uikit.common.mediapicker.MediaData;
 import com.masonsoft.imsdk.uikit.common.microlifecycle.MicroLifecycleComponentManager;
@@ -428,6 +429,11 @@ public class SingleChatFragment extends SystemInsetsFragment {
             @Override
             public void onClickRtcVideo() {
                 MSIMRtcMessageManager.getInstance().startRtcMessage(mTargetUserId, null, true);
+            }
+
+            @Override
+            public void onLocationPicked(@NonNull LocationInfo locationInfo) {
+                // TODO fixme
             }
         });
 

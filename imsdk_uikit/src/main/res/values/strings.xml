@@ -22,6 +22,7 @@
     <string name="imsdk_uikit_custom_soft_keyboard_item_media_picker_submit_0">确定(0)</string>
     <string name="imsdk_uikit_custom_soft_keyboard_item_rtc_audio">语音通话</string>
     <string name="imsdk_uikit_custom_soft_keyboard_item_rtc_video">视频通话</string>
+    <string name="imsdk_uikit_custom_soft_keyboard_item_location">位置</string>
     <string name="imsdk_uikit_menu_copy">复制</string>
     <string name="imsdk_uikit_menu_recall">撤回</string>
     <string name="imsdk_uikit_menu_delete">删除</string>
@@ -84,4 +85,6 @@
     <string name="imsdk_uikit_chat_room_member_role_admin">管理员</string>
     <string name="imsdk_uikit_chat_room_member_role_tmp_admin">临时管理员</string>
     <string name="imsdk_uikit_chat_room_member_mute">禁言</string>
+    <string name="imsdk_uikit_text_cancel">取消</string>
+    <string name="imsdk_uikit_text_send">发送</string>
 </resources>

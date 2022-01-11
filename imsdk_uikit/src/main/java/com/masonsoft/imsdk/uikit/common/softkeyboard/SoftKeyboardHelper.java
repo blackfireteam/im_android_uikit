@@ -30,7 +30,7 @@ public class SoftKeyboardHelper implements SoftKeyboardListenerLayout.OnSoftKeyb
         mSoftKeyboardListenerLayout.setOnSoftKeyboardChangedListener(this);
         mSoftKeyboardListenerLayout.addOnDispatchTouchEventListener(new SoftKeyboardListenerLayout.FirstMoveOrUpTouchEventListener() {
             @Override
-            public void onFirstMoveOrUpTouchEvent(MotionEvent event) {
+            public void onFirstMoveOrUpTouchEvent(MotionEvent event, float dx, float dy) {
                 float rawX = event.getRawX();
                 float rawY = event.getRawY();
                 if (isTouchOutside(rawX, rawY)) {

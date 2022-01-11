@@ -80,7 +80,7 @@ public class ImageLayout extends ClipLayout {
         mPlaceHolderLoading = a.getDrawable(R.styleable.ImageLayout_imagePlaceHolderLoading);
         mPlaceHolderFail = a.getDrawable(R.styleable.ImageLayout_imagePlaceHolderFail);
         mImageResizePercent = a.getFloat(R.styleable.ImageLayout_imageResizePercent, mImageResizePercent);
-        mImageResize = a.getDimensionPixelOffset(R.styleable.ImageLayout_imageResize, mImageResize);
+        mImageResize = a.getDimensionPixelSize(R.styleable.ImageLayout_imageResize, mImageResize);
         mSmallCache = a.getBoolean(R.styleable.ImageLayout_smallCache, mSmallCache);
         mAutoPlay = a.getBoolean(R.styleable.ImageLayout_autoPlay, mAutoPlay);
         a.recycle();

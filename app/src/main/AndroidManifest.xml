@@ -12,6 +12,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.ImsdkSample">
+        <meta-data
+            android:name="com.amap.api.v2.apikey"
+            android:value="2119fd7740e5c63e539567fb52d02720" />
+
         <activity
             android:name=".app.splash.SplashActivity"
             android:exported="true"

@@ -23,6 +23,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.uikit.R;
+import com.masonsoft.imsdk.uikit.common.locationpicker.LocationInfo;
+import com.masonsoft.imsdk.uikit.common.locationpicker.LocationPickerDialog;
 import com.masonsoft.imsdk.uikit.common.mediapicker.MediaData;
 import com.masonsoft.imsdk.uikit.common.mediapicker.MediaPickerDialog;
 import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitWidgetCustomSoftKeyboardBinding;
@@ -64,8 +66,12 @@ public class CustomSoftKeyboard extends FrameLayout {
     private ImsdkUikitWidgetCustomSoftKeyboardBinding mBinding;
     private boolean mShowRtc = true;
 
-    private static final String[] IMAGE_PICKER_PERMISSION = {
+    private static final String[] MEDIA_PICKER_PERMISSION = {
             Manifest.permission.READ_EXTERNAL_STORAGE
+    };
+    private static final String[] LOCATION_PERMISSION = {
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION,
     };
 
     private void initFromAttributes(
@@ -156,6 +162,8 @@ public class CustomSoftKeyboard extends FrameLayout {
         void onClickRtcAudio();
 
         void onClickRtcVideo();
+
+        void onLocationPicked(@NonNull LocationInfo locationInfo);
     }
 
     private OnInputListener mOnInputListener;
@@ -188,6 +196,11 @@ public class CustomSoftKeyboard extends FrameLayout {
 
         @Override
         public void onClickRtcVideo() {
+            // ignore
+        }
+
+        @Override
+        public void onLocationPicked(@NonNull LocationInfo locationInfo) {
             // ignore
         }
     }
@@ -323,6 +336,10 @@ public class CustomSoftKeyboard extends FrameLayout {
                     inflateRtcVideoItemView(context);
                 }
             }
+            {
+                start++;
+                inflateLocationItemView(context);
+            }
             for (int i = start; i < count; i++) {
                 inflateMoreEmptyItemView(context);
             }
@@ -395,6 +412,27 @@ public class CustomSoftKeyboard extends FrameLayout {
             });
         }
 
+        private void inflateLocationItemView(Context context) {
+            final ImsdkUikitWidgetCustomSoftKeyboardLayerMoreItemViewBinding binding =
+                    ImsdkUikitWidgetCustomSoftKeyboardLayerMoreItemViewBinding.inflate(
+                            LayoutInflater.from(context), mBinding.gridLayout, false);
+
+            GridLayout.LayoutParams lp = new GridLayout.LayoutParams();
+            lp.width = mItemViewWidth;
+            lp.height = mItemViewHeight;
+            lp.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1, 1.0f);
+            lp.rowSpec = GridLayout.spec(GridLayout.UNDEFINED, 1, 1.0f);
+            binding.getRoot().setLayoutParams(lp);
+
+            binding.itemMedia.setImageResource(R.drawable.imsdk_uikit_ic_input_more_item_media);
+            binding.itemName.setText(R.string.imsdk_uikit_custom_soft_keyboard_item_location);
+            mBinding.gridLayout.addView(binding.getRoot());
+
+            ViewUtil.onClick(binding.getRoot(), v -> {
+                requestLocationPermission();
+            });
+        }
+
         private void inflateMoreEmptyItemView(Context context) {
             final Space itemView = new Space(context);
 
@@ -419,7 +457,7 @@ public class CustomSoftKeyboard extends FrameLayout {
 
         final RxPermissions rxPermissions = new RxPermissions(activity);
         mPermissionRequest.set(
-                rxPermissions.request(IMAGE_PICKER_PERMISSION)
+                rxPermissions.request(MEDIA_PICKER_PERMISSION)
                         .subscribe(granted -> {
                             if (granted) {
                                 onMediaPickerPermissionGranted();
@@ -459,6 +497,45 @@ public class CustomSoftKeyboard extends FrameLayout {
             return true;
         });
         mediaPickerDialog.show();
+    }
+
+    private void requestLocationPermission() {
+        final AppCompatActivity activity = ActivityUtil.getActiveAppCompatActivity(getContext());
+        if (activity == null) {
+            MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.ACTIVITY_IS_NULL);
+            return;
+        }
+
+        final RxPermissions rxPermissions = new RxPermissions(activity);
+        mPermissionRequest.set(
+                rxPermissions.request(LOCATION_PERMISSION)
+                        .subscribe(granted -> {
+                            if (granted) {
+                                onLocationPermissionGranted();
+                            } else {
+                                MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.PERMISSION_REQUIRED);
+                                TipUtil.show(MSIMUikitConstants.ErrorLog.PERMISSION_REQUIRED);
+                            }
+                        }));
+    }
+
+    private void onLocationPermissionGranted() {
+        final AppCompatActivity activity = ActivityUtil.getActiveAppCompatActivity(getContext());
+        if (activity == null) {
+            MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.ACTIVITY_IS_NULL);
+            return;
+        }
+
+        final LocationPickerDialog locationPickerDialog = new LocationPickerDialog(
+                activity, activity.findViewById(Window.ID_ANDROID_CONTENT)
+        );
+        locationPickerDialog.setOnLocationPickListener(locationInfo -> {
+            if (mOnInputListener != null) {
+                mOnInputListener.onLocationPicked(locationInfo);
+            }
+            return true;
+        });
+        locationPickerDialog.show();
     }
 
 }

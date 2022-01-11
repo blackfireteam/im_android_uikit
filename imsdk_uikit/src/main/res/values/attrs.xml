@@ -50,4 +50,9 @@
     <declare-styleable name="IMChatRoomUnreadCountView">
         <attr name="OnlyDrawableBackground" />
     </declare-styleable>
+    <declare-styleable name="SplitTopBottomLayout">
+        <attr name="minBottomHeight" format="reference|dimension" />
+        <attr name="maxTopHeight" format="reference|dimension" />
+        <attr name="collapsed" format="boolean" />
+    </declare-styleable>
 </resources>
