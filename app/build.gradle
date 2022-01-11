@@ -32,7 +32,7 @@ android {
 
     signingConfigs {
         release {
-            storeFile file("../msimsdk_sign.jks")
+            storeFile file("../msimsdk_sign.p12")
             storePassword "20210528MSIMSDK"
             keyAlias "msimsdk"
             keyPassword "20210528MSIMSDK"
