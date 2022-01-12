@@ -58,6 +58,7 @@ public class LocationPickerDialog implements ViewBackLayer.OnBackPressedListener
         });
         ViewUtil.onClick(mBinding.topBarBack, v -> hide());
         ViewUtil.onClick(mBinding.topBarSubmit, v -> onSubmitClick());
+        mBinding.topBarSubmit.setEnabled(false);
         ViewUtil.onClick(mBinding.actionCollapse, v -> mBinding.topBottomLayout.setCollapse(true));
         ViewUtil.onClick(mBinding.actionExpand, v -> mBinding.topBottomLayout.setCollapse(false));
         mBinding.softKeyboardListenerLayout.addOnDispatchTouchEventListener(new SoftKeyboardListenerLayout.FirstMoveOrUpTouchEventListener() {
@@ -76,10 +77,10 @@ public class LocationPickerDialog implements ViewBackLayer.OnBackPressedListener
                     // 点击了地图部分, 收起
                     mBinding.topBottomLayout.setCollapse(true);
                 } else {
-                    if (dx > 0 || dy > 0) {
-                        // 产生了滑动手势
+                    if (dy > 0) {
+                        // 可能产生了向上滑动手势(非严谨，可能水平滑动的趋势更大)
                         if (isTouchInBottomListContainer(rawX, rawY)) {
-                            // 在底部内容区域滑动，展开
+                            // 在底部内容区域向上滑动，展开
                             mBinding.topBottomLayout.setCollapse(false);
                         }
                     }

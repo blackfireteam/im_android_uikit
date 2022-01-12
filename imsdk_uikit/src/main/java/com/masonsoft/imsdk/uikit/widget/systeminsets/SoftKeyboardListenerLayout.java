@@ -108,9 +108,14 @@ public class SoftKeyboardListenerLayout extends SystemInsetsFrameLayout {
             if (action == MotionEvent.ACTION_MOVE) {
                 float rawX = event.getRawX();
                 float rawY = event.getRawY();
-                float dx = Math.abs(rawX - mDownRawX);
-                float dy = Math.abs(rawY - mDownRawY);
-                if (dx >= mTouchSlop || dy >= mTouchSlop) {
+
+                // dx, dy 向上,向左是正, 向下,向右是负 (上一个位置减去当前位置)
+                float dx = mDownRawX - rawX;
+                float dy = mDownRawY - rawY;
+                final float absDx = Math.abs(dx);
+                final float absDy = Math.abs(dy);
+
+                if (absDx >= mTouchSlop || absDy >= mTouchSlop) {
                     mAllow = false;
                     onFirstMoveOrUpTouchEvent(event, dx, dy);
                 }
@@ -120,6 +125,7 @@ public class SoftKeyboardListenerLayout extends SystemInsetsFrameLayout {
             }
         }
 
+        // dx, dy 向上,向左是正, 向下,向右是负 (上一个位置减去当前位置)
         public abstract void onFirstMoveOrUpTouchEvent(MotionEvent event, float dx, float dy);
 
     }
