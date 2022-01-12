@@ -176,6 +176,11 @@ public class LocationPickerDialog implements ViewBackLayer.OnBackPressedListener
                 outLocation[0] + targetView.getWidth(),
                 outLocation[1] + targetView.getHeight()
         );
+
+        final View topBarView = mBinding.topBar;
+        topBarView.getLocationInWindow(outLocation);
+        mTmpTouchAreaCheckRect.top = outLocation[1] + topBarView.getHeight();
+
         return mTmpTouchAreaCheckRect.contains(((int) rawX), ((int) rawY));
     }
 
@@ -236,6 +241,13 @@ public class LocationPickerDialog implements ViewBackLayer.OnBackPressedListener
         MSIMUikitLog.v("LocationPickerDialog onCreate");
 
         mBinding.mapView.onCreate(null);
+        mBinding.mapView.addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
+            Threads.postUi(() -> {
+                if (mViewImpl != null) {
+                    mViewImpl.updateMarkerCenterPointPosition();
+                }
+            });
+        });
 
         final AMap aMap = mBinding.mapView.getMap();
         aMap.getUiSettings().setZoomControlsEnabled(false);
@@ -361,6 +373,21 @@ public class LocationPickerDialog implements ViewBackLayer.OnBackPressedListener
 
             mPresenter.startResearch(location, mZoom);
         }
+
+        private void updateMarkerCenterPointPosition() {
+            if (mClosed) {
+                return;
+            }
+            final MapView mapView = mBinding.mapView;
+            if (mapView.getWidth() <= 0) {
+                return;
+            }
+            if (mMarkerCenterPoint == null) {
+                return;
+            }
+            mMarkerCenterPoint.setPositionByPixels(mapView.getWidth() / 2, mapView.getHeight() / 2);
+        }
+
     }
 
     private static class PresenterImpl extends PagePresenter<UnionTypeItemObject, GeneralResult, ViewImpl> {

@@ -31,6 +31,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@drawable/imsdk_uikit_gradient_background_vertical_1to0"
+                android:clickable="true"
+                android:focusable="true"
                 app:systemInsetPaddingTop="all"
                 app:systemInsetPaddingTopNotConsume="true">
 
