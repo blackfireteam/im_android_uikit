@@ -70,37 +70,39 @@
             </io.github.idonans.systeminsets.SystemInsetsFrameLayout>
         </FrameLayout>
 
-        <FrameLayout
+        <LinearLayout
             android:id="@+id/bottom_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:background="#6600ff00">
+            android:background="@android:color/white"
+            android:clickable="true"
+            android:focusable="true"
+            android:orientation="vertical">
 
-            <Button
-                android:id="@+id/action_expand"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="展开" />
-
-            <Button
+            <ImageView
                 android:id="@+id/action_collapse"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:text="收起" />
-
-            <EditText
-                android:id="@+id/edit_text"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="50dp" />
+                android:layout_height="20dp"
+                android:layout_gravity="center"
+                android:layout_marginVertical="10dp"
+                android:background="@drawable/imsdk_uikit_ic_common_rect_corners_4dp_fill_cccccc"
+                android:contentDescription="@string/imsdk_uikit_empty_text_hint"
+                android:paddingHorizontal="20dp"
+                android:paddingVertical="2dp"
+                android:src="@drawable/imsdk_uikit_ic_common_arrow_down_black" />
 
             <FrameLayout
                 android:id="@+id/bottom_list_container"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="50dp"
-                tools:background="#660000ff" />
-        </FrameLayout>
+                android:layout_height="match_parent">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:overScrollMode="never"
+                    android:scrollbars="none" />
+            </FrameLayout>
+        </LinearLayout>
     </com.masonsoft.imsdk.uikit.widget.SplitTopBottomLayout>
 </com.masonsoft.imsdk.uikit.widget.systeminsets.SoftKeyboardListenerLayout>
