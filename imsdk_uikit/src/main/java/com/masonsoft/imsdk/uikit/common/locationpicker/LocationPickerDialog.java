@@ -15,6 +15,7 @@ import androidx.lifecycle.OnLifecycleEvent;
 
 import com.amap.api.maps2d.AMap;
 import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
+import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.uikit.R;
 import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitCommonLocationPickerDialogBinding;
 import com.masonsoft.imsdk.uikit.widget.systeminsets.SoftKeyboardListenerLayout;
@@ -55,6 +56,8 @@ public class LocationPickerDialog implements ViewBackLayer.OnBackPressedListener
             public void onSoftKeyboardHidden() {
             }
         });
+        ViewUtil.onClick(mBinding.topBarBack, v -> hide());
+        ViewUtil.onClick(mBinding.topBarSubmit, v -> onSubmitClick());
         ViewUtil.onClick(mBinding.actionCollapse, v -> mBinding.topBottomLayout.setCollapse(true));
         ViewUtil.onClick(mBinding.actionExpand, v -> mBinding.topBottomLayout.setCollapse(false));
         mBinding.softKeyboardListenerLayout.addOnDispatchTouchEventListener(new SoftKeyboardListenerLayout.FirstMoveOrUpTouchEventListener() {
@@ -183,6 +186,10 @@ public class LocationPickerDialog implements ViewBackLayer.OnBackPressedListener
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     public void onDestroy(LifecycleOwner owner) {
         mBinding.mapView.onDestroy();
+    }
+
+    private void onSubmitClick() {
+        MSIMUikitLog.v("onSubmitClick");
     }
 
 }
