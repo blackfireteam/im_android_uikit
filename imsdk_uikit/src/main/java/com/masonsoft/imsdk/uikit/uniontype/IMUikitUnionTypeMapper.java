@@ -4,6 +4,8 @@ import com.masonsoft.imsdk.uikit.uniontype.viewholder.IMBaseMessageDefaultReceiv
 import com.masonsoft.imsdk.uikit.uniontype.viewholder.IMBaseMessageDefaultSendViewHolder;
 import com.masonsoft.imsdk.uikit.uniontype.viewholder.IMBaseMessageImageReceivedViewHolder;
 import com.masonsoft.imsdk.uikit.uniontype.viewholder.IMBaseMessageImageSendViewHolder;
+import com.masonsoft.imsdk.uikit.uniontype.viewholder.IMBaseMessageLocationReceivedViewHolder;
+import com.masonsoft.imsdk.uikit.uniontype.viewholder.IMBaseMessageLocationSendViewHolder;
 import com.masonsoft.imsdk.uikit.uniontype.viewholder.IMBaseMessagePreviewImageViewHolder;
 import com.masonsoft.imsdk.uikit.uniontype.viewholder.IMBaseMessagePreviewVideoViewHolder;
 import com.masonsoft.imsdk.uikit.uniontype.viewholder.IMBaseMessageRevokeReceivedViewHolder;
@@ -45,6 +47,8 @@ public class IMUikitUnionTypeMapper extends UnionTypeLoadingStatus {
     public static final int UNION_TYPE_IMPL_IM_MESSAGE_VOICE_SEND = sNextUnionType++; // 聊天消息-发送的语音
     public static final int UNION_TYPE_IMPL_IM_MESSAGE_VIDEO_RECEIVED = sNextUnionType++; // 聊天消息-接收的视频
     public static final int UNION_TYPE_IMPL_IM_MESSAGE_VIDEO_SEND = sNextUnionType++; // 聊天消息-发送的视频
+    public static final int UNION_TYPE_IMPL_IM_MESSAGE_LOCATION_RECEIVED = sNextUnionType++; // 聊天消息-接收的位置信息
+    public static final int UNION_TYPE_IMPL_IM_MESSAGE_LOCATION_SEND = sNextUnionType++; // 聊天消息-发送的位置信息
     public static final int UNION_TYPE_IMPL_IM_MESSAGE_PREVIEW_IMAGE = sNextUnionType++; // 聊天消息-横向全屏预览-图片
     public static final int UNION_TYPE_IMPL_IM_MESSAGE_PREVIEW_VIDEO = sNextUnionType++; // 聊天消息-横向全屏预览-视频
     @Deprecated
@@ -72,6 +76,8 @@ public class IMUikitUnionTypeMapper extends UnionTypeLoadingStatus {
         put(UNION_TYPE_IMPL_IM_MESSAGE_VOICE_SEND, IMBaseMessageVoiceSendViewHolder::new);
         put(UNION_TYPE_IMPL_IM_MESSAGE_VIDEO_RECEIVED, IMBaseMessageVideoReceivedViewHolder::new);
         put(UNION_TYPE_IMPL_IM_MESSAGE_VIDEO_SEND, IMBaseMessageVideoSendViewHolder::new);
+        put(UNION_TYPE_IMPL_IM_MESSAGE_LOCATION_RECEIVED, IMBaseMessageLocationReceivedViewHolder::new);
+        put(UNION_TYPE_IMPL_IM_MESSAGE_LOCATION_SEND, IMBaseMessageLocationSendViewHolder::new);
         put(UNION_TYPE_IMPL_IM_MESSAGE_PREVIEW_IMAGE, IMBaseMessagePreviewImageViewHolder::new);
         put(UNION_TYPE_IMPL_IM_MESSAGE_PREVIEW_VIDEO, IMBaseMessagePreviewVideoViewHolder::new);
         put(UNION_TYPE_IMPL_IM_MESSAGE_FIRST_CUSTOM_MESSAGE_RECEIVED, IMMessageFirstCustomBaseMessageReceivedViewHolder::new);

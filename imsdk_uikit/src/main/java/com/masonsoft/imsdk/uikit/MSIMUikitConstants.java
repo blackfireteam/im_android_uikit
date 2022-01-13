@@ -1,5 +1,7 @@
 package com.masonsoft.imsdk.uikit;
 
+import com.masonsoft.imsdk.uikit.util.LngLatUtil;
+
 import java.util.concurrent.TimeUnit;
 
 import io.github.idonans.core.util.HumanUtil;
@@ -83,5 +85,12 @@ public class MSIMUikitConstants {
     }
 
     public static final String POI_TYPE = "汽车销售|餐饮服务|购物服务|生活服务|医疗保健服务|住宿服务|风景名胜|商务住宅|政府机构及社会团体|科教文化服务|交通设施服务|金融保险服务|地名地址信息|公共设施";
+
+    public static String buildStaticAMapUrl(double wgsLat, double wgsLng, int zoom) {
+        final double[] amapLngLat = LngLatUtil.wgs84ToGCJ02(wgsLng, wgsLat);
+        return "https://restapi.amap.com/v3/staticmap?location=" + amapLngLat[0] + "," + amapLngLat[1]
+                + "&zoom=" + zoom + "&size=550*300&markers=mid,,A:" + amapLngLat[0] + "," + amapLngLat[1]
+                + "&key=d696e2e8fc6c1685be52faa64b66d318";
+    }
 
 }

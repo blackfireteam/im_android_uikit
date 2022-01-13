@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 import com.masonsoft.imsdk.MSIMBaseMessage;
 import com.masonsoft.imsdk.MSIMConstants;
 import com.masonsoft.imsdk.MSIMImageElement;
+import com.masonsoft.imsdk.MSIMLocationElement;
 import com.masonsoft.imsdk.MSIMVideoElement;
 import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 import com.masonsoft.imsdk.uikit.MSIMUikitLog;
@@ -60,8 +61,8 @@ public class MSIMBaseMessageImageView extends ImageLayout {
                     firstAvailableUrls.add(url);
                 }
                 if (DEBUG) {
-                    MSIMUikitLog.v(Objects.defaultObjectTag(this) + " image message localPath:%s, url:%s",
-                            localPath, url);
+                    MSIMUikitLog.v("%s image message localPath:%s, url:%s",
+                            Objects.defaultObjectTag(this), localPath, url);
                 }
             } else if (messageType == MSIMConstants.MessageType.VIDEO) {
                 final MSIMVideoElement element = baseMessage.getVideoElement();
@@ -75,7 +76,21 @@ public class MSIMBaseMessageImageView extends ImageLayout {
                     firstAvailableUrls.add(thumbUrl);
                 }
                 if (DEBUG) {
-                    MSIMUikitLog.v(Objects.defaultObjectTag(this) + " video message localThumbPath:%s, thumbUrl:%s", localThumbPath, thumbUrl);
+                    MSIMUikitLog.v("%s video message localThumbPath:%s, thumbUrl:%s",
+                            Objects.defaultObjectTag(this), localThumbPath, thumbUrl);
+                }
+            } else if (messageType == MSIMConstants.MessageType.LOCATION) {
+                final MSIMLocationElement element = baseMessage.getLocationElement();
+                Preconditions.checkNotNull(element);
+                final String staticLocationUrl = MSIMUikitConstants.buildStaticAMapUrl(
+                        element.getLat(),
+                        element.getLng(),
+                        (int) element.getZoom()
+                );
+                firstAvailableUrls.add(staticLocationUrl);
+                if (DEBUG) {
+                    MSIMUikitLog.v("%s location message staticLocationUrl:%s",
+                            Objects.defaultObjectTag(this), staticLocationUrl);
                 }
             } else {
                 MSIMUikitLog.e(Objects.defaultObjectTag(this) + " not support type %s", messageType);
