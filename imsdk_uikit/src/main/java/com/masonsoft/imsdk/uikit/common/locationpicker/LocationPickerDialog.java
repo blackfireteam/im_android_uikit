@@ -321,6 +321,7 @@ public class LocationPickerDialog implements ViewBackLayer.OnBackPressedListener
         public ViewImpl(@NonNull UnionTypeAdapter adapter) {
             super(adapter);
             setAlwaysHidePrePageNoMoreData(true);
+            setClearContentWhenRequestInit(true);
         }
 
         @Override
