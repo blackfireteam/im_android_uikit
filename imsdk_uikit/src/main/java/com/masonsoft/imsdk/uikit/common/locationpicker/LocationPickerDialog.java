@@ -251,7 +251,7 @@ public class LocationPickerDialog implements ViewBackLayer.OnBackPressedListener
 
         final AMap aMap = mBinding.mapView.getMap();
         aMap.getUiSettings().setZoomControlsEnabled(false);
-        aMap.getUiSettings().setMyLocationButtonEnabled(true);
+        aMap.getUiSettings().setMyLocationButtonEnabled(false);
         aMap.getUiSettings().setZoomGesturesEnabled(true);
         aMap.getUiSettings().setScrollGesturesEnabled(true);
         aMap.getUiSettings().setZoomPosition(DEFAULT_ZOOM);
@@ -268,6 +268,12 @@ public class LocationPickerDialog implements ViewBackLayer.OnBackPressedListener
         aMap.setMyLocationStyle(myLocationStyle);
         aMap.setOnMyLocationChangeListener(mViewImpl);
         aMap.setOnCameraChangeListener(mViewImpl);
+
+        ViewUtil.onClick(mBinding.actionMoveToMyLocation, v -> {
+            if (mViewImpl != null) {
+                mViewImpl.moveToMyLocation();
+            }
+        });
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
@@ -295,6 +301,7 @@ public class LocationPickerDialog implements ViewBackLayer.OnBackPressedListener
         private int mZoom = DEFAULT_ZOOM;
         private Marker mMarkerCenterPoint;
         private boolean mFollowMyLocation;
+        private Location mMyLocation;
 
         public ViewImpl(@NonNull UnionTypeAdapter adapter) {
             super(adapter);
@@ -339,10 +346,31 @@ public class LocationPickerDialog implements ViewBackLayer.OnBackPressedListener
                 return;
             }
 
+            mMyLocation = location;
+
             if (mFollowMyLocation) {
                 return;
             }
             mFollowMyLocation = true;
+
+            mZoom = DEFAULT_ZOOM;
+            followCamera(new LatLng(location.getLatitude(), location.getLongitude()), true);
+        }
+
+        private void moveToMyLocation() {
+            if (DEBUG) {
+                MSIMUikitLog.v("LocationPickerDialog moveToMyLocation");
+            }
+
+            if (mClosed) {
+                return;
+            }
+
+            final Location location = mMyLocation;
+            if (location == null) {
+                MSIMUikitLog.v("LocationPickerDialog moveToMyLocation ignore. location is null");
+                return;
+            }
 
             mZoom = DEFAULT_ZOOM;
             followCamera(new LatLng(location.getLatitude(), location.getLongitude()), true);
@@ -421,6 +449,9 @@ public class LocationPickerDialog implements ViewBackLayer.OnBackPressedListener
         @Nullable
         @Override
         protected SingleSource<DynamicResult<UnionTypeItemObject, GeneralResult>> createInitRequest() throws Exception {
+            if (DEBUG) {
+                MSIMUikitLog.v("LocationPickerDialog createInitRequest");
+            }
             return Single.just("")
                     .map(input -> {
                         final LatLng location = mLocation;
@@ -443,6 +474,26 @@ public class LocationPickerDialog implements ViewBackLayer.OnBackPressedListener
                         return new DynamicResult<UnionTypeItemObject, GeneralResult>()
                                 .setItems(target);
                     });
+        }
+
+        @Nullable
+        @Override
+        protected SingleSource<DynamicResult<UnionTypeItemObject, GeneralResult>> createNextPageRequest() throws Exception {
+            if (DEBUG) {
+                MSIMUikitLog.v("LocationPickerDialog createNextPageRequest");
+            }
+
+            return super.createNextPageRequest();
+        }
+
+        @Nullable
+        @Override
+        protected SingleSource<DynamicResult<UnionTypeItemObject, GeneralResult>> createPrePageRequest() throws Exception {
+            if (DEBUG) {
+                MSIMUikitLog.v("LocationPickerDialog createPrePageRequest");
+            }
+
+            return super.createPrePageRequest();
         }
 
         private UnionTypeItemObject createUnionTypeItemObject(LocationInfo locationInfo, boolean pickPosition) {

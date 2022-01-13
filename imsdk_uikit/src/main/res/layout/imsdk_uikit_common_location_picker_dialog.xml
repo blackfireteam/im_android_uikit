@@ -27,6 +27,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
+            <ImageView
+                android:id="@+id/action_move_to_my_location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:layout_margin="10dp"
+                android:contentDescription="@string/imsdk_uikit_empty_text_hint"
+                android:src="@drawable/imsdk_uikit_ic_location_myself" />
+
             <io.github.idonans.systeminsets.SystemInsetsFrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
