@@ -346,6 +346,8 @@ public class LocationPickerDialog implements ViewBackLayer.OnBackPressedListener
 
         @Override
         public void onCameraChangeFinish(CameraPosition cameraPosition) {
+            Preconditions.checkArgument(Threads.mustUi());
+
             if (DEBUG) {
                 MSIMUikitLog.v("LocationPickerDialog onCameraChangeFinish");
             }
@@ -360,6 +362,8 @@ public class LocationPickerDialog implements ViewBackLayer.OnBackPressedListener
 
         @Override
         public void onMyLocationChange(Location location) {
+            Preconditions.checkArgument(Threads.mustUi());
+
             if (DEBUG) {
                 MSIMUikitLog.v("LocationPickerDialog onMyLocationChange");
             }
@@ -380,6 +384,8 @@ public class LocationPickerDialog implements ViewBackLayer.OnBackPressedListener
         }
 
         private void moveToMyLocation() {
+            Preconditions.checkArgument(Threads.mustUi());
+
             if (DEBUG) {
                 MSIMUikitLog.v("LocationPickerDialog moveToMyLocation");
             }
@@ -399,6 +405,8 @@ public class LocationPickerDialog implements ViewBackLayer.OnBackPressedListener
         }
 
         private void followCamera(LatLng location, boolean moveCamera) {
+            Preconditions.checkArgument(Threads.mustUi());
+
             if (DEBUG) {
                 MSIMUikitLog.v("LocationPickerDialog followCamera");
             }
@@ -425,6 +433,8 @@ public class LocationPickerDialog implements ViewBackLayer.OnBackPressedListener
         }
 
         private void updateMarkerCenterPointPosition() {
+            Preconditions.checkArgument(Threads.mustUi());
+
             if (mClosed) {
                 return;
             }
@@ -464,9 +474,14 @@ public class LocationPickerDialog implements ViewBackLayer.OnBackPressedListener
         }
 
         private void startResearch(LatLng location, int zoom) {
-            mLocationInfoSelectedWrapper.setObject(null);
             mLocation = location;
             mZoom = zoom;
+
+            mFirstLocationInfo = null;
+            mLocationInfoSelectedWrapper.setObject(null);
+            mPoiSearchPageNo = -1;
+            setNextPageRequestEnable(false);
+
             requestInit(true);
         }
 
