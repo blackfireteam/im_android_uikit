@@ -28,10 +28,13 @@ import com.amap.api.maps2d.model.Marker;
 import com.amap.api.maps2d.model.MarkerOptions;
 import com.amap.api.maps2d.model.MyLocationStyle;
 import com.amap.api.services.core.LatLonPoint;
+import com.amap.api.services.core.PoiItem;
 import com.amap.api.services.core.ServiceSettings;
 import com.amap.api.services.geocoder.GeocodeSearch;
 import com.amap.api.services.geocoder.RegeocodeAddress;
 import com.amap.api.services.geocoder.RegeocodeQuery;
+import com.amap.api.services.poisearch.PoiResult;
+import com.amap.api.services.poisearch.PoiSearch;
 import com.masonsoft.imsdk.lang.GeneralResult;
 import com.masonsoft.imsdk.lang.ObjectWrapper;
 import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
@@ -293,6 +296,17 @@ public class LocationPickerDialog implements ViewBackLayer.OnBackPressedListener
 
     private void onSubmitClick() {
         MSIMUikitLog.v("onSubmitClick");
+        final LocationInfo selectedLocationInfo = mViewImpl.getSelectedLocationInfo();
+        if (selectedLocationInfo == null) {
+            MSIMUikitLog.e("unexpected. selectedLocationInfo is null");
+            return;
+        }
+
+        if (mOnLocationPickListener != null) {
+            if (mOnLocationPickListener.onLocationPick(selectedLocationInfo)) {
+                hide();
+            }
+        }
     }
 
     private class ViewImpl extends UnionTypeStatusPageView<GeneralResult> implements AMap.OnMyLocationChangeListener, AMap.OnCameraChangeListener, Closeable {
@@ -302,6 +316,7 @@ public class LocationPickerDialog implements ViewBackLayer.OnBackPressedListener
         private Marker mMarkerCenterPoint;
         private boolean mFollowMyLocation;
         private Location mMyLocation;
+        private LocationInfo mSelectedLocationInfo;
 
         public ViewImpl(@NonNull UnionTypeAdapter adapter) {
             super(adapter);
@@ -319,7 +334,13 @@ public class LocationPickerDialog implements ViewBackLayer.OnBackPressedListener
         }
 
         private void onSelectedChanged(LocationInfo locationInfo) {
+            mSelectedLocationInfo = locationInfo;
             mBinding.topBarSubmit.setEnabled(locationInfo != null);
+        }
+
+        @Nullable
+        public LocationInfo getSelectedLocationInfo() {
+            return mSelectedLocationInfo;
         }
 
         @Override
@@ -422,6 +443,8 @@ public class LocationPickerDialog implements ViewBackLayer.OnBackPressedListener
 
         private LatLng mLocation;
         private int mZoom;
+        private int mPoiSearchPageNo = -1;
+        private LocationInfo mFirstLocationInfo;
         private final ObjectWrapper mLocationInfoSelectedWrapper = new ObjectWrapper(null) {
             @Override
             public void setObject(@Nullable Object object) {
@@ -454,26 +477,89 @@ public class LocationPickerDialog implements ViewBackLayer.OnBackPressedListener
             }
             return Single.just("")
                     .map(input -> {
+                        final List<LocationInfo> result = new ArrayList<>();
                         final LatLng location = mLocation;
-                        final int zoom = mZoom;
-                        GeocodeSearch search = new GeocodeSearch(ContextUtil.getContext());
-                        RegeocodeQuery query = new RegeocodeQuery(
-                                new LatLonPoint(location.latitude, location.longitude),
-                                200,
-                                GeocodeSearch.AMAP
-                        );
-                        RegeocodeAddress address = search.getFromLocation(query);
-                        return LocationInfo.valueOf(location, zoom, address);
-                    })
-                    .map(locationInfo -> {
-                        // 默认选中第一个
-                        Threads.postUi(() -> mLocationInfoSelectedWrapper.setObject(locationInfo));
 
+                        {
+                            // 先搜索第一页 poi
+                            PoiSearch.Query query = new PoiSearch.Query("", MSIMUikitConstants.POI_TYPE);
+                            query.setPageSize(20);
+                            query.setPageNum(1);
+                            PoiSearch poiSearch = new PoiSearch(ContextUtil.getContext(), query);
+                            poiSearch.setBound(new PoiSearch.SearchBound(new LatLonPoint(location.latitude, location.longitude), 1500));
+                            PoiResult poiResult = poiSearch.searchPOI();
+                            final List<PoiItem> poiItems = poiResult.getPois();
+                            if (poiItems != null) {
+                                final LocationInfo firstLocationInfo = mFirstLocationInfo;
+                                for (PoiItem poiItem : poiItems) {
+                                    if (firstLocationInfo != null) {
+                                        if (firstLocationInfo._poiId != null && firstLocationInfo._poiId.equals(poiItem.getPoiId())) {
+                                            continue;
+                                        }
+                                    }
+                                    result.add(LocationInfo.valueOf(poiItem));
+                                }
+                            }
+                        }
+
+                        // 是否需要将当前定位逆地理编码
+                        final boolean requireRegeocodeQuery;
+                        if (result.isEmpty()) {
+                            requireRegeocodeQuery = true;
+                        } else {
+                            // 如果第一个 poi 的位置距离在 100 米以外，则将当前定位逆地理编码
+                            requireRegeocodeQuery = result.get(0).distance > 100;
+
+                        }
+
+                        if (requireRegeocodeQuery) {
+                            GeocodeSearch search = new GeocodeSearch(ContextUtil.getContext());
+                            RegeocodeQuery query = new RegeocodeQuery(
+                                    new LatLonPoint(location.latitude, location.longitude),
+                                    200,
+                                    GeocodeSearch.AMAP
+                            );
+                            RegeocodeAddress address = search.getFromLocation(query);
+                            result.add(0, LocationInfo.valueOf(location, address));
+                        }
+
+                        return result;
+                    })
+                    .map(locationInfoList -> {
                         final List<UnionTypeItemObject> target = new ArrayList<>();
-                        target.add(createUnionTypeItemObject(locationInfo, true));
+                        for (LocationInfo locationInfo : locationInfoList) {
+                            target.add(createUnionTypeItemObject(locationInfo));
+                        }
                         return new DynamicResult<UnionTypeItemObject, GeneralResult>()
                                 .setItems(target);
                     });
+        }
+
+        @Override
+        protected void onInitRequestResult(@NonNull ViewImpl view, @NonNull DynamicResult<UnionTypeItemObject, GeneralResult> result) {
+            MSIMUikitLog.v("LocationPickerDialog onInitRequestResult");
+            if (result.items == null || result.items.isEmpty()) {
+                mFirstLocationInfo = null;
+                mLocationInfoSelectedWrapper.setObject(null);
+                mPoiSearchPageNo = -1;
+                setNextPageRequestEnable(false);
+            } else {
+                final UnionTypeItemObject firstUnionTypeItemObject = ((UnionTypeItemObject) ((List<?>) result.items).get(0));
+                //noinspection ConstantConditions
+                final LocationInfo locationInfo = firstUnionTypeItemObject.getItemObject(DataObject.class).getObject(LocationInfo.class);
+                mFirstLocationInfo = locationInfo;
+                mLocationInfoSelectedWrapper.setObject(locationInfo);
+
+                if (result.items.size() > 1) {
+                    mPoiSearchPageNo = 1;
+                    setNextPageRequestEnable(true);
+                } else {
+                    mPoiSearchPageNo = -1;
+                    setNextPageRequestEnable(false);
+                }
+            }
+
+            super.onInitRequestResult(view, result);
         }
 
         @Nullable
@@ -483,23 +569,60 @@ public class LocationPickerDialog implements ViewBackLayer.OnBackPressedListener
                 MSIMUikitLog.v("LocationPickerDialog createNextPageRequest");
             }
 
-            return super.createNextPageRequest();
+            return Single.just("")
+                    .map(input -> {
+                        final List<LocationInfo> result = new ArrayList<>();
+                        final LatLng location = mLocation;
+                        final int pageNo = mPoiSearchPageNo;
+                        if (location != null && pageNo >= 1) {
+                            PoiSearch.Query query = new PoiSearch.Query("", MSIMUikitConstants.POI_TYPE);
+                            query.setPageSize(20);
+                            query.setPageNum(pageNo + 1);
+                            PoiSearch poiSearch = new PoiSearch(ContextUtil.getContext(), query);
+                            poiSearch.setBound(new PoiSearch.SearchBound(new LatLonPoint(location.latitude, location.longitude), 1500));
+                            PoiResult poiResult = poiSearch.searchPOI();
+                            final List<PoiItem> poiItems = poiResult.getPois();
+                            if (poiItems != null) {
+                                final LocationInfo firstLocationInfo = mFirstLocationInfo;
+                                for (PoiItem poiItem : poiItems) {
+                                    if (firstLocationInfo != null) {
+                                        if (firstLocationInfo._poiId != null && firstLocationInfo._poiId.equals(poiItem.getPoiId())) {
+                                            continue;
+                                        }
+                                    }
+                                    result.add(LocationInfo.valueOf(poiItem));
+                                }
+                            }
+                        }
+
+                        return result;
+                    })
+                    .map(locationInfoList -> {
+                        final List<UnionTypeItemObject> target = new ArrayList<>();
+                        for (LocationInfo locationInfo : locationInfoList) {
+                            target.add(createUnionTypeItemObject(locationInfo));
+                        }
+                        return new DynamicResult<UnionTypeItemObject, GeneralResult>()
+                                .setItems(target);
+                    });
         }
 
-        @Nullable
         @Override
-        protected SingleSource<DynamicResult<UnionTypeItemObject, GeneralResult>> createPrePageRequest() throws Exception {
+        protected void onNextPageRequestResult(@NonNull ViewImpl view, @NonNull DynamicResult<UnionTypeItemObject, GeneralResult> result) {
             if (DEBUG) {
-                MSIMUikitLog.v("LocationPickerDialog createPrePageRequest");
+                MSIMUikitLog.v("LocationPickerDialog onNextPageRequestResult");
             }
 
-            return super.createPrePageRequest();
+            if (result.items != null && !result.items.isEmpty()) {
+                mPoiSearchPageNo++;
+            }
+
+            super.onNextPageRequestResult(view, result);
         }
 
-        private UnionTypeItemObject createUnionTypeItemObject(LocationInfo locationInfo, boolean pickPosition) {
+        private UnionTypeItemObject createUnionTypeItemObject(LocationInfo locationInfo) {
             final DataObject dataObject = new DataObject(locationInfo);
             dataObject.putExtObjectObject1(mLocationInfoSelectedWrapper);
-            dataObject.putExtObjectBoolean1(pickPosition);
             dataObject.putExtHolderItemClick1(mOnHolderItemClickListener);
             return new UnionTypeItemObject(
                     IMUikitUnionTypeMapper.UNION_TYPE_IMPL_LOCATION_PICKER_SIMPLE_LOCATION_ITEM,
