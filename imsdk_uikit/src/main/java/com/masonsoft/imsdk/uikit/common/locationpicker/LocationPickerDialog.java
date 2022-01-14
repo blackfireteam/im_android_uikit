@@ -224,9 +224,10 @@ public class LocationPickerDialog implements ViewBackLayer.OnBackPressedListener
          * 关闭 LocationPickerDialog 返回 true.
          *
          * @param locationInfo 当前选择的位置
+         * @param zoom         当前地图的缩放层级
          * @return 关闭 LocationPickerDialog 返回 true.
          */
-        boolean onLocationPick(@NonNull LocationInfo locationInfo);
+        boolean onLocationPick(@NonNull LocationInfo locationInfo, long zoom);
     }
 
     private OnLocationPickListener mOnLocationPickListener;
@@ -301,9 +302,13 @@ public class LocationPickerDialog implements ViewBackLayer.OnBackPressedListener
             MSIMUikitLog.e("unexpected. selectedLocationInfo is null");
             return;
         }
+        long zoom = mViewImpl.mZoom;
+        if (zoom <= 0) {
+            zoom = DEFAULT_ZOOM;
+        }
 
         if (mOnLocationPickListener != null) {
-            if (mOnLocationPickListener.onLocationPick(selectedLocationInfo)) {
+            if (mOnLocationPickListener.onLocationPick(selectedLocationInfo.toWgsLocation(), zoom)) {
                 hide();
             }
         }
@@ -429,7 +434,7 @@ public class LocationPickerDialog implements ViewBackLayer.OnBackPressedListener
                 mMarkerCenterPoint.setPositionByPixels(mapView.getWidth() / 2, mapView.getHeight() / 2);
             }
 
-            mPresenter.startResearch(location, mZoom);
+            mPresenter.startResearch(location);
         }
 
         private void updateMarkerCenterPointPosition() {
@@ -453,7 +458,6 @@ public class LocationPickerDialog implements ViewBackLayer.OnBackPressedListener
     private static class PresenterImpl extends PagePresenter<UnionTypeItemObject, GeneralResult, ViewImpl> {
 
         private LatLng mLocation;
-        private int mZoom;
         private int mPoiSearchPageNo = -1;
         private LocationInfo mFirstLocationInfo;
         private final ObjectWrapper mLocationInfoSelectedWrapper = new ObjectWrapper(null) {
@@ -473,9 +477,8 @@ public class LocationPickerDialog implements ViewBackLayer.OnBackPressedListener
             setPrePageRequestEnable(false);
         }
 
-        private void startResearch(LatLng location, int zoom) {
+        private void startResearch(LatLng location) {
             mLocation = location;
-            mZoom = zoom;
 
             mFirstLocationInfo = null;
             mLocationInfoSelectedWrapper.setObject(null);

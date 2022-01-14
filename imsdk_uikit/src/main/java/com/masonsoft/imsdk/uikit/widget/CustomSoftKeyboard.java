@@ -163,7 +163,7 @@ public class CustomSoftKeyboard extends FrameLayout {
 
         void onClickRtcVideo();
 
-        void onLocationPicked(@NonNull LocationInfo locationInfo);
+        void onLocationPicked(@NonNull LocationInfo locationInfo, long zoom);
     }
 
     private OnInputListener mOnInputListener;
@@ -200,7 +200,7 @@ public class CustomSoftKeyboard extends FrameLayout {
         }
 
         @Override
-        public void onLocationPicked(@NonNull LocationInfo locationInfo) {
+        public void onLocationPicked(@NonNull LocationInfo locationInfo, long zoom) {
             // ignore
         }
     }
@@ -529,9 +529,9 @@ public class CustomSoftKeyboard extends FrameLayout {
         final LocationPickerDialog locationPickerDialog = new LocationPickerDialog(
                 activity, activity.findViewById(Window.ID_ANDROID_CONTENT)
         );
-        locationPickerDialog.setOnLocationPickListener(locationInfo -> {
+        locationPickerDialog.setOnLocationPickListener((locationInfo, zoom) -> {
             if (mOnInputListener != null) {
-                mOnInputListener.onLocationPicked(locationInfo);
+                mOnInputListener.onLocationPicked(locationInfo, zoom);
             }
             return true;
         });

@@ -432,8 +432,18 @@ public class SingleChatFragment extends SystemInsetsFragment {
             }
 
             @Override
-            public void onLocationPicked(@NonNull LocationInfo locationInfo) {
-                // TODO fixme
+            public void onLocationPicked(@NonNull LocationInfo locationInfo, long zoom) {
+                MSIMUikitLog.v("onLocationPicked zoom:%s", zoom);
+                if (mBinding == null) {
+                    MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
+                    return;
+                }
+                if (mSoftKeyboardHelper == null) {
+                    MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.SOFT_KEYBOARD_HELPER_IS_NULL);
+                    return;
+                }
+                mSoftKeyboardHelper.requestHideAllSoftKeyboard();
+                submitLocationMessage(locationInfo, zoom);
             }
         });
 
@@ -606,6 +616,29 @@ public class SingleChatFragment extends SystemInsetsFragment {
 
         mEnqueueCallback = new LocalEnqueueCallback(true);
         final MSIMMessage message = MSIMMessageFactory.createAudioMessage(audioFilePath);
+        MSIMManager.getInstance().getMessageManager().sendMessage(
+                MSIMManager.getInstance().getSessionUserId(),
+                message,
+                mTargetUserId,
+                new MSIMWeakCallback<>(mEnqueueCallback)
+        );
+    }
+
+    private void submitLocationMessage(@NonNull LocationInfo locationInfo, long zoom) {
+        final ImsdkUikitSingleChatFragmentBinding binding = mBinding;
+        if (binding == null) {
+            MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
+            return;
+        }
+
+        mEnqueueCallback = new LocalEnqueueCallback(false);
+        final MSIMMessage message = MSIMMessageFactory.createLocationMessage(
+                locationInfo.title,
+                locationInfo.subTitle,
+                locationInfo.lat,
+                locationInfo.lng,
+                zoom
+        );
         MSIMManager.getInstance().getMessageManager().sendMessage(
                 MSIMManager.getInstance().getSessionUserId(),
                 message,

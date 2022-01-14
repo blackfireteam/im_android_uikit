@@ -7,6 +7,7 @@ import com.amap.api.services.core.PoiItem;
 import com.amap.api.services.geocoder.RegeocodeAddress;
 import com.masonsoft.imsdk.core.I18nResources;
 import com.masonsoft.imsdk.uikit.R;
+import com.masonsoft.imsdk.uikit.util.LngLatUtil;
 
 import io.github.idonans.core.util.Preconditions;
 
@@ -39,6 +40,20 @@ public class LocationInfo {
         target.distance = poiItem.getDistance();
         target._poiId = poiItem.getPoiId();
         Preconditions.checkNotNull(target._poiId);
+        return target;
+    }
+
+    @NonNull
+    public LocationInfo toWgsLocation() {
+        final double[] wsg = LngLatUtil.gcj02ToWGS84(this.lng, this.lat);
+
+        final LocationInfo target = new LocationInfo();
+        target.lat = wsg[1];
+        target.lng = wsg[0];
+        target.title = this.title;
+        target.subTitle = this.subTitle;
+        target._poiId = this._poiId;
+        target.distance = this.distance;
         return target;
     }
 

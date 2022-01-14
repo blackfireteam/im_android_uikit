@@ -32,6 +32,7 @@ import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.uikit.R;
 import com.masonsoft.imsdk.uikit.app.SystemInsetsFragment;
 import com.masonsoft.imsdk.uikit.app.chatroom.settings.ChatRoomSettingsActivity;
+import com.masonsoft.imsdk.uikit.common.locationpicker.LocationInfo;
 import com.masonsoft.imsdk.uikit.common.media.audio.AudioRecordManager;
 import com.masonsoft.imsdk.uikit.common.mediapicker.MediaData;
 import com.masonsoft.imsdk.uikit.common.microlifecycle.MicroLifecycleComponentManager;
@@ -417,6 +418,21 @@ public class ChatRoomFragment extends SystemInsetsFragment {
                 mSoftKeyboardHelper.requestHideAllSoftKeyboard();
                 submitMediaMessage(mediaInfoList);
             }
+
+            @Override
+            public void onLocationPicked(@NonNull LocationInfo locationInfo, long zoom) {
+                MSIMUikitLog.v("onLocationPicked zoom:%s", zoom);
+                if (mBinding == null) {
+                    MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
+                    return;
+                }
+                if (mSoftKeyboardHelper == null) {
+                    MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.SOFT_KEYBOARD_HELPER_IS_NULL);
+                    return;
+                }
+                mSoftKeyboardHelper.requestHideAllSoftKeyboard();
+                submitLocationMessage(locationInfo, zoom);
+            }
         });
 
         AudioRecordManager.getInstance().setOnAudioRecordListener(mOnAudioRecordListener);
@@ -607,6 +623,34 @@ public class ChatRoomFragment extends SystemInsetsFragment {
         mEnqueueCallback = new LocalEnqueueCallback(true);
         final MSIMChatRoomMessage message = MSIMChatRoomMessageFactory.createAudioMessage(
                 audioFilePath,
+                chatRoomContext.getChatRoomContext()
+        );
+        chatRoomContext.getChatRoomContext().getChatRoomManager().sendChatRoomMessage(
+                chatRoomContext.getSessionUserId(),
+                message,
+                new MSIMWeakCallback<>(mEnqueueCallback)
+        );
+    }
+
+    private void submitLocationMessage(@NonNull LocationInfo locationInfo, long zoom) {
+        final ImsdkUikitChatRoomFragmentBinding binding = mBinding;
+        if (binding == null) {
+            MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
+            return;
+        }
+        final GlobalChatRoomManager.StaticChatRoomContext chatRoomContext = mPresenter.getChatRoomContext();
+        if (chatRoomContext == null) {
+            MSIMUikitLog.e("chat room context is null");
+            return;
+        }
+
+        mEnqueueCallback = new LocalEnqueueCallback(false);
+        final MSIMChatRoomMessage message = MSIMChatRoomMessageFactory.createLocationMessage(
+                locationInfo.title,
+                locationInfo.subTitle,
+                locationInfo.lat,
+                locationInfo.lng,
+                zoom,
                 chatRoomContext.getChatRoomContext()
         );
         chatRoomContext.getChatRoomContext().getChatRoomManager().sendChatRoomMessage(
