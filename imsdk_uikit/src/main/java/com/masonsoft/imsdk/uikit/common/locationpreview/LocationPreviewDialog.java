@@ -47,7 +47,7 @@ public class LocationPreviewDialog implements ViewBackLayer.OnBackPressedListene
     @NonNull
     private final LocationInfo mTargetLocationInfo;
     private ViewImpl mViewImpl;
-    private int mZoom;
+    private int mInitZoom;
 
     private final ImsdkUikitCommonLocationPreviewDialogBinding mBinding;
 
@@ -62,7 +62,7 @@ public class LocationPreviewDialog implements ViewBackLayer.OnBackPressedListene
         mActivity = activity;
         mInflater = mActivity.getLayoutInflater();
         mTargetLocationInfo = targetLocationInfo;
-        mZoom = zoom;
+        mInitZoom = zoom;
         Preconditions.checkNotNull(targetLocationInfo);
         mViewDialog = new ViewDialog.Builder(activity)
                 .setContentView(R.layout.imsdk_uikit_common_location_preview_dialog)
@@ -113,7 +113,7 @@ public class LocationPreviewDialog implements ViewBackLayer.OnBackPressedListene
         aMap.getUiSettings().setMyLocationButtonEnabled(false);
         aMap.getUiSettings().setZoomGesturesEnabled(true);
         aMap.getUiSettings().setScrollGesturesEnabled(true);
-        aMap.getUiSettings().setZoomPosition(mZoom);
+        aMap.getUiSettings().setZoomPosition(mInitZoom);
 
         aMap.setMapType(AMap.MAP_TYPE_NORMAL);
 
@@ -134,7 +134,7 @@ public class LocationPreviewDialog implements ViewBackLayer.OnBackPressedListene
             }
         });
 
-
+        mViewImpl.mZoom = mInitZoom;
         mViewImpl.followCamera(new LatLng(mTargetLocationInfo.lat, mTargetLocationInfo.lng), true);
     }
 
@@ -155,6 +155,7 @@ public class LocationPreviewDialog implements ViewBackLayer.OnBackPressedListene
 
     private class ViewImpl implements AMap.OnMyLocationChangeListener, AMap.OnCameraChangeListener, Closeable {
 
+        private int mZoom = mInitZoom;
         private boolean mClosed;
         private Marker mTargetMarker;
         private Location mMyLocation;
