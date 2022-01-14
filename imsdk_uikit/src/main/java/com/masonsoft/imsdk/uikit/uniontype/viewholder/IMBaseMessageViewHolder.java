@@ -10,6 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.util.Pair;
 import androidx.core.util.Predicate;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
@@ -22,6 +23,7 @@ import com.masonsoft.imsdk.MSIMChatRoomContext;
 import com.masonsoft.imsdk.MSIMChatRoomInfo;
 import com.masonsoft.imsdk.MSIMChatRoomMessage;
 import com.masonsoft.imsdk.MSIMConstants;
+import com.masonsoft.imsdk.MSIMLocationElement;
 import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.MSIMMessage;
 import com.masonsoft.imsdk.common.TopActivity;
@@ -31,6 +33,8 @@ import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.uikit.R;
 import com.masonsoft.imsdk.uikit.common.impopup.IMBaseMessageMenuDialog;
 import com.masonsoft.imsdk.uikit.common.impreview.IMImageOrVideoPreviewDialog;
+import com.masonsoft.imsdk.uikit.common.locationpicker.LocationInfo;
+import com.masonsoft.imsdk.uikit.common.locationpreview.LocationPreviewDialog;
 import com.masonsoft.imsdk.uikit.uniontype.DataObject;
 import com.masonsoft.imsdk.uikit.uniontype.IMUikitUnionTypeMapper;
 import com.masonsoft.imsdk.uikit.util.ClipboardUtil;
@@ -350,7 +354,7 @@ public abstract class IMBaseMessageViewHolder extends MSIMSelfUpdateUnionTypeVie
         }
 
         @Nullable
-        private static HolderFinder getHolderFinder(@NonNull UnionTypeViewHolder holder, @Nullable Predicate<MSIMBaseMessage> selector /*向前和向后选择的过滤器*/) {
+        private static HolderFinder getHolderFinder(@NonNull UnionTypeViewHolder holder, @Nullable Predicate<Pair<MSIMBaseMessage, MSIMBaseMessage>> selector /*向前和向后选择的过滤器*/) {
             clearHolderFinderTag(holder);
 
             int position = holder.getAdapterPosition();
@@ -363,6 +367,10 @@ public abstract class IMBaseMessageViewHolder extends MSIMSelfUpdateUnionTypeVie
             UnionTypeItemObject itemObject = adapter.getItem(position);
             if (itemObject == null) {
                 MSIMUikitLog.e("item object is null");
+                return null;
+            }
+            if (itemObject != holder.unionTypeItemObject) {
+                MSIMUikitLog.e("unexpected. adapter get item result is not same as holder.unionTypeItemObject");
                 return null;
             }
             if (!(itemObject.itemObject instanceof DataObject)) {
@@ -397,7 +405,7 @@ public abstract class IMBaseMessageViewHolder extends MSIMSelfUpdateUnionTypeVie
                         continue;
                     }
                     final MSIMBaseMessage m = (MSIMBaseMessage) obj.object;
-                    if (selector.test(m)) {
+                    if (selector.test(Pair.create(baseMessage, m))) {
                         preMessageList.add(m);
                     }
                 }
@@ -421,7 +429,7 @@ public abstract class IMBaseMessageViewHolder extends MSIMSelfUpdateUnionTypeVie
                         continue;
                     }
                     final MSIMBaseMessage m = (MSIMBaseMessage) obj.object;
-                    if (selector.test(m)) {
+                    if (selector.test(Pair.create(baseMessage, m))) {
                         nextMessageList.add(m);
                     }
                 }
@@ -528,12 +536,22 @@ public abstract class IMBaseMessageViewHolder extends MSIMSelfUpdateUnionTypeVie
             public boolean received;
         }
 
+        private static boolean isSamePreviewGroupMessageType(int messageType1, int messageType2) {
+            if (messageType1 == MSIMConstants.MessageType.IMAGE ||
+                    messageType1 == MSIMConstants.MessageType.VIDEO) {
+                return messageType2 == MSIMConstants.MessageType.IMAGE
+                        || messageType2 == MSIMConstants.MessageType.VIDEO;
+            }
+
+            return false;
+        }
+
         public static void showPreview(UnionTypeViewHolder holder) {
-            final HolderFinder holderFinder = getHolderFinder(holder, msimBaseMessage -> {
-                final long messageType = msimBaseMessage.getMessageType();
-                return messageType == MSIMConstants.MessageType.IMAGE
-                        || messageType == MSIMConstants.MessageType.VIDEO;
-            });
+            final HolderFinder holderFinder = getHolderFinder(holder, pair ->
+                    isSamePreviewGroupMessageType(
+                            pair.first.getMessageType(),
+                            pair.second.getMessageType()
+                    ));
             if (holderFinder == null) {
                 MSIMUikitLog.e("showPreview holderFinder is null");
                 return;
@@ -553,6 +571,28 @@ public abstract class IMBaseMessageViewHolder extends MSIMSelfUpdateUnionTypeVie
                         holderFinder.innerActivity.findViewById(Window.ID_ANDROID_CONTENT),
                         messageList,
                         index
+                ).show();
+                return;
+            }
+
+            if (messageType == MSIMConstants.MessageType.LOCATION) {
+                // 位置
+                final MSIMLocationElement element = holderFinder.baseMessage.getLocationElement();
+                Preconditions.checkNotNull(element);
+                if (!(holderFinder.innerActivity instanceof AppCompatActivity)) {
+                    MSIMUikitLog.e("unexpected. inner activity is not AppCompatActivity");
+                    return;
+                }
+
+                final LocationInfo locationInfo = new LocationInfo();
+                locationInfo.lat = element.getLat();
+                locationInfo.lng = element.getLng();
+                locationInfo.title = element.getTitle();
+                locationInfo.subTitle = element.getSubTitle();
+                new LocationPreviewDialog(
+                        (AppCompatActivity) holderFinder.innerActivity,
+                        holderFinder.innerActivity.findViewById(Window.ID_ANDROID_CONTENT),
+                        locationInfo
                 ).show();
                 return;
             }
