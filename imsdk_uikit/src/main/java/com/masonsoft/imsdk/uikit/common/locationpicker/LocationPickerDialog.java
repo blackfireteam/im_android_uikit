@@ -248,7 +248,7 @@ public class LocationPickerDialog implements ViewBackLayer.OnBackPressedListener
         mBinding.mapView.addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
             Threads.postUi(() -> {
                 if (mViewImpl != null) {
-                    mViewImpl.updateMarkerCenterPointPosition();
+                    mViewImpl.updateMarkerCenterPointPosition(true);
                 }
             });
         });
@@ -421,23 +421,16 @@ public class LocationPickerDialog implements ViewBackLayer.OnBackPressedListener
             }
 
             final MapView mapView = mBinding.mapView;
-            if (mapView.getWidth() <= 0) {
-                MSIMUikitLog.v("ViewImpl followCamera ignore. mapView not layout.");
-                return;
-            }
-
             if (moveCamera) {
                 mapView.getMap().moveCamera(CameraUpdateFactory.newLatLngZoom(location, mZoom));
             }
-            if (mMarkerCenterPoint == null) {
-                mMarkerCenterPoint = mapView.getMap().addMarker(new MarkerOptions());
-                mMarkerCenterPoint.setPositionByPixels(mapView.getWidth() / 2, mapView.getHeight() / 2);
-            }
+
+            updateMarkerCenterPointPosition(false);
 
             mPresenter.startResearch(location);
         }
 
-        private void updateMarkerCenterPointPosition() {
+        private void updateMarkerCenterPointPosition(boolean force) {
             Preconditions.checkArgument(Threads.mustUi());
 
             if (mClosed) {
@@ -448,9 +441,14 @@ public class LocationPickerDialog implements ViewBackLayer.OnBackPressedListener
                 return;
             }
             if (mMarkerCenterPoint == null) {
+                mMarkerCenterPoint = mapView.getMap().addMarker(new MarkerOptions());
+                mMarkerCenterPoint.setPositionByPixels(mapView.getWidth() / 2, mapView.getHeight() / 2);
                 return;
             }
-            mMarkerCenterPoint.setPositionByPixels(mapView.getWidth() / 2, mapView.getHeight() / 2);
+
+            if (force) {
+                mMarkerCenterPoint.setPositionByPixels(mapView.getWidth() / 2, mapView.getHeight() / 2);
+            }
         }
 
     }

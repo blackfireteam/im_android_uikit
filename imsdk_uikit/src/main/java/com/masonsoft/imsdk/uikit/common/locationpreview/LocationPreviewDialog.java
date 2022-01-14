@@ -231,10 +231,6 @@ public class LocationPreviewDialog implements ViewBackLayer.OnBackPressedListene
             }
 
             final MapView mapView = mBinding.mapView;
-            if (mapView.getWidth() <= 0) {
-                MSIMUikitLog.v("ViewImpl followCamera ignore. mapView not layout.");
-                return;
-            }
 
             if (moveCamera) {
                 mapView.getMap().moveCamera(CameraUpdateFactory.newLatLngZoom(location, mZoom));
