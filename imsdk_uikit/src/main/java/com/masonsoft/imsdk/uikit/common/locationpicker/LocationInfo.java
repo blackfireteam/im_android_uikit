@@ -44,8 +44,21 @@ public class LocationInfo {
     }
 
     @NonNull
-    public LocationInfo toWgsLocation() {
+    public LocationInfo gcj02ToWGS84Location() {
         final double[] wsg = LngLatUtil.gcj02ToWGS84(this.lng, this.lat);
+
+        final LocationInfo target = new LocationInfo();
+        target.lat = wsg[1];
+        target.lng = wsg[0];
+        target.title = this.title;
+        target.subTitle = this.subTitle;
+        target._poiId = this._poiId;
+        target.distance = this.distance;
+        return target;
+    }
+
+    public LocationInfo wgs84ToGCJ02Location() {
+        final double[] wsg = LngLatUtil.wgs84ToGCJ02(this.lng, this.lat);
 
         final LocationInfo target = new LocationInfo();
         target.lat = wsg[1];

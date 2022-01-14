@@ -61,7 +61,7 @@ public class LocationPreviewDialog implements ViewBackLayer.OnBackPressedListene
 
         mActivity = activity;
         mInflater = mActivity.getLayoutInflater();
-        mTargetLocationInfo = targetLocationInfo;
+        mTargetLocationInfo = targetLocationInfo.wgs84ToGCJ02Location();
         mInitZoom = zoom;
         Preconditions.checkNotNull(targetLocationInfo);
         mViewDialog = new ViewDialog.Builder(activity)

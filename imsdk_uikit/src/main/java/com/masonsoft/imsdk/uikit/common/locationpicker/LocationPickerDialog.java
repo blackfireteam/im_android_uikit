@@ -308,7 +308,7 @@ public class LocationPickerDialog implements ViewBackLayer.OnBackPressedListener
         }
 
         if (mOnLocationPickListener != null) {
-            if (mOnLocationPickListener.onLocationPick(selectedLocationInfo.toWgsLocation(), zoom)) {
+            if (mOnLocationPickListener.onLocationPick(selectedLocationInfo.gcj02ToWGS84Location(), zoom)) {
                 hide();
             }
         }
