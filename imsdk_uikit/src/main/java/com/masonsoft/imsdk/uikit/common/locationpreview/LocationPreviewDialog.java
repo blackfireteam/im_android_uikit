@@ -15,6 +15,7 @@ import com.amap.api.maps2d.AMap;
 import com.amap.api.maps2d.CameraUpdateFactory;
 import com.amap.api.maps2d.MapView;
 import com.amap.api.maps2d.model.BitmapDescriptorFactory;
+import com.amap.api.maps2d.model.CameraPosition;
 import com.amap.api.maps2d.model.LatLng;
 import com.amap.api.maps2d.model.Marker;
 import com.amap.api.maps2d.model.MarkerOptions;
@@ -40,26 +41,28 @@ public class LocationPreviewDialog implements ViewBackLayer.OnBackPressedListene
 
     private static final boolean DEBUG = MSIMUikitConstants.DEBUG_WIDGET;
 
-    private static final int DEFAULT_ZOOM = 16;
     private final AppCompatActivity mActivity;
     private final LayoutInflater mInflater;
     private ViewDialog mViewDialog;
     @NonNull
     private final LocationInfo mTargetLocationInfo;
     private ViewImpl mViewImpl;
+    private int mZoom;
 
     private final ImsdkUikitCommonLocationPreviewDialogBinding mBinding;
 
     public LocationPreviewDialog(
             AppCompatActivity activity,
             ViewGroup parentView,
-            @NonNull LocationInfo targetLocationInfo) {
+            @NonNull LocationInfo targetLocationInfo,
+            int zoom) {
         ServiceSettings.updatePrivacyShow(activity, true, true);
         ServiceSettings.updatePrivacyAgree(activity, true);
 
         mActivity = activity;
         mInflater = mActivity.getLayoutInflater();
         mTargetLocationInfo = targetLocationInfo;
+        mZoom = zoom;
         Preconditions.checkNotNull(targetLocationInfo);
         mViewDialog = new ViewDialog.Builder(activity)
                 .setContentView(R.layout.imsdk_uikit_common_location_preview_dialog)
@@ -101,7 +104,7 @@ public class LocationPreviewDialog implements ViewBackLayer.OnBackPressedListene
     public void onCreate(LifecycleOwner owner) {
         Preconditions.checkArgument(!mWasCreated);
         mWasCreated = true;
-        MSIMUikitLog.v("LocationPickerDialog onCreate");
+        MSIMUikitLog.v("LocationPreviewDialog onCreate");
 
         mBinding.mapView.onCreate(null);
 
@@ -110,7 +113,7 @@ public class LocationPreviewDialog implements ViewBackLayer.OnBackPressedListene
         aMap.getUiSettings().setMyLocationButtonEnabled(false);
         aMap.getUiSettings().setZoomGesturesEnabled(true);
         aMap.getUiSettings().setScrollGesturesEnabled(true);
-        aMap.getUiSettings().setZoomPosition(DEFAULT_ZOOM);
+        aMap.getUiSettings().setZoomPosition(mZoom);
 
         aMap.setMapType(AMap.MAP_TYPE_NORMAL);
 
@@ -123,12 +126,14 @@ public class LocationPreviewDialog implements ViewBackLayer.OnBackPressedListene
         aMap.setMyLocationEnabled(true);
         aMap.setMyLocationStyle(myLocationStyle);
         aMap.setOnMyLocationChangeListener(mViewImpl);
+        aMap.setOnCameraChangeListener(mViewImpl);
 
         ViewUtil.onClick(mBinding.actionMoveToMyLocation, v -> {
             if (mViewImpl != null) {
                 mViewImpl.moveToMyLocation();
             }
         });
+
 
         mViewImpl.followCamera(new LatLng(mTargetLocationInfo.lat, mTargetLocationInfo.lng), true);
     }
@@ -148,10 +153,9 @@ public class LocationPreviewDialog implements ViewBackLayer.OnBackPressedListene
         mBinding.mapView.onDestroy();
     }
 
-    private class ViewImpl implements AMap.OnMyLocationChangeListener, Closeable {
+    private class ViewImpl implements AMap.OnMyLocationChangeListener, AMap.OnCameraChangeListener, Closeable {
 
         private boolean mClosed;
-        private int mZoom = DEFAULT_ZOOM;
         private Marker mTargetMarker;
         private Location mMyLocation;
 
@@ -165,7 +169,7 @@ public class LocationPreviewDialog implements ViewBackLayer.OnBackPressedListene
             Preconditions.checkArgument(Threads.mustUi());
 
             if (DEBUG) {
-                MSIMUikitLog.v("LocationPickerDialog onMyLocationChange");
+                MSIMUikitLog.v("LocationPreviewDialog onMyLocationChange");
             }
 
             if (mClosed) {
@@ -175,11 +179,31 @@ public class LocationPreviewDialog implements ViewBackLayer.OnBackPressedListene
             mMyLocation = location;
         }
 
+        @Override
+        public void onCameraChange(CameraPosition cameraPosition) {
+            // ignore
+        }
+
+        @Override
+        public void onCameraChangeFinish(CameraPosition cameraPosition) {
+            Preconditions.checkArgument(Threads.mustUi());
+
+            if (DEBUG) {
+                MSIMUikitLog.v("LocationPreviewDialog onCameraChangeFinish");
+            }
+
+            if (mClosed) {
+                return;
+            }
+
+            mZoom = (int) cameraPosition.zoom;
+        }
+
         private void moveToMyLocation() {
             Preconditions.checkArgument(Threads.mustUi());
 
             if (DEBUG) {
-                MSIMUikitLog.v("LocationPickerDialog moveToMyLocation");
+                MSIMUikitLog.v("LocationPreviewDialog moveToMyLocation");
             }
 
             if (mClosed) {
@@ -188,11 +212,9 @@ public class LocationPreviewDialog implements ViewBackLayer.OnBackPressedListene
 
             final Location location = mMyLocation;
             if (location == null) {
-                MSIMUikitLog.v("LocationPickerDialog moveToMyLocation ignore. location is null");
+                MSIMUikitLog.v("LocationPreviewDialog moveToMyLocation ignore. location is null");
                 return;
             }
-
-            mZoom = DEFAULT_ZOOM;
             followCamera(new LatLng(location.getLatitude(), location.getLongitude()), true);
         }
 
@@ -200,7 +222,7 @@ public class LocationPreviewDialog implements ViewBackLayer.OnBackPressedListene
             Preconditions.checkArgument(Threads.mustUi());
 
             if (DEBUG) {
-                MSIMUikitLog.v("LocationPickerDialog followCamera");
+                MSIMUikitLog.v("LocationPreviewDialog followCamera");
             }
 
             if (mClosed) {

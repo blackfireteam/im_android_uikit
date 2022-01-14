@@ -592,7 +592,8 @@ public abstract class IMBaseMessageViewHolder extends MSIMSelfUpdateUnionTypeVie
                 new LocationPreviewDialog(
                         (AppCompatActivity) holderFinder.innerActivity,
                         holderFinder.innerActivity.findViewById(Window.ID_ANDROID_CONTENT),
-                        locationInfo
+                        locationInfo,
+                        (int) element.getZoom()
                 ).show();
                 return;
             }
