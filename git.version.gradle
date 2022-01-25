@@ -3,10 +3,10 @@
 /////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////
 // 基于 git 当前分支提交信息与当前分支 tag 信息分析得到 version code 与 version name
-// @version 1.1
+// @version 2.0
 //
-// versionCode = [ext.]createGitVersionCode()
-// versionName = [ext.]createGitVersionName()
+// versionCode = ext.gitVersionCode
+// versionName = ext.gitVersionName
 //
 // @see https://raw.githubusercontent.com/idonans/Example/master/git.version.gradle
 //////////////////////////////////////////////////////////////
@@ -133,3 +133,25 @@ def createGitVersionName() {
 
 ext.createGitVersionCode = this.&createGitVersionCode
 ext.createGitVersionName = this.&createGitVersionName
+ext.gitVersionCode = ext.createGitVersionCode()
+ext.gitVersionName = ext.createGitVersionName()
+
+def static addRepos(RepositoryHandler handler) {
+    handler.mavenLocal()
+    handler.maven { url 'https://s01.oss.sonatype.org/content/repositories/snapshots/' }
+    handler.maven { url 'https://s01.oss.sonatype.org/content/repositories/releases/' }
+    handler.maven { url 'https://maven.aliyun.com/repository/gradle-plugin' }
+    handler.maven { url 'https://maven.aliyun.com/repository/central' }
+    handler.maven { url 'https://maven.aliyun.com/repository/public' }
+    handler.maven { url 'https://maven.aliyun.com/repository/google' }
+    handler.mavenCentral()
+    handler.maven { url 'https://jitpack.io' }
+    // handler.maven { url 'https://dl.bintray.com/idonans/maven/' }
+    // handler.maven { url 'https://dl.bintray.com/thelasterstar/maven/' }
+    // handler.maven { url 'https://dl.bintray.com/scwang90/maven' }
+    // handler.google()
+    // handler.jcenter()
+}
+
+ext.addRepos = this.&addRepos
+

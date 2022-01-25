@@ -3,13 +3,13 @@ plugins {
 }
 
 android {
-    compileSdk rootProject.ext.bcfg.ver.target_sdk
+    compileSdk 31
 
     defaultConfig {
-        minSdk rootProject.ext.bcfg.ver.min_sdk
-        targetSdk rootProject.ext.bcfg.ver.target_sdk
-        versionCode rootProject.ext.bcfg.ver.versionCode
-        versionName rootProject.ext.bcfg.ver.versionName
+        minSdk 21
+        targetSdk 31
+        versionCode rootProject.ext.gitVersionCode
+        versionName rootProject.ext.gitVersionName
         buildConfigField("String", "LIB_NAME", "\"MSIMSDK_UIKIT\"")
         buildConfigField("int", "LIB_VERSION_CODE", "$versionCode")
         buildConfigField("String", "LIB_VERSION_NAME", "\"$versionName\"")
@@ -46,26 +46,26 @@ android.libraryVariants.all { variant ->
 dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
 
-    api rootProject.ext.bcfg.deps.msimsdk
+    api "io.github.blackfireteam.msimsdk:imsdk-de4:1.3-SNAPSHOT"
 
-    api rootProject.ext.bcfg.deps.androidx_appcompat
-    api rootProject.ext.bcfg.deps.androidx_constraintlayout
-    api rootProject.ext.bcfg.deps.idonans_appcontext
-    api rootProject.ext.bcfg.deps.idonans_core
-    api rootProject.ext.bcfg.deps.idonans_lang
-    api rootProject.ext.bcfg.deps.idonans_backstack
-    api rootProject.ext.bcfg.deps.idonans_systeminsets
-    api rootProject.ext.bcfg.deps.idonans_uniontype
-    api rootProject.ext.bcfg.deps.idonans_dynamic
+    api "androidx.appcompat:appcompat:1.3.1"
+    api "androidx.constraintlayout:constraintlayout:2.1.1"
+    api "io.github.idonans.appcontext:appcontext:2.2.4"
+    api "io.github.idonans.core:core:2.0.17"
+    api "io.github.idonans.lang:lang:2.0.11"
+    api "io.github.idonans.backstack:backstack:2.0.2"
+    api "io.github.idonans.systeminsets:systeminsets:2.0.3"
+    api "io.github.idonans.uniontype:uniontype:4.0.8"
+    api "io.github.idonans.dynamic:dynamic:3.0.8"
 
-    api rootProject.ext.bcfg.deps.material
-    api rootProject.ext.bcfg.deps.guava
-    api rootProject.ext.bcfg.deps.gson
-    api rootProject.ext.bcfg.deps.rxbinding
-    api rootProject.ext.bcfg.deps.okhttp
-    api rootProject.ext.bcfg.deps.okhttp_logging_interceptor
-    api rootProject.ext.bcfg.deps.rxjava
-    api rootProject.ext.bcfg.deps.rxandroid
+    api "com.google.android.material:material:1.4.0"
+    api "com.google.guava:guava:30.1-android"
+    api "com.google.code.gson:gson:2.8.9"
+    api "com.jakewharton.rxbinding4:rxbinding:4.0.0"
+    api "com.squareup.okhttp3:okhttp:4.9.2"
+    api "com.squareup.okhttp3:logging-interceptor:4.9.2"
+    api "io.reactivex.rxjava3:rxjava:3.0.10"
+    api "io.reactivex.rxjava3:rxandroid:3.0.0"
 
     api 'androidx.emoji:emoji-appcompat:1.1.0'
     api 'androidx.emoji:emoji-bundled:1.1.0'
@@ -75,11 +75,16 @@ dependencies {
     api 'com.google.android.exoplayer:extension-okhttp:2.13.3'
     api 'com.github.tbruyelle:rxpermissions:0.12'
 
-    api rootProject.ext.bcfg.deps.fresco
-    api rootProject.ext.bcfg.deps.fresco_anim_gif
-    api rootProject.ext.bcfg.deps.fresco_anim_webp
-    api rootProject.ext.bcfg.deps.fresco_support_webp
-    api rootProject.ext.bcfg.deps.fresco_okhttp
+    api "com.facebook.fresco:fresco:2.4.0"
+    api "com.facebook.fresco:animated-gif:2.4.0"
+    api "com.facebook.fresco:animated-webp:2.4.0"
+    api "com.facebook.fresco:webpsupport:2.4.0"
+    api "com.facebook.fresco:imagepipeline-okhttp3:2.4.0"
 
     api 'com.tencent.qcloud:cosxml:5.6.0'
+    api 'io.agora.rtc:full-sdk:3.5.0'
+
+    api 'com.amap.api:3dmap:9.0.0'
+    api 'com.amap.api:search:8.1.0'
+    api 'com.amap.api:location:5.6.2'
 }

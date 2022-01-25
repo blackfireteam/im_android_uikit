@@ -11,14 +11,14 @@ MSIMSDK {
 }
 
 android {
-    compileSdk rootProject.ext.bcfg.ver.target_sdk
+    compileSdk 31
 
     defaultConfig {
         applicationId "com.masonsoft.imsdk.sample.de4"
-        minSdk rootProject.ext.bcfg.ver.min_sdk
-        targetSdk rootProject.ext.bcfg.ver.target_sdk
-        versionCode rootProject.ext.bcfg.ver.versionCode
-        versionName rootProject.ext.bcfg.ver.versionName
+        minSdk 21
+        targetSdk 31
+        versionCode rootProject.ext.gitVersionCode
+        versionName rootProject.ext.gitVersionName
         buildConfigField("String", "LIB_NAME", "\"MSIMSDK_SAMPLE\"")
         buildConfigField("int", "LIB_VERSION_CODE", "$versionCode")
         buildConfigField("String", "LIB_VERSION_NAME", "\"$versionName\"")
@@ -32,7 +32,8 @@ android {
 
     signingConfigs {
         release {
-            storeFile file("../msimsdk_sign.jks")
+            storeFile file("../msimsdk_sign.p12")
+            // SHA1 B7:38:64:7E:AE:1A:9E:FB:FD:70:13:88:EA:45:45:F8:60:89:C2:EC b738647eae1a9efbfd701388ea4545f86089c2ec
             storePassword "20210528MSIMSDK"
             keyAlias "msimsdk"
             keyPassword "20210528MSIMSDK"
@@ -68,11 +69,11 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(":imsdk_uikit")
 
-    // debugImplementation rootProject.ext.bcfg.deps.leakcanary
+    // debugImplementation "com.squareup.leakcanary:leakcanary-android:2.6"
 
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 
-    implementation bcfg.deps.kotlin_stdlib_jdk8
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.6.0"
 }
