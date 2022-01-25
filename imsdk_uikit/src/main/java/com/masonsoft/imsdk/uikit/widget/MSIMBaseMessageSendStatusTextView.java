@@ -117,6 +117,9 @@ public class MSIMBaseMessageSendStatusTextView extends MSIMBaseMessageDynamicFra
             case MSIMConstants.MessageType.LOCATION:
                 messageText = "[位置]";
                 break;
+            case MSIMConstants.MessageType.DELETED:
+                messageText = "";
+                break;
             default:
                 messageText = "[default]type:" + messageType + ", body:" + baseMessage.getBody();
         }
