@@ -65,6 +65,7 @@ public class CustomSoftKeyboard extends FrameLayout {
     private final DisposableHolder mPermissionRequest = new DisposableHolder();
     private ImsdkUikitWidgetCustomSoftKeyboardBinding mBinding;
     private boolean mShowRtc = true;
+    private boolean mShowLocation = true;
 
     private static final String[] MEDIA_PICKER_PERMISSION = {
             Manifest.permission.READ_EXTERNAL_STORAGE
@@ -105,6 +106,17 @@ public class CustomSoftKeyboard extends FrameLayout {
     public void setShowRtc(boolean showRtc) {
         if (mShowRtc != showRtc) {
             mShowRtc = showRtc;
+            final RecyclerView.Adapter<?> adapter = mBinding.layerMorePager.getAdapter();
+            if (adapter != null) {
+                adapter.notifyDataSetChanged();
+            }
+        }
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    public void setShowLocation(boolean showLocation) {
+        if (mShowLocation != showLocation) {
+            mShowLocation = showLocation;
             final RecyclerView.Adapter<?> adapter = mBinding.layerMorePager.getAdapter();
             if (adapter != null) {
                 adapter.notifyDataSetChanged();
@@ -337,8 +349,10 @@ public class CustomSoftKeyboard extends FrameLayout {
                 }
             }
             {
-                start++;
-                inflateLocationItemView(context);
+                if (mShowLocation) {
+                    start++;
+                    inflateLocationItemView(context);
+                }
             }
             for (int i = start; i < count; i++) {
                 inflateMoreEmptyItemView(context);
