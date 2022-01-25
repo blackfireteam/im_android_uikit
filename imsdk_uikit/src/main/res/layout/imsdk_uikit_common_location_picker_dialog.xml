@@ -22,7 +22,7 @@
             android:layout_height="wrap_content"
             tools:background="#66ff0000">
 
-            <com.amap.api.maps2d.MapView
+            <com.amap.api.maps.MapView
                 android:id="@+id/map_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />

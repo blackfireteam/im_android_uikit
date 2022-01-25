@@ -11,15 +11,15 @@ import androidx.lifecycle.LifecycleObserver;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.OnLifecycleEvent;
 
-import com.amap.api.maps2d.AMap;
-import com.amap.api.maps2d.CameraUpdateFactory;
-import com.amap.api.maps2d.MapView;
-import com.amap.api.maps2d.model.BitmapDescriptorFactory;
-import com.amap.api.maps2d.model.CameraPosition;
-import com.amap.api.maps2d.model.LatLng;
-import com.amap.api.maps2d.model.Marker;
-import com.amap.api.maps2d.model.MarkerOptions;
-import com.amap.api.maps2d.model.MyLocationStyle;
+import com.amap.api.maps.AMap;
+import com.amap.api.maps.CameraUpdateFactory;
+import com.amap.api.maps.MapView;
+import com.amap.api.maps.model.BitmapDescriptorFactory;
+import com.amap.api.maps.model.CameraPosition;
+import com.amap.api.maps.model.LatLng;
+import com.amap.api.maps.model.Marker;
+import com.amap.api.maps.model.MarkerOptions;
+import com.amap.api.maps.model.MyLocationStyle;
 import com.amap.api.services.core.ServiceSettings;
 import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 import com.masonsoft.imsdk.uikit.MSIMUikitLog;
@@ -71,6 +71,8 @@ public class LocationPreviewDialog implements ViewBackLayer.OnBackPressedListene
                 .setParentView(parentView)
                 .create();
         mBinding = ImsdkUikitCommonLocationPreviewDialogBinding.bind(mViewDialog.getContentView());
+        mBinding.text1.setText(mTargetLocationInfo.title);
+        mBinding.text2.setText(mTargetLocationInfo.subTitle);
 
         ViewUtil.onClick(mBinding.topBarBack, v -> hide());
 
@@ -118,7 +120,7 @@ public class LocationPreviewDialog implements ViewBackLayer.OnBackPressedListene
         aMap.setMapType(AMap.MAP_TYPE_NORMAL);
 
         MyLocationStyle myLocationStyle = new MyLocationStyle();
-        myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_LOCATE);
+        myLocationStyle.myLocationType(MyLocationStyle.LOCATION_TYPE_FOLLOW_NO_CENTER);
         myLocationStyle.myLocationIcon(BitmapDescriptorFactory.fromResource(R.drawable.imsdk_uikit_ic_location_picker_mark));
         myLocationStyle.strokeColor(0);
         myLocationStyle.strokeWidth(0);

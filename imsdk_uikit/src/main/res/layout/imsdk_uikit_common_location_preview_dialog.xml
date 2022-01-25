@@ -6,7 +6,9 @@
     android:layout_height="match_parent"
     android:background="@android:color/white"
     android:clickable="true"
-    android:focusable="true">
+    android:focusable="true"
+    app:systemInsetPaddingBottom="all"
+    app:systemInsetPaddingBottomNotConsume="true">
 
     <io.github.idonans.systeminsets.SystemInsetsLinearLayout
         android:layout_width="match_parent"
@@ -44,7 +46,7 @@
                 android:paddingStart="60dp"
                 android:paddingEnd="60dp"
                 android:singleLine="true"
-                android:text="位置信息"
+                android:text="@string/imsdk_uikit_text_location_info"
                 android:textColor="#333333"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -60,7 +62,7 @@
             android:layout_height="0dp"
             android:layout_weight="1">
 
-            <com.amap.api.maps2d.MapView
+            <com.amap.api.maps.MapView
                 android:id="@+id/map_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
