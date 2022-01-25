@@ -80,7 +80,7 @@ public class HomeFragmentPresenter extends PagePresenter<UnionTypeItemObject, Ob
     }
 
     private UnionTypeItemObject create(@NonNull Spark input) {
-        return UnionTypeItemObject.valueOf(SampleUnionTypeMapper.UNION_TYPE_IMPL_IM_HOME_SPARK, new DataObject<>(input));
+        return new UnionTypeItemObject(SampleUnionTypeMapper.UNION_TYPE_IMPL_IM_HOME_SPARK, new DataObject<>(input));
     }
 
     private void setLastRetryListener(LastRetryListener listener) {

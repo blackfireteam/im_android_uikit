@@ -243,10 +243,10 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
             // 已撤回的消息
             if (messageType == MSIMConstants.MessageType.REVOKED) {
                 return received
-                        ? UnionTypeItemObject.valueOf(
+                        ? new UnionTypeItemObject(
                         IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_REVOKE_RECEIVED,
                         dataObject)
-                        : UnionTypeItemObject.valueOf(
+                        : new UnionTypeItemObject(
                         IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_REVOKE_SEND,
                         dataObject);
             }
@@ -254,59 +254,59 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
             // 文本消息
             if (messageType == MSIMConstants.MessageType.TEXT) {
                 return received
-                        ? UnionTypeItemObject.valueOf(
+                        ? new UnionTypeItemObject(
                         IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_TEXT_RECEIVED,
                         dataObject)
-                        : UnionTypeItemObject.valueOf(
+                        : new UnionTypeItemObject(
                         IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_TEXT_SEND,
                         dataObject);
             }
 
             // 图片消息
             if (messageType == MSIMConstants.MessageType.IMAGE) {
-                return received ? UnionTypeItemObject.valueOf(
+                return received ? new UnionTypeItemObject(
                         IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_IMAGE_RECEIVED,
                         dataObject)
-                        : UnionTypeItemObject.valueOf(
+                        : new UnionTypeItemObject(
                         IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_IMAGE_SEND,
                         dataObject);
             }
 
             // 语音消息
             if (messageType == MSIMConstants.MessageType.AUDIO) {
-                return received ? UnionTypeItemObject.valueOf(
+                return received ? new UnionTypeItemObject(
                         IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_VOICE_RECEIVED,
                         dataObject)
-                        : UnionTypeItemObject.valueOf(
+                        : new UnionTypeItemObject(
                         IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_VOICE_SEND,
                         dataObject);
             }
 
             // 视频消息
             if (messageType == MSIMConstants.MessageType.VIDEO) {
-                return received ? UnionTypeItemObject.valueOf(
+                return received ? new UnionTypeItemObject(
                         IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_VIDEO_RECEIVED,
                         dataObject)
-                        : UnionTypeItemObject.valueOf(
+                        : new UnionTypeItemObject(
                         IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_VIDEO_SEND,
                         dataObject);
             }
 
             // 自定义消息
             if (MSIMConstants.MessageType.isCustomMessage(messageType)) {
-                return received ? UnionTypeItemObject.valueOf(
+                return received ? new UnionTypeItemObject(
                         IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_FIRST_CUSTOM_MESSAGE_RECEIVED,
                         dataObject)
-                        : UnionTypeItemObject.valueOf(
+                        : new UnionTypeItemObject(
                         IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_FIRST_CUSTOM_MESSAGE_SEND,
                         dataObject);
             }
 
             // fallback
-            return received ? UnionTypeItemObject.valueOf(
+            return received ? new UnionTypeItemObject(
                     IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_DEFAULT_RECEIVED,
                     dataObject)
-                    : UnionTypeItemObject.valueOf(
+                    : new UnionTypeItemObject(
                     IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_DEFAULT_SEND,
                     dataObject);
         }
@@ -322,14 +322,14 @@ public abstract class IMMessageViewHolder extends UnionTypeViewHolder {
 
             // 视频消息
             if (messageType == MSIMConstants.MessageType.VIDEO) {
-                return UnionTypeItemObject.valueOf(
+                return new UnionTypeItemObject(
                         IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_PREVIEW_VIDEO,
                         dataObject);
             }
 
             // 图片消息
             if (messageType == MSIMConstants.MessageType.IMAGE) {
-                return UnionTypeItemObject.valueOf(
+                return new UnionTypeItemObject(
                         IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_PREVIEW_IMAGE,
                         dataObject);
             }

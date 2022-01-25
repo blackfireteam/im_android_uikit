@@ -79,7 +79,7 @@ public class DiscoverFragmentPresenter extends PagePresenter<UnionTypeItemObject
 
     @NonNull
     private UnionTypeItemObject create(@NonNull Long userId) {
-        return UnionTypeItemObject.valueOf(SampleUnionTypeMapper.UNION_TYPE_IMPL_IM_DISCOVER_USER, new DeepDiffDataObject(userId));
+        return new UnionTypeItemObject(SampleUnionTypeMapper.UNION_TYPE_IMPL_IM_DISCOVER_USER, new DeepDiffDataObject(userId));
     }
 
     private static class DeepDiffDataObject extends DataObject<Long> implements DeepDiff {
