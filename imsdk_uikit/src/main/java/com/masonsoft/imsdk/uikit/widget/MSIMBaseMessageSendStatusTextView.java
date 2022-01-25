@@ -114,6 +114,9 @@ public class MSIMBaseMessageSendStatusTextView extends MSIMBaseMessageDynamicFra
             case MSIMConstants.MessageType.REVOKED:
                 messageText = "[已撤回]";
                 break;
+            case MSIMConstants.MessageType.LOCATION:
+                messageText = "[位置]";
+                break;
             default:
                 messageText = "[default]type:" + messageType + ", body:" + baseMessage.getBody();
         }
