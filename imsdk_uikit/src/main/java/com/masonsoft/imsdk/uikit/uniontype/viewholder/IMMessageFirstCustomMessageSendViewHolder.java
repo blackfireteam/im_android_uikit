@@ -30,7 +30,7 @@ public class IMMessageFirstCustomMessageSendViewHolder extends IMMessageFirstCus
         super.onBindUpdate();
 
         //noinspection unchecked
-        final DataObject<MSIMMessage> itemObject = (DataObject<MSIMMessage>) this.itemObject;
+        final DataObject<MSIMMessage> itemObject = (DataObject<MSIMMessage>) this.getItemObject(Object.class);
         Preconditions.checkNotNull(itemObject);
         final MSIMMessage message = itemObject.object;
         mBinding.sendStatusView.setMessage(message);

@@ -31,7 +31,7 @@ public class DiscoverUserViewHolder extends UnionTypeViewHolder {
     @Override
     public void onBindUpdate() {
         //noinspection unchecked
-        final DataObject<Long> itemObject = (DataObject<Long>) this.itemObject;
+        final DataObject<Long> itemObject = (DataObject<Long>) this.getItemObject(Object.class);
         Preconditions.checkNotNull(itemObject);
         final long userId = itemObject.object;
 

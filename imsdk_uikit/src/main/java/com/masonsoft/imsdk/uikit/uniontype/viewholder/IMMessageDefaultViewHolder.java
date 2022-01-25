@@ -36,7 +36,7 @@ public abstract class IMMessageDefaultViewHolder extends IMMessageViewHolder {
     public void onBindUpdate() {
         super.onBindUpdate();
         //noinspection unchecked
-        final DataObject<MSIMMessage> itemObject = (DataObject<MSIMMessage>) this.itemObject;
+        final DataObject<MSIMMessage> itemObject = (DataObject<MSIMMessage>) this.getItemObject(Object.class);
         Preconditions.checkNotNull(itemObject);
         final MSIMMessage message = itemObject.object;
 
