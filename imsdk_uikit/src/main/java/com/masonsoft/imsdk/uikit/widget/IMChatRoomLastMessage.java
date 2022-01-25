@@ -32,10 +32,10 @@ public class IMChatRoomLastMessage extends IMChatRoomStateDynamicFrameLayout {
         initFromAttributes(context, attrs, defStyleAttr, defStyleRes);
     }
 
-    private IMChatRoomMessageSendStatusTextView mLastMessageView;
+    private MSIMBaseMessageSendStatusTextView mLastMessageView;
 
     private void initFromAttributes(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        mLastMessageView = new IMChatRoomMessageSendStatusTextView(context);
+        mLastMessageView = new MSIMBaseMessageSendStatusTextView(context);
         addView(mLastMessageView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
     }
 
@@ -49,7 +49,7 @@ public class IMChatRoomLastMessage extends IMChatRoomStateDynamicFrameLayout {
             ViewUtil.setVisibilityIfChanged(mLastMessageView, View.GONE);
         } else {
             ViewUtil.setVisibilityIfChanged(mLastMessageView, View.VISIBLE);
-            mLastMessageView.setChatRoomMessage(lastMessage);
+            mLastMessageView.setBaseMessage(lastMessage);
         }
     }
 
