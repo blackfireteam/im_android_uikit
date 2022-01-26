@@ -14,7 +14,6 @@ public class SignUpArgument implements Parcelable {
 
     public long userId;
     public String nickname;
-    public String avatar;
 
     public SignUpArgument() {
     }
@@ -75,13 +74,12 @@ public class SignUpArgument implements Parcelable {
     protected SignUpArgument(Parcel in) {
         this.userId = in.readLong();
         this.nickname = in.readString();
-        this.avatar = in.readString();
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(this.userId);
         dest.writeString(this.nickname);
-        dest.writeString(this.avatar);
     }
+
 }

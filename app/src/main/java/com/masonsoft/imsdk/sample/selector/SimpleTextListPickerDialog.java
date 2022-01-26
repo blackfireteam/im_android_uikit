@@ -96,15 +96,15 @@ public class SimpleTextListPickerDialog {
                     .add((transaction, groupArrayList) -> {
                         final List<UnionTypeItemObject> itemObjects = new ArrayList<>();
                         for (String text : mData) {
-                            final DataObject<String> dataObject = new DataObject<>(text);
+                            final DataObject dataObject = new DataObject(text);
                             dataObject.putExtHolderItemClick1(holder -> {
                                 final int position = holder.getAdapterPosition();
                                 if (position < 0) {
                                     SampleLog.e("invalid position %s", position);
                                 }
                                 UnionTypeItemObject itemObject = holder.host.getAdapter().getItem(position);
-                                //noinspection ConstantConditions,unchecked
-                                final String text1 = ((DataObject<String>) itemObject.itemObject).object;
+                                //noinspection ConstantConditions
+                                final String text1 = (String) ((DataObject) itemObject.itemObject).object;
                                 onTextSelected(text1);
                             });
 

@@ -101,19 +101,20 @@ public class DiscoverUserManager {
 
         @Override
         protected boolean doNotNullProcess(@NonNull SessionProtoByteMessageWrapper target) {
-            final Object protoMessageObject = target.getProtoByteMessageWrapper().getProtoMessageObject();
-            if (protoMessageObject == null) {
-                return false;
+            {
+                final ProtoMessage.ProfileOnline profileOnline = target.getProtoByteMessageWrapper().getProtoMessageObject(ProtoMessage.ProfileOnline.class);
+                if (profileOnline != null) {
+                    addOnlineAsync(profileOnline);
+                    return true;
+                }
             }
 
-            if (protoMessageObject instanceof ProtoMessage.ProfileOnline) {
-                addOnlineAsync((ProtoMessage.ProfileOnline) protoMessageObject);
-                return true;
-            }
-
-            if (protoMessageObject instanceof ProtoMessage.UsrOffline) {
-                removeOnlineAsync(((ProtoMessage.UsrOffline) protoMessageObject).getUid());
-                return true;
+            {
+                final ProtoMessage.UsrOffline usrOffline = target.getProtoByteMessageWrapper().getProtoMessageObject(ProtoMessage.UsrOffline.class);
+                if (usrOffline != null) {
+                    removeOnlineAsync(usrOffline.getUid());
+                    return true;
+                }
             }
 
             return false;
@@ -124,6 +125,7 @@ public class DiscoverUserManager {
     @NonNull
     private static MSIMUserInfo.Editor createUserInfo(@NonNull ProtoMessage.ProfileOnline input) {
         return new MSIMUserInfo.Editor(input.getUid())
+                .setUpdateTimeMs(input.getUpdateTime() * 1000L /* 将服务器返回的秒转换为毫秒 */)
                 .setNickname(input.getNickName())
                 .setAvatar(input.getAvatar())
                 .setGold(input.getGold())

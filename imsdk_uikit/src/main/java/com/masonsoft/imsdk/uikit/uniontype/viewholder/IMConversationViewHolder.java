@@ -36,13 +36,10 @@ public class IMConversationViewHolder extends UnionTypeViewHolder {
 
     @Override
     public void onBindUpdate() {
-        //noinspection unchecked
-        final DataObject<MSIMConversation> itemObject = (DataObject<MSIMConversation>) this.getItemObject(Object.class);
+        final DataObject itemObject = getItemObject(DataObject.class);
         Preconditions.checkNotNull(itemObject);
-        final MSIMConversation conversation = itemObject.object;
+        final MSIMConversation conversation = itemObject.getObject(MSIMConversation.class);
 
-        final long sessionUserId = conversation.getSessionUserId();
-        final long conversationId = conversation.getConversationId();
         final long targetUserId = conversation.getTargetUserId();
 
         mBinding.avatar.setTargetUserId(targetUserId);
@@ -51,11 +48,11 @@ public class IMConversationViewHolder extends UnionTypeViewHolder {
         mBinding.userVerifiedFlag.setTargetUserId(targetUserId);
         mBinding.userGoldFlag.setTargetUserId(targetUserId);
 
-        mBinding.unreadCountView.setConversation(sessionUserId, conversationId);
-        mBinding.chatRelation.setConversation(sessionUserId, conversationId);
+        mBinding.unreadCountView.setConversation(conversation);
+        mBinding.chatRelation.setConversation(conversation);
 
-        mBinding.time.setConversation(sessionUserId, conversationId);
-        mBinding.msg.setConversation(sessionUserId, conversationId);
+        mBinding.time.setConversation(conversation);
+        mBinding.msg.setConversation(conversation);
 
         ViewUtil.onClick(itemView, v -> {
             final Activity innerActivity = host.getActivity();

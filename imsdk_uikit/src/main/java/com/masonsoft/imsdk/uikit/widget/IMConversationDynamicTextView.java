@@ -5,12 +5,13 @@ import android.util.AttributeSet;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.WorkerThread;
 import androidx.appcompat.widget.AppCompatTextView;
 
 import com.masonsoft.imsdk.MSIMConversation;
-import com.masonsoft.imsdk.MSIMConversationPageContext;
+import com.masonsoft.imsdk.MSIMSelfUpdateListener;
 import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
+
+import javax.annotation.Nonnull;
 
 import io.github.idonans.appcontext.AppContext;
 
@@ -35,43 +36,21 @@ public abstract class IMConversationDynamicTextView extends AppCompatTextView {
         initFromAttributes(context, attrs, defStyleAttr, defStyleRes);
     }
 
-    private MSIMConversationChangedViewHelper mConversationChangedViewHelper;
+    protected MSIMConversation mConversation;
+    @SuppressWarnings("FieldCanBeLocal")
+    private MSIMSelfUpdateListener mSelfUpdateListener;
 
     private void initFromAttributes(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         AppContext.setContextInEditMode(this);
-
-        mConversationChangedViewHelper = new MSIMConversationChangedViewHelper(MSIMConversationPageContext.GLOBAL) {
-            @Nullable
-            @Override
-            protected Object loadCustomObject() {
-                return IMConversationDynamicTextView.this.loadCustomObject();
-            }
-
-            @Override
-            protected void onConversationChanged(@Nullable MSIMConversation conversation, @Nullable Object customObject) {
-                IMConversationDynamicTextView.this.onConversationChanged(conversation, customObject);
-            }
-        };
     }
 
-    public void setConversation(long sessionUserId, long conversationId) {
-        mConversationChangedViewHelper.setConversation(sessionUserId, conversationId);
+    public void setConversation(@Nonnull MSIMConversation conversation) {
+        mConversation = conversation;
+        mSelfUpdateListener = () -> onConversationChanged(mConversation);
+        mConversation.addOnSelfUpdateListener(mSelfUpdateListener);
+        onConversationChanged(mConversation);
     }
 
-    public long getSessionUserId() {
-        return mConversationChangedViewHelper.getSessionUserId();
-    }
-
-    public long getConversationId() {
-        return mConversationChangedViewHelper.getConversationId();
-    }
-
-    @Nullable
-    @WorkerThread
-    protected Object loadCustomObject() {
-        return null;
-    }
-
-    protected abstract void onConversationChanged(@Nullable MSIMConversation conversation, @Nullable Object customObject);
+    protected abstract void onConversationChanged(@Nullable MSIMConversation conversation);
 
 }

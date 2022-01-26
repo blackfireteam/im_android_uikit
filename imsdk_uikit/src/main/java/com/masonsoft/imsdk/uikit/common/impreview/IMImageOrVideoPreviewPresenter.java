@@ -5,50 +5,48 @@ import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
 import com.google.common.collect.Lists;
-import com.masonsoft.imsdk.MSIMConstants;
-import com.masonsoft.imsdk.MSIMManager;
-import com.masonsoft.imsdk.MSIMMessage;
-import com.masonsoft.imsdk.MSIMMessagePageContext;
-import com.masonsoft.imsdk.lang.GeneralResultException;
+import com.masonsoft.imsdk.MSIMBaseMessage;
 import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.uikit.uniontype.DataObject;
 import com.masonsoft.imsdk.uikit.uniontype.UnionTypeViewHolderListeners;
-import com.masonsoft.imsdk.uikit.uniontype.viewholder.IMMessageViewHolder;
+import com.masonsoft.imsdk.uikit.uniontype.viewholder.IMBaseMessageViewHolder;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
+import io.github.idonans.core.util.Preconditions;
 import io.github.idonans.dynamic.DynamicResult;
 import io.github.idonans.dynamic.page.PagePresenter;
 import io.github.idonans.uniontype.UnionTypeItemObject;
+import io.github.idonans.uniontype.UnionTypeMapper;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.core.SingleSource;
 
 public class IMImageOrVideoPreviewPresenter extends PagePresenter<UnionTypeItemObject, Object, IMImageOrVideoPreviewDialog.ViewImpl> {
 
     private static final boolean DEBUG = MSIMUikitConstants.DEBUG_WIDGET;
-
-    private final long mSessionUserId;
-    private final int mConversationType;
-    private final long mTargetUserId;
-    private final int mPageSize = 20;
-
-    private final MSIMMessagePageContext mPageContext;
+    @NonNull
+    private final List<MSIMBaseMessage> mMessageList;
+    private final int mIndex;
 
     @UiThread
-    public IMImageOrVideoPreviewPresenter(@NonNull IMImageOrVideoPreviewDialog.ViewImpl view, long targetUserId, long initMessageSeq) {
+    public IMImageOrVideoPreviewPresenter(
+            @NonNull IMImageOrVideoPreviewDialog.ViewImpl view,
+            @NonNull List<MSIMBaseMessage> messageList,
+            int index) {
         super(view);
-        setPrePageRequestEnable(initMessageSeq >= 0);
-        setNextPageRequestEnable(initMessageSeq >= 0);
-        mSessionUserId = MSIMManager.getInstance().getSessionUserId();
-        mConversationType = MSIMConstants.ConversationType.C2C;
-        mTargetUserId = targetUserId;
-        mPageContext = new MSIMMessagePageContext(initMessageSeq);
+        mMessageList = messageList;
+        mIndex = index;
+
+        Preconditions.checkArgument(index >= 0);
+        Preconditions.checkArgument(index < messageList.size());
+
+        setPrePageRequestEnable(mIndex > 0);
+        setNextPageRequestEnable(mIndex < mMessageList.size() - 1);
     }
 
-    void showInitMessage(MSIMMessage initMessage) {
+    void showInitMessage() {
         IMImageOrVideoPreviewDialog.ViewImpl view = getView();
         if (view == null) {
             return;
@@ -56,7 +54,7 @@ public class IMImageOrVideoPreviewPresenter extends PagePresenter<UnionTypeItemO
 
         view.onInitRequestResult(
                 new DynamicResult<UnionTypeItemObject, Object>()
-                        .setItems(Lists.newArrayList(create(initMessage, true)))
+                        .setItems(Lists.newArrayList(create(mMessageList.get(mIndex), true)))
         );
     }
 
@@ -68,22 +66,24 @@ public class IMImageOrVideoPreviewPresenter extends PagePresenter<UnionTypeItemO
     };
 
     @Nullable
-    private UnionTypeItemObject create(MSIMMessage message) {
-        return create(message, false);
+    private UnionTypeItemObject create(MSIMBaseMessage baseMessage) {
+        return create(baseMessage, false);
     }
 
     @Nullable
-    private UnionTypeItemObject create(MSIMMessage message, boolean autoPlay) {
-        if (message == null) {
+    private UnionTypeItemObject create(MSIMBaseMessage baseMessage, boolean autoPlay) {
+        if (baseMessage == null) {
             return null;
         }
 
-        return IMMessageViewHolder.Helper.createPreviewDefault(
-                new DataObject<>(message)
-                        .putExtObjectBoolean1(autoPlay)
-                        .putExtHolderItemClick1(mOnHolderItemClickListener),
-                mSessionUserId
-        );
+        final DataObject dataObject = new DataObject(baseMessage)
+                .putExtObjectBoolean1(autoPlay)
+                .putExtHolderItemClick1(mOnHolderItemClickListener);
+        final int unionType = IMBaseMessageViewHolder.Helper.getPreviewUnionType(dataObject);
+        if (unionType != UnionTypeMapper.UNION_TYPE_NULL) {
+            return new UnionTypeItemObject(unionType, dataObject);
+        }
+        return null;
     }
 
     @Nullable
@@ -96,31 +96,18 @@ public class IMImageOrVideoPreviewPresenter extends PagePresenter<UnionTypeItemO
     @Override
     protected SingleSource<DynamicResult<UnionTypeItemObject, Object>> createPrePageRequest() throws Exception {
         MSIMUikitLog.v("createPrePageRequest");
-        if (DEBUG) {
-            MSIMUikitLog.v("createPrePageRequest sessionUserId:%s, mConversationType:%s, targetUserId:%s, pageSize:%s",
-                    mSessionUserId,
-                    mConversationType,
-                    mTargetUserId,
-                    mPageSize);
-        }
-
         return Single.just("")
-                .map(input -> MSIMManager.getInstance().getMessageManager().pageQueryHistoryMessage(
-                        mPageContext,
-                        false,
-                        mSessionUserId,
-                        mPageSize,
-                        mConversationType,
-                        mTargetUserId))
-                .map(page -> {
-                    List<MSIMMessage> messageList = page.items;
-                    if (messageList == null) {
-                        messageList = new ArrayList<>();
-                    }
-                    Collections.reverse(messageList);
+                .map(input -> {
+                    //noinspection UnnecessaryLocalVariable
+                    final List<MSIMBaseMessage> messageList = mMessageList;
+                    //noinspection UnnecessaryLocalVariable
+                    final int index = mIndex;
+
+                    // 上一页取 [0-index)
                     List<UnionTypeItemObject> target = new ArrayList<>();
-                    for (MSIMMessage message : messageList) {
-                        UnionTypeItemObject item = create(message);
+
+                    for (int i = 0; i < index; i++) {
+                        UnionTypeItemObject item = create(messageList.get(i));
                         if (item == null) {
                             if (DEBUG) {
                                 MSIMUikitLog.e("createPrePageRequest ignore null UnionTypeItemObject");
@@ -130,10 +117,17 @@ public class IMImageOrVideoPreviewPresenter extends PagePresenter<UnionTypeItemO
                         target.add(item);
                     }
 
-                    return new DynamicResult<UnionTypeItemObject, Object>()
-                            .setItems(target)
-                            .setPayload(page.generalResult)
-                            .setError(GeneralResultException.createOrNull(page.generalResult));
+                    return new DynamicResult<UnionTypeItemObject, Object>() {
+                        @Override
+                        public boolean isEnd() {
+                            return true;
+                        }
+
+                        @Override
+                        public boolean isError() {
+                            return false;
+                        }
+                    }.setItems(target);
                 });
     }
 
@@ -141,30 +135,18 @@ public class IMImageOrVideoPreviewPresenter extends PagePresenter<UnionTypeItemO
     @Override
     protected SingleSource<DynamicResult<UnionTypeItemObject, Object>> createNextPageRequest() throws Exception {
         MSIMUikitLog.v("createNextPageRequest");
-        if (DEBUG) {
-            MSIMUikitLog.v("createNextPageRequest sessionUserId:%s, mConversationType:%s, targetUserId:%s, pageSize:%s",
-                    mSessionUserId,
-                    mConversationType,
-                    mTargetUserId,
-                    mPageSize);
-        }
-
         return Single.just("")
-                .map(input -> MSIMManager.getInstance().getMessageManager().pageQueryNewMessage(
-                        mPageContext,
-                        false,
-                        mSessionUserId,
-                        mPageSize,
-                        mConversationType,
-                        mTargetUserId))
-                .map(page -> {
-                    List<MSIMMessage> messageList = page.items;
-                    if (messageList == null) {
-                        messageList = new ArrayList<>();
-                    }
+                .map(input -> {
+                    final List<MSIMBaseMessage> messageList = mMessageList;
+                    //noinspection UnnecessaryLocalVariable
+                    final int index = mIndex;
+                    final int size = messageList.size();
+
+                    // 下一页取 (index-size)
                     List<UnionTypeItemObject> target = new ArrayList<>();
-                    for (MSIMMessage message : messageList) {
-                        UnionTypeItemObject item = create(message);
+
+                    for (int i = index + 1; i < size; i++) {
+                        UnionTypeItemObject item = create(messageList.get(i));
                         if (item == null) {
                             if (DEBUG) {
                                 MSIMUikitLog.e("createNextPageRequest ignore null UnionTypeItemObject");
@@ -174,10 +156,17 @@ public class IMImageOrVideoPreviewPresenter extends PagePresenter<UnionTypeItemO
                         target.add(item);
                     }
 
-                    return new DynamicResult<UnionTypeItemObject, Object>()
-                            .setItems(target)
-                            .setPayload(page.generalResult)
-                            .setError(GeneralResultException.createOrNull(page.generalResult));
+                    return new DynamicResult<UnionTypeItemObject, Object>() {
+                        @Override
+                        public boolean isEnd() {
+                            return true;
+                        }
+
+                        @Override
+                        public boolean isError() {
+                            return false;
+                        }
+                    }.setItems(target);
                 });
     }
 

@@ -13,9 +13,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.common.collect.Lists;
 import com.masonsoft.imsdk.sample.SampleLog;
-import com.masonsoft.imsdk.uikit.app.SystemInsetsFragment;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleDiscoverFragmentBinding;
 import com.masonsoft.imsdk.sample.uniontype.SampleUnionTypeMapper;
+import com.masonsoft.imsdk.uikit.app.SystemInsetsFragment;
 import com.masonsoft.imsdk.uikit.uniontype.DataObject;
 import com.masonsoft.imsdk.uikit.widget.GridItemDecoration;
 import com.masonsoft.imsdk.util.Objects;
@@ -54,12 +54,14 @@ public class DiscoverFragment extends SystemInsetsFragment {
         SampleLog.v("onCreateView %s", getClass());
 
         mBinding = ImsdkSampleDiscoverFragmentBinding.inflate(inflater, container, false);
+        //noinspection Convert2Lambda
         mBinding.topSystemInsets.setOnSystemInsetsListener(new SystemInsetsLayout.OnSystemInsetsListener() {
             @Override
             public void onSystemInsets(int left, int top, int right, int bottom) {
                 SampleLog.v("DiscoverFragment topSystemInsets onSystemInsets left:%s, top:%s, right:%s, bottom:%s", left, top, right, bottom);
             }
         });
+        //noinspection Convert2Lambda
         mBinding.bottomSystemInsets.setOnSystemInsetsListener(new SystemInsetsLayout.OnSystemInsetsListener() {
             @Override
             public void onSystemInsets(int left, int top, int right, int bottom) {
@@ -195,9 +197,8 @@ public class DiscoverFragment extends SystemInsetsFragment {
 
                         if (unionTypeItemObject.itemObject instanceof DataObject) {
                             try {
-                                //noinspection unchecked
-                                final DataObject<Long> uidObject = (DataObject<Long>) unionTypeItemObject.itemObject;
-                                final Long uid = uidObject.object;
+                                final DataObject uidObject = (DataObject) unionTypeItemObject.itemObject;
+                                final Long uid = (Long) uidObject.object;
                                 if (uid != null && uid > 10000000000L) {
                                     // 新上线的手机号码展示在最前面
                                     groupArrayList.insertGroupItems(getGroupContent(), 0, Lists.newArrayList(unionTypeItemObject));

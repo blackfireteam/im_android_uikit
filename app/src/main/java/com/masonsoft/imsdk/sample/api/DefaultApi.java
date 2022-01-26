@@ -87,6 +87,7 @@ public class DefaultApi {
         //noinspection UnnecessaryLocalVariable
         final OkHttpClient okHttpClient = SHARE_HTTP_CLIENT;
         try (final Response response = okHttpClient.newCall(request).execute()) {
+            //noinspection ConstantConditions
             final String json = response.body().string();
             final JsonObject jsonObject = new Gson().fromJson(json, new TypeToken<JsonObject>() {
             }.getType());
@@ -174,7 +175,7 @@ public class DefaultApi {
 
         final Map<String, Object> requestArgs = new HashMap<>();
         requestArgs.put("uid", userId);
-        requestArgs.put("gold", MSIMConstants.trueOfFalse(gold));
+        requestArgs.put("gold", MSIMConstants.trueOrFalse(gold));
         if (gold) {
             requestArgs.put("gold_exp", (System.currentTimeMillis() / 1000) + TimeUnit.DAYS.toSeconds(7));
         }
@@ -189,7 +190,7 @@ public class DefaultApi {
 
         final Map<String, Object> requestArgs = new HashMap<>();
         requestArgs.put("uid", userId);
-        requestArgs.put("verified", MSIMConstants.trueOfFalse(verified));
+        requestArgs.put("verified", MSIMConstants.trueOrFalse(verified));
 
         requestApiServer(url, requestArgs, null);
         return new Object();

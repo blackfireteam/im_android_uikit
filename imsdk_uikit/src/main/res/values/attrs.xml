@@ -28,7 +28,7 @@
             <enum name="large" value="2" />
         </attr>
     </declare-styleable>
-    <declare-styleable name="IMMessageRevokeTextView">
+    <declare-styleable name="MSIMBaseMessageRevokeTextView">
         <attr name="received" format="boolean" />
     </declare-styleable>
     <declare-styleable name="AspectRatioFrameLayout">
@@ -46,5 +46,13 @@
     </declare-styleable>
     <declare-styleable name="IMConversationAllUnreadCountView">
         <attr name="OnlyDrawableBackground" />
+    </declare-styleable>
+    <declare-styleable name="IMChatRoomUnreadCountView">
+        <attr name="OnlyDrawableBackground" />
+    </declare-styleable>
+    <declare-styleable name="SplitTopBottomLayout">
+        <attr name="minBottomHeight" format="reference|dimension" />
+        <attr name="maxTopHeight" format="reference|dimension" />
+        <attr name="collapsed" format="boolean" />
     </declare-styleable>
 </resources>

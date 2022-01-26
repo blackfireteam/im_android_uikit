@@ -55,6 +55,23 @@
                 android:textStyle="bold"
                 tools:text="titletitletitletitletitletitletitletitletitletitletitletitletitletitletitletitletitle" />
 
+            <com.masonsoft.imsdk.uikit.widget.BeingTypedTextView
+                android:id="@+id/being_typed_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_marginStart="80dp"
+                android:layout_marginEnd="80dp"
+                android:background="@android:color/white"
+                android:gravity="center"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:text="@string/imsdk_uikit_hint_being_typed"
+                android:textColor="#333333"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:visibility="gone" />
+
             <ImageView
                 android:id="@+id/top_bar_more"
                 android:layout_width="wrap_content"

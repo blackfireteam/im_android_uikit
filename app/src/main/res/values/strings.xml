@@ -21,6 +21,7 @@
     <string name="imsdk_sample_input_error_avatar_empty">头像地址不能为空</string>
     <string name="imsdk_sample_switch_setting">设置</string>
     <string name="imsdk_sample_open_app_setting">打开系统设置</string>
+    <string name="imsdk_sample_switch_internet_server_default">重置(切换)默认值</string>
     <string name="imsdk_sample_dialog_confirm_user_not_found_and_auto_reg">当前账号未注册，是否立即注册？</string>
     <string name="imsdk_sample_profile_modify_nickname">修改昵称</string>
     <string name="imsdk_sample_profile_modify_nickname_error_empty">昵称不能为空</string>

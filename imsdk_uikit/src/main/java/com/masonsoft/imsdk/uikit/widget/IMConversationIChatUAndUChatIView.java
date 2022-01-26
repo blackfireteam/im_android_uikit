@@ -10,8 +10,6 @@ import com.masonsoft.imsdk.MSIMConversation;
 import com.masonsoft.imsdk.MSIMConversationExt;
 import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 
-import io.github.idonans.appcontext.AppContext;
-
 public class IMConversationIChatUAndUChatIView extends IMConversationDynamicTextView {
 
     private final boolean DEBUG = MSIMUikitConstants.DEBUG_WIDGET;
@@ -34,14 +32,13 @@ public class IMConversationIChatUAndUChatIView extends IMConversationDynamicText
     }
 
     private void initFromAttributes(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        AppContext.setContextInEditMode(this);
         if (isInEditMode()) {
             setText("⬆");
         }
     }
 
     @Override
-    protected void onConversationChanged(@Nullable MSIMConversation conversation, @Nullable Object customObject) {
+    protected void onConversationChanged(@Nullable MSIMConversation conversation) {
         if (conversation == null) {
             setText("");
             return;

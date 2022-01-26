@@ -15,7 +15,7 @@ import com.facebook.imagepipeline.core.ImagePipelineConfig;
 import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.uikit.common.fileupload.CacheFileUploadProvider;
-import com.masonsoft.imsdk.uikit.common.fileupload.TencentOSSFileUploadProvider;
+import com.masonsoft.imsdk.uikit.common.fileupload.TencentOSSFileUploadProvider2;
 import com.masonsoft.imsdk.uikit.util.OkHttpClientUtil;
 
 import io.github.idonans.core.Singleton;
@@ -44,7 +44,10 @@ public class MSIMUikitManager {
         EmojiCompat.init(new BundledEmojiCompatConfig(ContextUtil.getContext()));
 
         // 设置默认文件上传组件
-        MSIMManager.getInstance().setFileUploadProvider(new CacheFileUploadProvider(new TencentOSSFileUploadProvider()));
+        MSIMManager.getInstance().setFileUploadProvider(new CacheFileUploadProvider(new TencentOSSFileUploadProvider2()));
+
+        // 初始化实时音视频通话管理
+        MSIMRtcMessageManager.getInstance().start();
 
         initFresco();
     }

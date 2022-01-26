@@ -41,13 +41,13 @@ public class UnionTypeMediaData {
             for (MediaData.MediaInfo mediaInfo : bucket.mediaInfoList) {
                 gridItems.add(new UnionTypeItemObject(
                         IMUikitUnionTypeMapper.UNION_TYPE_IMPL_MEDIA_PICKER_GRID,
-                        new DataObject<>(mediaInfo)
+                        new DataObject(mediaInfo)
                                 .putExtObjectObject1(this.mediaData)
                                 .putExtObjectObject2(UnionTypeMediaData.this)));
 
                 pagerItems.add(new UnionTypeItemObject(
                         IMUikitUnionTypeMapper.UNION_TYPE_IMPL_MEDIA_PICKER_PAGER,
-                        new DataObject<>(mediaInfo)
+                        new DataObject(mediaInfo)
                                 .putExtObjectObject1(this.mediaData)
                                 .putExtObjectObject2(UnionTypeMediaData.this)));
             }
@@ -56,7 +56,7 @@ public class UnionTypeMediaData {
             this.unionTypePagerItemsMap.put(bucket, pagerItems);
             unionTypeBucketItems.add(new UnionTypeItemObject(
                     IMUikitUnionTypeMapper.UNION_TYPE_IMPL_MEDIA_PICKER_BUCKET,
-                    new DataObject<>(bucket)
+                    new DataObject(bucket)
                             .putExtObjectObject1(this.mediaData)
                             .putExtObjectObject2(UnionTypeMediaData.this)));
         }

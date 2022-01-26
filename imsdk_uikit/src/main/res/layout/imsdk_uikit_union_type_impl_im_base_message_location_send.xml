@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    tools:background="#fff2f4f5">
+
+    <TextView
+        android:id="@+id/message_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:includeFontPadding="false"
+        android:maxLines="1"
+        android:padding="10dp"
+        android:singleLine="true"
+        android:textColor="#999999"
+        android:textSize="12sp"
+        tools:text="17:30" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="23dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginBottom="10dp"
+        android:orientation="vertical">
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:alignItems="flex_start"
+            app:flexDirection="row_reverse">
+
+            <com.masonsoft.imsdk.uikit.widget.UserCacheAvatar
+                android:id="@+id/avatar"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="15dp"
+                app:layout_flexGrow="0"
+                app:layout_flexShrink="0" />
+
+            <com.masonsoft.imsdk.uikit.widget.ClipLayout
+                android:id="@+id/content_container"
+                android:layout_width="230dp"
+                android:layout_height="150dp"
+                android:background="@drawable/imsdk_uikit_ic_common_rect_corners_16dp_white"
+                app:layout_flexGrow="0"
+                app:layout_flexShrink="1"
+                app:roundSize="16dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/location_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/white"
+                        android:ellipsize="end"
+                        android:includeFontPadding="false"
+                        android:maxLines="1"
+                        android:paddingHorizontal="15dp"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="1dp"
+                        android:singleLine="true"
+                        android:textColor="#282828"
+                        android:textSize="14sp"
+                        tools:text="位置" />
+
+                    <TextView
+                        android:id="@+id/location_sub_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@android:color/white"
+                        android:ellipsize="end"
+                        android:includeFontPadding="false"
+                        android:maxLines="1"
+                        android:paddingHorizontal="15dp"
+                        android:paddingTop="2dp"
+                        android:paddingBottom="5dp"
+                        android:singleLine="true"
+                        android:textColor="#999999"
+                        android:textSize="12sp"
+                        tools:text="详细位置详细位置详细位置详细位置详细位置" />
+
+                    <com.masonsoft.imsdk.uikit.widget.MSIMBaseMessageImageView
+                        android:id="@+id/image"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        app:imagePlaceHolderFail="#d1d1d1"
+                        app:imagePlaceHolderLoading="#d1d1d1" />
+                </LinearLayout>
+            </com.masonsoft.imsdk.uikit.widget.ClipLayout>
+
+            <com.masonsoft.imsdk.uikit.widget.MSIMBaseMessageSendStatusView
+                android:id="@+id/send_status_view"
+                android:layout_width="42dp"
+                android:layout_height="22dp"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                app:layout_alignSelf="center"
+                app:layout_flexGrow="0"
+                app:layout_flexShrink="0" />
+        </com.google.android.flexbox.FlexboxLayout>
+
+        <com.masonsoft.imsdk.uikit.widget.MSIMBaseMessageReadStatusView
+            android:id="@+id/read_status_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="65dp" />
+    </LinearLayout>
+</LinearLayout>

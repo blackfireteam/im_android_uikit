@@ -403,6 +403,9 @@ public class MediaPickerDialog implements MediaData.MediaLoaderCallback, ViewBac
     public interface OnMediaPickListener {
         /**
          * 关闭 MediaPicker，返回 true.
+         *
+         * @param mediaInfoList 当前选择的多媒体信息
+         * @return 关闭 MediaPicker，返回 true.
          */
         boolean onMediaPick(@NonNull List<MediaData.MediaInfo> mediaInfoList);
     }

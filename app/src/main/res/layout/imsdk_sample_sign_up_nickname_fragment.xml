@@ -28,7 +28,7 @@
         android:layout_margin="15dp"
         android:background="@drawable/imsdk_uikit_button_background_selector"
         android:includeFontPadding="false"
-        android:text="@string/imsdk_uikit_submit_action_next"
+        android:text="@string/imsdk_sample_submit_action_ok"
         android:textColor="@color/imsdk_sample_button_text_selector"
         android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@id/bottom_system_insets"

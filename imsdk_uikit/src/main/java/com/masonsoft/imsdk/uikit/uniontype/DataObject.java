@@ -1,9 +1,11 @@
 package com.masonsoft.imsdk.uikit.uniontype;
 
+import androidx.annotation.NonNull;
+
 import java.util.HashMap;
 import java.util.Map;
 
-public class DataObject<T> {
+public class DataObject {
 
     public static final String EXT_KEY_TEXT_1 = "ext_key_text_1";
     public static final String EXT_KEY_TEXT_2 = "ext_key_text_2";
@@ -16,14 +18,22 @@ public class DataObject<T> {
     public static final String EXT_KEY_HOLDER_ITEM_LONG_CLICK_1 = "ext_key_holder_item_long_click_1";
     public static final String EXT_KEY_HOLDER_ITEM_LONG_CLICK_2 = "ext_key_holder_item_long_click_2";
 
-    public final T object;
+    public final Object object;
     private final Map<String, Object> mExtObjects = new HashMap<>();
 
-    public DataObject(T object) {
+    public DataObject(Object object) {
         this.object = object;
     }
 
-    public DataObject<T> putExtObject(String extKey, Object extObject) {
+    public <T> T getObject(@NonNull Class<T> clazz) {
+        if (clazz.isInstance(this.object)) {
+            //noinspection unchecked
+            return (T) this.object;
+        }
+        return null;
+    }
+
+    public DataObject putExtObject(String extKey, Object extObject) {
         this.mExtObjects.put(extKey, extObject);
         return this;
     }
@@ -38,7 +48,7 @@ public class DataObject<T> {
         return valueIfKeyNotFound;
     }
 
-    public DataObject<T> putExtObjectText1(String text) {
+    public DataObject putExtObjectText1(String text) {
         return putExtObject(EXT_KEY_TEXT_1, text);
     }
 
@@ -46,7 +56,7 @@ public class DataObject<T> {
         return getExtObject(EXT_KEY_TEXT_1, valueIfKeyNotFound);
     }
 
-    public DataObject<T> putExtObjectText2(String text) {
+    public DataObject putExtObjectText2(String text) {
         return putExtObject(EXT_KEY_TEXT_2, text);
     }
 
@@ -54,7 +64,7 @@ public class DataObject<T> {
         return getExtObject(EXT_KEY_TEXT_2, valueIfKeyNotFound);
     }
 
-    public DataObject<T> putExtObjectObject1(Object object) {
+    public DataObject putExtObjectObject1(Object object) {
         return putExtObject(EXT_KEY_OBJECT_1, object);
     }
 
@@ -62,7 +72,7 @@ public class DataObject<T> {
         return getExtObject(EXT_KEY_OBJECT_1, valueIfKeyNotFound);
     }
 
-    public DataObject<T> putExtObjectObject2(Object object) {
+    public DataObject putExtObjectObject2(Object object) {
         return putExtObject(EXT_KEY_OBJECT_2, object);
     }
 
@@ -70,7 +80,7 @@ public class DataObject<T> {
         return getExtObject(EXT_KEY_OBJECT_2, valueIfKeyNotFound);
     }
 
-    public DataObject<T> putExtObjectBoolean1(boolean bool) {
+    public DataObject putExtObjectBoolean1(boolean bool) {
         return putExtObject(EXT_KEY_BOOLEAN_1, bool);
     }
 
@@ -78,7 +88,7 @@ public class DataObject<T> {
         return getExtObject(EXT_KEY_BOOLEAN_1, valueIfKeyNotFound);
     }
 
-    public DataObject<T> putExtObjectBoolean2(boolean bool) {
+    public DataObject putExtObjectBoolean2(boolean bool) {
         return putExtObject(EXT_KEY_BOOLEAN_2, bool);
     }
 
@@ -86,7 +96,7 @@ public class DataObject<T> {
         return getExtObject(EXT_KEY_BOOLEAN_2, valueIfKeyNotFound);
     }
 
-    public DataObject<T> putExtHolderItemClick1(UnionTypeViewHolderListeners.OnItemClickListener listener) {
+    public DataObject putExtHolderItemClick1(UnionTypeViewHolderListeners.OnItemClickListener listener) {
         return putExtObject(EXT_KEY_HOLDER_ITEM_CLICK_1, listener);
     }
 
@@ -94,7 +104,7 @@ public class DataObject<T> {
         return getExtObject(EXT_KEY_HOLDER_ITEM_CLICK_1, null);
     }
 
-    public DataObject<T> putExtHolderItemClick2(UnionTypeViewHolderListeners.OnItemClickListener listener) {
+    public DataObject putExtHolderItemClick2(UnionTypeViewHolderListeners.OnItemClickListener listener) {
         return putExtObject(EXT_KEY_HOLDER_ITEM_CLICK_2, listener);
     }
 
@@ -102,7 +112,7 @@ public class DataObject<T> {
         return getExtObject(EXT_KEY_HOLDER_ITEM_CLICK_2, null);
     }
 
-    public DataObject<T> putExtHolderItemLongClick1(UnionTypeViewHolderListeners.OnItemLongClickListener listener) {
+    public DataObject putExtHolderItemLongClick1(UnionTypeViewHolderListeners.OnItemLongClickListener listener) {
         return putExtObject(EXT_KEY_HOLDER_ITEM_LONG_CLICK_1, listener);
     }
 
@@ -110,7 +120,7 @@ public class DataObject<T> {
         return getExtObject(EXT_KEY_HOLDER_ITEM_LONG_CLICK_1, null);
     }
 
-    public DataObject<T> putExtHolderItemLongClick2(UnionTypeViewHolderListeners.OnItemLongClickListener listener) {
+    public DataObject putExtHolderItemLongClick2(UnionTypeViewHolderListeners.OnItemLongClickListener listener) {
         return putExtObject(EXT_KEY_HOLDER_ITEM_LONG_CLICK_2, listener);
     }
 

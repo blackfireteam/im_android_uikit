@@ -40,7 +40,7 @@
                 android:layout_marginEnd="5dp"
                 android:contentDescription="@string/imsdk_uikit_empty_text_hint"
                 android:scaleType="centerInside"
-                android:src="@drawable/imsdk_sample_ic_user_online" />
+                android:src="@drawable/imsdk_uikit_ic_user_online" />
 
             <com.masonsoft.imsdk.uikit.widget.UserCacheName
                 android:id="@+id/username"

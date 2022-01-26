@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputFilter;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,16 +26,20 @@ import com.masonsoft.imsdk.MSIMMessage;
 import com.masonsoft.imsdk.MSIMMessageFactory;
 import com.masonsoft.imsdk.MSIMWeakCallback;
 import com.masonsoft.imsdk.lang.GeneralResult;
+import com.masonsoft.imsdk.uikit.MSIMRtcMessageManager;
 import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.uikit.R;
 import com.masonsoft.imsdk.uikit.app.SystemInsetsFragment;
+import com.masonsoft.imsdk.uikit.common.locationpicker.LocationInfo;
 import com.masonsoft.imsdk.uikit.common.media.audio.AudioRecordManager;
 import com.masonsoft.imsdk.uikit.common.mediapicker.MediaData;
 import com.masonsoft.imsdk.uikit.common.microlifecycle.MicroLifecycleComponentManager;
 import com.masonsoft.imsdk.uikit.common.microlifecycle.MicroLifecycleComponentManagerHost;
 import com.masonsoft.imsdk.uikit.common.microlifecycle.VisibleRecyclerViewMicroLifecycleComponentManager;
 import com.masonsoft.imsdk.uikit.common.simpledialog.SimpleBottomActionsDialog;
+import com.masonsoft.imsdk.uikit.common.softkeyboard.SoftKeyboardHelper;
+import com.masonsoft.imsdk.uikit.common.voicerecordgesture.VoiceRecordGestureHelper;
 import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitSingleChatFragmentBinding;
 import com.masonsoft.imsdk.uikit.uniontype.IMUikitUnionTypeMapper;
 import com.masonsoft.imsdk.uikit.util.ActivityUtil;
@@ -123,6 +128,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
 
         ViewUtil.onClick(mBinding.topBarBack, v -> ActivityUtil.requestBackPressed(SingleChatFragment.this));
         mBinding.topBarTitle.setTargetUserId(mTargetUserId);
+        mBinding.beingTypedView.setTarget(MSIMManager.getInstance().getSessionUserId(), mTargetUserId);
 
         ViewUtil.onClick(mBinding.topBarMore, v -> showBottomActions());
 
@@ -414,6 +420,48 @@ public class SingleChatFragment extends SystemInsetsFragment {
                 mSoftKeyboardHelper.requestHideAllSoftKeyboard();
                 submitMediaMessage(mediaInfoList);
             }
+
+            @Override
+            public void onClickRtcAudio() {
+                MSIMRtcMessageManager.getInstance().startRtcMessage(mTargetUserId, null, false);
+            }
+
+            @Override
+            public void onClickRtcVideo() {
+                MSIMRtcMessageManager.getInstance().startRtcMessage(mTargetUserId, null, true);
+            }
+
+            @Override
+            public void onLocationPicked(@NonNull LocationInfo locationInfo, long zoom) {
+                MSIMUikitLog.v("onLocationPicked zoom:%s", zoom);
+                if (mBinding == null) {
+                    MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
+                    return;
+                }
+                if (mSoftKeyboardHelper == null) {
+                    MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.SOFT_KEYBOARD_HELPER_IS_NULL);
+                    return;
+                }
+                mSoftKeyboardHelper.requestHideAllSoftKeyboard();
+                submitLocationMessage(locationInfo, zoom);
+            }
+        });
+
+        mBinding.keyboardEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (mPresenter != null) {
+                    mPresenter.setBeingTyped();
+                }
+            }
         });
 
         AudioRecordManager.getInstance().setOnAudioRecordListener(mOnAudioRecordListener);
@@ -568,6 +616,29 @@ public class SingleChatFragment extends SystemInsetsFragment {
 
         mEnqueueCallback = new LocalEnqueueCallback(true);
         final MSIMMessage message = MSIMMessageFactory.createAudioMessage(audioFilePath);
+        MSIMManager.getInstance().getMessageManager().sendMessage(
+                MSIMManager.getInstance().getSessionUserId(),
+                message,
+                mTargetUserId,
+                new MSIMWeakCallback<>(mEnqueueCallback)
+        );
+    }
+
+    private void submitLocationMessage(@NonNull LocationInfo locationInfo, long zoom) {
+        final ImsdkUikitSingleChatFragmentBinding binding = mBinding;
+        if (binding == null) {
+            MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
+            return;
+        }
+
+        mEnqueueCallback = new LocalEnqueueCallback(false);
+        final MSIMMessage message = MSIMMessageFactory.createLocationMessage(
+                locationInfo.title,
+                locationInfo.subTitle,
+                locationInfo.lat,
+                locationInfo.lng,
+                zoom
+        );
         MSIMManager.getInstance().getMessageManager().sendMessage(
                 MSIMManager.getInstance().getSessionUserId(),
                 message,

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<io.github.idonans.systeminsets.SystemInsetsLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:orientation="vertical"
+    app:systemInsetPaddingBottom="all"
+    app:systemInsetPaddingBottomNotConsume="true"
+    app:systemInsetPaddingTop="all"
+    app:systemInsetPaddingTopNotConsume="true">
+
+    <FrameLayout
+        android:id="@+id/top_bar"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:background="@android:color/white"
+        android:clickable="true"
+        android:focusable="true">
+
+        <ImageView
+            android:id="@+id/top_bar_back"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:contentDescription="@string/imsdk_uikit_empty_text_hint"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/imsdk_uikit_ic_arrow_left" />
+
+        <TextView
+            android:id="@+id/top_bar_title"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:layout_marginStart="100dp"
+            android:layout_marginEnd="100dp"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:text="@string/imsdk_uikit_chat_room_member_list_title"
+            android:textColor="#333333"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+    </FrameLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/imsdk_uikit_color_divider_line" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="#FFF2F4F5"
+        android:overScrollMode="never"
+        android:scrollbars="none" />
+</io.github.idonans.systeminsets.SystemInsetsLinearLayout>

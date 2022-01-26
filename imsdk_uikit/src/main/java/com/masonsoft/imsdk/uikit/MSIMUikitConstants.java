@@ -1,6 +1,7 @@
 package com.masonsoft.imsdk.uikit;
 
 import com.masonsoft.imsdk.annotation.DemoOnly;
+import com.masonsoft.imsdk.uikit.util.LngLatUtil;
 
 import java.util.concurrent.TimeUnit;
 
@@ -36,6 +37,9 @@ public class MSIMUikitConstants {
         String INVALID_POSITION = "position is invalid";
         String INVALID_TARGET = "target is invalid";
         String INVALID_ARGS = "one or more args is invalid";
+        String INVALID_CHAT_ROOM_ID = "chat room id is invalid";
+        String INVALID_SESSION_USER_ID = "session user id is invalid";
+        String INVALID_CHAT_ROOM_INFO = "chat room info is invalid";
     }
 
     ///////////////////////////////////////////////////////////////////////
@@ -100,6 +104,20 @@ public class MSIMUikitConstants {
          * 取消匹配
          */
         public static final int UNMATCH = 34;
+    }
+
+    public static class Gender {
+        public static final long FEMALE = 0;
+        public static final long MALE = 1;
+    }
+
+    public static final String POI_TYPE = "汽车销售|餐饮服务|购物服务|生活服务|医疗保健服务|住宿服务|风景名胜|商务住宅|政府机构及社会团体|科教文化服务|交通设施服务|金融保险服务|地名地址信息|公共设施";
+
+    public static String buildStaticAMapUrl(double wgsLat, double wgsLng, int zoom) {
+        final double[] amapLngLat = LngLatUtil.wgs84ToGCJ02(wgsLng, wgsLat);
+        return "https://restapi.amap.com/v3/staticmap?location=" + amapLngLat[0] + "," + amapLngLat[1]
+                + "&zoom=" + zoom + "&size=550*300&markers=mid,,A:" + amapLngLat[0] + "," + amapLngLat[1]
+                + "&key=d696e2e8fc6c1685be52faa64b66d318";
     }
 
 }

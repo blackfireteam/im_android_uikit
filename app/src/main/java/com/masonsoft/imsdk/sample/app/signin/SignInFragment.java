@@ -59,6 +59,10 @@ public class SignInFragment extends SystemInsetsFragment {
             SampleLog.e(MSIMUikitConstants.ErrorLog.ACTIVITY_IS_NULL);
             return;
         }
+        if (isStateSaved()) {
+            SampleLog.e(MSIMUikitConstants.ErrorLog.FRAGMENT_MANAGER_STATE_SAVED);
+            return;
+        }
         if (mSignInLoadingDialog == null) {
             mSignInLoadingDialog = new SimpleLoadingDialog(activity);
         }
@@ -69,6 +73,10 @@ public class SignInFragment extends SystemInsetsFragment {
         final Activity activity = getActivity();
         if (activity == null) {
             SampleLog.e(MSIMUikitConstants.ErrorLog.ACTIVITY_IS_NULL);
+            return;
+        }
+        if (isStateSaved()) {
+            SampleLog.e(MSIMUikitConstants.ErrorLog.FRAGMENT_MANAGER_STATE_SAVED);
             return;
         }
         if (mSignInLoadingDialog != null) {

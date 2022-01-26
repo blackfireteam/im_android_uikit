@@ -24,10 +24,9 @@ public class MediaPickerBucketViewHolder extends UnionTypeViewHolder {
 
     @Override
     public void onBindUpdate() {
-        //noinspection unchecked
-        final DataObject<MediaData.MediaBucket> itemObject = (DataObject<MediaData.MediaBucket>) this.getItemObject(Object.class);
+        final DataObject itemObject = getItemObject(DataObject.class);
         Preconditions.checkNotNull(itemObject);
-        final MediaData.MediaBucket mediaBucket = itemObject.object;
+        final MediaData.MediaBucket mediaBucket = itemObject.getObject(MediaData.MediaBucket.class);
         final MediaData mediaData = itemObject.getExtObjectObject1(null);
         String url = null;
         if (mediaBucket.cover != null) {

@@ -6,8 +6,8 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 
-import com.masonsoft.imsdk.sample.app.signup.SignUpArgument;
 import com.masonsoft.imsdk.uikit.app.FragmentDelegateActivity;
+import com.masonsoft.imsdk.sample.app.signup.SignUpArgument;
 
 import io.github.idonans.systeminsets.SystemUiHelper;
 

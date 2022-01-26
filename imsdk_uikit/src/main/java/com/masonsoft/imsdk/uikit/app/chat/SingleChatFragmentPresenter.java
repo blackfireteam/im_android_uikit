@@ -12,20 +12,23 @@ import com.masonsoft.imsdk.MSIMMessage;
 import com.masonsoft.imsdk.MSIMMessagePageContext;
 import com.masonsoft.imsdk.lang.GeneralResult;
 import com.masonsoft.imsdk.lang.GeneralResultException;
+import com.masonsoft.imsdk.uikit.CustomIMMessageFactory;
 import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.uikit.uniontype.DataObject;
 import com.masonsoft.imsdk.uikit.uniontype.UnionTypeViewHolderListeners;
-import com.masonsoft.imsdk.uikit.uniontype.viewholder.IMMessageViewHolder;
+import com.masonsoft.imsdk.uikit.uniontype.viewholder.IMBaseMessageViewHolder;
 import com.masonsoft.imsdk.uikit.widget.MSIMConversationChangedViewHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import io.github.idonans.dynamic.DynamicResult;
 import io.github.idonans.dynamic.page.PagePresenter;
 import io.github.idonans.lang.DisposableHolder;
 import io.github.idonans.uniontype.UnionTypeItemObject;
+import io.github.idonans.uniontype.UnionTypeMapper;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.core.SingleSource;
 
@@ -37,6 +40,10 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
     private final int mConversationType = MSIMConstants.ConversationType.C2C;
     private final long mTargetUserId;
     private final int mPageSize = 20;
+
+    @Nullable
+    private MSIMMessage mLastMessage;
+    private long mConsumedTypedLastMessageSeq;
 
     private final MSIMMessagePageContext mMessagePageContext = new MSIMMessagePageContext();
     @SuppressWarnings("FieldCanBeLocal")
@@ -102,14 +109,14 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
     private final UnionTypeViewHolderListeners.OnItemClickListener mOnHolderItemClickListener = viewHolder -> {
         SingleChatFragment.ViewImpl view = getView();
         if (view != null) {
-            IMMessageViewHolder.Helper.showPreview(viewHolder, view.getTargetUserId());
+            IMBaseMessageViewHolder.Helper.showPreview(viewHolder);
         }
     };
 
     private final UnionTypeViewHolderListeners.OnItemLongClickListener mOnHolderItemLongClickListener = viewHolder -> {
         SingleChatFragment.ViewImpl view = getView();
         if (view != null) {
-            IMMessageViewHolder.Helper.showMenu(viewHolder);
+            IMBaseMessageViewHolder.Helper.showMenu(viewHolder);
         }
     };
 
@@ -118,10 +125,14 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
         if (message == null) {
             return null;
         }
-        final DataObject<MSIMMessage> dataObject = new DataObject<>(message)
+        final DataObject dataObject = new DataObject(message)
                 .putExtHolderItemClick1(mOnHolderItemClickListener)
                 .putExtHolderItemLongClick1(mOnHolderItemLongClickListener);
-        return IMMessageViewHolder.Helper.createDefault(dataObject, mSessionUserId);
+        final int unionType = IMBaseMessageViewHolder.Helper.getDefaultUnionType(dataObject);
+        if (unionType != UnionTypeMapper.UNION_TYPE_NULL) {
+            return new UnionTypeItemObject(unionType, dataObject);
+        }
+        return null;
     }
 
     @Override
@@ -179,9 +190,11 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
     protected void onInitRequestResult(@NonNull SingleChatFragment.ViewImpl view, @NonNull DynamicResult<UnionTypeItemObject, GeneralResult> result) {
         MSIMUikitLog.v("onInitRequestResult");
         if (result.items == null || result.items.isEmpty()) {
+            mLastMessage = null;
             setPrePageRequestEnable(false);
             setNextPageRequestEnable(false);
         } else {
+            mLastMessage = (MSIMMessage) ((DataObject) ((UnionTypeItemObject) ((List) result.items).get(result.items.size() - 1)).itemObject).object;
             setPrePageRequestEnable(true);
             setNextPageRequestEnable(true);
         }
@@ -299,6 +312,11 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
     @Override
     protected void onNextPageRequestResult(@NonNull SingleChatFragment.ViewImpl view, @NonNull DynamicResult<UnionTypeItemObject, GeneralResult> result) {
         MSIMUikitLog.v("onNextPageRequestResult");
+
+        if (result.items != null && !result.items.isEmpty()) {
+            mLastMessage = ((MSIMMessage) ((DataObject) ((UnionTypeItemObject) ((List) result.items).get(result.items.size() - 1)).itemObject).object);
+        }
+
         super.onNextPageRequestResult(view, result);
     }
 
@@ -306,6 +324,32 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
     public void setAbort() {
         super.setAbort();
         mDefaultRequestHolder.clear();
+    }
+
+    /**
+     * 当前用户正在输入
+     */
+    public void setBeingTyped() {
+        final MSIMMessage lastMessage = mLastMessage;
+        if (lastMessage == null) {
+            return;
+        }
+        final long seq = lastMessage.getSeq();
+        if (mConsumedTypedLastMessageSeq == seq) {
+            return;
+        }
+
+        final boolean received = lastMessage.isReceived();
+        final long duration = System.currentTimeMillis() - lastMessage.getTimeMs();
+        if (received && duration <= TimeUnit.SECONDS.toMillis(5)) {
+            // 最后一条消息是对方刚刚发送的
+            mConsumedTypedLastMessageSeq = seq;
+            MSIMManager.getInstance().getMessageManager().sendCustomSignaling(
+                    lastMessage.getSessionUserId(),
+                    lastMessage.getFromUserId(),
+                    CustomIMMessageFactory.createCustomSignalingTyped()
+            );
+        }
     }
 
 }

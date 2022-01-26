@@ -7,11 +7,11 @@ import androidx.annotation.NonNull;
 
 import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.MSIMMessage;
-import com.masonsoft.imsdk.MSIMMessageFactory;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleUnionTypeImplHomeSparkBinding;
 import com.masonsoft.imsdk.sample.entity.Spark;
+import com.masonsoft.imsdk.uikit.CustomIMMessageFactory;
 import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 import com.masonsoft.imsdk.uikit.app.chat.SingleChatActivity;
 import com.masonsoft.imsdk.uikit.uniontype.DataObject;
@@ -39,13 +39,11 @@ public class HomeSparkViewHolder extends UnionTypeViewHolder {
     }
 
     private void updateLikeAndDislike(@FloatRange(from = -1, to = 1) float progress, boolean setValue) {
-        if (this.getItemObject(Object.class) == null) {
+        final DataObject itemObject = getItemObject(DataObject.class);
+        if (itemObject == null) {
             SampleLog.e("unexpected. item object is null");
             return;
         }
-
-        //noinspection unchecked
-        final DataObject<Spark> itemObject = (DataObject<Spark>) this.getItemObject(Object.class);
         final ExtraUiData extraUiData = ExtraUiData.valueOf(itemObject);
         if (setValue) {
             extraUiData.mLikeAndDislikeProgress = progress;
@@ -65,10 +63,9 @@ public class HomeSparkViewHolder extends UnionTypeViewHolder {
 
     @Override
     public void onBindUpdate() {
-        //noinspection unchecked
-        final DataObject<Spark> itemObject = (DataObject<Spark>) this.getItemObject(Object.class);
+        final DataObject itemObject = getItemObject(DataObject.class);
         Preconditions.checkNotNull(itemObject);
-        final Spark spark = itemObject.object;
+        final Spark spark = (Spark) itemObject.object;
 
         mBinding.imageLayout.setImageUrl(null, spark.pic);
         mBinding.username.setTargetUserId(spark.userId);
@@ -118,10 +115,7 @@ public class HomeSparkViewHolder extends UnionTypeViewHolder {
     }
 
     private void sendLikeMessage(long targetUserId) {
-        final MSIMMessage message = MSIMMessageFactory.createBusinessMessage(
-                new MSIMMessageFactory.BusinessMessageBuilder()
-                        .setType(MSIMUikitConstants.BusinessMessageType.LIKE)
-        );
+        final MSIMMessage message = CustomIMMessageFactory.createCustomMessageLike();
         MSIMManager.getInstance().getMessageManager().sendMessage(
                 MSIMManager.getInstance().getSessionUserId(),
                 message,
@@ -139,7 +133,7 @@ public class HomeSparkViewHolder extends UnionTypeViewHolder {
         private float mLikeAndDislikeProgress;
         private boolean mSendCustomLikedMessage;
 
-        private static ExtraUiData valueOf(DataObject<?> dataObject) {
+        private static ExtraUiData valueOf(DataObject dataObject) {
             ExtraUiData extraUiData = dataObject.getExtObject(KEY_UI_DATA, null);
             if (extraUiData == null) {
                 extraUiData = new ExtraUiData();

@@ -4,12 +4,11 @@
     <style name="UserCacheAvatar">
         <item name="roundAsCircle">true</item>
         <item name="smallCache">true</item>
-    </style>
-
-    <style name="SessionUserCacheAvatar" parent="UserCacheAvatar">
         <item name="imagePlaceHolderLoading">@drawable/imsdk_uikit_ic_default_avatar</item>
         <item name="imagePlaceHolderFail">@drawable/imsdk_uikit_ic_default_avatar</item>
     </style>
+
+    <style name="SessionUserCacheAvatar" parent="UserCacheAvatar" />
 
     <style name="ProgressView">
         <item name="android:progressDrawable">

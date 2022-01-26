@@ -14,10 +14,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.backends.pipeline.PipelineDraweeControllerBuilder;
 import com.facebook.drawee.drawable.ScalingUtils;
 import com.facebook.drawee.generic.GenericDraweeHierarchy;
 import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
-import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.common.ResizeOptions;
 import com.facebook.imagepipeline.request.ImageRequest;
@@ -80,7 +80,7 @@ public class ImageLayout extends ClipLayout {
         mPlaceHolderLoading = a.getDrawable(R.styleable.ImageLayout_imagePlaceHolderLoading);
         mPlaceHolderFail = a.getDrawable(R.styleable.ImageLayout_imagePlaceHolderFail);
         mImageResizePercent = a.getFloat(R.styleable.ImageLayout_imageResizePercent, mImageResizePercent);
-        mImageResize = a.getDimensionPixelOffset(R.styleable.ImageLayout_imageResize, mImageResize);
+        mImageResize = a.getDimensionPixelSize(R.styleable.ImageLayout_imageResize, mImageResize);
         mSmallCache = a.getBoolean(R.styleable.ImageLayout_smallCache, mSmallCache);
         mAutoPlay = a.getBoolean(R.styleable.ImageLayout_autoPlay, mAutoPlay);
         a.recycle();
@@ -160,13 +160,14 @@ public class ImageLayout extends ClipLayout {
     }
 
     public void setImageUrl(@Nullable ImageRequest thumb, @Nullable ImageRequest... firstAvailable) {
-        final DraweeController controller = Fresco.newDraweeControllerBuilder()
-                .setOldController(mDraweeView.getController())
-                .setLowResImageRequest(thumb)
-                .setFirstAvailableImageRequests(firstAvailable)
-                .setAutoPlayAnimations(mAutoPlay)
-                .build();
-        mDraweeView.setController(controller);
+        final PipelineDraweeControllerBuilder builder = Fresco.newDraweeControllerBuilder();
+        builder.setOldController(mDraweeView.getController())
+                .setLowResImageRequest(thumb);
+        if (firstAvailable != null && firstAvailable.length > 0) {
+            builder.setFirstAvailableImageRequests(firstAvailable);
+        }
+        builder.setAutoPlayAnimations(mAutoPlay);
+        mDraweeView.setController(builder.build());
     }
 
     private static ScalingUtils.ScaleType getScaleType(@ScaleType int scaleType) {

@@ -4,6 +4,7 @@ import android.webkit.MimeTypeMap;
 
 import androidx.annotation.Nullable;
 
+import java.util.Locale;
 import java.util.UUID;
 
 public class FilenameUtil {
@@ -11,7 +12,7 @@ public class FilenameUtil {
     public static String createUnionFilename(@Nullable String fileExtension, @Nullable String mimeType) {
         String filename = UUID.randomUUID().toString().replace("-", "");
         if (fileExtension != null) {
-            filename += "." + fileExtension.toLowerCase();
+            filename += "." + fileExtension.toLowerCase(Locale.getDefault());
         }
         if (mimeType != null) {
             final String mimeTypeExtension = MimeTypeMap.getSingleton().getExtensionFromMimeType(mimeType);

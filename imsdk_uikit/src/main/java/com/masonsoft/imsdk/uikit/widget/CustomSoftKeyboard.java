@@ -1,6 +1,7 @@
 package com.masonsoft.imsdk.uikit.widget;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.TypedValue;
@@ -22,6 +23,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.uikit.R;
+import com.masonsoft.imsdk.uikit.common.locationpicker.LocationInfo;
+import com.masonsoft.imsdk.uikit.common.locationpicker.LocationPickerDialog;
 import com.masonsoft.imsdk.uikit.common.mediapicker.MediaData;
 import com.masonsoft.imsdk.uikit.common.mediapicker.MediaPickerDialog;
 import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitWidgetCustomSoftKeyboardBinding;
@@ -29,6 +32,7 @@ import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitWidgetCustomSoftKeyboardL
 import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitWidgetCustomSoftKeyboardLayerMoreItemViewBinding;
 import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitWidgetCustomSoftKeyboardLayerMoreViewHolderBinding;
 import com.masonsoft.imsdk.uikit.util.ActivityUtil;
+import com.masonsoft.imsdk.uikit.util.TipUtil;
 import com.tbruyelle.rxpermissions3.RxPermissions;
 
 import java.util.List;
@@ -60,9 +64,15 @@ public class CustomSoftKeyboard extends FrameLayout {
 
     private final DisposableHolder mPermissionRequest = new DisposableHolder();
     private ImsdkUikitWidgetCustomSoftKeyboardBinding mBinding;
+    private boolean mShowRtc = true;
+    private boolean mShowLocation = true;
 
-    private static final String[] IMAGE_PICKER_PERMISSION = {
+    private static final String[] MEDIA_PICKER_PERMISSION = {
             Manifest.permission.READ_EXTERNAL_STORAGE
+    };
+    private static final String[] LOCATION_PERMISSION = {
+            Manifest.permission.ACCESS_FINE_LOCATION,
+            Manifest.permission.ACCESS_COARSE_LOCATION,
     };
 
     private void initFromAttributes(
@@ -90,6 +100,28 @@ public class CustomSoftKeyboard extends FrameLayout {
     public void showLayerMore() {
         ViewUtil.setVisibilityIfChanged(mBinding.layerEmoji, View.GONE);
         ViewUtil.setVisibilityIfChanged(mBinding.layerMore, View.VISIBLE);
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    public void setShowRtc(boolean showRtc) {
+        if (mShowRtc != showRtc) {
+            mShowRtc = showRtc;
+            final RecyclerView.Adapter<?> adapter = mBinding.layerMorePager.getAdapter();
+            if (adapter != null) {
+                adapter.notifyDataSetChanged();
+            }
+        }
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    public void setShowLocation(boolean showLocation) {
+        if (mShowLocation != showLocation) {
+            mShowLocation = showLocation;
+            final RecyclerView.Adapter<?> adapter = mBinding.layerMorePager.getAdapter();
+            if (adapter != null) {
+                adapter.notifyDataSetChanged();
+            }
+        }
     }
 
     public boolean isLayerEmojiShown() {
@@ -138,12 +170,51 @@ public class CustomSoftKeyboard extends FrameLayout {
         void onDeleteOne();
 
         void onMediaPicked(@NonNull List<MediaData.MediaInfo> mediaInfoList);
+
+        void onClickRtcAudio();
+
+        void onClickRtcVideo();
+
+        void onLocationPicked(@NonNull LocationInfo locationInfo, long zoom);
     }
 
     private OnInputListener mOnInputListener;
 
     public void setOnInputListener(OnInputListener onInputListener) {
         mOnInputListener = onInputListener;
+    }
+
+    public static class OnInputListenerAdapter implements OnInputListener {
+
+        @Override
+        public void onInputText(CharSequence text) {
+            // ignore
+        }
+
+        @Override
+        public void onDeleteOne() {
+            // ignore
+        }
+
+        @Override
+        public void onMediaPicked(@NonNull List<MediaData.MediaInfo> mediaInfoList) {
+            // ignore
+        }
+
+        @Override
+        public void onClickRtcAudio() {
+            // ignore
+        }
+
+        @Override
+        public void onClickRtcVideo() {
+            // ignore
+        }
+
+        @Override
+        public void onLocationPicked(@NonNull LocationInfo locationInfo, long zoom) {
+            // ignore
+        }
     }
 
     private class LayerEmojiPagerAdapter extends RecyclerView.Adapter<LayerEmojiViewHolder> {
@@ -260,13 +331,35 @@ public class CustomSoftKeyboard extends FrameLayout {
             mBinding.gridLayout.removeAllViews();
 
             final int count = 4 * 2;
-            inflateMoreItemView(context);
-            for (int i = 1; i < count; i++) {
+            int start = 0;
+            {
+                start++;
+                inflateMediaItemView(context);
+            }
+            {
+                if (mShowRtc) {
+                    start++;
+                    inflateRtcAudioItemView(context);
+                }
+            }
+            {
+                if (mShowRtc) {
+                    start++;
+                    inflateRtcVideoItemView(context);
+                }
+            }
+            {
+                if (mShowLocation) {
+                    start++;
+                    inflateLocationItemView(context);
+                }
+            }
+            for (int i = start; i < count; i++) {
                 inflateMoreEmptyItemView(context);
             }
         }
 
-        private void inflateMoreItemView(Context context) {
+        private void inflateMediaItemView(Context context) {
             final ImsdkUikitWidgetCustomSoftKeyboardLayerMoreItemViewBinding binding =
                     ImsdkUikitWidgetCustomSoftKeyboardLayerMoreItemViewBinding.inflate(
                             LayoutInflater.from(context), mBinding.gridLayout, false);
@@ -284,6 +377,73 @@ public class CustomSoftKeyboard extends FrameLayout {
 
             ViewUtil.onClick(binding.getRoot(), v -> {
                 requestMediaPickerPermission();
+            });
+        }
+
+        private void inflateRtcAudioItemView(Context context) {
+            final ImsdkUikitWidgetCustomSoftKeyboardLayerMoreItemViewBinding binding =
+                    ImsdkUikitWidgetCustomSoftKeyboardLayerMoreItemViewBinding.inflate(
+                            LayoutInflater.from(context), mBinding.gridLayout, false);
+
+            GridLayout.LayoutParams lp = new GridLayout.LayoutParams();
+            lp.width = mItemViewWidth;
+            lp.height = mItemViewHeight;
+            lp.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1, 1.0f);
+            lp.rowSpec = GridLayout.spec(GridLayout.UNDEFINED, 1, 1.0f);
+            binding.getRoot().setLayoutParams(lp);
+
+            binding.itemMedia.setImageResource(R.drawable.imsdk_uikit_ic_input_more_item_media);
+            binding.itemName.setText(R.string.imsdk_uikit_custom_soft_keyboard_item_rtc_audio);
+            mBinding.gridLayout.addView(binding.getRoot());
+
+            ViewUtil.onClick(binding.getRoot(), v -> {
+                if (mOnInputListener != null) {
+                    mOnInputListener.onClickRtcAudio();
+                }
+            });
+        }
+
+        private void inflateRtcVideoItemView(Context context) {
+            final ImsdkUikitWidgetCustomSoftKeyboardLayerMoreItemViewBinding binding =
+                    ImsdkUikitWidgetCustomSoftKeyboardLayerMoreItemViewBinding.inflate(
+                            LayoutInflater.from(context), mBinding.gridLayout, false);
+
+            GridLayout.LayoutParams lp = new GridLayout.LayoutParams();
+            lp.width = mItemViewWidth;
+            lp.height = mItemViewHeight;
+            lp.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1, 1.0f);
+            lp.rowSpec = GridLayout.spec(GridLayout.UNDEFINED, 1, 1.0f);
+            binding.getRoot().setLayoutParams(lp);
+
+            binding.itemMedia.setImageResource(R.drawable.imsdk_uikit_ic_input_more_item_media);
+            binding.itemName.setText(R.string.imsdk_uikit_custom_soft_keyboard_item_rtc_video);
+            mBinding.gridLayout.addView(binding.getRoot());
+
+            ViewUtil.onClick(binding.getRoot(), v -> {
+                if (mOnInputListener != null) {
+                    mOnInputListener.onClickRtcVideo();
+                }
+            });
+        }
+
+        private void inflateLocationItemView(Context context) {
+            final ImsdkUikitWidgetCustomSoftKeyboardLayerMoreItemViewBinding binding =
+                    ImsdkUikitWidgetCustomSoftKeyboardLayerMoreItemViewBinding.inflate(
+                            LayoutInflater.from(context), mBinding.gridLayout, false);
+
+            GridLayout.LayoutParams lp = new GridLayout.LayoutParams();
+            lp.width = mItemViewWidth;
+            lp.height = mItemViewHeight;
+            lp.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1, 1.0f);
+            lp.rowSpec = GridLayout.spec(GridLayout.UNDEFINED, 1, 1.0f);
+            binding.getRoot().setLayoutParams(lp);
+
+            binding.itemMedia.setImageResource(R.drawable.imsdk_uikit_ic_input_more_item_media);
+            binding.itemName.setText(R.string.imsdk_uikit_custom_soft_keyboard_item_location);
+            mBinding.gridLayout.addView(binding.getRoot());
+
+            ViewUtil.onClick(binding.getRoot(), v -> {
+                requestLocationPermission();
             });
         }
 
@@ -311,12 +471,13 @@ public class CustomSoftKeyboard extends FrameLayout {
 
         final RxPermissions rxPermissions = new RxPermissions(activity);
         mPermissionRequest.set(
-                rxPermissions.request(IMAGE_PICKER_PERMISSION)
+                rxPermissions.request(MEDIA_PICKER_PERMISSION)
                         .subscribe(granted -> {
                             if (granted) {
                                 onMediaPickerPermissionGranted();
                             } else {
                                 MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.PERMISSION_REQUIRED);
+                                TipUtil.show(MSIMUikitConstants.ErrorLog.PERMISSION_REQUIRED);
                             }
                         }));
     }
@@ -350,6 +511,45 @@ public class CustomSoftKeyboard extends FrameLayout {
             return true;
         });
         mediaPickerDialog.show();
+    }
+
+    private void requestLocationPermission() {
+        final AppCompatActivity activity = ActivityUtil.getActiveAppCompatActivity(getContext());
+        if (activity == null) {
+            MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.ACTIVITY_IS_NULL);
+            return;
+        }
+
+        final RxPermissions rxPermissions = new RxPermissions(activity);
+        mPermissionRequest.set(
+                rxPermissions.request(LOCATION_PERMISSION)
+                        .subscribe(granted -> {
+                            if (granted) {
+                                onLocationPermissionGranted();
+                            } else {
+                                MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.PERMISSION_REQUIRED);
+                                TipUtil.show(MSIMUikitConstants.ErrorLog.PERMISSION_REQUIRED);
+                            }
+                        }));
+    }
+
+    private void onLocationPermissionGranted() {
+        final AppCompatActivity activity = ActivityUtil.getActiveAppCompatActivity(getContext());
+        if (activity == null) {
+            MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.ACTIVITY_IS_NULL);
+            return;
+        }
+
+        final LocationPickerDialog locationPickerDialog = new LocationPickerDialog(
+                activity, activity.findViewById(Window.ID_ANDROID_CONTENT)
+        );
+        locationPickerDialog.setOnLocationPickListener((locationInfo, zoom) -> {
+            if (mOnInputListener != null) {
+                mOnInputListener.onLocationPicked(locationInfo, zoom);
+            }
+            return true;
+        });
+        locationPickerDialog.show();
     }
 
 }
