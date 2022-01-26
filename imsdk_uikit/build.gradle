@@ -46,7 +46,7 @@ android.libraryVariants.all { variant ->
 dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
 
-    api "io.github.blackfireteam.msimsdk:imsdk-de4:1.3-SNAPSHOT"
+    api "io.github.blackfireteam.msimsdk:imsdk-de4:2.0-SNAPSHOT"
 
     api "androidx.appcompat:appcompat:1.3.1"
     api "androidx.constraintlayout:constraintlayout:2.1.1"
