@@ -43,12 +43,14 @@
         <com.masonsoft.imsdk.uikit.widget.IMChatRoomPreview
             android:id="@+id/chat_room_preview"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
 
         <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
-            android:background="@color/imsdk_uikit_color_divider_line" />
+            android:background="@color/imsdk_uikit_color_divider_line"
+            android:visibility="gone" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view"
