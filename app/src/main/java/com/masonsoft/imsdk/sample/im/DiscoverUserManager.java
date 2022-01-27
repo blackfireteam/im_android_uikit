@@ -125,7 +125,6 @@ public class DiscoverUserManager {
     @NonNull
     private static MSIMUserInfo.Editor createUserInfo(@NonNull ProtoMessage.ProfileOnline input) {
         return new MSIMUserInfo.Editor(input.getUid())
-                .setUpdateTimeMs(input.getUpdateTime() * 1000L /* 将服务器返回的秒转换为毫秒 */)
                 .setNickname(input.getNickName())
                 .setAvatar(input.getAvatar())
                 .setGold(input.getGold())
