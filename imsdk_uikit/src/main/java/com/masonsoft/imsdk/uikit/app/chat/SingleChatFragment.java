@@ -125,6 +125,7 @@ public class SingleChatFragment extends SystemInsetsFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mBinding = ImsdkUikitSingleChatFragmentBinding.inflate(inflater, container, false);
+        mBinding.customSoftKeyboard.setShowLocation(false);
 
         ViewUtil.onClick(mBinding.topBarBack, v -> ActivityUtil.requestBackPressed(SingleChatFragment.this));
         mBinding.topBarTitle.setTargetUserId(mTargetUserId);
