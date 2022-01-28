@@ -270,8 +270,13 @@ public class MSIMRtcMessageManager {
             // 过滤需要忽略的情况
             if (mLastAcceptCallRoomId != null && mLastAcceptCallRoomId.equals(rtcMessagePayload.roomId.get())) {
                 // 刚刚已经接受了该 RoomId 的 CALL（此时可能已经挂断了或者通话中或者其它状态），
-                // 对方的循环 CALL 可能延迟到达，需要忽略这个 CALL。
-                return;
+                // 对方的循环 CALL 可能延迟到达，校验是否需要忽略这个 CALL。
+
+                final RtcEngineWrapper rtcEngineWrapper = getRtcEngineWrapper(targetUserId, rtcMessagePayload, false);
+                if (rtcEngineWrapper == null || rtcEngineWrapper.getState() >= RtcEngineWrapper.STATE_DISCONNECTED) {
+                    // 当前通话已经结束，忽略这个 CALL
+                    return;
+                }
             }
         }
 
@@ -283,7 +288,7 @@ public class MSIMRtcMessageManager {
             // 收到通话邀请(可能会连续收到同一个通话的多次 CALL)
             final RtcEngineWrapper rtcEngineWrapper = getRtcEngineWrapper(targetUserId, rtcMessagePayload, true);
             if (rtcEngineWrapper != null) {
-                // 记录下这次通话的 roomId (每一次通话的 roomId 不同), 如果再次收到这个 roomId 的 CALL 则忽略
+                // 记录下这次通话的 roomId (每一次通话的 roomId 不同), 如果再次收到这个 roomId 的 CALL 并且当前通话已经结束则忽略
                 mLastAcceptCallRoomId = rtcMessagePayload.roomId.get();
 
                 rtcEngineWrapper.setState(RtcEngineWrapper.STATE_WAIT_ACCEPT);
