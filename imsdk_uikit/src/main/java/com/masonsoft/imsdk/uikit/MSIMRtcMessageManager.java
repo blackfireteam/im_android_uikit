@@ -93,6 +93,8 @@ public class MSIMRtcMessageManager {
     private static final String KEY_AGORA_APP_ID = "key:agoraAppId_20210817_t2mmmdc";
     @Nullable
     private String mAgoraAppId;
+    // 记录上一次接受 CALL 的 roomId(用于忽略冗余 CALL)
+    private String mLastAcceptCallRoomId;
 
     @Nullable
     private RtcEngineWrapper mRtcEngineWrapper;
@@ -263,15 +265,27 @@ public class MSIMRtcMessageManager {
             return;
         }
 
+        final int event = rtcMessagePayload.event.get();
+        if (event == RtcMessagePayload.Event.CALL) {
+            // 过滤需要忽略的情况
+            if (mLastAcceptCallRoomId != null && mLastAcceptCallRoomId.equals(rtcMessagePayload.roomId.get())) {
+                // 刚刚已经接受了该 RoomId 的 CALL（此时可能已经挂断了或者通话中或者其它状态），
+                // 对方的循环 CALL 可能延迟到达，需要忽略这个 CALL。
+                return;
+            }
+        }
+
         if (abortIfBusy(sessionUserId, targetUserId, fromUserId, toUserId, rtcMessagePayload)) {
             return;
         }
 
-        final int event = rtcMessagePayload.event.get();
         if (event == RtcMessagePayload.Event.CALL) {
             // 收到通话邀请(可能会连续收到同一个通话的多次 CALL)
             final RtcEngineWrapper rtcEngineWrapper = getRtcEngineWrapper(targetUserId, rtcMessagePayload, true);
             if (rtcEngineWrapper != null) {
+                // 记录下这次通话的 roomId (每一次通话的 roomId 不同), 如果再次收到这个 roomId 的 CALL 则忽略
+                mLastAcceptCallRoomId = rtcMessagePayload.roomId.get();
+
                 rtcEngineWrapper.setState(RtcEngineWrapper.STATE_WAIT_ACCEPT);
                 showRtcView(fromUserId, toUserId, rtcMessagePayload.isVideoType(), rtcMessagePayload.roomId.get());
             }
