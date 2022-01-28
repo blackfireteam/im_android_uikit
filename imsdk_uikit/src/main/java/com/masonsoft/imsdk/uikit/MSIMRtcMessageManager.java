@@ -427,7 +427,10 @@ public class MSIMRtcMessageManager {
             final RtcEngineWrapper rtcEngineWrapper = getRtcEngineWrapper(targetUserId, rtcMessagePayload, false);
             if (rtcEngineWrapper == null && mRtcEngineWrapper != null && mRtcEngineWrapper.mRtcEngine != null) {
                 // 当前正在进行其它通话, 回复对方正忙
-                sendRtcEventSignalingMessage(targetUserId, null, rtcMessagePayload.copyWithEvent(RtcMessagePayload.Event.LINEBUSY));
+                final String body = CustomIMMessageFactory.createCustomRtcMessage(
+                        rtcMessagePayload.copyWithEvent(RtcMessagePayload.Event.LINEBUSY)
+                );
+                MSIMManager.getInstance().getMessageManager().sendCustomSignaling(sessionUserId, targetUserId, body);
                 return true;
             }
         }
