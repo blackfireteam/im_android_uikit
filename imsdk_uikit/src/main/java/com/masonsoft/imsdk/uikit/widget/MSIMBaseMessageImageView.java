@@ -7,8 +7,10 @@ import androidx.annotation.Nullable;
 
 import com.masonsoft.imsdk.MSIMBaseMessage;
 import com.masonsoft.imsdk.MSIMConstants;
+import com.masonsoft.imsdk.MSIMFlashImageElement;
 import com.masonsoft.imsdk.MSIMImageElement;
 import com.masonsoft.imsdk.MSIMLocationElement;
+import com.masonsoft.imsdk.MSIMMessage;
 import com.masonsoft.imsdk.MSIMVideoElement;
 import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 import com.masonsoft.imsdk.uikit.MSIMUikitLog;
@@ -64,6 +66,26 @@ public class MSIMBaseMessageImageView extends ImageLayout {
                     MSIMUikitLog.v("%s image message localPath:%s, url:%s",
                             Objects.defaultObjectTag(this), localPath, url);
                 }
+            } else if (messageType == MSIMConstants.MessageType.FLASH_IMAGE) {
+                if (baseMessage instanceof MSIMMessage) {
+                    final MSIMMessage message = (MSIMMessage) baseMessage;
+                    final MSIMFlashImageElement element = message.getFlashImageElement();
+                    Preconditions.checkNotNull(element);
+                    final String localPath = element.getPath();
+                    if (localPath != null) {
+                        firstAvailableUrls.add(localPath);
+                    }
+                    final String url = element.getUrl();
+                    if (url != null) {
+                        firstAvailableUrls.add(url);
+                    }
+                    if (DEBUG) {
+                        MSIMUikitLog.v("%s flash image message localPath:%s, url:%s",
+                                Objects.defaultObjectTag(this), localPath, url);
+                    }
+                } else {
+                    MSIMUikitLog.e("%s unexpected. FLASH IMAGE type but baseMessage is not MSIMMessage: %s", Objects.defaultObjectTag(this), baseMessage);
+                }
             } else if (messageType == MSIMConstants.MessageType.VIDEO) {
                 final MSIMVideoElement element = baseMessage.getVideoElement();
                 Preconditions.checkNotNull(element);
@@ -93,7 +115,7 @@ public class MSIMBaseMessageImageView extends ImageLayout {
                             Objects.defaultObjectTag(this), staticLocationUrl);
                 }
             } else {
-                MSIMUikitLog.e(Objects.defaultObjectTag(this) + " not support type %s", messageType);
+                MSIMUikitLog.e("%s not support type %s", Objects.defaultObjectTag(this), messageType);
             }
         }
 

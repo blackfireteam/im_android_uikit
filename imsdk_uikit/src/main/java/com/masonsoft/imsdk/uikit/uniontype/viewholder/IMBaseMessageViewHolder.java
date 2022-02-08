@@ -288,6 +288,13 @@ public abstract class IMBaseMessageViewHolder extends MSIMSelfUpdateUnionTypeVie
                         : IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_IMAGE_SEND;
             }
 
+            // 闪照消息
+            if (messageType == MSIMConstants.MessageType.FLASH_IMAGE) {
+                return received
+                        ? IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_FLASH_IMAGE_RECEIVED
+                        : IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_FLASH_IMAGE_SEND;
+            }
+
             // 语音消息
             if (messageType == MSIMConstants.MessageType.AUDIO) {
                 return received

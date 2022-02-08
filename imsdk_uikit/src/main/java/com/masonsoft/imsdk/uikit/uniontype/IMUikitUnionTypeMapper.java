@@ -2,6 +2,8 @@ package com.masonsoft.imsdk.uikit.uniontype;
 
 import com.masonsoft.imsdk.uikit.uniontype.viewholder.IMBaseMessageDefaultReceivedViewHolder;
 import com.masonsoft.imsdk.uikit.uniontype.viewholder.IMBaseMessageDefaultSendViewHolder;
+import com.masonsoft.imsdk.uikit.uniontype.viewholder.IMBaseMessageFlashImageReceivedViewHolder;
+import com.masonsoft.imsdk.uikit.uniontype.viewholder.IMBaseMessageFlashImageSendViewHolder;
 import com.masonsoft.imsdk.uikit.uniontype.viewholder.IMBaseMessageImageReceivedViewHolder;
 import com.masonsoft.imsdk.uikit.uniontype.viewholder.IMBaseMessageImageSendViewHolder;
 import com.masonsoft.imsdk.uikit.uniontype.viewholder.IMBaseMessageLocationReceivedViewHolder;
@@ -43,6 +45,8 @@ public class IMUikitUnionTypeMapper extends UnionTypeLoadingStatus {
     public static final int UNION_TYPE_IMPL_IM_MESSAGE_TEXT_SEND = sNextUnionType++; // 聊天消息-发送的文字
     public static final int UNION_TYPE_IMPL_IM_MESSAGE_IMAGE_RECEIVED = sNextUnionType++; // 聊天消息-接收的图片
     public static final int UNION_TYPE_IMPL_IM_MESSAGE_IMAGE_SEND = sNextUnionType++; // 聊天消息-发送的图片
+    public static final int UNION_TYPE_IMPL_IM_MESSAGE_FLASH_IMAGE_RECEIVED = sNextUnionType++; // 聊天消息-接收的闪照
+    public static final int UNION_TYPE_IMPL_IM_MESSAGE_FLASH_IMAGE_SEND = sNextUnionType++; // 聊天消息-发送的闪照
     public static final int UNION_TYPE_IMPL_IM_MESSAGE_VOICE_RECEIVED = sNextUnionType++; // 聊天消息-接收的语音
     public static final int UNION_TYPE_IMPL_IM_MESSAGE_VOICE_SEND = sNextUnionType++; // 聊天消息-发送的语音
     public static final int UNION_TYPE_IMPL_IM_MESSAGE_VIDEO_RECEIVED = sNextUnionType++; // 聊天消息-接收的视频
@@ -72,6 +76,8 @@ public class IMUikitUnionTypeMapper extends UnionTypeLoadingStatus {
         put(UNION_TYPE_IMPL_IM_MESSAGE_TEXT_SEND, IMBaseMessageTextSendViewHolder::new);
         put(UNION_TYPE_IMPL_IM_MESSAGE_IMAGE_RECEIVED, IMBaseMessageImageReceivedViewHolder::new);
         put(UNION_TYPE_IMPL_IM_MESSAGE_IMAGE_SEND, IMBaseMessageImageSendViewHolder::new);
+        put(UNION_TYPE_IMPL_IM_MESSAGE_FLASH_IMAGE_RECEIVED, IMBaseMessageFlashImageReceivedViewHolder::new);
+        put(UNION_TYPE_IMPL_IM_MESSAGE_FLASH_IMAGE_SEND, IMBaseMessageFlashImageSendViewHolder::new);
         put(UNION_TYPE_IMPL_IM_MESSAGE_VOICE_RECEIVED, IMBaseMessageVoiceReceivedViewHolder::new);
         put(UNION_TYPE_IMPL_IM_MESSAGE_VOICE_SEND, IMBaseMessageVoiceSendViewHolder::new);
         put(UNION_TYPE_IMPL_IM_MESSAGE_VIDEO_RECEIVED, IMBaseMessageVideoReceivedViewHolder::new);
