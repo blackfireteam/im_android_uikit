@@ -5,8 +5,8 @@ buildscript {
     apply from: 'git.version.gradle'
     rootProject.ext.addRepos(repositories)
     dependencies {
-        classpath "com.android.tools.build:gradle:7.0.3"
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.0"
+        classpath 'com.android.tools.build:gradle:7.1.1'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.10"
         classpath "com.google.protobuf:protobuf-gradle-plugin:0.8.15"
         classpath "io.github.blackfireteam.msimsdk:imsdk-gradle-plugin:2.0-SNAPSHOT"
     }
