@@ -424,6 +424,21 @@ public class SingleChatFragment extends SystemInsetsFragment {
             }
 
             @Override
+            public void onFlashImagePicked(@NonNull List<MediaData.MediaInfo> mediaInfoList) {
+                MSIMUikitLog.v("onFlashImagePicked size:%s", mediaInfoList.size());
+                if (mBinding == null) {
+                    MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
+                    return;
+                }
+                if (mSoftKeyboardHelper == null) {
+                    MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.SOFT_KEYBOARD_HELPER_IS_NULL);
+                    return;
+                }
+                mSoftKeyboardHelper.requestHideAllSoftKeyboard();
+                submitFlashImageMessage(mediaInfoList);
+            }
+
+            @Override
             public void onClickRtcAudio() {
                 MSIMRtcMessageManager.getInstance().startRtcMessage(mTargetUserId, null, false);
             }
@@ -600,6 +615,25 @@ public class SingleChatFragment extends SystemInsetsFragment {
             } else {
                 message = MSIMMessageFactory.createImageMessage(mediaInfo.uri);
             }
+            MSIMManager.getInstance().getMessageManager().sendMessage(
+                    MSIMManager.getInstance().getSessionUserId(),
+                    message,
+                    mTargetUserId,
+                    new MSIMWeakCallback<>(mEnqueueCallback)
+            );
+        }
+    }
+
+    private void submitFlashImageMessage(@NonNull List<MediaData.MediaInfo> mediaInfoList) {
+        final ImsdkUikitSingleChatFragmentBinding binding = mBinding;
+        if (binding == null) {
+            MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
+            return;
+        }
+
+        for (MediaData.MediaInfo mediaInfo : mediaInfoList) {
+            mEnqueueCallback = new LocalEnqueueCallback(false);
+            final MSIMMessage message = MSIMMessageFactory.createFlashImageMessage(mediaInfo.uri);
             MSIMManager.getInstance().getMessageManager().sendMessage(
                     MSIMManager.getInstance().getSessionUserId(),
                     message,

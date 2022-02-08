@@ -126,6 +126,7 @@ public class ChatRoomFragment extends SystemInsetsFragment {
         mBinding = ImsdkUikitChatRoomFragmentBinding.inflate(inflater, container, false);
         mBinding.customSoftKeyboard.setShowRtc(false);
         mBinding.customSoftKeyboard.setShowLocation(false);
+        mBinding.customSoftKeyboard.setShowFlashImage(false);
 
         ViewUtil.onClick(mBinding.topBarBack, v -> ActivityUtil.requestBackPressed(ChatRoomFragment.this));
         mBinding.topBarTitle.setChatRoomContext(null);

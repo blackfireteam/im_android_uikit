@@ -27,6 +27,7 @@ import com.masonsoft.imsdk.uikit.common.locationpicker.LocationInfo;
 import com.masonsoft.imsdk.uikit.common.locationpicker.LocationPickerDialog;
 import com.masonsoft.imsdk.uikit.common.mediapicker.MediaData;
 import com.masonsoft.imsdk.uikit.common.mediapicker.MediaPickerDialog;
+import com.masonsoft.imsdk.uikit.common.mediapicker.MediaSelector;
 import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitWidgetCustomSoftKeyboardBinding;
 import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitWidgetCustomSoftKeyboardLayerEmojiViewHolderBinding;
 import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitWidgetCustomSoftKeyboardLayerMoreItemViewBinding;
@@ -66,8 +67,12 @@ public class CustomSoftKeyboard extends FrameLayout {
     private ImsdkUikitWidgetCustomSoftKeyboardBinding mBinding;
     private boolean mShowRtc = true;
     private boolean mShowLocation = true;
+    private boolean mShowFlashImage = true;
 
     private static final String[] MEDIA_PICKER_PERMISSION = {
+            Manifest.permission.READ_EXTERNAL_STORAGE
+    };
+    private static final String[] FLASH_IMAGE_PICKER_PERMISSION = {
             Manifest.permission.READ_EXTERNAL_STORAGE
     };
     private static final String[] LOCATION_PERMISSION = {
@@ -124,6 +129,17 @@ public class CustomSoftKeyboard extends FrameLayout {
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
+    public void setShowFlashImage(boolean showFlashImage) {
+        if (mShowFlashImage != showFlashImage) {
+            mShowFlashImage = showFlashImage;
+            final RecyclerView.Adapter<?> adapter = mBinding.layerMorePager.getAdapter();
+            if (adapter != null) {
+                adapter.notifyDataSetChanged();
+            }
+        }
+    }
+
     public boolean isLayerEmojiShown() {
         return mBinding.layerEmoji.getVisibility() == View.VISIBLE;
     }
@@ -171,6 +187,8 @@ public class CustomSoftKeyboard extends FrameLayout {
 
         void onMediaPicked(@NonNull List<MediaData.MediaInfo> mediaInfoList);
 
+        void onFlashImagePicked(@NonNull List<MediaData.MediaInfo> mediaInfoList);
+
         void onClickRtcAudio();
 
         void onClickRtcVideo();
@@ -198,6 +216,11 @@ public class CustomSoftKeyboard extends FrameLayout {
 
         @Override
         public void onMediaPicked(@NonNull List<MediaData.MediaInfo> mediaInfoList) {
+            // ignore
+        }
+
+        @Override
+        public void onFlashImagePicked(@NonNull List<MediaData.MediaInfo> mediaInfoList) {
             // ignore
         }
 
@@ -337,6 +360,12 @@ public class CustomSoftKeyboard extends FrameLayout {
                 inflateMediaItemView(context);
             }
             {
+                if (mShowFlashImage) {
+                    start++;
+                    inflateFlashImageItemView(context);
+                }
+            }
+            {
                 if (mShowRtc) {
                     start++;
                     inflateRtcAudioItemView(context);
@@ -377,6 +406,27 @@ public class CustomSoftKeyboard extends FrameLayout {
 
             ViewUtil.onClick(binding.getRoot(), v -> {
                 requestMediaPickerPermission();
+            });
+        }
+
+        private void inflateFlashImageItemView(Context context) {
+            final ImsdkUikitWidgetCustomSoftKeyboardLayerMoreItemViewBinding binding =
+                    ImsdkUikitWidgetCustomSoftKeyboardLayerMoreItemViewBinding.inflate(
+                            LayoutInflater.from(context), mBinding.gridLayout, false);
+
+            GridLayout.LayoutParams lp = new GridLayout.LayoutParams();
+            lp.width = mItemViewWidth;
+            lp.height = mItemViewHeight;
+            lp.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1, 1.0f);
+            lp.rowSpec = GridLayout.spec(GridLayout.UNDEFINED, 1, 1.0f);
+            binding.getRoot().setLayoutParams(lp);
+
+            binding.itemMedia.setImageResource(R.drawable.imsdk_uikit_ic_input_more_item_media);
+            binding.itemName.setText(R.string.imsdk_uikit_custom_soft_keyboard_item_flash_image);
+            mBinding.gridLayout.addView(binding.getRoot());
+
+            ViewUtil.onClick(binding.getRoot(), v -> {
+                requestFlashImagePickerPermission();
             });
         }
 
@@ -506,6 +556,62 @@ public class CustomSoftKeyboard extends FrameLayout {
 
             if (mOnInputListener != null) {
                 mOnInputListener.onMediaPicked(mediaInfoList);
+            }
+
+            return true;
+        });
+        mediaPickerDialog.show();
+    }
+
+    private void requestFlashImagePickerPermission() {
+        final AppCompatActivity activity = ActivityUtil.getActiveAppCompatActivity(getContext());
+        if (activity == null) {
+            MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.ACTIVITY_IS_NULL);
+            return;
+        }
+
+        final RxPermissions rxPermissions = new RxPermissions(activity);
+        mPermissionRequest.set(
+                rxPermissions.request(FLASH_IMAGE_PICKER_PERMISSION)
+                        .subscribe(granted -> {
+                            if (granted) {
+                                onFlashImagePickerPermissionGranted();
+                            } else {
+                                MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.PERMISSION_REQUIRED);
+                                TipUtil.show(MSIMUikitConstants.ErrorLog.PERMISSION_REQUIRED);
+                            }
+                        }));
+    }
+
+    private void onFlashImagePickerPermissionGranted() {
+        final AppCompatActivity activity = ActivityUtil.getActiveAppCompatActivity(getContext());
+        if (activity == null) {
+            MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.ACTIVITY_IS_NULL);
+            return;
+        }
+
+        final MediaPickerDialog mediaPickerDialog = new MediaPickerDialog(activity, activity.findViewById(Window.ID_ANDROID_CONTENT));
+        mediaPickerDialog.setMediaSelector(new MediaSelector.SimpleMediaSelector() {
+            @Override
+            public boolean accept(@NonNull MediaData.MediaInfo info) {
+                return info.isImageMimeType();
+            }
+        });
+        mediaPickerDialog.setOnMediaPickListener(mediaInfoList -> {
+            if (mediaInfoList.isEmpty()) {
+                return false;
+            }
+
+            for (MediaData.MediaInfo mediaInfo : mediaInfoList) {
+                if (!mediaInfo.isImageMimeType()) {
+                    Throwable e = new Throwable("unexpected mime type:" + mediaInfo.mimeType + ", uri:" + mediaInfo.uri);
+                    MSIMUikitLog.e(e);
+                    return false;
+                }
+            }
+
+            if (mOnInputListener != null) {
+                mOnInputListener.onFlashImagePicked(mediaInfoList);
             }
 
             return true;
