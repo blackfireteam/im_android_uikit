@@ -27,7 +27,7 @@ import io.github.idonans.dynamic.page.UnionTypeStatusPageView;
 import io.github.idonans.uniontype.Host;
 import io.github.idonans.uniontype.UnionTypeAdapter;
 
-public class IMImageOrVideoPreviewDialog implements ViewBackLayer.OnBackPressedListener {
+public class IMBaseMessageImageOrVideoPreviewDialog implements ViewBackLayer.OnBackPressedListener {
 
     private static final boolean DEBUG = MSIMUikitConstants.DEBUG_WIDGET;
     private final ViewDialog mViewDialog;
@@ -36,15 +36,15 @@ public class IMImageOrVideoPreviewDialog implements ViewBackLayer.OnBackPressedL
     private final ViewImpl mViewImpl;
     private final MicroLifecycleComponentManager mMicroLifecycleComponentManager;
 
-    private IMImageOrVideoPreviewPresenter mPresenter;
+    private IMBaseMessageImageOrVideoPreviewPresenter mPresenter;
 
-    public IMImageOrVideoPreviewDialog(Lifecycle lifecycle,
-                                       Activity activity,
-                                       ViewGroup parentView,
-                                       List<MSIMBaseMessage> messageList,
-                                       int index) {
+    public IMBaseMessageImageOrVideoPreviewDialog(Lifecycle lifecycle,
+                                                  Activity activity,
+                                                  ViewGroup parentView,
+                                                  List<MSIMBaseMessage> messageList,
+                                                  int index) {
         mViewDialog = new ViewDialog.Builder(activity)
-                .setContentView(R.layout.imsdk_uikit_common_im_image_or_video_preview)
+                .setContentView(R.layout.imsdk_uikit_common_im_base_message_image_or_video_preview)
                 .setParentView(parentView)
                 .setOnBackPressedListener(this)
                 .dimBackground(true)
@@ -70,7 +70,7 @@ public class IMImageOrVideoPreviewDialog implements ViewBackLayer.OnBackPressedL
         mViewImpl = new ViewImpl(adapter);
         clearPresenter();
 
-        mPresenter = new IMImageOrVideoPreviewPresenter(mViewImpl, messageList, index);
+        mPresenter = new IMBaseMessageImageOrVideoPreviewPresenter(mViewImpl, messageList, index);
         mViewImpl.setPresenter(mPresenter);
         mPresenter.showInitMessage();
         mRecyclerView.setAdapter(adapter);
@@ -115,7 +115,7 @@ public class IMImageOrVideoPreviewDialog implements ViewBackLayer.OnBackPressedL
         }
 
         public void hide() {
-            IMImageOrVideoPreviewDialog.this.hide();
+            IMBaseMessageImageOrVideoPreviewDialog.this.hide();
         }
     }
 
