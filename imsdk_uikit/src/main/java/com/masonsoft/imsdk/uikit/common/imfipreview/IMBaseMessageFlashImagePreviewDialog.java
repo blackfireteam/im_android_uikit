@@ -12,6 +12,7 @@ import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.masonsoft.imsdk.MSIMBaseMessage;
 import com.masonsoft.imsdk.MSIMFlashImageElement;
+import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.MSIMMessage;
 import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 import com.masonsoft.imsdk.uikit.R;
@@ -24,6 +25,7 @@ import java.util.List;
 import io.github.idonans.backstack.ViewBackLayer;
 import io.github.idonans.backstack.dialog.ViewDialog;
 import io.github.idonans.core.util.DimenUtil;
+import io.github.idonans.core.util.Preconditions;
 import io.github.idonans.lang.util.ViewUtil;
 
 public class IMBaseMessageFlashImagePreviewDialog implements ViewBackLayer.OnBackPressedListener {
@@ -53,10 +55,12 @@ public class IMBaseMessageFlashImagePreviewDialog implements ViewBackLayer.OnBac
 
         final List<String> firstAvailableUrls = new ArrayList<>();
         boolean showOverlay = false;
+        boolean isFlashImage = false;
         if (baseMessage instanceof MSIMMessage) {
             final MSIMMessage message = (MSIMMessage) baseMessage;
             final MSIMFlashImageElement element = message.getFlashImageElement();
             if (element != null) {
+                isFlashImage = true;
                 final String localPath = element.getPath();
                 if (localPath != null) {
                     firstAvailableUrls.add(localPath);
@@ -71,6 +75,15 @@ public class IMBaseMessageFlashImagePreviewDialog implements ViewBackLayer.OnBac
         }
         setImageUrl(null, firstAvailableUrls.toArray(new String[]{}));
         ViewUtil.setVisibilityIfChanged(mFlashImageOverlay, showOverlay ? View.VISIBLE : View.GONE);
+
+        if (isFlashImage) {
+            // 将闪照标记为已读
+            Preconditions.checkNotNull(baseMessage);
+            MSIMManager.getInstance().getMessageManager().readFlashImage(
+                    baseMessage.getSessionUserId(),
+                    (MSIMMessage) baseMessage
+            );
+        }
     }
 
     public void show() {
