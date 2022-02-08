@@ -23,7 +23,7 @@ import io.github.idonans.uniontype.UnionTypeMapper;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.core.SingleSource;
 
-public class IMImageOrVideoPreviewPresenter extends PagePresenter<UnionTypeItemObject, Object, IMImageOrVideoPreviewDialog.ViewImpl> {
+public class IMBaseMessageImageOrVideoPreviewPresenter extends PagePresenter<UnionTypeItemObject, Object, IMBaseMessageImageOrVideoPreviewDialog.ViewImpl> {
 
     private static final boolean DEBUG = MSIMUikitConstants.DEBUG_WIDGET;
     @NonNull
@@ -31,8 +31,8 @@ public class IMImageOrVideoPreviewPresenter extends PagePresenter<UnionTypeItemO
     private final int mIndex;
 
     @UiThread
-    public IMImageOrVideoPreviewPresenter(
-            @NonNull IMImageOrVideoPreviewDialog.ViewImpl view,
+    public IMBaseMessageImageOrVideoPreviewPresenter(
+            @NonNull IMBaseMessageImageOrVideoPreviewDialog.ViewImpl view,
             @NonNull List<MSIMBaseMessage> messageList,
             int index) {
         super(view);
@@ -47,7 +47,7 @@ public class IMImageOrVideoPreviewPresenter extends PagePresenter<UnionTypeItemO
     }
 
     void showInitMessage() {
-        IMImageOrVideoPreviewDialog.ViewImpl view = getView();
+        IMBaseMessageImageOrVideoPreviewDialog.ViewImpl view = getView();
         if (view == null) {
             return;
         }
@@ -59,7 +59,7 @@ public class IMImageOrVideoPreviewPresenter extends PagePresenter<UnionTypeItemO
     }
 
     private final UnionTypeViewHolderListeners.OnItemClickListener mOnHolderItemClickListener = viewHolder -> {
-        IMImageOrVideoPreviewDialog.ViewImpl view = (IMImageOrVideoPreviewDialog.ViewImpl) getView();
+        IMBaseMessageImageOrVideoPreviewDialog.ViewImpl view = (IMBaseMessageImageOrVideoPreviewDialog.ViewImpl) getView();
         if (view != null) {
             view.hide();
         }

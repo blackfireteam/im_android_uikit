@@ -32,7 +32,7 @@ import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.uikit.R;
 import com.masonsoft.imsdk.uikit.common.impopup.IMBaseMessageMenuDialog;
-import com.masonsoft.imsdk.uikit.common.impreview.IMImageOrVideoPreviewDialog;
+import com.masonsoft.imsdk.uikit.common.impreview.IMBaseMessageImageOrVideoPreviewDialog;
 import com.masonsoft.imsdk.uikit.common.locationpicker.LocationInfo;
 import com.masonsoft.imsdk.uikit.common.locationpreview.LocationPreviewDialog;
 import com.masonsoft.imsdk.uikit.uniontype.DataObject;
@@ -572,7 +572,7 @@ public abstract class IMBaseMessageViewHolder extends MSIMSelfUpdateUnionTypeVie
                 final List<MSIMBaseMessage> messageList = new ArrayList<>(holderFinder.preMessageList);
                 messageList.add(holderFinder.baseMessage);
                 messageList.addAll(holderFinder.nextMessageList);
-                new IMImageOrVideoPreviewDialog(
+                new IMBaseMessageImageOrVideoPreviewDialog(
                         holderFinder.lifecycle,
                         holderFinder.innerActivity,
                         holderFinder.innerActivity.findViewById(Window.ID_ANDROID_CONTENT),
