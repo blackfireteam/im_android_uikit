@@ -21,6 +21,7 @@ import java.util.List;
 
 import io.github.idonans.core.util.DimenUtil;
 import io.github.idonans.core.util.Preconditions;
+import io.github.idonans.lang.util.ViewUtil;
 import io.github.idonans.uniontype.Host;
 
 public class IMBaseMessagePreviewImageViewHolder extends IMBaseMessageViewHolder {
@@ -54,7 +55,7 @@ public class IMBaseMessagePreviewImageViewHolder extends IMBaseMessageViewHolder
         }
         setImageUrl(null, firstAvailableUrls.toArray(new String[]{}));
 
-        mImage.setOnClickListener(v -> {
+        ViewUtil.onClick(mImage, v -> {
             UnionTypeViewHolderListeners.OnItemClickListener listener = itemObject.getExtHolderItemClick1();
             if (listener != null) {
                 listener.onItemClick(this);
