@@ -105,6 +105,9 @@ public class MSIMBaseMessageSendStatusTextView extends MSIMBaseMessageDynamicFra
             case MSIMConstants.MessageType.IMAGE:
                 messageText = "[图片]";
                 break;
+            case MSIMConstants.MessageType.FLASH_IMAGE:
+                messageText = "[闪照]";
+                break;
             case MSIMConstants.MessageType.AUDIO:
                 messageText = "[语音]";
                 break;
