@@ -29,7 +29,7 @@ public abstract class MSIMSelfUpdateUnionTypeViewHolder extends UnionTypeViewHol
     protected MSIMSelfUpdateListener mSelfUpdateListener;
 
     protected void bindSelfUpdate() {
-        mSelfUpdateListener = () -> Threads.postUi(this::onSelfUpdate);
+        mSelfUpdateListener = this::onSelfUpdate;
         final DataObject dataObject = getItemObject(DataObject.class);
         if (dataObject == null) {
             return;
@@ -44,6 +44,8 @@ public abstract class MSIMSelfUpdateUnionTypeViewHolder extends UnionTypeViewHol
     }
 
     protected void onSelfUpdate() {
+        Threads.mustUi();
+
         if (validateUnionType()) {
             final DataObject dataObject = getItemObject(DataObject.class);
             if (dataObject != null) {
