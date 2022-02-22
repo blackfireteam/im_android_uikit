@@ -168,12 +168,16 @@ public class SignUpStep2Fragment extends SignUpFragment {
             MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
             return;
         }
-        if (view.getAvatarUri() == null) {
+        final Uri avatarUri = view.getAvatarUri();
+        MSIMUikitLog.v("syncAvatarState avatarUri:%s", avatarUri);
+        if (avatarUri == null) {
             // 等待选择头像，显示占位图
             ViewUtil.setVisibilityIfChanged(mBinding.pickAvatarHolder, View.VISIBLE);
+            mBinding.avatarImage.setImageUrl((String) null);
         } else {
             // 头像已选择，隐藏占位图
             ViewUtil.setVisibilityIfChanged(mBinding.pickAvatarHolder, View.GONE);
+            mBinding.avatarImage.setImageUrl(avatarUri.toString());
         }
     }
 

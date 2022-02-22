@@ -81,7 +81,7 @@ public class DefaultApi {
                 .addHeader("nonce", String.valueOf(nonce))
                 .addHeader("timestamp", String.valueOf(timestamp))
                 .addHeader("sig", sign)
-                .addHeader("appid", "2")
+                .addHeader("appid", "100")
                 .url(url)
                 .post(requestBody)
                 .build();
