@@ -43,7 +43,7 @@ public class GlobalChatRoomManager {
         return INSTANCE.get();
     }
 
-    public static final long DEFAULT_CHAT_ROOM_ID = 25L;
+    public static final long DEFAULT_CHAT_ROOM_ID = 1641525634L;
     private final Map<String, StaticChatRoomContext> mStaticChatRoomContextMap = new HashMap<>();
     @SuppressWarnings("FieldCanBeLocal")
     private final MSIMSessionListener mSessionListener = new MSIMSessionListenerAdapter() {
