@@ -63,8 +63,31 @@ public class SignUpStep2FragmentPresenter extends SignUpViewPresenter<SignUpStep
     }
 
     private static void updateUserAvatarAndPic(long userId, String avatarUrl) {
+        Threads.mustNotUi();
+
+        int retry = 1;
+        Threads.sleepQuietly(2000L);
+        while (retry > 0 && retry < 6 && !updateUserAvatarAndPicInternal(userId, avatarUrl, retry)) {
+            // retry 1 2 3 4 5
+            // delay 2s, 7s, 12s, 17s, 22s
+            Threads.sleepQuietly(2000L + 5000L * (retry - 1));
+            retry++;
+        }
+    }
+
+    private static boolean updateUserAvatarAndPicInternal(long userId, String avatarUrl, final int retry) {
         try {
             Threads.mustNotUi();
+            MSIMUikitLog.v("updateUserAvatarAndPicInternal userId:%s, retry:%s, avatarUrl:%s", userId, retry, avatarUrl);
+
+            final long sessionUserId = MSIMManager.getInstance().getSessionUserId();
+            if (sessionUserId <= 0) {
+                return false;
+            }
+
+            if (sessionUserId != userId) {
+                return false;
+            }
 
             final Progress progress = new Progress() {
                 @Override
@@ -100,9 +123,11 @@ public class SignUpStep2FragmentPresenter extends SignUpViewPresenter<SignUpStep
             // 更新服务器
             DefaultApi.updateAvatar(userId, avatarUrl);
             DefaultApi.updateCustom(userId, userInfoUpdate.custom.get());
+            return true;
         } catch (Throwable e) {
             e.printStackTrace();
         }
+        return false;
     }
 
 }
