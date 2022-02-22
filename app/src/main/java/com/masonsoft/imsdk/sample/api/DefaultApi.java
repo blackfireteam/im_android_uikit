@@ -10,7 +10,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.reflect.TypeToken;
 import com.masonsoft.imsdk.MSIMManager;
-import com.masonsoft.imsdk.MSIMUserInfo;
 import com.masonsoft.imsdk.core.OtherMessage;
 import com.masonsoft.imsdk.core.OtherMessageManager;
 import com.masonsoft.imsdk.core.SignGenerator;
@@ -24,6 +23,9 @@ import com.masonsoft.imsdk.sample.im.FetchSparkMessagePacket;
 import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 import com.masonsoft.imsdk.uikit.util.OkHttpClientUtil;
 import com.masonsoft.imsdk.uikit.util.RequestSignUtil;
+import com.masonsoft.imsdk.user.UserInfo;
+import com.masonsoft.imsdk.user.UserInfoFactory;
+import com.masonsoft.imsdk.user.UserInfoManager;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -124,6 +126,13 @@ public class DefaultApi {
     }
 
     @NonNull
+    public static Object reg(final Map<String, Object> requestArgs) {
+        final String url = "/user/reg";
+        requestApiServer(url, requestArgs, null);
+        return new Object();
+    }
+
+    @NonNull
     public static Object reg(long userId, String nickname) {
         final String url = "/user/reg";
 
@@ -204,13 +213,12 @@ public class DefaultApi {
 
                 final List<Spark> sparkList = new ArrayList<>(messagePacket.getSparkList());
 
-                // 存储用户头像与昵称
+                // 存储用户信息
                 for (Spark spark : sparkList) {
-                    MSIMManager.getInstance().getUserInfoManager().insertOrUpdateUserInfo(
-                            new MSIMUserInfo.Editor(spark.userId)
-                                    .setAvatar(spark.avatar)
-                                    .setNickname(spark.nickname)
-                    );
+                    final UserInfo userInfo = UserInfoFactory.create(spark.profile);
+                    userInfo.updateTimeMs.clear();
+
+                    UserInfoManager.getInstance().updateManual(userInfo.uid.get(), userInfo);
                 }
 
                 subject.onSuccess(sparkList);

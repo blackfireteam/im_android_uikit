@@ -39,7 +39,7 @@
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".app.signup.nickname.SignUpNicknameActivity"
+            android:name=".app.signup.step1.SignUpStep1Activity"
             android:exported="false"
             android:screenOrientation="portrait" />
     </application>

@@ -79,7 +79,7 @@ public class FetchSparkMessagePacket extends NotNullTimeoutMessagePacket {
                             return false;
                         }
 
-                        final List<ProtoMessage.Spark> sparkList = sparks.getSparksList();
+                        final List<ProtoMessage.Profile> sparkList = sparks.getSparksList();
                         if (sparkList != null) {
                             mSparkList.addAll(Spark.valueOf(sparkList));
                         }

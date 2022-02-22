@@ -67,8 +67,8 @@ public class HomeSparkViewHolder extends UnionTypeViewHolder {
         Preconditions.checkNotNull(itemObject);
         final Spark spark = (Spark) itemObject.object;
 
-        mBinding.imageLayout.setImageUrl(null, spark.pic);
-        mBinding.username.setTargetUserId(spark.userId);
+        mBinding.imageLayout.setImageUrl(null, spark.profile.getAvatar());
+        mBinding.username.setTargetUserId(spark.profile.getUid());
         updateLikeAndDislike(0, false);
 
         final ExtraUiData extraUiData = ExtraUiData.valueOf(itemObject);
@@ -95,7 +95,7 @@ public class HomeSparkViewHolder extends UnionTypeViewHolder {
                 mBinding.actionLike.setSelected(true);
 
                 // send like message
-                sendLikeMessage(spark.userId);
+                sendLikeMessage(spark.profile.getUid());
             }
         });
         ViewUtil.onClick(mBinding.actionChat, v -> {
@@ -105,12 +105,12 @@ public class HomeSparkViewHolder extends UnionTypeViewHolder {
                 return;
             }
 
-            if (spark.userId <= 0) {
+            if (spark.profile.getUid() <= 0) {
                 SampleLog.e(MSIMUikitConstants.ErrorLog.INVALID_USER_ID);
                 return;
             }
 
-            SingleChatActivity.start(innerActivity, spark.userId);
+            SingleChatActivity.start(innerActivity, spark.profile.getUid());
         });
     }
 

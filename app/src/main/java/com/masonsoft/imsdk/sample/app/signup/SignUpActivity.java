@@ -7,7 +7,7 @@ import android.os.Bundle;
 import androidx.annotation.Nullable;
 
 import com.masonsoft.imsdk.uikit.app.FragmentDelegateActivity;
-import com.masonsoft.imsdk.sample.app.signup.nickname.SignUpNicknameActivity;
+import com.masonsoft.imsdk.sample.app.signup.step1.SignUpStep1Activity;
 
 /**
  * 注册
@@ -28,7 +28,7 @@ public class SignUpActivity extends FragmentDelegateActivity {
         super.onCreate(savedInstanceState);
 
         final SignUpArgument signUpArgument = SignUpArgument.valueOf(getIntent());
-        SignUpNicknameActivity.start(this, signUpArgument);
+        SignUpStep1Activity.start(this, signUpArgument);
         finish();
     }
 

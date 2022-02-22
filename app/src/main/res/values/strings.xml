@@ -8,16 +8,46 @@
     <string name="imsdk_sample_tab_mine">我的</string>
     <string name="imsdk_sample_tab_discover_title">在线用户</string>
     <string name="imsdk_sample_sign_in_submit_text">登录</string>
-    <string name="imsdk_sample_submit_action_ok">确定</string>
+    <string name="imsdk_sample_sign_up_next">下一步</string>
+    <string name="imsdk_sample_sign_up_finish">确定</string>
     <string name="imsdk_sample_edit_hint_phone">手机号码</string>
     <string name="imsdk_sample_edit_hint_api_server">API 服务器地址 https://xxx:8888</string>
     <string name="imsdk_sample_edit_hint_im_server">消息服务器地址 x.x.x.x:8888</string>
     <string name="imsdk_sample_edit_hint_nickname">昵称</string>
+    <string name="imsdk_sample_edit_hint_department">部门</string>
+    <string name="imsdk_sample_edit_hint_workplace">办公地点</string>
+    <string name="imsdk_sample_edit_hint_invitation_code">邀请码</string>
+    <string-array name="imsdk_sample_department_list" translatable="false">
+        <item>SALE&amp;MARKETING</item>
+        <item>HR&amp;ADMIN</item>
+        <item>PRODUCT&amp;DESIGN</item>
+        <item>ENGINEERING</item>
+        <item>CS&amp;QA</item>
+        <item>FINANCE</item>
+        <item>NEW_PRODUCTS</item>
+        <item>OTHERS</item>
+    </string-array>
+    <string-array name="imsdk_sample_workplace_list" translatable="false">
+        <item>HX-27F</item>
+        <item>HX-25F</item>
+        <item>HX-22F</item>
+        <item>HX-21F</item>
+        <item>Nanchong</item>
+        <item>Mianyang</item>
+        <item>West</item>
+        <item>Leshan</item>
+        <item>iUniverse</item>
+        <item>Indian sales office</item>
+        <item>Indian development office</item>
+    </string-array>
+    <string name="imsdk_sample_gender_male">男</string>
+    <string name="imsdk_sample_gender_female">女</string>
     <string name="imsdk_sample_input_error_empty_phone">手机号码不能为空</string>
     <string name="imsdk_sample_input_error_invalid_phone">手机号码格式错误</string>
     <string name="imsdk_sample_input_error_api_server_error">API 服务器地址错误</string>
     <string name="imsdk_sample_input_error_im_server_error">消息服务器地址错误</string>
     <string name="imsdk_sample_input_error_nickname_error">昵称在 3 – 20 字符</string>
+    <string name="imsdk_sample_input_error_invitation_code">邀请码错误</string>
     <string name="imsdk_sample_input_error_avatar_empty">头像地址不能为空</string>
     <string name="imsdk_sample_switch_setting">设置</string>
     <string name="imsdk_sample_open_app_setting">打开系统设置</string>

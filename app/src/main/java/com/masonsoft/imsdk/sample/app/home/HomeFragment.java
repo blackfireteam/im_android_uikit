@@ -158,7 +158,7 @@ public class HomeFragment extends SystemInsetsFragment {
                     }
                 }
 
-                if (spark == null || spark.userId <= 0) {
+                if (spark == null || spark.profile.getUid() <= 0) {
                     SampleLog.e(MSIMUikitConstants.ErrorLog.INVALID_TARGET);
                     return;
                 }

@@ -9,29 +9,23 @@ import java.util.List;
 
 public class Spark {
 
-    public long userId;
-    public String nickname;
-    public String avatar;
-    public String pic;
+    public ProtoMessage.Profile profile;
 
     @NonNull
-    public static Spark valueOf(@NonNull ProtoMessage.Spark input) {
+    public static Spark valueOf(@NonNull ProtoMessage.Profile input) {
         final Spark target = new Spark();
-        target.userId = input.getUid();
-        target.nickname = input.getNickName();
-        target.avatar = input.getAvatar();
-        target.pic = input.getPic();
+        target.profile = input;
         return target;
     }
 
     @NonNull
-    public static List<Spark> valueOf(@NonNull List<ProtoMessage.Spark> input) {
+    public static List<Spark> valueOf(@NonNull List<ProtoMessage.Profile> input) {
         final List<Spark> target = new ArrayList<>();
-        for (ProtoMessage.Spark spark : input) {
-            if (spark == null) {
+        for (ProtoMessage.Profile profile : input) {
+            if (profile == null) {
                 continue;
             }
-            target.add(valueOf(spark));
+            target.add(valueOf(profile));
         }
         return target;
     }
