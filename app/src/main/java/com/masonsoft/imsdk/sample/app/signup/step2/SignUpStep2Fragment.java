@@ -1,14 +1,17 @@
 package com.masonsoft.imsdk.sample.app.signup.step2;
 
+import android.Manifest;
 import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentActivity;
 
 import com.masonsoft.imsdk.core.I18nResources;
 import com.masonsoft.imsdk.sample.R;
@@ -19,11 +22,17 @@ import com.masonsoft.imsdk.sample.app.signup.SignUpFragment;
 import com.masonsoft.imsdk.sample.app.signup.SignUpView;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleSignUpStep2FragmentBinding;
 import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
+import com.masonsoft.imsdk.uikit.MSIMUikitLog;
+import com.masonsoft.imsdk.uikit.common.mediapicker.MediaData;
+import com.masonsoft.imsdk.uikit.common.mediapicker.MediaPickerDialog;
+import com.masonsoft.imsdk.uikit.common.mediapicker.MediaSelector;
 import com.masonsoft.imsdk.uikit.util.TipUtil;
 import com.masonsoft.imsdk.util.Objects;
+import com.tbruyelle.rxpermissions3.RxPermissions;
 
 import io.github.idonans.core.FormValidator;
 import io.github.idonans.core.util.ToastUtil;
+import io.github.idonans.lang.DisposableHolder;
 import io.github.idonans.lang.util.ViewUtil;
 
 public class SignUpStep2Fragment extends SignUpFragment {
@@ -37,6 +46,11 @@ public class SignUpStep2Fragment extends SignUpFragment {
         fragment.setArguments(args);
         return fragment;
     }
+
+    private final DisposableHolder mPermissionRequest = new DisposableHolder();
+    private static final String[] IMAGE_PICKER_PERMISSION = {
+            Manifest.permission.READ_EXTERNAL_STORAGE
+    };
 
     @Nullable
     private ImsdkSampleSignUpStep2FragmentBinding mBinding;
@@ -57,13 +71,110 @@ public class SignUpStep2Fragment extends SignUpFragment {
                         FormValidator.SubmitViewFactory.create(mBinding.submit),
                 }
         );
+        syncAvatarState(mVirtualAvatarPickerView);
 
+        ViewUtil.onClick(mBinding.editAvatar, v -> requestPickAvatarPermission());
         ViewUtil.onClick(mBinding.submit, v -> onSubmit());
 
         mView = new ViewImpl();
         mPresenter = new SignUpStep2FragmentPresenter(mView);
 
         return mBinding.getRoot();
+    }
+
+    private void requestPickAvatarPermission() {
+        SampleLog.v("requestPickAvatarPermission");
+
+        final Activity activity = getActivity();
+        if (activity == null) {
+            SampleLog.e(MSIMUikitConstants.ErrorLog.ACTIVITY_NOT_FOUND_IN_FRAGMENT);
+            return;
+        }
+
+        if (mBinding == null) {
+            SampleLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
+            return;
+        }
+
+        //noinspection CastCanBeRemovedNarrowingVariableType
+        final RxPermissions rxPermissions = new RxPermissions((FragmentActivity) activity);
+        mPermissionRequest.set(
+                rxPermissions.request(IMAGE_PICKER_PERMISSION)
+                        .subscribe(granted -> {
+                            if (granted) {
+                                onPickAvatarPermissionGranted();
+                            } else {
+                                SampleLog.e(MSIMUikitConstants.ErrorLog.PERMISSION_REQUIRED);
+                            }
+                        }));
+    }
+
+    private void onPickAvatarPermissionGranted() {
+        SampleLog.v("onPickAvatarPermissionGranted");
+
+        final Activity activity = getActivity();
+        if (activity == null) {
+            SampleLog.e(MSIMUikitConstants.ErrorLog.ACTIVITY_NOT_FOUND_IN_FRAGMENT);
+            return;
+        }
+
+        if (mBinding == null) {
+            SampleLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
+            return;
+        }
+
+        final MediaPickerDialog mediaPickerDialog = new MediaPickerDialog(activity, activity.findViewById(Window.ID_ANDROID_CONTENT));
+        mediaPickerDialog.setMediaSelector(new MediaSelector.SimpleMediaSelector());
+        mediaPickerDialog.setOnMediaPickListener(imageInfoList -> {
+            if (imageInfoList.isEmpty()) {
+                return false;
+            }
+
+            final MediaData.MediaInfo mediaInfo = imageInfoList.get(0);
+            onPickAvatarResult(mediaInfo.uri);
+            return true;
+        });
+        mediaPickerDialog.show();
+    }
+
+    private void onPickAvatarResult(final Uri uri) {
+        SampleLog.v("onPickAvatarResult uri:%s", uri);
+
+        final Activity activity = getActivity();
+        if (activity == null) {
+            SampleLog.e(MSIMUikitConstants.ErrorLog.ACTIVITY_NOT_FOUND_IN_FRAGMENT);
+            return;
+        }
+        if (isStateSaved()) {
+            SampleLog.e(MSIMUikitConstants.ErrorLog.FRAGMENT_MANAGER_STATE_SAVED);
+            return;
+        }
+
+        if (mBinding == null) {
+            SampleLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
+            return;
+        }
+        if (mPresenter == null) {
+            SampleLog.e(MSIMUikitConstants.ErrorLog.PRESENTER_IS_NULL);
+            return;
+        }
+
+        mVirtualAvatarPickerView.setAvatarUri(uri);
+        syncAvatarState(mVirtualAvatarPickerView);
+    }
+
+    private void syncAvatarState(VirtualAvatarPickerView view) {
+        if (mBinding == null) {
+            MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
+            return;
+        }
+        if (view.getAvatarUri() == null) {
+            // 等待选择头像，显示占位图
+            ViewUtil.setVisibilityIfChanged(mBinding.pickAvatarHolder, View.VISIBLE);
+        } else {
+            // 头像已选择，隐藏占位图
+            ViewUtil.setVisibilityIfChanged(mBinding.pickAvatarHolder, View.GONE);
+        }
     }
 
     private static class VirtualAvatarPickerView implements FormValidator.InputView {
