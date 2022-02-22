@@ -121,7 +121,7 @@ public class SignUpStep2FragmentPresenter extends SignUpViewPresenter<SignUpStep
             UserInfoManager.getInstance().updateManual(userId, userInfoUpdate);
 
             // 更新服务器
-            DefaultApi.updateAvatar(userId, avatarUrl);
+            DefaultApi.updateAvatar(userId, httpAvatarUrl);
             DefaultApi.updateCustom(userId, userInfoUpdate.custom.get());
             return true;
         } catch (Throwable e) {
