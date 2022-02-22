@@ -48,7 +48,7 @@
     <string name="imsdk_sample_input_error_im_server_error">消息服务器地址错误</string>
     <string name="imsdk_sample_input_error_nickname_error">昵称在 3 – 20 字符</string>
     <string name="imsdk_sample_input_error_invitation_code">邀请码错误</string>
-    <string name="imsdk_sample_input_error_avatar_empty">头像地址不能为空</string>
+    <string name="imsdk_sample_input_error_require_pick_avatar">头像未设置</string>
     <string name="imsdk_sample_switch_setting">设置</string>
     <string name="imsdk_sample_open_app_setting">打开系统设置</string>
     <string name="imsdk_sample_switch_internet_server_default">重置(切换)默认值</string>

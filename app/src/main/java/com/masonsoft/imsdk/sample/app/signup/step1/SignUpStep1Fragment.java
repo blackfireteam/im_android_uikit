@@ -18,10 +18,9 @@ import com.masonsoft.imsdk.sample.app.signin.SignInViewPresenter;
 import com.masonsoft.imsdk.sample.app.signup.SignUpArgument;
 import com.masonsoft.imsdk.sample.app.signup.SignUpFragment;
 import com.masonsoft.imsdk.sample.app.signup.SignUpView;
+import com.masonsoft.imsdk.sample.app.signup.step2.SignUpStep2Activity;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleSignUpStep1FragmentBinding;
 import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
-import com.masonsoft.imsdk.uikit.util.TipUtil;
-import com.masonsoft.imsdk.util.Objects;
 
 import io.github.idonans.core.FormValidator;
 import io.github.idonans.core.util.ToastUtil;
@@ -128,46 +127,10 @@ public class SignUpStep1Fragment extends SignUpFragment {
         signUpArgument.gender = gender;
         saveSignUpArgument();
 
-        mPresenter.requestSignUp(signUpArgument);
+        SignUpStep2Activity.start(activity, signUpArgument);
     }
 
     class ViewImpl extends SignUpView {
-
-        public void onSignUpFail(int code, String message) {
-            SampleLog.v(Objects.defaultObjectTag(this) + " onSignUpFail code:%s, message:%s", code, message);
-
-            final Activity activity = getActivity();
-            if (activity == null) {
-                SampleLog.e(MSIMUikitConstants.ErrorLog.ACTIVITY_NOT_FOUND_IN_FRAGMENT);
-                return;
-            }
-
-            TipUtil.showOrDefault(message);
-        }
-
-        public void onSignUpFail(Throwable e) {
-            SampleLog.v(e, Objects.defaultObjectTag(this) + " onSignUpFail");
-
-            final Activity activity = getActivity();
-            if (activity == null) {
-                SampleLog.e(MSIMUikitConstants.ErrorLog.ACTIVITY_NOT_FOUND_IN_FRAGMENT);
-                return;
-            }
-
-            TipUtil.show(R.string.imsdk_uikit_tip_text_error_unknown);
-        }
-
-        public void onSignUpSuccess(long userId) {
-            SampleLog.v(Objects.defaultObjectTag(this) + " onSignUpSuccess userId:%s", userId);
-
-            final Activity activity = getActivity();
-            if (activity == null) {
-                SampleLog.e(MSIMUikitConstants.ErrorLog.ACTIVITY_NOT_FOUND_IN_FRAGMENT);
-                return;
-            }
-
-            mPresenter.requestToken(userId);
-        }
 
         @NonNull
         @Override

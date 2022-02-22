@@ -5,69 +5,42 @@
     android:layout_height="match_parent"
     android:background="@android:color/white">
 
-    <EditText
-        android:id="@+id/edit_nickname"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+    <FrameLayout
+        android:id="@+id/edit_avatar"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
         android:layout_margin="15dp"
-        android:hint="@string/imsdk_sample_edit_hint_nickname"
-        android:imeOptions="actionNext"
-        android:importantForAutofill="no"
-        android:includeFontPadding="false"
-        android:inputType="text"
-        android:maxLines="1"
-        android:singleLine="true"
-        app:layout_constraintBottom_toTopOf="@id/edit_department"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="packed" />
-
-    <EditText
-        android:id="@+id/edit_department"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="15dp"
-        android:hint="@string/imsdk_sample_edit_hint_department"
-        android:imeOptions="actionNext"
-        android:importantForAutofill="no"
-        android:includeFontPadding="false"
-        android:inputType="none"
-        android:maxLines="1"
-        android:singleLine="true"
-        app:layout_constraintBottom_toTopOf="@id/edit_workplace"
-        app:layout_constraintTop_toBottomOf="@id/edit_nickname"
-        app:layout_constraintVertical_chainStyle="packed" />
-
-    <EditText
-        android:id="@+id/edit_workplace"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="15dp"
-        android:hint="@string/imsdk_sample_edit_hint_workplace"
-        android:imeOptions="actionNext"
-        android:importantForAutofill="no"
-        android:includeFontPadding="false"
-        android:inputType="none"
-        android:maxLines="1"
-        android:singleLine="true"
-        app:layout_constraintBottom_toTopOf="@id/edit_invitation_code"
-        app:layout_constraintTop_toBottomOf="@id/edit_department"
-        app:layout_constraintVertical_chainStyle="packed" />
-
-    <EditText
-        android:id="@+id/edit_invitation_code"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="15dp"
-        android:hint="@string/imsdk_sample_edit_hint_invitation_code"
-        android:imeOptions="actionGo"
-        android:importantForAutofill="no"
-        android:includeFontPadding="false"
-        android:inputType="text"
-        android:maxLines="1"
-        android:singleLine="true"
         app:layout_constraintBottom_toTopOf="@id/submit"
-        app:layout_constraintTop_toBottomOf="@id/edit_workplace"
-        app:layout_constraintVertical_chainStyle="packed" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed">
+
+        <com.masonsoft.imsdk.uikit.widget.ImageLayout
+            android:id="@+id/avatar_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <ImageView
+            android:id="@+id/pick_avatar_holder"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/imsdk_sample_sign_up_pick_avatar" />
+    </FrameLayout>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:gravity="center"
+        android:importantForAutofill="no"
+        android:includeFontPadding="false"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:text="@string/imsdk_uikit_title_pick_avatar"
+        android:textColor="#282828"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@id/edit_avatar" />
 
     <Button
         android:id="@+id/submit"
@@ -76,11 +49,11 @@
         android:layout_margin="15dp"
         android:background="@drawable/imsdk_uikit_button_background_selector"
         android:includeFontPadding="false"
-        android:text="@string/imsdk_sample_sign_up_next"
+        android:text="@string/imsdk_sample_sign_up_finish"
         android:textColor="@color/imsdk_sample_button_text_selector"
         android:textSize="16sp"
         app:layout_constraintBottom_toTopOf="@id/bottom_system_insets"
-        app:layout_constraintTop_toBottomOf="@id/edit_invitation_code" />
+        app:layout_constraintTop_toBottomOf="@id/edit_avatar" />
 
     <io.github.idonans.systeminsets.SystemInsetsFrameLayout
         android:id="@+id/bottom_system_insets"

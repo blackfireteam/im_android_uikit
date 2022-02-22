@@ -9,7 +9,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.google.gson.Gson;
+import com.masonsoft.imsdk.sample.util.JsonUtil;
 import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
+import com.masonsoft.imsdk.user.UserInfo;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,6 +30,17 @@ public class SignUpArgument implements Parcelable {
     public SignUpArgument() {
     }
 
+    public SignUpArgument copy() {
+        final SignUpArgument target = new SignUpArgument();
+        target.userId = this.userId;
+        target.nickname = this.nickname;
+        target.avatar = this.avatar;
+        target.department = this.department;
+        target.workplace = this.workplace;
+        target.gender = this.gender;
+        return target;
+    }
+
     public Map<String, Object> buildRequestArgs() {
         final Map<String, Object> requestArgs = new HashMap<>();
         requestArgs.put("uid", this.userId);
@@ -42,6 +55,31 @@ public class SignUpArgument implements Parcelable {
         requestArgs.put("custom", new Gson().toJson(customMap));
 
         return requestArgs;
+    }
+
+    public UserInfo buildUserInfo(@Nullable UserInfo cache) {
+        final UserInfo userInfo = new UserInfo();
+        if (cache != null) {
+            userInfo.apply(cache);
+        }
+
+        userInfo.updateTimeMs.clear();
+        userInfo.localLastModifyMs.clear();
+
+        userInfo.uid.set(this.userId);
+        userInfo.nickname.set(this.nickname);
+        userInfo.avatar.set(this.avatar);
+        userInfo.gender.set(this.gender);
+
+        userInfo.custom.set(JsonUtil.modifyJsonObject(
+                userInfo.custom.getOrDefault(null),
+                map -> {
+                    map.put("department", this.department);
+                    map.put("pic", this.avatar);
+                    map.put("workplace", this.workplace);
+                }
+        ));
+        return userInfo;
     }
 
     public void writeTo(@Nullable Intent intent) {
