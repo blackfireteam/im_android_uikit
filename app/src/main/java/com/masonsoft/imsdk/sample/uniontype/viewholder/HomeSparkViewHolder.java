@@ -11,11 +11,15 @@ import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleUnionTypeImplHomeSparkBinding;
 import com.masonsoft.imsdk.sample.entity.Spark;
+import com.masonsoft.imsdk.sample.util.JsonUtil;
+import com.masonsoft.imsdk.sample.util.StringUtil;
 import com.masonsoft.imsdk.uikit.CustomIMMessageFactory;
 import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 import com.masonsoft.imsdk.uikit.app.chat.SingleChatActivity;
 import com.masonsoft.imsdk.uikit.uniontype.DataObject;
 import com.masonsoft.imsdk.util.Objects;
+
+import java.util.Map;
 
 import io.github.idonans.core.util.Preconditions;
 import io.github.idonans.lang.util.ViewUtil;
@@ -69,6 +73,7 @@ public class HomeSparkViewHolder extends UnionTypeViewHolder {
 
         mBinding.imageLayout.setImageUrl(null, spark.profile.getAvatar());
         mBinding.username.setTargetUserId(spark.profile.getUid());
+        mBinding.desc.setText(buildDescText(spark));
         updateLikeAndDislike(0, false);
 
         final ExtraUiData extraUiData = ExtraUiData.valueOf(itemObject);
@@ -112,6 +117,22 @@ public class HomeSparkViewHolder extends UnionTypeViewHolder {
 
             SingleChatActivity.start(innerActivity, spark.profile.getUid());
         });
+    }
+
+    private String buildDescText(@NonNull Spark spark) {
+        final Map<String, Object> map = JsonUtil.toMapOrEmpty(spark.profile.getCustom());
+        final String department = StringUtil.toStringOrEmpty(map.get("department"));
+        final String workplace = StringUtil.toStringOrEmpty(map.get("workplace"));
+        final StringBuilder builder = new StringBuilder();
+        if (!department.isEmpty()) {
+            builder.append(department);
+            builder.append(" ");
+        }
+        if (workplace.isEmpty()) {
+            builder.append(workplace);
+            builder.append(" ");
+        }
+        return builder.toString();
     }
 
     private void sendLikeMessage(long targetUserId) {
