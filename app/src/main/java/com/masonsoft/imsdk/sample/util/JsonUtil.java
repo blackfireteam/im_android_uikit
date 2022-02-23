@@ -13,7 +13,7 @@ import java.util.Map;
 public class JsonUtil {
 
     @NonNull
-    public static String modifyJsonObject(@Nullable String originJsonObjectString, @NonNull Consumer<Map<String, Object>> modify) {
+    public static Map<String, Object> toMapOrEmpty(@Nullable String originJsonObjectString) {
         Map<String, Object> mapJson = null;
         try {
             String json = originJsonObjectString;
@@ -34,7 +34,12 @@ public class JsonUtil {
         if (mapJson == null) {
             mapJson = new HashMap<>();
         }
+        return mapJson;
+    }
 
+    @NonNull
+    public static String modifyJsonObject(@Nullable String originJsonObjectString, @NonNull Consumer<Map<String, Object>> modify) {
+        final Map<String, Object> mapJson = toMapOrEmpty(originJsonObjectString);
         modify.accept(mapJson);
         return new Gson().toJson(mapJson);
     }

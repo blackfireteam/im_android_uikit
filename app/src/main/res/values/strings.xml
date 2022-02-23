@@ -40,6 +40,10 @@
         <item>Indian sales office</item>
         <item>Indian development office</item>
     </string-array>
+    <string-array name="imsdk_sample_gender_list" translatable="false">
+        <item>男</item>
+        <item>女</item>
+    </string-array>
     <string name="imsdk_sample_gender_male">男</string>
     <string name="imsdk_sample_gender_female">女</string>
     <string name="imsdk_sample_input_error_empty_phone">手机号码不能为空</string>
@@ -53,13 +57,19 @@
     <string name="imsdk_sample_open_app_setting">打开系统设置</string>
     <string name="imsdk_sample_switch_internet_server_default">重置(切换)默认值</string>
     <string name="imsdk_sample_dialog_confirm_user_not_found_and_auto_reg">当前账号未注册，是否立即注册？</string>
-    <string name="imsdk_sample_profile_modify_nickname">修改昵称</string>
+    <string name="imsdk_sample_profile_modify_nickname">昵称</string>
     <string name="imsdk_sample_profile_modify_nickname_error_empty">昵称不能为空</string>
     <string name="imsdk_sample_profile_modify_avatar_fail">头像修改失败</string>
     <string name="imsdk_sample_profile_modify_avatar_success">头像修改成功</string>
     <string name="imsdk_sample_profile_modify_nickname_fail">昵称修改失败</string>
     <string name="imsdk_sample_profile_modify_nickname_success">昵称修改成功</string>
+    <string name="imsdk_sample_profile_modify_department_fail">部门修改失败</string>
+    <string name="imsdk_sample_profile_modify_department_success">部门修改成功</string>
+    <string name="imsdk_sample_profile_modify_workplace_fail">办公地点修改失败</string>
+    <string name="imsdk_sample_profile_modify_workplace_success">办公地点修改成功</string>
     <string name="imsdk_sample_profile_modify_gender">性别</string>
+    <string name="imsdk_sample_profile_modify_gender_fail">性别修改失败</string>
+    <string name="imsdk_sample_profile_modify_gender_success">性别修改成功</string>
     <string name="imsdk_sample_tip_action_general_fail">操作失败</string>
     <string name="imsdk_sample_tip_action_general_success">操作成功</string>
     <string name="imsdk_sample_button_text_sign_out">退出登录</string>

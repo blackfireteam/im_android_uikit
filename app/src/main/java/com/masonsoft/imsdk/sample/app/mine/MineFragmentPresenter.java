@@ -4,7 +4,6 @@ import android.net.Uri;
 
 import androidx.annotation.Nullable;
 
-import com.masonsoft.imsdk.MSIMConstants;
 import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.MSIMUserInfo;
 import com.masonsoft.imsdk.core.FileUploadProvider;
@@ -12,7 +11,7 @@ import com.masonsoft.imsdk.sample.LocalSettingsManager;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.api.DefaultApi;
 import com.masonsoft.imsdk.sample.im.DiscoverUserManager;
-import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
+import com.masonsoft.imsdk.sample.util.JsonUtil;
 import com.masonsoft.imsdk.uikit.widget.SessionUserIdChangedViewHelper;
 import com.masonsoft.imsdk.uikit.widget.UserCacheChangedViewHelper;
 import com.masonsoft.imsdk.user.UserInfoManager;
@@ -188,33 +187,96 @@ public class MineFragmentPresenter extends DynamicPresenter<MineFragment.ViewImp
                 }));
     }
 
-    public void trySubmitGenderChanged(boolean isChecked) {
+    public void submitDepartment(String department) {
         mRequestHolder.set(Single.just("")
                 .map(input -> {
                     final long sessionUserId = MSIMManager.getInstance().getSessionUserId();
                     Preconditions.checkArgument(sessionUserId > 0);
-                    final MSIMUserInfo sessionUserInfo = MSIMManager.getInstance().getUserInfoManager().getUserInfo(sessionUserId);
-                    Preconditions.checkNotNull(sessionUserInfo);
 
-                    // 是否提交更改
-                    final long gender = sessionUserInfo.getGender(Integer.MIN_VALUE);
-                    if (isChecked) {
-                        return gender != MSIMUikitConstants.Gender.FEMALE;
-                    } else {
-                        return gender != MSIMUikitConstants.Gender.MALE;
-                    }
+                    final MSIMUserInfo userInfoCache = MSIMManager.getInstance().getUserInfoManager().getUserInfo(sessionUserId);
+                    Preconditions.checkNotNull(userInfoCache);
+
+                    final String custom = JsonUtil.modifyJsonObject(
+                            userInfoCache.getCustom(),
+                            map -> map.put("department", department)
+                    );
+                    DefaultApi.updateCustom(sessionUserId, custom);
+
+                    MSIMManager.getInstance().getUserInfoManager().insertOrUpdateUserInfo(
+                            new MSIMUserInfo.Editor(sessionUserId)
+                                    .setCustom(custom)
+                    );
+                    return input;
                 })
-                .map(submit -> {
-                    if (!submit) {
-                        return new Object();
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(ignore -> {
+                    final MineFragment.ViewImpl view = getView();
+                    if (view == null) {
+                        return;
                     }
 
+                    view.onDepartmentModifySuccess();
+                }, e -> {
+                    SampleLog.e(e);
+                    final MineFragment.ViewImpl view = getView();
+                    if (view == null) {
+                        return;
+                    }
+
+                    view.onDepartmentModifyFail(e);
+                }));
+    }
+
+    public void submitWorkplace(String workplace) {
+        mRequestHolder.set(Single.just("")
+                .map(input -> {
                     final long sessionUserId = MSIMManager.getInstance().getSessionUserId();
                     Preconditions.checkArgument(sessionUserId > 0);
-                    final long gender = isChecked ? MSIMUikitConstants.Gender.FEMALE : MSIMUikitConstants.Gender.MALE;
+
+                    final MSIMUserInfo userInfoCache = MSIMManager.getInstance().getUserInfoManager().getUserInfo(sessionUserId);
+                    Preconditions.checkNotNull(userInfoCache);
+
+                    final String custom = JsonUtil.modifyJsonObject(
+                            userInfoCache.getCustom(),
+                            map -> map.put("workplace", workplace)
+                    );
+                    DefaultApi.updateCustom(sessionUserId, custom);
+
+                    MSIMManager.getInstance().getUserInfoManager().insertOrUpdateUserInfo(
+                            new MSIMUserInfo.Editor(sessionUserId)
+                                    .setCustom(custom)
+                    );
+                    return input;
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(ignore -> {
+                    final MineFragment.ViewImpl view = getView();
+                    if (view == null) {
+                        return;
+                    }
+
+                    view.onWorkplaceModifySuccess();
+                }, e -> {
+                    SampleLog.e(e);
+                    final MineFragment.ViewImpl view = getView();
+                    if (view == null) {
+                        return;
+                    }
+
+                    view.onWorkplaceModifyFail(e);
+                }));
+    }
+
+    public void submitGender(long gender) {
+        mRequestHolder.set(Single.just("")
+                .map(input -> {
+                    final long sessionUserId = MSIMManager.getInstance().getSessionUserId();
+                    Preconditions.checkArgument(sessionUserId > 0);
                     DefaultApi.updateGender(sessionUserId, gender);
                     UserInfoManager.getInstance().updateGender(sessionUserId, gender);
-                    return new Object();
+                    return input;
                 })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

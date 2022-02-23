@@ -22,6 +22,9 @@ import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.app.main.MainActivity;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleMineFragmentBinding;
+import com.masonsoft.imsdk.sample.selector.SimpleTextListPickerDialog;
+import com.masonsoft.imsdk.sample.util.JsonUtil;
+import com.masonsoft.imsdk.sample.util.StringUtil;
 import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 import com.masonsoft.imsdk.uikit.app.SystemInsetsFragment;
 import com.masonsoft.imsdk.uikit.common.mediapicker.MediaData;
@@ -34,6 +37,11 @@ import com.masonsoft.imsdk.uikit.util.TipUtil;
 import com.masonsoft.imsdk.util.Objects;
 import com.tbruyelle.rxpermissions3.RxPermissions;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
+import io.github.idonans.core.util.ContextUtil;
 import io.github.idonans.dynamic.DynamicView;
 import io.github.idonans.lang.DisposableHolder;
 import io.github.idonans.lang.util.ViewUtil;
@@ -101,30 +109,14 @@ public class MineFragment extends SystemInsetsFragment {
         mBinding = ImsdkSampleMineFragmentBinding.inflate(inflater, container, false);
         ViewUtil.onClick(mBinding.avatar, v -> requestPickAvatarPermission());
         ViewUtil.onClick(mBinding.modifyUsername, v -> startModifyUsername());
-        bindCheckedChangeListener();
+        ViewUtil.onClick(mBinding.modifyDepartment, v -> startModifyDepartment());
+        ViewUtil.onClick(mBinding.modifyWorkplace, v -> startModifyWorkplace());
+        ViewUtil.onClick(mBinding.modifyGender, v -> startModifyGender());
         ViewUtil.onClick(mBinding.actionSignOut, v -> requestSignOut());
 
         mBinding.actionSignOut.setEnabled(MSIMManager.getInstance().hasSession());
 
         return mBinding.getRoot();
-    }
-
-    private void clearCheckedChangeListener() {
-        if (mBinding == null) {
-            SampleLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
-            return;
-        }
-
-        mBinding.modifyGenderSwitch.setOnCheckedChangeListener(null);
-    }
-
-    private void bindCheckedChangeListener() {
-        if (mBinding == null) {
-            SampleLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
-            return;
-        }
-
-        mBinding.modifyGenderSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> onGenderChanged(isChecked));
     }
 
     @Override
@@ -232,7 +224,7 @@ public class MineFragment extends SystemInsetsFragment {
             SampleLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
             return;
         }
-        final String unsafeCacheUsername = mBinding.username.getText().toString();
+        final String unsafeCacheUsername = mBinding.txtUsername.getText().toString();
         final SimpleContentInputDialog dialog = new SimpleContentInputDialog(activity, unsafeCacheUsername);
         dialog.setOnBtnRightClickListener(input -> {
             if (mPresenter == null) {
@@ -251,7 +243,7 @@ public class MineFragment extends SystemInsetsFragment {
         dialog.show();
     }
 
-    private void onGenderChanged(boolean isChecked) {
+    private void startModifyDepartment() {
         final Activity activity = getActivity();
         if (activity == null) {
             SampleLog.e(MSIMUikitConstants.ErrorLog.ACTIVITY_IS_NULL);
@@ -262,11 +254,95 @@ public class MineFragment extends SystemInsetsFragment {
             return;
         }
 
-        if (mPresenter == null) {
-            SampleLog.e(MSIMUikitConstants.ErrorLog.PRESENTER_IS_NULL);
+        if (mBinding == null) {
+            SampleLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
             return;
         }
-        mPresenter.trySubmitGenderChanged(isChecked);
+
+        final List<String> departmentList = Arrays.asList(
+                ContextUtil.getContext().getResources().getStringArray(R.array.imsdk_sample_department_list)
+        );
+        final SimpleTextListPickerDialog dialog = new SimpleTextListPickerDialog(
+                activity,
+                departmentList
+        );
+        dialog.setOnTextSelectedListener(txt -> {
+            if (mPresenter == null) {
+                SampleLog.e(MSIMUikitConstants.ErrorLog.PRESENTER_IS_NULL);
+                return;
+            }
+
+            mPresenter.submitDepartment(txt);
+        });
+        dialog.show();
+    }
+
+    private void startModifyWorkplace() {
+        final Activity activity = getActivity();
+        if (activity == null) {
+            SampleLog.e(MSIMUikitConstants.ErrorLog.ACTIVITY_IS_NULL);
+            return;
+        }
+        if (isStateSaved()) {
+            SampleLog.e(MSIMUikitConstants.ErrorLog.FRAGMENT_MANAGER_STATE_SAVED);
+            return;
+        }
+
+        if (mBinding == null) {
+            SampleLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
+            return;
+        }
+
+        final List<String> workplaceList = Arrays.asList(
+                ContextUtil.getContext().getResources().getStringArray(R.array.imsdk_sample_workplace_list)
+        );
+        final SimpleTextListPickerDialog dialog = new SimpleTextListPickerDialog(
+                activity,
+                workplaceList
+        );
+        dialog.setOnTextSelectedListener(txt -> {
+            if (mPresenter == null) {
+                SampleLog.e(MSIMUikitConstants.ErrorLog.PRESENTER_IS_NULL);
+                return;
+            }
+
+            mPresenter.submitWorkplace(txt);
+        });
+        dialog.show();
+    }
+
+    private void startModifyGender() {
+        final Activity activity = getActivity();
+        if (activity == null) {
+            SampleLog.e(MSIMUikitConstants.ErrorLog.ACTIVITY_IS_NULL);
+            return;
+        }
+        if (isStateSaved()) {
+            SampleLog.e(MSIMUikitConstants.ErrorLog.FRAGMENT_MANAGER_STATE_SAVED);
+            return;
+        }
+
+        if (mBinding == null) {
+            SampleLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
+            return;
+        }
+
+        final List<String> genderList = Arrays.asList(
+                ContextUtil.getContext().getResources().getStringArray(R.array.imsdk_sample_gender_list)
+        );
+        final SimpleTextListPickerDialog dialog = new SimpleTextListPickerDialog(
+                activity,
+                genderList
+        );
+        dialog.setOnTextSelectedListener(txt -> {
+            if (mPresenter == null) {
+                SampleLog.e(MSIMUikitConstants.ErrorLog.PRESENTER_IS_NULL);
+                return;
+            }
+
+            mPresenter.submitGender(txtToGender(txt));
+        });
+        dialog.show();
     }
 
     private void requestSignOut() {
@@ -306,6 +382,21 @@ public class MineFragment extends SystemInsetsFragment {
         mPresenter.requestSignOut();
     }
 
+    static long txtToGender(String txt) {
+        final String txtGenderMale = I18nResources.getString(R.string.imsdk_sample_gender_male);
+        if (txtGenderMale.equals(txt)) {
+            return MSIMUikitConstants.Gender.MALE;
+        }
+        return MSIMUikitConstants.Gender.FEMALE;
+    }
+
+    static String genderToTxt(long gender) {
+        if (MSIMUikitConstants.Gender.MALE == gender) {
+            return I18nResources.getString(R.string.imsdk_sample_gender_male);
+        }
+        return I18nResources.getString(R.string.imsdk_sample_gender_female);
+    }
+
     class ViewImpl implements DynamicView {
 
         public void showSessionUserInfo(@Nullable MSIMUserInfo userInfo) {
@@ -315,14 +406,37 @@ public class MineFragment extends SystemInsetsFragment {
                 return;
             }
 
-            long gender = MSIMUikitConstants.Gender.MALE;
-            if (userInfo != null) {
-                gender = userInfo.getGender(gender);
+            {
+                String nickname = null;
+                if (userInfo != null) {
+                    nickname = userInfo.getNickname();
+                }
+                mBinding.txtUsername.setText(nickname);
             }
 
-            clearCheckedChangeListener();
-            mBinding.modifyGenderSwitch.setChecked(gender == MSIMUikitConstants.Gender.FEMALE);
-            bindCheckedChangeListener();
+            try {
+                String custom = null;
+                if (userInfo != null) {
+                    custom = userInfo.getCustom();
+                }
+                final Map<String, Object> map = JsonUtil.toMapOrEmpty(custom);
+
+                String department = StringUtil.toStringOrEmpty(map.get("department"));
+                mBinding.txtDepartment.setText(department);
+
+                String workplace = StringUtil.toStringOrEmpty(map.get("workplace"));
+                mBinding.txtWorkplace.setText(workplace);
+            } catch (Throwable e) {
+                e.printStackTrace();
+            }
+
+            {
+                long gender = MSIMUikitConstants.Gender.FEMALE;
+                if (userInfo != null) {
+                    gender = userInfo.getGender(gender);
+                }
+                mBinding.txtGender.setText(genderToTxt(gender));
+            }
 
             mBinding.actionSignOut.setEnabled(MSIMManager.getInstance().hasSession());
         }
@@ -398,13 +512,49 @@ public class MineFragment extends SystemInsetsFragment {
             TipUtil.show(R.string.imsdk_sample_profile_modify_nickname_success);
         }
 
+        public void onDepartmentModifyFail(Throwable e) {
+            SampleLog.v(e, Objects.defaultObjectTag(this) + " onDepartmentModifyFail");
+            if (mBinding == null) {
+                SampleLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
+                return;
+            }
+            TipUtil.show(R.string.imsdk_sample_profile_modify_department_fail);
+        }
+
+        public void onDepartmentModifySuccess() {
+            SampleLog.v(Objects.defaultObjectTag(this) + " onDepartmentModifySuccess");
+            if (mBinding == null) {
+                SampleLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
+                return;
+            }
+            TipUtil.show(R.string.imsdk_sample_profile_modify_department_success);
+        }
+
+        public void onWorkplaceModifyFail(Throwable e) {
+            SampleLog.v(e, Objects.defaultObjectTag(this) + " onWorkplaceModifyFail");
+            if (mBinding == null) {
+                SampleLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
+                return;
+            }
+            TipUtil.show(R.string.imsdk_sample_profile_modify_workplace_fail);
+        }
+
+        public void onWorkplaceModifySuccess() {
+            SampleLog.v(Objects.defaultObjectTag(this) + " onWorkplaceModifySuccess");
+            if (mBinding == null) {
+                SampleLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
+                return;
+            }
+            TipUtil.show(R.string.imsdk_sample_profile_modify_workplace_success);
+        }
+
         public void onGenderModifySuccess() {
             SampleLog.v(Objects.defaultObjectTag(this) + " onGenderModifySuccess");
             if (mBinding == null) {
                 SampleLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
                 return;
             }
-            TipUtil.show(R.string.imsdk_sample_tip_action_general_success);
+            TipUtil.show(R.string.imsdk_sample_profile_modify_gender_success);
         }
 
         public void onGenderModifyFail(Throwable e) {
@@ -417,7 +567,7 @@ public class MineFragment extends SystemInsetsFragment {
                 SampleLog.e(MSIMUikitConstants.ErrorLog.PRESENTER_IS_NULL);
                 return;
             }
-            TipUtil.show(R.string.imsdk_sample_tip_action_general_fail);
+            TipUtil.show(R.string.imsdk_sample_profile_modify_gender_fail);
             mPresenter.requestSyncSessionUserInfo();
         }
 
