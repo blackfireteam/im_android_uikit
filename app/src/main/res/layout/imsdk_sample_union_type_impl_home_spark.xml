@@ -16,7 +16,14 @@
             android:id="@+id/image_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:roundSize="20dp" />
+            app:roundSize="20dp">
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:layout_gravity="bottom"
+                android:background="@drawable/imsdk_uikit_gradient_background_vertical_0to1" />
+        </com.masonsoft.imsdk.uikit.widget.ImageLayout>
 
         <ImageView
             android:id="@+id/indicator_dislike"

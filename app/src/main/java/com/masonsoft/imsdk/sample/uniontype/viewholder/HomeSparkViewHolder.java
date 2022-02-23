@@ -114,6 +114,10 @@ public class HomeSparkViewHolder extends UnionTypeViewHolder {
         });
     }
 
+    private String buildDescText(@NonNull Spark spark) {
+        return "";
+    }
+
     private void sendLikeMessage(long targetUserId) {
         final MSIMMessage message = CustomIMMessageFactory.createCustomMessageLike();
         MSIMManager.getInstance().getMessageManager().sendMessage(
