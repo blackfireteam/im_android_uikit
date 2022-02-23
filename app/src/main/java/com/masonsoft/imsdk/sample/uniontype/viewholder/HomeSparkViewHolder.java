@@ -128,7 +128,7 @@ public class HomeSparkViewHolder extends UnionTypeViewHolder {
             builder.append(department);
             builder.append(" ");
         }
-        if (workplace.isEmpty()) {
+        if (!workplace.isEmpty()) {
             builder.append(workplace);
             builder.append(" ");
         }
