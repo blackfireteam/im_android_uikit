@@ -142,8 +142,9 @@ public class ChatRoomFragment extends CustomInputFragment {
         mTopBarBinding = ImsdkUikitChatRoomFragmentTopBarBinding.inflate(inflater, getCustomBinding().customTopBarContainer, true);
         mContentBinding = ImsdkUikitChatRoomFragmentContentBinding.inflate(inflater, getCustomBinding().customContentContainer, true);
 
-        getCustomBinding().customSoftKeyboard.setShowRtc(false);
-        getCustomBinding().customSoftKeyboard.setShowLocation(false);
+        getCustomBinding().customSoftKeyboard.getCustomConfig().setShowSnapchat(false);
+        getCustomBinding().customSoftKeyboard.getCustomConfig().setShowRtc(false);
+        getCustomBinding().customSoftKeyboard.getCustomConfig().setShowLocation(false);
 
         ViewUtil.onClick(mTopBarBinding.topBarBack, v -> ActivityUtil.requestBackPressed(ChatRoomFragment.this));
         mTopBarBinding.topBarTitle.setChatRoomContext(null);

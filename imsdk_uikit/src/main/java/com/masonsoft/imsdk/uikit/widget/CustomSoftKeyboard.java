@@ -64,12 +64,53 @@ public class CustomSoftKeyboard extends FrameLayout {
 
     private final DisposableHolder mPermissionRequest = new DisposableHolder();
     private ImsdkUikitWidgetCustomSoftKeyboardBinding mBinding;
-    // 音视频通话
-    private boolean mShowRtc = true;
-    // 位置
-    private boolean mShowLocation = true;
-    // 阅后即焚
-    private boolean mShowSnapchat = true;
+
+    @NonNull
+    private final Config mCustomConfig = new Config();
+    @NonNull
+    private final Config mSystemConfig = new Config();
+
+    public class Config {
+        // 音视频通话
+        private boolean mShowRtc = true;
+        // 位置
+        private boolean mShowLocation = true;
+        // 阅后即焚
+        private boolean mShowSnapchat = true;
+
+        @SuppressLint("NotifyDataSetChanged")
+        public void setShowRtc(boolean showRtc) {
+            if (mShowRtc != showRtc) {
+                mShowRtc = showRtc;
+                final RecyclerView.Adapter<?> adapter = mBinding.layerMorePager.getAdapter();
+                if (adapter != null) {
+                    adapter.notifyDataSetChanged();
+                }
+            }
+        }
+
+        @SuppressLint("NotifyDataSetChanged")
+        public void setShowLocation(boolean showLocation) {
+            if (mShowLocation != showLocation) {
+                mShowLocation = showLocation;
+                final RecyclerView.Adapter<?> adapter = mBinding.layerMorePager.getAdapter();
+                if (adapter != null) {
+                    adapter.notifyDataSetChanged();
+                }
+            }
+        }
+
+        @SuppressLint("NotifyDataSetChanged")
+        public void setShowSnapchat(boolean showSnapchat) {
+            if (mShowSnapchat != showSnapchat) {
+                mShowSnapchat = showSnapchat;
+                final RecyclerView.Adapter<?> adapter = mBinding.layerMorePager.getAdapter();
+                if (adapter != null) {
+                    adapter.notifyDataSetChanged();
+                }
+            }
+        }
+    }
 
     private static final String[] MEDIA_PICKER_PERMISSION = {
             Manifest.permission.READ_EXTERNAL_STORAGE
@@ -106,37 +147,14 @@ public class CustomSoftKeyboard extends FrameLayout {
         ViewUtil.setVisibilityIfChanged(mBinding.layerMore, View.VISIBLE);
     }
 
-    @SuppressLint("NotifyDataSetChanged")
-    public void setShowRtc(boolean showRtc) {
-        if (mShowRtc != showRtc) {
-            mShowRtc = showRtc;
-            final RecyclerView.Adapter<?> adapter = mBinding.layerMorePager.getAdapter();
-            if (adapter != null) {
-                adapter.notifyDataSetChanged();
-            }
-        }
+    @NonNull
+    public Config getCustomConfig() {
+        return mCustomConfig;
     }
 
-    @SuppressLint("NotifyDataSetChanged")
-    public void setShowLocation(boolean showLocation) {
-        if (mShowLocation != showLocation) {
-            mShowLocation = showLocation;
-            final RecyclerView.Adapter<?> adapter = mBinding.layerMorePager.getAdapter();
-            if (adapter != null) {
-                adapter.notifyDataSetChanged();
-            }
-        }
-    }
-
-    @SuppressLint("NotifyDataSetChanged")
-    public void setShowSnapchat(boolean showSnapchat) {
-        if (mShowSnapchat != showSnapchat) {
-            mShowSnapchat = showSnapchat;
-            final RecyclerView.Adapter<?> adapter = mBinding.layerMorePager.getAdapter();
-            if (adapter != null) {
-                adapter.notifyDataSetChanged();
-            }
-        }
+    @NonNull
+    public Config getSystemConfig() {
+        return mSystemConfig;
     }
 
     public boolean isLayerEmojiShown() {
@@ -321,25 +339,25 @@ public class CustomSoftKeyboard extends FrameLayout {
                 inflateMediaItemView(context);
             }
             {
-                if (mShowRtc) {
+                if (mSystemConfig.mShowRtc && mCustomConfig.mShowRtc) {
                     start++;
                     inflateRtcAudioItemView(context);
                 }
             }
             {
-                if (mShowRtc) {
+                if (mSystemConfig.mShowRtc && mCustomConfig.mShowRtc) {
                     start++;
                     inflateRtcVideoItemView(context);
                 }
             }
             {
-                if (mShowLocation) {
+                if (mSystemConfig.mShowLocation && mCustomConfig.mShowLocation) {
                     start++;
                     inflateLocationItemView(context);
                 }
             }
             {
-                if (mShowSnapchat) {
+                if (mSystemConfig.mShowSnapchat && mCustomConfig.mShowSnapchat) {
                     start++;
                     inflateSnapchatItemView(context);
                 }
