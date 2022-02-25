@@ -2,7 +2,10 @@ package com.masonsoft.imsdk.uikit.common.app;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
+import android.graphics.Color;
 import android.graphics.drawable.AnimationDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.Editable;
@@ -13,8 +16,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
+import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.fragment.app.FragmentActivity;
 
 import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
@@ -36,7 +41,9 @@ import com.tbruyelle.rxpermissions3.RxPermissions;
 import java.util.List;
 
 import io.github.idonans.core.FormValidator;
+import io.github.idonans.core.util.ContextUtil;
 import io.github.idonans.core.util.PermissionUtil;
+import io.github.idonans.core.util.Preconditions;
 import io.github.idonans.lang.DisposableHolder;
 import io.github.idonans.lang.util.ViewUtil;
 
@@ -56,12 +63,20 @@ public abstract class CustomInputFragment extends SystemInsetsFragment {
     private SoftKeyboardHelper mSoftKeyboardHelper;
     private VoiceRecordGestureHelper mVoiceRecordGestureHelper;
     private final AudioRecordManager.OnAudioRecordListener mOnAudioRecordListener = new OnAudioRecordListenerImpl();
+    private Theme mTheme = new Theme();
 
     public boolean onBackPressed() {
         if (mSoftKeyboardHelper != null) {
             return mSoftKeyboardHelper.onBackPressed();
         }
         return false;
+    }
+
+    public void setTheme(Theme theme) {
+        if (mTheme != theme) {
+            mTheme = theme;
+            applyTheme(mTheme);
+        }
     }
 
     protected ImsdkUikitCustomInputFragmentBinding getCustomBinding() {
@@ -128,6 +143,8 @@ public abstract class CustomInputFragment extends SystemInsetsFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mBinding = ImsdkUikitCustomInputFragmentBinding.inflate(inflater, container, false);
+        Preconditions.checkNotNull(mTheme);
+        applyTheme(mTheme);
 
         mBinding.keyboardEditText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3000)});
         mSoftKeyboardHelper = new SoftKeyboardHelper(
@@ -479,7 +496,7 @@ public abstract class CustomInputFragment extends SystemInsetsFragment {
         }
 
         ViewUtil.setVisibilityIfChanged(mBinding.recordingVolumeLayer, View.VISIBLE);
-        mBinding.recordingVolumeIcon.setImageResource(R.drawable.imsdk_uikit_recording_volume);
+        mBinding.recordingVolumeIcon.setImageResource(mTheme.recordingVolumeIconGoing());
         final Drawable drawable = mBinding.recordingVolumeIcon.getDrawable();
         if (drawable instanceof AnimationDrawable) {
             ((AnimationDrawable) drawable).start();
@@ -500,7 +517,7 @@ public abstract class CustomInputFragment extends SystemInsetsFragment {
         if (inside) {
             Drawable drawable = mBinding.recordingVolumeIcon.getDrawable();
             if (!(drawable instanceof AnimationDrawable)) {
-                mBinding.recordingVolumeIcon.setImageResource(R.drawable.imsdk_uikit_recording_volume);
+                mBinding.recordingVolumeIcon.setImageResource(mTheme.recordingVolumeIconGoing());
                 drawable = mBinding.recordingVolumeIcon.getDrawable();
             }
 
@@ -509,7 +526,7 @@ public abstract class CustomInputFragment extends SystemInsetsFragment {
             }
             mBinding.recordingVolumeTip.setText(R.string.imsdk_uikit_voice_record_down_cancel_send);
         } else {
-            mBinding.recordingVolumeIcon.setImageResource(R.drawable.imsdk_uikit_ic_volume_dialog_cancel);
+            mBinding.recordingVolumeIcon.setImageResource(mTheme.recordingVolumeIconDialogCancel());
             mBinding.recordingVolumeTip.setText(R.string.imsdk_uikit_voice_record_up_cancel_send);
         }
     }
@@ -535,7 +552,7 @@ public abstract class CustomInputFragment extends SystemInsetsFragment {
         }
 
         if (tooShort || fail) {
-            mBinding.recordingVolumeIcon.setImageResource(R.drawable.imsdk_uikit_ic_volume_dialog_length_short);
+            mBinding.recordingVolumeIcon.setImageResource(mTheme.recordingVolumeIconDialogLengthShort());
             if (tooShort) {
                 mBinding.recordingVolumeTip.setText(R.string.imsdk_uikit_voice_record_say_time_short);
             } else {
@@ -547,6 +564,215 @@ public abstract class CustomInputFragment extends SystemInsetsFragment {
         } else {
             final ImsdkUikitCustomInputFragmentBinding unsafeBinding = mBinding;
             unsafeBinding.getRoot().postDelayed(() -> ViewUtil.setVisibilityIfChanged(unsafeBinding.recordingVolumeLayer, View.GONE), 300L);
+        }
+    }
+
+    private void applyTheme(Theme theme) {
+        if (mBinding == null) {
+            return;
+        }
+
+        mBinding.softKeyboardListenerLayout.setBackground(theme.pageBackground());
+        mBinding.customTopBarContainer.setBackground(theme.topBarContainerBackground());
+        mBinding.customTopBarBottomDivider.setBackground(theme.topBarBottomDividerBackground());
+        mBinding.majorContainer.setBackground(theme.majorContainerBackground());
+        mBinding.keyboardBackground.setBackground(theme.keyboardBackground());
+        mBinding.keyboardBackgroundDivider.setBackground(theme.keyboardBackgroundDivider());
+        mBinding.keyboardVoiceSystemSoftKeyboard.setImageDrawable(theme.keyboardSystemSoftKeyboardSrc());
+        mBinding.keyboardVoice.setImageDrawable(theme.keyboardVoiceSrc());
+        mBinding.keyboardEditText.setBackground(theme.keyboardEditTextBackground());
+        mBinding.keyboardEditText.setTextColor(theme.keyboardEditTextColor());
+        mBinding.keyboardEditText.setHintTextColor(theme.keyboardEditTextColorHint());
+        mBinding.keyboardVoiceRecordText.setBackground(theme.keyboardVoiceRecordTextBackground());
+        mBinding.keyboardVoiceRecordText.setTextColor(theme.keyboardVoiceRecordTextColor());
+        mBinding.keyboardEmoji.setImageDrawable(theme.keyboardEmojiSrc());
+        mBinding.keyboardEmojiSystemSoftKeyboard.setImageDrawable(theme.keyboardSystemSoftKeyboardSrc());
+        mBinding.keyboardMore.setImageDrawable(theme.keyboardMoreSrc());
+        mBinding.keyboardSubmit.setBackground(theme.keyboardSubmitBackground());
+        mBinding.keyboardSubmit.setTextColor(theme.keyboardSubmitTextColor());
+        mBinding.customSoftKeyboard.setBackground(theme.customSoftKeyboardBackground());
+        mBinding.recordingVolumeLayer.setBackground(theme.recordingVolumeLayerBackground());
+        mBinding.recordingVolumeTip.setTextColor(theme.recordingVolumeTipTextColor());
+    }
+
+    /**
+     * 定义自定义键盘的主题
+     */
+    public static class Theme {
+
+        protected Context context() {
+            return ContextUtil.getContext();
+        }
+
+        /**
+         * @return 默认的分割线背景
+         */
+        Drawable defaultDividerDrawable() {
+            return new ColorDrawable(0x80CCCCCC);
+        }
+
+        /**
+         * @return 页面整体的背景
+         */
+        Drawable pageBackground() {
+            return new ColorDrawable(Color.WHITE);
+        }
+
+        /**
+         * @return top bar container 背景
+         */
+        Drawable topBarContainerBackground() {
+            return new ColorDrawable(Color.WHITE);
+        }
+
+        /**
+         * @return top bar bottom 分割线背景
+         */
+        Drawable topBarBottomDividerBackground() {
+            return this.defaultDividerDrawable();
+        }
+
+        /**
+         * @return 主体背景
+         */
+        Drawable majorContainerBackground() {
+            return new ColorDrawable(0xFFF2F4F5);
+        }
+
+        /**
+         * @return 键盘背景
+         */
+        Drawable keyboardBackground() {
+            return new ColorDrawable(0xFFFaFaFa);
+        }
+
+        /**
+         * @return 键盘分割线背景
+         */
+        Drawable keyboardBackgroundDivider() {
+            return this.defaultDividerDrawable();
+        }
+
+        /**
+         * @return 切换到系统键盘图标
+         */
+        Drawable keyboardSystemSoftKeyboardSrc() {
+            return AppCompatResources.getDrawable(context(), R.drawable.imsdk_uikit_ic_input_keyboard_selector);
+        }
+
+        /**
+         * @return 切换到语音输入图标
+         */
+        Drawable keyboardVoiceSrc() {
+            return AppCompatResources.getDrawable(context(), R.drawable.imsdk_uikit_ic_input_voice_selector);
+        }
+
+        /**
+         * @return 输入文字的背景
+         */
+        Drawable keyboardEditTextBackground() {
+            return AppCompatResources.getDrawable(context(), R.drawable.imsdk_uikit_input_background);
+        }
+
+        /**
+         * @return 输入文字的颜色
+         */
+        int keyboardEditTextColor() {
+            return 0xFF333333;
+        }
+
+        /**
+         * @return 输入文字的 hint 颜色
+         */
+        int keyboardEditTextColorHint() {
+            return 0xFF999999;
+        }
+
+        /**
+         * @return 语音输入时的提醒文字背景
+         */
+        Drawable keyboardVoiceRecordTextBackground() {
+            return AppCompatResources.getDrawable(context(), R.drawable.imsdk_uikit_input_background_selector);
+        }
+
+        /**
+         * @return 语音输入时的提醒文字颜色
+         */
+        int keyboardVoiceRecordTextColor() {
+            return 0xFF333333;
+        }
+
+        /**
+         * @return 切换到 emoji 输入图标
+         */
+        Drawable keyboardEmojiSrc() {
+            return AppCompatResources.getDrawable(context(), R.drawable.imsdk_uikit_ic_input_emoji_selector);
+        }
+
+        /**
+         * @return 切换到更多输入图标
+         */
+        Drawable keyboardMoreSrc() {
+            return AppCompatResources.getDrawable(context(), R.drawable.imsdk_uikit_ic_input_more_selector);
+        }
+
+        /**
+         * @return 发送按钮的背景
+         */
+        Drawable keyboardSubmitBackground() {
+            return AppCompatResources.getDrawable(context(), R.drawable.imsdk_uikit_button_background_selector);
+        }
+
+        /**
+         * @return 发送按钮的文字颜色
+         */
+        int keyboardSubmitTextColor() {
+            return Color.WHITE;
+        }
+
+        /**
+         * @return 自定义键盘背景
+         */
+        Drawable customSoftKeyboardBackground() {
+            return new ColorDrawable(0xFFF2F4F5);
+        }
+
+        /**
+         * @return 语音输入时的录音背景
+         */
+        Drawable recordingVolumeLayerBackground() {
+            return AppCompatResources.getDrawable(context(), R.drawable.imsdk_uikit_ic_volume_dialog_bg);
+        }
+
+        /**
+         * @return 正在录音
+         */
+        @DrawableRes
+        int recordingVolumeIconGoing() {
+            return R.drawable.imsdk_uikit_recording_volume;
+        }
+
+        /**
+         * @return 录音取消
+         */
+        @DrawableRes
+        int recordingVolumeIconDialogCancel() {
+            return R.drawable.imsdk_uikit_ic_volume_dialog_cancel;
+        }
+
+        /**
+         * @return 录音时长太短
+         */
+        @DrawableRes
+        int recordingVolumeIconDialogLengthShort() {
+            return R.drawable.imsdk_uikit_ic_volume_dialog_length_short;
+        }
+
+        /**
+         * @return 录音提醒文字颜色
+         */
+        int recordingVolumeTipTextColor() {
+            return Color.WHITE;
         }
     }
 
