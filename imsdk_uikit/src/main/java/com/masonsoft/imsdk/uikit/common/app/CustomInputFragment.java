@@ -653,6 +653,17 @@ public abstract class CustomInputFragment extends SystemInsetsFragment {
         } else {
             ViewUtil.setVisibilityIfChanged(mBinding.keyboardCancelMode, View.GONE);
         }
+
+        if (isSnapchatMode()) {
+            // 阅后即焚模式下，不支持输入音视频电话、位置
+            mBinding.customSoftKeyboard.getSystemConfig().setShowRtc(false);
+            mBinding.customSoftKeyboard.getSystemConfig().setShowLocation(false);
+            mBinding.customSoftKeyboard.getSystemConfig().setShowSnapchat(false);
+        } else {
+            mBinding.customSoftKeyboard.getSystemConfig().setShowRtc(true);
+            mBinding.customSoftKeyboard.getSystemConfig().setShowLocation(true);
+            mBinding.customSoftKeyboard.getSystemConfig().setShowSnapchat(true);
+        }
     }
 
     public interface ThemeMode {
@@ -855,7 +866,25 @@ public abstract class CustomInputFragment extends SystemInsetsFragment {
     }
 
     public static class ThemeSnapchatImpl extends Theme implements ThemeSnapchat {
+        @Override
+        Drawable keyboardBackground() {
+            return AppCompatResources.getDrawable(context(), R.drawable.imsdk_uikit_ic_input_theme_snapchat_bg);
+        }
 
+        @Override
+        Drawable customSoftKeyboardBackground() {
+            return AppCompatResources.getDrawable(context(), R.drawable.imsdk_uikit_ic_input_theme_snapchat_bg);
+        }
+
+        @Override
+        int keyboardEditTextColor() {
+            return 0xFFFF6531;
+        }
+
+        @Override
+        int keyboardVoiceRecordTextColor() {
+            return 0xFFFF6531;
+        }
     }
 
 }
