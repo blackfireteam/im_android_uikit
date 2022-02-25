@@ -45,7 +45,7 @@
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:overScrollMode="never"
-                app:layout_constraintBottom_toTopOf="@id/keyboard_edit_text_container"
+                app:layout_constraintBottom_toTopOf="@id/keyboard_top_line"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -76,7 +76,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:barrierDirection="top"
-                app:constraint_referenced_ids="keyboard_edit_text_container,keyboard_voice_system_soft_keyboard" />
+                app:constraint_referenced_ids="keyboard_edit_text_container" />
 
             <ImageView
                 android:id="@+id/keyboard_voice_system_soft_keyboard"
@@ -138,7 +138,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="10dp"
-                    tools:background="@drawable/imsdk_uikit_input_background_selector"
                     android:gravity="center"
                     android:includeFontPadding="false"
                     android:maxLines="1"
@@ -148,6 +147,7 @@
                     android:text="@string/imsdk_uikit_voice_record_text_input"
                     android:textSize="15sp"
                     android:visibility="gone"
+                    tools:background="@drawable/imsdk_uikit_input_background_selector"
                     tools:textColor="#FF333333" />
             </FrameLayout>
 
@@ -186,9 +186,24 @@
                 android:focusable="true"
                 android:scaleType="centerInside"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/keyboard_submit"
+                app:layout_constraintEnd_toStartOf="@id/keyboard_cancel_mode"
                 app:layout_constraintStart_toEndOf="@id/keyboard_emoji_system_soft_keyboard"
                 tools:src="@drawable/imsdk_uikit_ic_input_more_selector" />
+
+            <ImageView
+                android:id="@+id/keyboard_cancel_mode"
+                android:layout_width="48dp"
+                android:layout_height="55dp"
+                android:clickable="true"
+                android:contentDescription="@string/imsdk_uikit_empty_text_hint"
+                android:focusable="true"
+                android:scaleType="centerInside"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/keyboard_submit"
+                app:layout_constraintStart_toEndOf="@id/keyboard_more"
+                tools:src="@drawable/imsdk_uikit_ic_input_cancel_mode_selector"
+                tools:visibility="visible" />
 
             <TextView
                 android:id="@+id/keyboard_submit"
@@ -208,7 +223,7 @@
                 android:textSize="15sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/keyboard_more"
+                app:layout_constraintStart_toEndOf="@id/keyboard_cancel_mode"
                 tools:background="@drawable/imsdk_uikit_button_background_selector"
                 tools:textColor="@android:color/white" />
 

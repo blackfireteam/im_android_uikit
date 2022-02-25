@@ -65,9 +65,14 @@ public class CustomSoftKeyboard extends FrameLayout {
 
     private final DisposableHolder mPermissionRequest = new DisposableHolder();
     private ImsdkUikitWidgetCustomSoftKeyboardBinding mBinding;
+    // 音视频通话
     private boolean mShowRtc = true;
+    // 位置
     private boolean mShowLocation = true;
+    // 闪照
     private boolean mShowFlashImage = true;
+    // 阅后即焚
+    private boolean mShowSnapchat = true;
 
     private static final String[] MEDIA_PICKER_PERMISSION = {
             Manifest.permission.READ_EXTERNAL_STORAGE
@@ -140,6 +145,17 @@ public class CustomSoftKeyboard extends FrameLayout {
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
+    public void setShowSnapchat(boolean showSnapchat) {
+        if (mShowSnapchat != showSnapchat) {
+            mShowSnapchat = showSnapchat;
+            final RecyclerView.Adapter<?> adapter = mBinding.layerMorePager.getAdapter();
+            if (adapter != null) {
+                adapter.notifyDataSetChanged();
+            }
+        }
+    }
+
     public boolean isLayerEmojiShown() {
         return mBinding.layerEmoji.getVisibility() == View.VISIBLE;
     }
@@ -194,50 +210,14 @@ public class CustomSoftKeyboard extends FrameLayout {
         void onClickRtcVideo();
 
         void onLocationPicked(@NonNull LocationInfo locationInfo, long zoom);
+
+        void onClickSnapchatMode();
     }
 
     private OnInputListener mOnInputListener;
 
     public void setOnInputListener(OnInputListener onInputListener) {
         mOnInputListener = onInputListener;
-    }
-
-    public static class OnInputListenerAdapter implements OnInputListener {
-
-        @Override
-        public void onInputText(CharSequence text) {
-            // ignore
-        }
-
-        @Override
-        public void onDeleteOne() {
-            // ignore
-        }
-
-        @Override
-        public void onMediaPicked(@NonNull List<MediaData.MediaInfo> mediaInfoList) {
-            // ignore
-        }
-
-        @Override
-        public void onFlashImagePicked(@NonNull List<MediaData.MediaInfo> mediaInfoList) {
-            // ignore
-        }
-
-        @Override
-        public void onClickRtcAudio() {
-            // ignore
-        }
-
-        @Override
-        public void onClickRtcVideo() {
-            // ignore
-        }
-
-        @Override
-        public void onLocationPicked(@NonNull LocationInfo locationInfo, long zoom) {
-            // ignore
-        }
     }
 
     private class LayerEmojiPagerAdapter extends RecyclerView.Adapter<LayerEmojiViewHolder> {
@@ -383,6 +363,12 @@ public class CustomSoftKeyboard extends FrameLayout {
                     inflateLocationItemView(context);
                 }
             }
+            {
+                if (mShowSnapchat) {
+                    start++;
+                    inflateSnapchatItemView(context);
+                }
+            }
             for (int i = start; i < count; i++) {
                 inflateMoreEmptyItemView(context);
             }
@@ -442,7 +428,7 @@ public class CustomSoftKeyboard extends FrameLayout {
             lp.rowSpec = GridLayout.spec(GridLayout.UNDEFINED, 1, 1.0f);
             binding.getRoot().setLayoutParams(lp);
 
-            binding.itemMedia.setImageResource(R.drawable.imsdk_uikit_ic_input_more_item_media);
+            binding.itemMedia.setImageResource(R.drawable.imsdk_uikit_ic_input_more_item_voice_call);
             binding.itemName.setText(R.string.imsdk_uikit_custom_soft_keyboard_item_rtc_audio);
             mBinding.gridLayout.addView(binding.getRoot());
 
@@ -465,7 +451,7 @@ public class CustomSoftKeyboard extends FrameLayout {
             lp.rowSpec = GridLayout.spec(GridLayout.UNDEFINED, 1, 1.0f);
             binding.getRoot().setLayoutParams(lp);
 
-            binding.itemMedia.setImageResource(R.drawable.imsdk_uikit_ic_input_more_item_media);
+            binding.itemMedia.setImageResource(R.drawable.imsdk_uikit_ic_input_more_item_video_call);
             binding.itemName.setText(R.string.imsdk_uikit_custom_soft_keyboard_item_rtc_video);
             mBinding.gridLayout.addView(binding.getRoot());
 
@@ -488,12 +474,35 @@ public class CustomSoftKeyboard extends FrameLayout {
             lp.rowSpec = GridLayout.spec(GridLayout.UNDEFINED, 1, 1.0f);
             binding.getRoot().setLayoutParams(lp);
 
-            binding.itemMedia.setImageResource(R.drawable.imsdk_uikit_ic_input_more_item_media);
+            binding.itemMedia.setImageResource(R.drawable.imsdk_uikit_ic_input_more_item_location);
             binding.itemName.setText(R.string.imsdk_uikit_custom_soft_keyboard_item_location);
             mBinding.gridLayout.addView(binding.getRoot());
 
             ViewUtil.onClick(binding.getRoot(), v -> {
                 requestLocationPermission();
+            });
+        }
+
+        private void inflateSnapchatItemView(Context context) {
+            final ImsdkUikitWidgetCustomSoftKeyboardLayerMoreItemViewBinding binding =
+                    ImsdkUikitWidgetCustomSoftKeyboardLayerMoreItemViewBinding.inflate(
+                            LayoutInflater.from(context), mBinding.gridLayout, false);
+
+            GridLayout.LayoutParams lp = new GridLayout.LayoutParams();
+            lp.width = mItemViewWidth;
+            lp.height = mItemViewHeight;
+            lp.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1, 1.0f);
+            lp.rowSpec = GridLayout.spec(GridLayout.UNDEFINED, 1, 1.0f);
+            binding.getRoot().setLayoutParams(lp);
+
+            binding.itemMedia.setImageResource(R.drawable.imsdk_uikit_ic_input_more_item_snapchat);
+            binding.itemName.setText(R.string.imsdk_uikit_custom_soft_keyboard_item_snapchat);
+            mBinding.gridLayout.addView(binding.getRoot());
+
+            ViewUtil.onClick(binding.getRoot(), v -> {
+                if (mOnInputListener != null) {
+                    mOnInputListener.onClickSnapchatMode();
+                }
             });
         }
 

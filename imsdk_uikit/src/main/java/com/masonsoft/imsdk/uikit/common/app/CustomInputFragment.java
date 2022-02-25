@@ -72,10 +72,24 @@ public abstract class CustomInputFragment extends SystemInsetsFragment {
         return false;
     }
 
+    /**
+     * @return 当前是否处于阅后即焚模式
+     */
+    public boolean isSnapchatMode() {
+        return mTheme instanceof ThemeSnapchat;
+    }
+
+    /**
+     * @return 当前主题是否是特殊的 mode. 特殊的 mode 可以切换回普通 mode.
+     */
+    public boolean isThemeMode() {
+        return mTheme instanceof ThemeMode;
+    }
+
     public void setTheme(Theme theme) {
         if (mTheme != theme) {
             mTheme = theme;
-            applyTheme(mTheme);
+            applyTheme();
         }
     }
 
@@ -144,7 +158,7 @@ public abstract class CustomInputFragment extends SystemInsetsFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mBinding = ImsdkUikitCustomInputFragmentBinding.inflate(inflater, container, false);
         Preconditions.checkNotNull(mTheme);
-        applyTheme(mTheme);
+        applyTheme();
 
         mBinding.keyboardEditText.setFilters(new InputFilter[]{new InputFilter.LengthFilter(3000)});
         mSoftKeyboardHelper = new SoftKeyboardHelper(
@@ -288,6 +302,18 @@ public abstract class CustomInputFragment extends SystemInsetsFragment {
             mBinding.customSoftKeyboard.showLayerMore();
             mSoftKeyboardHelper.requestShowCustomSoftKeyboard();
         });
+        ViewUtil.onClick(mBinding.keyboardCancelMode, v -> {
+            if (mBinding == null) {
+                MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
+                return;
+            }
+            if (mSoftKeyboardHelper == null) {
+                MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.SOFT_KEYBOARD_HELPER_IS_NULL);
+                return;
+            }
+            mSoftKeyboardHelper.requestHideAllSoftKeyboard();
+            setTheme(new Theme());
+        });
         mBinding.customSoftKeyboard.setOnInputListener(new CustomSoftKeyboard.OnInputListener() {
             @Override
             public void onInputText(CharSequence text) {
@@ -345,6 +371,12 @@ public abstract class CustomInputFragment extends SystemInsetsFragment {
                 }
                 mSoftKeyboardHelper.requestHideAllSoftKeyboard();
                 submitLocationMessage(locationInfo, zoom);
+            }
+
+            @Override
+            public void onClickSnapchatMode() {
+                MSIMUikitLog.v("onClickSnapchatMode");
+                submitClickSnapchatMode();
             }
         });
 
@@ -429,6 +461,22 @@ public abstract class CustomInputFragment extends SystemInsetsFragment {
     protected abstract void submitClickRtcAudio();
 
     protected abstract void submitClickRtcVideo();
+
+    /**
+     * 点击了阅后即焚。切换到阅后即焚模式
+     */
+    protected void submitClickSnapchatMode() {
+        if (mBinding == null) {
+            MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
+            return;
+        }
+        if (mSoftKeyboardHelper == null) {
+            MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.SOFT_KEYBOARD_HELPER_IS_NULL);
+            return;
+        }
+
+        setTheme(new ThemeSnapchatImpl());
+    }
 
     @Override
     public void onDestroyView() {
@@ -567,8 +615,13 @@ public abstract class CustomInputFragment extends SystemInsetsFragment {
         }
     }
 
-    private void applyTheme(Theme theme) {
+    private void applyTheme() {
         if (mBinding == null) {
+            return;
+        }
+
+        final Theme theme = mTheme;
+        if (theme == null) {
             return;
         }
 
@@ -588,11 +641,29 @@ public abstract class CustomInputFragment extends SystemInsetsFragment {
         mBinding.keyboardEmoji.setImageDrawable(theme.keyboardEmojiSrc());
         mBinding.keyboardEmojiSystemSoftKeyboard.setImageDrawable(theme.keyboardSystemSoftKeyboardSrc());
         mBinding.keyboardMore.setImageDrawable(theme.keyboardMoreSrc());
+        mBinding.keyboardCancelMode.setImageDrawable(theme.keyboardCancelModeSrc());
         mBinding.keyboardSubmit.setBackground(theme.keyboardSubmitBackground());
         mBinding.keyboardSubmit.setTextColor(theme.keyboardSubmitTextColor());
         mBinding.customSoftKeyboard.setBackground(theme.customSoftKeyboardBackground());
         mBinding.recordingVolumeLayer.setBackground(theme.recordingVolumeLayerBackground());
         mBinding.recordingVolumeTip.setTextColor(theme.recordingVolumeTipTextColor());
+
+        if (isThemeMode()) {
+            ViewUtil.setVisibilityIfChanged(mBinding.keyboardCancelMode, View.VISIBLE);
+        } else {
+            ViewUtil.setVisibilityIfChanged(mBinding.keyboardCancelMode, View.GONE);
+        }
+    }
+
+    public interface ThemeMode {
+    }
+
+    /**
+     * 阅后即焚主题
+     *
+     * @see ThemeSnapchatImpl
+     */
+    public interface ThemeSnapchat extends ThemeMode {
     }
 
     /**
@@ -717,6 +788,13 @@ public abstract class CustomInputFragment extends SystemInsetsFragment {
         }
 
         /**
+         * @return 取消当前模式图标
+         */
+        Drawable keyboardCancelModeSrc() {
+            return AppCompatResources.getDrawable(context(), R.drawable.imsdk_uikit_ic_input_cancel_mode_selector);
+        }
+
+        /**
          * @return 发送按钮的背景
          */
         Drawable keyboardSubmitBackground() {
@@ -774,6 +852,10 @@ public abstract class CustomInputFragment extends SystemInsetsFragment {
         int recordingVolumeTipTextColor() {
             return Color.WHITE;
         }
+    }
+
+    public static class ThemeSnapchatImpl extends Theme implements ThemeSnapchat {
+
     }
 
 }
