@@ -71,13 +71,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 tools:background="@color/imsdk_uikit_color_divider_line" />
 
-            <androidx.constraintlayout.widget.Barrier
-                android:id="@+id/keyboard_top_line"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:barrierDirection="top"
-                app:constraint_referenced_ids="keyboard_edit_text_container" />
-
             <ImageView
                 android:id="@+id/keyboard_voice_system_soft_keyboard"
                 android:layout_width="48dp"
@@ -111,7 +104,8 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/keyboard_emoji"
                 app:layout_constraintHorizontal_weight="1"
-                app:layout_constraintStart_toEndOf="@id/keyboard_voice">
+                app:layout_constraintStart_toEndOf="@id/keyboard_voice"
+                app:layout_constraintTop_toBottomOf="@id/keyboard_top_line">
 
                 <androidx.emoji.widget.EmojiAppCompatEditText
                     android:id="@+id/keyboard_edit_text"
@@ -226,6 +220,13 @@
                 app:layout_constraintStart_toEndOf="@id/keyboard_cancel_mode"
                 tools:background="@drawable/imsdk_uikit_button_background_selector"
                 tools:textColor="@android:color/white" />
+
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/keyboard_top_line"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="top"
+                app:constraint_referenced_ids="keyboard_edit_text_container" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
