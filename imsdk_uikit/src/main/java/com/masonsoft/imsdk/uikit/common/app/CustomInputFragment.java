@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
-import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentActivity;
@@ -57,39 +56,16 @@ public abstract class CustomInputFragment extends SystemInsetsFragment {
     private SoftKeyboardHelper mSoftKeyboardHelper;
     private VoiceRecordGestureHelper mVoiceRecordGestureHelper;
     private final AudioRecordManager.OnAudioRecordListener mOnAudioRecordListener = new OnAudioRecordListenerImpl();
-    private final OnBackPressedCallbackImpl mOnBackPressedCallback = new OnBackPressedCallbackImpl();
 
-    private class OnBackPressedCallbackImpl extends OnBackPressedCallback {
-
-        public OnBackPressedCallbackImpl() {
-            super(false);
+    public boolean onBackPressed() {
+        if (mSoftKeyboardHelper != null) {
+            return mSoftKeyboardHelper.onBackPressed();
         }
-
-        @Override
-        public void handleOnBackPressed() {
-            if (mSoftKeyboardHelper != null) {
-                mSoftKeyboardHelper.onBackPressed();
-            }
-        }
+        return false;
     }
 
     protected ImsdkUikitCustomInputFragmentBinding getCustomBinding() {
         return mBinding;
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        mOnBackPressedCallback.setEnabled(false);
-        requireActivity().getOnBackPressedDispatcher().addCallback(mOnBackPressedCallback);
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-
-        mOnBackPressedCallback.setEnabled(false);
     }
 
     protected boolean isTouchOutsideAdapter(float rawX, float rawY) {
@@ -165,13 +141,11 @@ public abstract class CustomInputFragment extends SystemInsetsFragment {
 
             @Override
             protected void onSoftKeyboardLayoutShown(boolean customSoftKeyboard, boolean systemSoftKeyboard) {
-                mOnBackPressedCallback.setEnabled(true);
                 onSoftKeyboardLayoutShownAdapter(customSoftKeyboard, systemSoftKeyboard);
             }
 
             @Override
             protected void onAllSoftKeyboardLayoutHidden() {
-                mOnBackPressedCallback.setEnabled(false);
                 onAllSoftKeyboardLayoutHiddenAdapter();
             }
         };
@@ -443,7 +417,6 @@ public abstract class CustomInputFragment extends SystemInsetsFragment {
     public void onDestroyView() {
         super.onDestroyView();
 
-        mOnBackPressedCallback.setEnabled(false);
         mBinding = null;
         if (AudioRecordManager.getInstance().getOnAudioRecordListener() == mOnAudioRecordListener) {
             AudioRecordManager.getInstance().setOnAudioRecordListener(null);

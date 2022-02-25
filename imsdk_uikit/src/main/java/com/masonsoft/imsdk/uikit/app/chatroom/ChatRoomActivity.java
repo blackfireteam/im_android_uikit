@@ -49,4 +49,16 @@ public class ChatRoomActivity extends FragmentDelegateActivity {
         setFragmentDelegate(FRAGMENT_TAG_CHAT_ROOM, () -> ChatRoomFragment.newInstance(chatRoomId));
     }
 
+    @Override
+    public void onBackPressed() {
+        final ChatRoomFragment fragment = (ChatRoomFragment) getFragmentDelegate(FRAGMENT_TAG_CHAT_ROOM);
+        if (fragment != null) {
+            if (fragment.onBackPressed()) {
+                return;
+            }
+        }
+
+        super.onBackPressed();
+    }
+
 }
