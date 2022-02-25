@@ -885,6 +885,11 @@ public abstract class CustomInputFragment extends SystemInsetsFragment {
         int keyboardVoiceRecordTextColor() {
             return 0xFFFF6531;
         }
+
+        @Override
+        int keyboardSubmitTextColor() {
+            return 0xFFFF6531;
+        }
     }
 
 }
