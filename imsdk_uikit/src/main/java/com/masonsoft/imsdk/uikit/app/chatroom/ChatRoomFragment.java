@@ -249,7 +249,7 @@ public class ChatRoomFragment extends CustomInputFragment {
     }
 
     @Override
-    protected void submitTextMessage(String text) {
+    protected void submitTextMessage(boolean snapchat, String text) {
         final GlobalChatRoomManager.StaticChatRoomContext chatRoomContext = mPresenter.getChatRoomContext();
         if (chatRoomContext == null) {
             MSIMUikitLog.e("chat room context is null");
@@ -269,7 +269,7 @@ public class ChatRoomFragment extends CustomInputFragment {
     }
 
     @Override
-    protected void submitMediaMessage(@NonNull List<MediaData.MediaInfo> mediaInfoList) {
+    protected void submitMediaMessage(boolean snapchat, @NonNull List<MediaData.MediaInfo> mediaInfoList) {
         final GlobalChatRoomManager.StaticChatRoomContext chatRoomContext = mPresenter.getChatRoomContext();
         if (chatRoomContext == null) {
             MSIMUikitLog.e("chat room context is null");
@@ -299,7 +299,7 @@ public class ChatRoomFragment extends CustomInputFragment {
     }
 
     @Override
-    protected void submitAudioMessage(final String audioFilePath) {
+    protected void submitAudioMessage(boolean snapchat, final String audioFilePath) {
         final GlobalChatRoomManager.StaticChatRoomContext chatRoomContext = mPresenter.getChatRoomContext();
         if (chatRoomContext == null) {
             MSIMUikitLog.e("chat room context is null");
@@ -319,7 +319,7 @@ public class ChatRoomFragment extends CustomInputFragment {
     }
 
     @Override
-    protected void submitLocationMessage(@NonNull LocationInfo locationInfo, long zoom) {
+    protected void submitLocationMessage(boolean snapchat, @NonNull LocationInfo locationInfo, long zoom) {
         final GlobalChatRoomManager.StaticChatRoomContext chatRoomContext = mPresenter.getChatRoomContext();
         if (chatRoomContext == null) {
             MSIMUikitLog.e("chat room context is null");
@@ -343,12 +343,12 @@ public class ChatRoomFragment extends CustomInputFragment {
     }
 
     @Override
-    protected void submitClickRtcAudio() {
+    protected void submitClickRtcAudio(boolean snapchat) {
         MSIMUikitLog.e("unexpected. not impl. submitClickRtcAudio");
     }
 
     @Override
-    protected void submitClickRtcVideo() {
+    protected void submitClickRtcVideo(boolean snapchat) {
         MSIMUikitLog.e("unexpected. not impl. submitClickRtcVideo");
     }
 

@@ -345,17 +345,17 @@ public abstract class CustomInputFragment extends SystemInsetsFragment {
                     return;
                 }
                 mSoftKeyboardHelper.requestHideAllSoftKeyboard();
-                submitMediaMessage(mediaInfoList);
+                submitMediaMessage(isSnapchatMode(), mediaInfoList);
             }
 
             @Override
             public void onClickRtcAudio() {
-                submitClickRtcAudio();
+                submitClickRtcAudio(isSnapchatMode());
             }
 
             @Override
             public void onClickRtcVideo() {
-                submitClickRtcVideo();
+                submitClickRtcVideo(isSnapchatMode());
             }
 
             @Override
@@ -370,7 +370,7 @@ public abstract class CustomInputFragment extends SystemInsetsFragment {
                     return;
                 }
                 mSoftKeyboardHelper.requestHideAllSoftKeyboard();
-                submitLocationMessage(locationInfo, zoom);
+                submitLocationMessage(isSnapchatMode(), locationInfo, zoom);
             }
 
             @Override
@@ -447,20 +447,20 @@ public abstract class CustomInputFragment extends SystemInsetsFragment {
             return;
         }
 
-        this.submitTextMessage(text);
+        this.submitTextMessage(isSnapchatMode(), text);
     }
 
-    protected abstract void submitTextMessage(String text);
+    protected abstract void submitTextMessage(boolean snapchat, String text);
 
-    protected abstract void submitMediaMessage(@NonNull List<MediaData.MediaInfo> mediaInfoList);
+    protected abstract void submitMediaMessage(boolean snapchat, @NonNull List<MediaData.MediaInfo> mediaInfoList);
 
-    protected abstract void submitAudioMessage(final String audioFilePath);
+    protected abstract void submitAudioMessage(boolean snapchat, final String audioFilePath);
 
-    protected abstract void submitLocationMessage(@NonNull LocationInfo locationInfo, long zoom);
+    protected abstract void submitLocationMessage(boolean snapchat, @NonNull LocationInfo locationInfo, long zoom);
 
-    protected abstract void submitClickRtcAudio();
+    protected abstract void submitClickRtcAudio(boolean snapchat);
 
-    protected abstract void submitClickRtcVideo();
+    protected abstract void submitClickRtcVideo(boolean snapchat);
 
     /**
      * 点击了阅后即焚。切换到阅后即焚模式
@@ -520,7 +520,7 @@ public abstract class CustomInputFragment extends SystemInsetsFragment {
             hideAudioRecoding(false, false);
 
             // 发送语音消息
-            submitAudioMessage(audioRecorderFile);
+            submitAudioMessage(isSnapchatMode(), audioRecorderFile);
         }
     }
 
