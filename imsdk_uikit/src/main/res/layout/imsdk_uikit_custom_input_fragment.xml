@@ -5,7 +5,7 @@
     android:id="@+id/soft_keyboard_listener_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white">
+    tools:background="@android:color/white">
 
     <io.github.idonans.systeminsets.SystemInsetsLinearLayout
         android:id="@+id/single_chat_system_insets_dynamic_container"
@@ -23,26 +23,27 @@
             android:id="@+id/custom_top_bar_container"
             android:layout_width="match_parent"
             android:layout_height="45dp"
-            android:background="@android:color/white"
             android:clickable="true"
-            android:focusable="true" />
+            android:focusable="true"
+            tools:background="@android:color/white" />
 
         <View
+            android:id="@+id/custom_top_bar_bottom_divider"
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
-            android:background="@color/imsdk_uikit_color_divider_line" />
+            tools:background="@color/imsdk_uikit_color_divider_line" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/major_container"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:background="#FFF2F4F5">
+            tools:background="#FFF2F4F5">
 
             <FrameLayout
                 android:id="@+id/custom_content_container"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:background="#FFF2F4F5"
                 android:overScrollMode="never"
                 app:layout_constraintBottom_toTopOf="@id/keyboard_edit_text_container"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -53,22 +54,22 @@
                 android:id="@+id/keyboard_background"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:background="#FFFaFaFa"
                 android:clickable="true"
                 android:focusable="true"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/keyboard_top_line" />
+                app:layout_constraintTop_toBottomOf="@id/keyboard_top_line"
+                tools:background="#FFFaFaFa" />
 
             <View
                 android:id="@+id/keyboard_background_divider"
                 android:layout_width="match_parent"
                 android:layout_height="0.5dp"
-                android:background="@color/imsdk_uikit_color_divider_line"
                 app:layout_constraintBottom_toTopOf="@id/keyboard_background"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                tools:background="@color/imsdk_uikit_color_divider_line" />
 
             <androidx.constraintlayout.widget.Barrier
                 android:id="@+id/keyboard_top_line"
@@ -85,10 +86,10 @@
                 android:contentDescription="@string/imsdk_uikit_empty_text_hint"
                 android:focusable="true"
                 android:scaleType="centerInside"
-                android:src="@drawable/imsdk_uikit_ic_input_keyboard_selector"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/keyboard_voice"
-                app:layout_constraintStart_toStartOf="parent" />
+                app:layout_constraintStart_toStartOf="parent"
+                tools:src="@drawable/imsdk_uikit_ic_input_keyboard_selector" />
 
             <ImageView
                 android:id="@+id/keyboard_voice"
@@ -98,10 +99,10 @@
                 android:contentDescription="@string/imsdk_uikit_empty_text_hint"
                 android:focusable="true"
                 android:scaleType="centerInside"
-                android:src="@drawable/imsdk_uikit_ic_input_voice_selector"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/keyboard_edit_text_container"
-                app:layout_constraintStart_toEndOf="@id/keyboard_voice_system_soft_keyboard" />
+                app:layout_constraintStart_toEndOf="@id/keyboard_voice_system_soft_keyboard"
+                tools:src="@drawable/imsdk_uikit_ic_input_voice_selector" />
 
             <FrameLayout
                 android:id="@+id/keyboard_edit_text_container"
@@ -118,18 +119,18 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="10dp"
-                    android:background="@drawable/imsdk_uikit_input_background"
                     android:hint="@string/imsdk_uikit_chat_input_hint"
                     android:includeFontPadding="false"
                     android:lineSpacingMultiplier="1.2"
                     android:maxLines="3"
                     android:minHeight="35dp"
                     android:padding="5dp"
-                    android:textColor="#FF333333"
-                    android:textColorHint="#FF999999"
                     android:textSize="15sp"
                     android:visibility="visible"
-                    tools:text="长文长文字长文字长文文" />
+                    tools:background="@drawable/imsdk_uikit_input_background"
+                    tools:text="长文长文字长文字长文文"
+                    tools:textColor="#FF333333"
+                    tools:textColorHint="#FF999999" />
 
                 <TextView
                     android:id="@+id/keyboard_voice_record_text"
@@ -137,7 +138,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:layout_marginBottom="10dp"
-                    android:background="@drawable/imsdk_uikit_input_background_selector"
+                    tools:background="@drawable/imsdk_uikit_input_background_selector"
                     android:gravity="center"
                     android:includeFontPadding="false"
                     android:maxLines="1"
@@ -145,9 +146,9 @@
                     android:padding="5dp"
                     android:singleLine="true"
                     android:text="@string/imsdk_uikit_voice_record_text_input"
-                    android:textColor="#FF333333"
                     android:textSize="15sp"
-                    android:visibility="gone" />
+                    android:visibility="gone"
+                    tools:textColor="#FF333333" />
             </FrameLayout>
 
             <ImageView
@@ -158,10 +159,10 @@
                 android:contentDescription="@string/imsdk_uikit_empty_text_hint"
                 android:focusable="true"
                 android:scaleType="centerInside"
-                android:src="@drawable/imsdk_uikit_ic_input_emoji_selector"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/keyboard_emoji_system_soft_keyboard"
-                app:layout_constraintStart_toEndOf="@id/keyboard_edit_text_container" />
+                app:layout_constraintStart_toEndOf="@id/keyboard_edit_text_container"
+                tools:src="@drawable/imsdk_uikit_ic_input_emoji_selector" />
 
             <ImageView
                 android:id="@+id/keyboard_emoji_system_soft_keyboard"
@@ -171,10 +172,10 @@
                 android:contentDescription="@string/imsdk_uikit_empty_text_hint"
                 android:focusable="true"
                 android:scaleType="centerInside"
-                android:src="@drawable/imsdk_uikit_ic_input_keyboard_selector"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/keyboard_more"
-                app:layout_constraintStart_toEndOf="@id/keyboard_emoji" />
+                app:layout_constraintStart_toEndOf="@id/keyboard_emoji"
+                tools:src="@drawable/imsdk_uikit_ic_input_keyboard_selector" />
 
             <ImageView
                 android:id="@+id/keyboard_more"
@@ -184,10 +185,10 @@
                 android:contentDescription="@string/imsdk_uikit_empty_text_hint"
                 android:focusable="true"
                 android:scaleType="centerInside"
-                android:src="@drawable/imsdk_uikit_ic_input_more_selector"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/keyboard_submit"
-                app:layout_constraintStart_toEndOf="@id/keyboard_emoji_system_soft_keyboard" />
+                app:layout_constraintStart_toEndOf="@id/keyboard_emoji_system_soft_keyboard"
+                tools:src="@drawable/imsdk_uikit_ic_input_more_selector" />
 
             <TextView
                 android:id="@+id/keyboard_submit"
@@ -196,7 +197,6 @@
                 android:layout_marginTop="13dp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginBottom="13dp"
-                android:background="@drawable/imsdk_uikit_button_background_selector"
                 android:clickable="true"
                 android:focusable="true"
                 android:gravity="center"
@@ -205,11 +205,12 @@
                 android:minHeight="29dp"
                 android:padding="5dp"
                 android:text="@string/imsdk_uikit_chat_input_submit"
-                android:textColor="@android:color/white"
                 android:textSize="15sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/keyboard_more" />
+                app:layout_constraintStart_toEndOf="@id/keyboard_more"
+                tools:background="@drawable/imsdk_uikit_button_background_selector"
+                tools:textColor="@android:color/white" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -217,10 +218,10 @@
             android:id="@+id/custom_soft_keyboard"
             android:layout_width="match_parent"
             android:layout_height="277dp"
-            android:background="#FFF2F4F5"
             android:clickable="true"
             android:focusable="true"
-            android:visibility="gone" />
+            android:visibility="gone"
+            tools:background="#FFF2F4F5" />
     </io.github.idonans.systeminsets.SystemInsetsLinearLayout>
 
     <LinearLayout
@@ -228,10 +229,10 @@
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:background="@drawable/imsdk_uikit_ic_volume_dialog_bg"
         android:gravity="center_horizontal"
         android:orientation="vertical"
         android:visibility="gone"
+        tools:background="@drawable/imsdk_uikit_ic_volume_dialog_bg"
         tools:visibility="visible">
 
         <ImageView
@@ -239,7 +240,7 @@
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:layout_marginTop="10dp"
-            android:contentDescription="@string/imsdk_uikit_empty_text_hint" />
+            tools:src="@drawable/imsdk_uikit_recording_volume" />
 
         <TextView
             android:id="@+id/recording_volume_tip"
@@ -247,8 +248,8 @@
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:includeFontPadding="false"
-            android:textColor="@android:color/white"
             android:textSize="12sp"
-            tools:text="录音" />
+            tools:text="录音"
+            tools:textColor="@android:color/white" />
     </LinearLayout>
 </com.masonsoft.imsdk.uikit.widget.systeminsets.SoftKeyboardListenerLayout>
