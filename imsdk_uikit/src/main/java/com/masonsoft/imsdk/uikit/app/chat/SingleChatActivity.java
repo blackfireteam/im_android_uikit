@@ -44,4 +44,16 @@ public class SingleChatActivity extends FragmentDelegateActivity {
         setFragmentDelegate(FRAGMENT_TAG_SINGLE_CHAT, () -> SingleChatFragment.newInstance(targetUserId));
     }
 
+    @Override
+    public void onBackPressed() {
+        final SingleChatFragment fragment = (SingleChatFragment) getFragmentDelegate(FRAGMENT_TAG_SINGLE_CHAT);
+        if (fragment != null) {
+            if (fragment.onBackPressed()) {
+                return;
+            }
+        }
+
+        super.onBackPressed();
+    }
+
 }
