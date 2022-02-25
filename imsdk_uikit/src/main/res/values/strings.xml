@@ -23,6 +23,7 @@
     <string name="imsdk_uikit_custom_soft_keyboard_item_rtc_audio">语音通话</string>
     <string name="imsdk_uikit_custom_soft_keyboard_item_rtc_video">视频通话</string>
     <string name="imsdk_uikit_custom_soft_keyboard_item_location">位置</string>
+    <string name="imsdk_uikit_custom_soft_keyboard_item_snapchat">阅后即焚</string>
     <string name="imsdk_uikit_hint_location_pick_position">位置</string>
     <string name="imsdk_uikit_hint_location_pick_position_near_100">100m内</string>
     <string name="imsdk_uikit_menu_copy">复制</string>
