@@ -254,9 +254,10 @@ public class SingleChatFragment extends CustomInputFragment {
     }
 
     @Override
-    protected void submitTextMessage(String text) {
+    protected void submitTextMessage(boolean snapchat, String text) {
         mEnqueueCallback = new LocalEnqueueCallback(true);
         final MSIMMessage message = MSIMMessageFactory.createTextMessage(text);
+        MSIMMessageFactory.setSnapchat(message, snapchat);
         MSIMManager.getInstance().getMessageManager().sendMessage(
                 MSIMManager.getInstance().getSessionUserId(),
                 message,
@@ -266,7 +267,7 @@ public class SingleChatFragment extends CustomInputFragment {
     }
 
     @Override
-    protected void submitMediaMessage(@NonNull List<MediaData.MediaInfo> mediaInfoList) {
+    protected void submitMediaMessage(boolean snapchat, @NonNull List<MediaData.MediaInfo> mediaInfoList) {
         for (MediaData.MediaInfo mediaInfo : mediaInfoList) {
             mEnqueueCallback = new LocalEnqueueCallback(false);
             final MSIMMessage message;
@@ -275,6 +276,7 @@ public class SingleChatFragment extends CustomInputFragment {
             } else {
                 message = MSIMMessageFactory.createImageMessage(mediaInfo.uri);
             }
+            MSIMMessageFactory.setSnapchat(message, snapchat);
             MSIMManager.getInstance().getMessageManager().sendMessage(
                     MSIMManager.getInstance().getSessionUserId(),
                     message,
@@ -285,9 +287,10 @@ public class SingleChatFragment extends CustomInputFragment {
     }
 
     @Override
-    protected void submitAudioMessage(final String audioFilePath) {
+    protected void submitAudioMessage(boolean snapchat, final String audioFilePath) {
         mEnqueueCallback = new LocalEnqueueCallback(true);
         final MSIMMessage message = MSIMMessageFactory.createAudioMessage(audioFilePath);
+        MSIMMessageFactory.setSnapchat(message, snapchat);
         MSIMManager.getInstance().getMessageManager().sendMessage(
                 MSIMManager.getInstance().getSessionUserId(),
                 message,
@@ -297,7 +300,7 @@ public class SingleChatFragment extends CustomInputFragment {
     }
 
     @Override
-    protected void submitLocationMessage(@NonNull LocationInfo locationInfo, long zoom) {
+    protected void submitLocationMessage(boolean snapchat, @NonNull LocationInfo locationInfo, long zoom) {
         mEnqueueCallback = new LocalEnqueueCallback(false);
         final MSIMMessage message = MSIMMessageFactory.createLocationMessage(
                 locationInfo.title,
@@ -306,6 +309,7 @@ public class SingleChatFragment extends CustomInputFragment {
                 locationInfo.lng,
                 zoom
         );
+        MSIMMessageFactory.setSnapchat(message, snapchat);
         MSIMManager.getInstance().getMessageManager().sendMessage(
                 MSIMManager.getInstance().getSessionUserId(),
                 message,
@@ -315,12 +319,12 @@ public class SingleChatFragment extends CustomInputFragment {
     }
 
     @Override
-    protected void submitClickRtcAudio() {
+    protected void submitClickRtcAudio(boolean snapchat) {
         MSIMRtcMessageManager.getInstance().startRtcMessage(mTargetUserId, null, false);
     }
 
     @Override
-    protected void submitClickRtcVideo() {
+    protected void submitClickRtcVideo(boolean snapchat) {
         MSIMRtcMessageManager.getInstance().startRtcMessage(mTargetUserId, null, true);
     }
 
