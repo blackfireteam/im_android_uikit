@@ -42,6 +42,7 @@ import com.masonsoft.imsdk.uikit.util.ClipboardUtil;
 import com.masonsoft.imsdk.uikit.util.FileDownloadHelper;
 import com.masonsoft.imsdk.uikit.util.FormatUtil;
 import com.masonsoft.imsdk.uikit.util.TipUtil;
+import com.masonsoft.imsdk.uikit.widget.SnapchatContainer;
 import com.tbruyelle.rxpermissions3.RxPermissions;
 
 import java.io.File;
@@ -118,16 +119,20 @@ public abstract class IMBaseMessageViewHolder extends MSIMSelfUpdateUnionTypeVie
     }
 
     @Nullable
+    private final SnapchatContainer mSnapchatContainer;
+    @Nullable
     private final TextView mMessageTime;
 
     public IMBaseMessageViewHolder(@NonNull Host host, int layout) {
         super(host, layout);
         mMessageTime = itemView.findViewById(R.id.message_time);
+        mSnapchatContainer = itemView.findViewById(R.id.snapchat_container);
     }
 
     public IMBaseMessageViewHolder(@NonNull Host host, @NonNull View itemView) {
         super(host, itemView);
         mMessageTime = itemView.findViewById(R.id.message_time);
+        mSnapchatContainer = itemView.findViewById(R.id.snapchat_container);
     }
 
     @Override
@@ -145,6 +150,10 @@ public abstract class IMBaseMessageViewHolder extends MSIMSelfUpdateUnionTypeVie
 
         if (mMessageTime != null) {
             updateMessageTimeView(mMessageTime);
+        }
+
+        if (mSnapchatContainer != null) {
+            mSnapchatContainer.setSnapchat(baseMessage.isSnapchat());
         }
     }
 
