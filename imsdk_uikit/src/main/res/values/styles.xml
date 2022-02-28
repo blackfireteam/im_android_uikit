@@ -17,4 +17,9 @@
         <item name="includeProgressStart">true</item>
         <item name="includeProgressEnd">true</item>
     </style>
+
+    <style name="SnapchatContainer">
+        <item name="snapchat">false</item>
+        <item name="snapchatOverlay">@drawable/imsdk_uikit_ic_snapchat_overlay</item>
+    </style>
 </resources>

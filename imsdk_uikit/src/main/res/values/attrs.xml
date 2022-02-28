@@ -55,4 +55,8 @@
         <attr name="maxTopHeight" format="reference|dimension" />
         <attr name="collapsed" format="boolean" />
     </declare-styleable>
+    <declare-styleable name="SnapchatContainer">
+        <attr name="snapchat" format="boolean" />
+        <attr name="snapchatOverlay" format="reference" />
+    </declare-styleable>
 </resources>
