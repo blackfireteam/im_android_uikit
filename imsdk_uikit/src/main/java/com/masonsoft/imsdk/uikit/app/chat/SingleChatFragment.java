@@ -145,6 +145,8 @@ public class SingleChatFragment extends CustomInputFragment {
         mTopBarBinding = ImsdkUikitSingleChatFragmentTopBarBinding.inflate(inflater, getCustomBinding().customTopBarContainer, true);
         mContentBinding = ImsdkUikitSingleChatFragmentContentBinding.inflate(inflater, getCustomBinding().customContentContainer, true);
 
+        getCustomBinding().customSoftKeyboard.getCustomConfig().setShowSnapchat(false);
+
         ViewUtil.onClick(mTopBarBinding.topBarBack, v -> ActivityUtil.requestBackPressed(SingleChatFragment.this));
         mTopBarBinding.topBarTitle.setTargetUserId(mTargetUserId);
         mTopBarBinding.beingTypedView.setTarget(MSIMManager.getInstance().getSessionUserId(), mTargetUserId);
@@ -257,7 +259,7 @@ public class SingleChatFragment extends CustomInputFragment {
     protected void submitTextMessage(boolean snapchat, String text) {
         mEnqueueCallback = new LocalEnqueueCallback(true);
         final MSIMMessage message = MSIMMessageFactory.createTextMessage(text);
-        MSIMMessageFactory.setSnapchat(message, snapchat);
+        // MSIMMessageFactory.setSnapchat(message, snapchat);
         MSIMManager.getInstance().getMessageManager().sendMessage(
                 MSIMManager.getInstance().getSessionUserId(),
                 message,
@@ -276,7 +278,7 @@ public class SingleChatFragment extends CustomInputFragment {
             } else {
                 message = MSIMMessageFactory.createImageMessage(mediaInfo.uri);
             }
-            MSIMMessageFactory.setSnapchat(message, snapchat);
+            // MSIMMessageFactory.setSnapchat(message, snapchat);
             MSIMManager.getInstance().getMessageManager().sendMessage(
                     MSIMManager.getInstance().getSessionUserId(),
                     message,
@@ -286,10 +288,12 @@ public class SingleChatFragment extends CustomInputFragment {
         }
     }
 
-    private void submitFlashImageMessage(@NonNull List<MediaData.MediaInfo> mediaInfoList) {
+    @Override
+    protected void submitFlashImageMessage(boolean snapchat, @NonNull List<MediaData.MediaInfo> mediaInfoList) {
         for (MediaData.MediaInfo mediaInfo : mediaInfoList) {
             mEnqueueCallback = new LocalEnqueueCallback(false);
             final MSIMMessage message = MSIMMessageFactory.createFlashImageMessage(mediaInfo.uri);
+            // MSIMMessageFactory.setSnapchat(message, snapchat);
             MSIMManager.getInstance().getMessageManager().sendMessage(
                     MSIMManager.getInstance().getSessionUserId(),
                     message,
@@ -303,7 +307,7 @@ public class SingleChatFragment extends CustomInputFragment {
     protected void submitAudioMessage(boolean snapchat, final String audioFilePath) {
         mEnqueueCallback = new LocalEnqueueCallback(true);
         final MSIMMessage message = MSIMMessageFactory.createAudioMessage(audioFilePath);
-        MSIMMessageFactory.setSnapchat(message, snapchat);
+        // MSIMMessageFactory.setSnapchat(message, snapchat);
         MSIMManager.getInstance().getMessageManager().sendMessage(
                 MSIMManager.getInstance().getSessionUserId(),
                 message,
@@ -322,7 +326,7 @@ public class SingleChatFragment extends CustomInputFragment {
                 locationInfo.lng,
                 zoom
         );
-        MSIMMessageFactory.setSnapchat(message, snapchat);
+        // MSIMMessageFactory.setSnapchat(message, snapchat);
         MSIMManager.getInstance().getMessageManager().sendMessage(
                 MSIMManager.getInstance().getSessionUserId(),
                 message,

@@ -349,6 +349,21 @@ public abstract class CustomInputFragment extends SystemInsetsFragment {
             }
 
             @Override
+            public void onFlashImagePicked(@NonNull List<MediaData.MediaInfo> mediaInfoList) {
+                MSIMUikitLog.v("onFlashImagePicked size:%s", mediaInfoList.size());
+                if (mBinding == null) {
+                    MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
+                    return;
+                }
+                if (mSoftKeyboardHelper == null) {
+                    MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.SOFT_KEYBOARD_HELPER_IS_NULL);
+                    return;
+                }
+                mSoftKeyboardHelper.requestHideAllSoftKeyboard();
+                submitFlashImageMessage(isSnapchatMode(), mediaInfoList);
+            }
+
+            @Override
             public void onClickRtcAudio() {
                 submitClickRtcAudio(isSnapchatMode());
             }
@@ -453,6 +468,8 @@ public abstract class CustomInputFragment extends SystemInsetsFragment {
     protected abstract void submitTextMessage(boolean snapchat, String text);
 
     protected abstract void submitMediaMessage(boolean snapchat, @NonNull List<MediaData.MediaInfo> mediaInfoList);
+
+    protected abstract void submitFlashImageMessage(boolean snapchat, @NonNull List<MediaData.MediaInfo> mediaInfoList);
 
     protected abstract void submitAudioMessage(boolean snapchat, final String audioFilePath);
 

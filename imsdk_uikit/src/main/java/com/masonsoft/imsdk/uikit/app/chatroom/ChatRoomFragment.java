@@ -142,6 +142,7 @@ public class ChatRoomFragment extends CustomInputFragment {
         mTopBarBinding = ImsdkUikitChatRoomFragmentTopBarBinding.inflate(inflater, getCustomBinding().customTopBarContainer, true);
         mContentBinding = ImsdkUikitChatRoomFragmentContentBinding.inflate(inflater, getCustomBinding().customContentContainer, true);
 
+        getCustomBinding().customSoftKeyboard.getCustomConfig().setShowFlashImage(false);
         getCustomBinding().customSoftKeyboard.getCustomConfig().setShowSnapchat(false);
         getCustomBinding().customSoftKeyboard.getCustomConfig().setShowRtc(false);
         getCustomBinding().customSoftKeyboard.getCustomConfig().setShowLocation(false);
@@ -296,6 +297,12 @@ public class ChatRoomFragment extends CustomInputFragment {
                     new MSIMWeakCallback<>(mEnqueueCallback)
             );
         }
+    }
+
+    @Override
+    protected void submitFlashImageMessage(boolean snapchat, @NonNull List<MediaData.MediaInfo> mediaInfoList) {
+        // TODO not impl
+        MSIMUikitLog.e("unexpected. submitFlashImageMessage not impl.");
     }
 
     @Override
