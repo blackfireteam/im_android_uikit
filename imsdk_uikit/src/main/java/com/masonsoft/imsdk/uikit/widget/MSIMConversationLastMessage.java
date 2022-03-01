@@ -13,7 +13,7 @@ import com.masonsoft.imsdk.MSIMConversation;
 
 import io.github.idonans.lang.util.ViewUtil;
 
-public class MSIMConversationLastMessage extends MSIMConversationDynamicFrameLayout {
+public class MSIMConversationLastMessage extends MSIMConversationFrameLayout {
 
     public MSIMConversationLastMessage(Context context) {
         this(context, null);
@@ -40,7 +40,7 @@ public class MSIMConversationLastMessage extends MSIMConversationDynamicFrameLay
     }
 
     @Override
-    protected void onConversationChanged(@Nullable MSIMConversation conversation) {
+    protected void onConversationUpdate(@Nullable MSIMConversation conversation) {
         MSIMBaseMessage showMessage = null;
         if (conversation != null) {
             showMessage = conversation.getShowMessage();

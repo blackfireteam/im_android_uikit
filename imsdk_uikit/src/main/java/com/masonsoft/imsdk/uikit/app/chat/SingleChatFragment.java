@@ -10,11 +10,14 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.WorkerThread;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.common.collect.Lists;
+import com.masonsoft.imsdk.MSIMBaseMessage;
 import com.masonsoft.imsdk.MSIMCallback;
+import com.masonsoft.imsdk.MSIMConstants;
 import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.MSIMMessage;
 import com.masonsoft.imsdk.MSIMMessageFactory;
@@ -32,10 +35,12 @@ import com.masonsoft.imsdk.uikit.common.microlifecycle.VisibleRecyclerViewMicroL
 import com.masonsoft.imsdk.uikit.common.simpledialog.SimpleBottomActionsDialog;
 import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitSingleChatFragmentContentBinding;
 import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitSingleChatFragmentTopBarBinding;
+import com.masonsoft.imsdk.uikit.uniontype.DataObject;
 import com.masonsoft.imsdk.uikit.uniontype.IMUikitUnionTypeMapper;
 import com.masonsoft.imsdk.uikit.util.ActivityUtil;
 import com.masonsoft.imsdk.uikit.util.TipUtil;
 import com.masonsoft.imsdk.util.Objects;
+import com.masonsoft.imsdk.util.TimeDiffDebugHelper;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -146,7 +151,7 @@ public class SingleChatFragment extends CustomInputFragment {
         mContentBinding = ImsdkUikitSingleChatFragmentContentBinding.inflate(inflater, getCustomBinding().customContentContainer, true);
 
         ViewUtil.onClick(mTopBarBinding.topBarBack, v -> ActivityUtil.requestBackPressed(SingleChatFragment.this));
-        mTopBarBinding.topBarTitle.setTargetUserId(mTargetUserId);
+        mTopBarBinding.topBarTitle.setUserInfo(mTargetUserId, null);
         mTopBarBinding.beingTypedView.setTarget(MSIMManager.getInstance().getSessionUserId(), mTargetUserId);
 
         ViewUtil.onClick(mTopBarBinding.topBarMore, v -> showBottomActions());
@@ -374,6 +379,70 @@ public class SingleChatFragment extends CustomInputFragment {
         public ViewImpl(@NonNull UnionTypeAdapter adapter) {
             super(adapter);
             setAlwaysHideNoMoreData(true);
+        }
+
+        /**
+         * @param unionTypeItemObjectList 更新内容或者删除条目（不存在追加的情况）
+         */
+        @WorkerThread
+        void updateOrRemoveMessageList(@NonNull final List<UnionTypeItemObject> unionTypeItemObjectList) {
+            final String tag = Objects.defaultObjectTag(this) + "[updateOrRemoveMessageList][" + System.currentTimeMillis() + "][size:]" + unionTypeItemObjectList.size();
+            MSIMUikitLog.v(tag);
+
+            getAdapter().getData().beginTransaction()
+                    .add((transaction, groupArrayList) -> {
+                        final TimeDiffDebugHelper innerMergeTimeDiffDebugHelper = new TimeDiffDebugHelper("innerMergeTimeDiffDebugHelper[" + tag + "]");
+                        int removedCount = 0;
+                        int updateCount = 0;
+
+                        final List<UnionTypeItemObject> currentList = groupArrayList.getGroupItems(getGroupContent());
+                        if (currentList == null || currentList.isEmpty()) {
+                            return;
+                        }
+
+                        // 更新或者删除
+                        for (UnionTypeItemObject updateOrRemoveUnionTypeItemObject : unionTypeItemObjectList) {
+                            final DataObject updateOrRemoveDataObject = updateOrRemoveUnionTypeItemObject.getItemObject(DataObject.class);
+                            if (updateOrRemoveDataObject == null) {
+                                continue;
+                            }
+                            final MSIMBaseMessage updateOrRemoveBaseMessage = updateOrRemoveDataObject.getObject(MSIMBaseMessage.class);
+                            if (updateOrRemoveBaseMessage == null) {
+                                continue;
+                            }
+
+                            // 从后向前遍历当前列表
+                            final int currentListSize = currentList.size();
+                            for (int i = currentListSize - 1; i >= 0; i--) {
+                                final UnionTypeItemObject currentUnionTypeItemObject = currentList.get(i);
+                                final DataObject currentDataObject = currentUnionTypeItemObject.getItemObject(DataObject.class);
+                                if (currentDataObject == null) {
+                                    continue;
+                                }
+                                final MSIMBaseMessage currentBaseMessage = currentDataObject.getObject(MSIMBaseMessage.class);
+                                if (currentBaseMessage == null) {
+                                    continue;
+                                }
+
+                                if (updateOrRemoveBaseMessage.equals(currentBaseMessage)) {
+                                    // 待变更的 updateOrRemoveBaseMessage 匹配到当前列表的 currentBaseMessage
+                                    final boolean remove = MSIMConstants.MessageType.DELETED == updateOrRemoveBaseMessage.getMessageType();
+                                    if (remove) {
+                                        // 移除 index i
+                                        currentList.remove(i);
+                                        removedCount++;
+                                    } else {
+                                        // 更新 index i
+                                        currentList.set(i, updateOrRemoveUnionTypeItemObject);
+                                        updateCount++;
+                                    }
+                                }
+                            }
+                        }
+
+                        innerMergeTimeDiffDebugHelper.print("removedCount:" + removedCount + ", updateCount:" + updateCount);
+                    })
+                    .commit();
         }
 
         public long getTargetUserId() {

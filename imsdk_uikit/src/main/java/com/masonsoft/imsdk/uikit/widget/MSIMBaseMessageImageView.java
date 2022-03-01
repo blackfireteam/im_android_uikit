@@ -17,6 +17,7 @@ import com.masonsoft.imsdk.util.Objects;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.github.idonans.appcontext.AppContext;
 import io.github.idonans.core.util.Preconditions;
 
 public class MSIMBaseMessageImageView extends ImageLayout {
@@ -40,10 +41,24 @@ public class MSIMBaseMessageImageView extends ImageLayout {
         initFromAttributes(context, attrs, defStyleAttr, 0);
     }
 
+    @Nullable
+    private MSIMBaseMessage mBaseMessage;
+
     private void initFromAttributes(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        AppContext.setContextInEditMode(this);
     }
 
     public void setBaseMessage(@Nullable MSIMBaseMessage baseMessage) {
+        mBaseMessage = baseMessage;
+        this.onBaseMessageUpdate(mBaseMessage);
+    }
+
+    @Nullable
+    public MSIMBaseMessage getBaseMessage() {
+        return mBaseMessage;
+    }
+
+    protected void onBaseMessageUpdate(@Nullable MSIMBaseMessage baseMessage) {
         final List<String> firstAvailableUrls = new ArrayList<>();
 
         if (baseMessage != null) {

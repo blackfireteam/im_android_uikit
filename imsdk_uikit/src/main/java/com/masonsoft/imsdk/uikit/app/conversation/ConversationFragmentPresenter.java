@@ -14,16 +14,14 @@ import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.lang.GeneralResult;
 import com.masonsoft.imsdk.lang.GeneralResultException;
 import com.masonsoft.imsdk.uikit.MSIMUikitLog;
+import com.masonsoft.imsdk.uikit.SessionUserIdChangedHelper;
 import com.masonsoft.imsdk.uikit.uniontype.DataObject;
 import com.masonsoft.imsdk.uikit.uniontype.IMUikitUnionTypeMapper;
-import com.masonsoft.imsdk.uikit.widget.SessionUserIdChangedViewHelper;
 import com.masonsoft.imsdk.util.Objects;
 import com.masonsoft.imsdk.util.TimeDiffDebugHelper;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import io.github.idonans.core.thread.BatchQueue;
 import io.github.idonans.dynamic.DynamicResult;
@@ -38,7 +36,7 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
 
     private static final boolean DEBUG = true;
 
-    private final SessionUserIdChangedViewHelper mSessionUserIdChangedViewHelper;
+    private final SessionUserIdChangedHelper mSessionUserIdChangedHelper;
     @SuppressWarnings("FieldCanBeLocal")
     private final MSIMConversationListener mConversationListener;
     private final int mConversationType = MSIMConstants.ConversationType.C2C;
@@ -52,26 +50,21 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
     @UiThread
     public ConversationFragmentPresenter(@NonNull ConversationFragment.ViewImpl view) {
         super(view);
-        mSessionUserIdChangedViewHelper = new SessionUserIdChangedViewHelper() {
+        mSessionUserIdChangedHelper = new SessionUserIdChangedHelper() {
             @Override
             protected void onSessionUserIdChanged(long sessionUserId) {
                 reloadWithNewSessionUserId();
                 view.onSessionUserIdChanged(sessionUserId);
             }
         };
-        mConversationListener = new MSIMConversationListenerProxy(new MSIMConversationListener() {
-            @Override
-            public void onConversationChanged(long sessionUserId, long conversationId, int conversationType, long targetUserId) {
-                addOrUpdateConversation(sessionUserId, conversationId);
-            }
-        });
+        mConversationListener = new MSIMConversationListenerProxy(this::addOrUpdateConversation);
         MSIMManager.getInstance().getConversationManager().addConversationListener(mConversationPageContext, mConversationListener);
         mBatchQueueAddOrUpdateConversation.setConsumer(this::addOrUpdateConversation);
         view.onSessionUserIdChanged(getSessionUserId());
     }
 
     private long getSessionUserId() {
-        return mSessionUserIdChangedViewHelper.getSessionUserId();
+        return mSessionUserIdChangedHelper.getSessionUserId();
     }
 
     private void reloadWithNewSessionUserId() {
@@ -88,15 +81,12 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
         return getView() == null;
     }
 
-    private void addOrUpdateConversation(long sessionUserId, long conversationId) {
-        if (isAbort(sessionUserId)) {
+    private void addOrUpdateConversation(@NonNull MSIMConversation conversation) {
+        if (isAbort(conversation.getSessionUserId())) {
             return;
         }
 
-        final MSIMConversation conversation = MSIMManager.getInstance().getConversationManager().getConversation(sessionUserId, conversationId);
-        if (conversation != null) {
-            mBatchQueueAddOrUpdateConversation.add(conversation);
-        }
+        mBatchQueueAddOrUpdateConversation.add(conversation);
     }
 
     @WorkerThread
@@ -106,16 +96,14 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
         }
 
         // 移除重复的会话
-        final Set<String> duplicate = new HashSet<>();
+        final List<MSIMConversation> removeDuplicateList = new ArrayList<>();
+        for (MSIMConversation conversation : updateList) {
+            removeDuplicateList.remove(conversation);
+            removeDuplicateList.add(conversation);
+        }
 
         final List<UnionTypeItemObject> unionTypeItemObjectList = new ArrayList<>();
-        for (MSIMConversation conversation : updateList) {
-            final String key = conversation.getSessionUserId() + "_" + conversation.getConversationId();
-            if (duplicate.contains(key)) {
-                continue;
-            }
-            duplicate.add(key);
-
+        for (MSIMConversation conversation : removeDuplicateList) {
             final UnionTypeItemObject unionTypeItemObject = createDefault(conversation);
             if (unionTypeItemObject != null) {
                 unionTypeItemObjectList.add(unionTypeItemObject);
@@ -285,19 +273,19 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
         public boolean isSameItem(@Nullable Object other) {
             if (other instanceof DeepDiffDataObject) {
                 final DeepDiffDataObject otherDataObject = (DeepDiffDataObject) other;
-                return ((MSIMConversation) this.object).getConversationId() == ((MSIMConversation) otherDataObject.object).getConversationId()
-                        && ((MSIMConversation) this.object).getSessionUserId() == ((MSIMConversation) otherDataObject.object).getSessionUserId();
+                final MSIMConversation thisConversation = getObject(MSIMConversation.class);
+                final MSIMConversation otherConversation = otherDataObject.getObject(MSIMConversation.class);
+                if (thisConversation == null || otherConversation == null) {
+                    return false;
+                }
+
+                return thisConversation.equals(otherConversation);
             }
             return false;
         }
 
         @Override
         public boolean isSameContent(@Nullable Object other) {
-            if (other instanceof DeepDiffDataObject) {
-                final DeepDiffDataObject otherDataObject = (DeepDiffDataObject) other;
-                return ((MSIMConversation) this.object).getConversationId() == ((MSIMConversation) otherDataObject.object).getConversationId()
-                        && ((MSIMConversation) this.object).getSessionUserId() == ((MSIMConversation) otherDataObject.object).getSessionUserId();
-            }
             return false;
         }
     }

@@ -15,7 +15,7 @@ import com.masonsoft.imsdk.MSIMConversation;
 import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 import com.masonsoft.imsdk.uikit.util.FormatUtil;
 
-public class MSIMConversationTimeView extends MSIMConversationDynamicFrameLayout {
+public class MSIMConversationTimeView extends MSIMConversationFrameLayout {
 
     private final boolean DEBUG = MSIMUikitConstants.DEBUG_WIDGET;
 
@@ -60,7 +60,7 @@ public class MSIMConversationTimeView extends MSIMConversationDynamicFrameLayout
     }
 
     @Override
-    protected void onConversationChanged(@Nullable MSIMConversation conversation) {
+    protected void onConversationUpdate(@Nullable MSIMConversation conversation) {
         if (conversation == null) {
             setTime(null);
         } else {

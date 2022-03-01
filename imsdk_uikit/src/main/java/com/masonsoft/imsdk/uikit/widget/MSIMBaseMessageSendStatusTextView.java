@@ -17,13 +17,11 @@ import androidx.core.content.ContextCompat;
 
 import com.masonsoft.imsdk.MSIMBaseMessage;
 import com.masonsoft.imsdk.MSIMConstants;
-import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.uikit.R;
-import com.masonsoft.imsdk.util.Objects;
 
 import io.github.idonans.core.util.Preconditions;
 
-public class MSIMBaseMessageSendStatusTextView extends MSIMBaseMessageDynamicFrameLayout {
+public class MSIMBaseMessageSendStatusTextView extends MSIMBaseMessageFrameLayout {
 
     public MSIMBaseMessageSendStatusTextView(Context context) {
         this(context, null);
@@ -65,10 +63,7 @@ public class MSIMBaseMessageSendStatusTextView extends MSIMBaseMessageDynamicFra
     }
 
     @Override
-    protected void onBaseMessageChanged(@Nullable MSIMBaseMessage baseMessage) {
-        if (DEBUG) {
-            MSIMUikitLog.v(Objects.defaultObjectTag(this) + " onBaseMessageChanged %s", baseMessage);
-        }
+    protected void onBaseMessageUpdate(@Nullable MSIMBaseMessage baseMessage) {
         if (baseMessage == null) {
             mTextView.setText(null);
         } else {

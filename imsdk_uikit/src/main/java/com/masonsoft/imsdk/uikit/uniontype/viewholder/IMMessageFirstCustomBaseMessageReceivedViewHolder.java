@@ -33,7 +33,7 @@ public class IMMessageFirstCustomBaseMessageReceivedViewHolder extends IMMessage
         Preconditions.checkNotNull(itemObject);
         final MSIMBaseMessage baseMessage = itemObject.getObject(MSIMBaseMessage.class);
 
-        mBinding.avatar.setTargetUserId(baseMessage.getFromUserId());
+        mBinding.avatar.setUserInfo(baseMessage.getFromUserId(), null);
         mBinding.avatar.setShowBorder(false);
 
         ViewUtil.onClick(mBinding.avatar, v -> {

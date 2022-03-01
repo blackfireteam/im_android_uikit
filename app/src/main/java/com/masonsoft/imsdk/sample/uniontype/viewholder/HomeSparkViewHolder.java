@@ -72,7 +72,7 @@ public class HomeSparkViewHolder extends UnionTypeViewHolder {
         final Spark spark = (Spark) itemObject.object;
 
         mBinding.imageLayout.setImageUrl(null, spark.profile.getAvatar());
-        mBinding.username.setTargetUserId(spark.profile.getUid());
+        mBinding.username.setUserInfo(spark.profile.getUid(), null);
         mBinding.desc.setText(buildDescText(spark));
         updateLikeAndDislike(0, false);
 

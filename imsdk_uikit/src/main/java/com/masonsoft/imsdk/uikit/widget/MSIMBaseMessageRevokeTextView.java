@@ -12,7 +12,7 @@ import com.masonsoft.imsdk.uikit.R;
 
 import io.github.idonans.appcontext.AppContext;
 
-public class MSIMBaseMessageRevokeTextView extends UserCacheDynamicTextView {
+public class MSIMBaseMessageRevokeTextView extends MSIMUserInfoTextView {
 
     public MSIMBaseMessageRevokeTextView(Context context) {
         this(context, null);
@@ -66,7 +66,7 @@ public class MSIMBaseMessageRevokeTextView extends UserCacheDynamicTextView {
     }
 
     @Override
-    protected void onUserCacheUpdate(@Nullable MSIMUserInfo userInfo) {
+    protected void onUserInfoUpdate(long userId, @Nullable MSIMUserInfo userInfo) {
         setText(buildRecallText(userInfo));
     }
 

@@ -33,7 +33,7 @@ public class IMBaseMessageTextReceivedViewHolder extends IMBaseMessageTextViewHo
         final MSIMBaseMessage baseMessage = itemObject.getObject(MSIMBaseMessage.class);
         Preconditions.checkNotNull(baseMessage);
 
-        mBinding.avatar.setTargetUserId(baseMessage.getFromUserId());
+        mBinding.avatar.setUserInfo(baseMessage.getFromUserId(), null);
         mBinding.avatar.setShowBorder(false);
 
         ViewUtil.onClick(mBinding.avatar, v -> {

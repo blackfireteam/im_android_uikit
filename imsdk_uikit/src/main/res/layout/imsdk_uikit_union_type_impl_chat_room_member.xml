@@ -16,7 +16,7 @@
         app:roundSize="6dp"
         app:showBorder="true">
 
-        <com.masonsoft.imsdk.uikit.widget.UserCacheAvatar
+        <com.masonsoft.imsdk.uikit.widget.MSIMUserInfoAvatar
             android:id="@+id/avatar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -90,7 +90,7 @@
                 android:scaleType="centerInside"
                 android:src="@drawable/imsdk_uikit_ic_user_online" />
 
-            <com.masonsoft.imsdk.uikit.widget.UserCacheName
+            <com.masonsoft.imsdk.uikit.widget.MSIMUserInfoName
                 android:id="@+id/username"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"

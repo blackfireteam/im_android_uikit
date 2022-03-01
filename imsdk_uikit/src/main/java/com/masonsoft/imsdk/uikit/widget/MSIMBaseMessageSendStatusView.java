@@ -20,13 +20,14 @@ import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.MSIMMessage;
 import com.masonsoft.imsdk.MSIMWeakCallback;
 import com.masonsoft.imsdk.lang.GeneralResult;
+import com.masonsoft.imsdk.uikit.GlobalChatRoomManager;
 import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.uikit.R;
 import com.masonsoft.imsdk.uikit.util.TipUtil;
 
 import io.github.idonans.lang.util.ViewUtil;
 
-public class MSIMBaseMessageSendStatusView extends MSIMBaseMessageDynamicFrameLayout {
+public class MSIMBaseMessageSendStatusView extends MSIMBaseMessageFrameLayout {
 
     public MSIMBaseMessageSendStatusView(Context context) {
         this(context, null);
@@ -81,7 +82,7 @@ public class MSIMBaseMessageSendStatusView extends MSIMBaseMessageDynamicFrameLa
         ViewUtil.setVisibilityIfChanged(mSendingView, View.GONE);
 
         ViewUtil.onClick(this, v -> {
-            final MSIMBaseMessage baseMessage = mBaseMessage;
+            final MSIMBaseMessage baseMessage = getBaseMessage();
             if (baseMessage != null) {
                 final int sendState = baseMessage.getSendStatus(MSIMConstants.SendStatus.SUCCESS);
                 if (sendState == MSIMConstants.SendStatus.FAIL) {
@@ -93,11 +94,19 @@ public class MSIMBaseMessageSendStatusView extends MSIMBaseMessageDynamicFrameLa
                                 new MSIMWeakCallback<>(mEnqueueCallback));
                     } else if (baseMessage instanceof MSIMChatRoomMessage) {
                         final MSIMChatRoomMessage message = (MSIMChatRoomMessage) baseMessage;
-                        message.getChatRoomContext().getChatRoomManager().resendChatRoomMessage(
-                                message.getSessionUserId(),
-                                message,
-                                new MSIMWeakCallback<>(mEnqueueCallback)
-                        );
+                        final long sessionUserId = message.getSessionUserId();
+                        final long chatRoomId = message.getChatRoomId();
+                        final GlobalChatRoomManager.StaticChatRoomContext staticChatRoomContext =
+                                GlobalChatRoomManager.getInstance().getStaticChatRoomContext(sessionUserId, chatRoomId, false);
+                        if (staticChatRoomContext != null) {
+                            staticChatRoomContext.getChatRoomContext().getChatRoomManager().resendChatRoomMessage(
+                                    message.getSessionUserId(),
+                                    message,
+                                    new MSIMWeakCallback<>(mEnqueueCallback)
+                            );
+                        } else {
+                            MSIMUikitLog.e("unexpected. staticChatRoomContext is null. resend %s", baseMessage);
+                        }
                     } else {
                         MSIMUikitLog.v("not impl. resend %s", baseMessage);
                     }
@@ -113,10 +122,7 @@ public class MSIMBaseMessageSendStatusView extends MSIMBaseMessageDynamicFrameLa
     };
 
     @Override
-    protected void onBaseMessageChanged(@Nullable MSIMBaseMessage baseMessage) {
-        if (DEBUG) {
-            MSIMUikitLog.v("onBaseMessageChanged %s", baseMessage);
-        }
+    protected void onBaseMessageUpdate(@Nullable MSIMBaseMessage baseMessage) {
         if (baseMessage == null) {
             mMessageSendStatus = MSIMConstants.SendStatus.SUCCESS;
             mMessageSendTimeMs = 0L;

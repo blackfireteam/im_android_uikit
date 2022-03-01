@@ -5,10 +5,13 @@ import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
 import com.masonsoft.imsdk.MSIMConstants;
-import com.masonsoft.imsdk.MSIMConversation;
+import com.masonsoft.imsdk.MSIMConversationListener;
+import com.masonsoft.imsdk.MSIMConversationListenerProxy;
 import com.masonsoft.imsdk.MSIMConversationPageContext;
 import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.MSIMMessage;
+import com.masonsoft.imsdk.MSIMMessageListener;
+import com.masonsoft.imsdk.MSIMMessageListenerProxy;
 import com.masonsoft.imsdk.MSIMMessagePageContext;
 import com.masonsoft.imsdk.lang.GeneralResult;
 import com.masonsoft.imsdk.lang.GeneralResultException;
@@ -17,13 +20,15 @@ import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.uikit.uniontype.DataObject;
 import com.masonsoft.imsdk.uikit.uniontype.UnionTypeViewHolderListeners;
 import com.masonsoft.imsdk.uikit.uniontype.viewholder.IMBaseMessageViewHolder;
-import com.masonsoft.imsdk.uikit.widget.MSIMConversationChangedViewHelper;
+import com.masonsoft.imsdk.util.Objects;
+import com.masonsoft.imsdk.util.TimeDiffDebugHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import io.github.idonans.core.thread.BatchQueue;
 import io.github.idonans.dynamic.DynamicResult;
 import io.github.idonans.dynamic.page.PagePresenter;
 import io.github.idonans.lang.DisposableHolder;
@@ -46,10 +51,12 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
     private long mConsumedTypedLastMessageSeq;
 
     private final MSIMMessagePageContext mMessagePageContext = new MSIMMessagePageContext();
-    @SuppressWarnings("FieldCanBeLocal")
-    private final MSIMConversationChangedViewHelper mConversationChangedViewHelper;
+    private final MSIMConversationListener mConversationListener;
+    private final MSIMMessageListener mMessageListener;
 
     private final DisposableHolder mDefaultRequestHolder = new DisposableHolder();
+
+    private final BatchQueue<MSIMMessage> mBatchQueueUpdateOrRemoveMessage = new BatchQueue<>();
 
     @UiThread
     public SingleChatFragmentPresenter(@NonNull SingleChatFragment.ViewImpl view) {
@@ -57,29 +64,24 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
         mSessionUserId = MSIMManager.getInstance().getSessionUserId();
         mTargetUserId = view.getTargetUserId();
 
-        mConversationChangedViewHelper = new MSIMConversationChangedViewHelper(MSIMConversationPageContext.GLOBAL) {
-            @Override
-            protected void onConversationChanged(@Nullable MSIMConversation conversation, @Nullable Object customObject) {
-                if (conversation == null) {
-                    reloadOrRequestMoreMessage();
-                    return;
-                }
-
-                final long sessionUserId = conversation.getSessionUserId();
-                final int conversationType = conversation.getConversationType();
-                final long targetUserId = conversation.getTargetUserId();
-                if (mSessionUserId == sessionUserId
-                        && mConversationType == conversationType
-                        && mTargetUserId == targetUserId) {
-                    reloadOrRequestMoreMessage();
-                }
+        mConversationListener = new MSIMConversationListenerProxy(conversation -> {
+            final long sessionUserId = conversation.getSessionUserId();
+            final int conversationType = conversation.getConversationType();
+            final long targetUserId = conversation.getTargetUserId();
+            if (mSessionUserId == sessionUserId
+                    && mConversationType == conversationType
+                    && mTargetUserId == targetUserId) {
+                reloadOrRequestMoreMessage();
             }
-        };
-        mConversationChangedViewHelper.setConversationByTargetUserId(
-                mSessionUserId,
-                mConversationType,
-                mTargetUserId
+        }, true);
+        MSIMManager.getInstance().getConversationManager().addConversationListener(
+                MSIMConversationPageContext.GLOBAL,
+                mConversationListener
         );
+
+        mBatchQueueUpdateOrRemoveMessage.setConsumer(this::updateOrRemoveMessage);
+        mMessageListener = new MSIMMessageListenerProxy(this::updateOrRemoveMessage);
+        MSIMManager.getInstance().getMessageManager().addMessageListener(mMessagePageContext, mMessageListener);
     }
 
     @Nullable
@@ -87,7 +89,61 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
         return (SingleChatFragment.ViewImpl) super.getView();
     }
 
+    private void updateOrRemoveMessage(@NonNull MSIMMessage message) {
+        final long sessionUserId = message.getSessionUserId();
+        final int conversationType = message.getConversationType();
+        final long targetUserId = message.getTargetUserId();
+        if (mSessionUserId == sessionUserId
+                && mConversationType == conversationType
+                && mTargetUserId == targetUserId) {
+
+            mBatchQueueUpdateOrRemoveMessage.add(message);
+        }
+    }
+
+    private void updateOrRemoveMessage(@Nullable List<MSIMMessage> list) {
+        if (list == null || list.isEmpty()) {
+            return;
+        }
+
+        // 移除重复的消息
+        final List<MSIMMessage> removeDuplicateList = new ArrayList<>();
+        for (MSIMMessage message : list) {
+            removeDuplicateList.remove(message);
+            removeDuplicateList.add(message);
+        }
+
+        final List<UnionTypeItemObject> unionTypeItemObjectList = new ArrayList<>();
+        for (MSIMMessage message : removeDuplicateList) {
+            final UnionTypeItemObject unionTypeItemObject = createDefault(message);
+            if (unionTypeItemObject != null) {
+                unionTypeItemObjectList.add(unionTypeItemObject);
+            }
+        }
+
+        if (unionTypeItemObjectList.isEmpty()) {
+            return;
+        }
+
+        final SingleChatFragment.ViewImpl view = getView();
+        if (view == null) {
+            return;
+        }
+
+        final TimeDiffDebugHelper timeDiffDebugHelper = new TimeDiffDebugHelper(Objects.defaultObjectTag(this));
+        timeDiffDebugHelper.mark();
+        view.updateOrRemoveMessageList(unionTypeItemObjectList);
+        timeDiffDebugHelper.mark();
+        timeDiffDebugHelper.print("updateOrRemoveMessage unionTypeItemObjectList size:" + unionTypeItemObjectList.size());
+
+    }
+
     private void reloadOrRequestMoreMessage() {
+        if (getView() == null) {
+            MSIMUikitLog.v("reloadOrRequestMoreMessage ignore. view is null.");
+            return;
+        }
+
         MSIMUikitLog.v("reloadOrRequestMoreMessage");
         if (getInitRequestStatus().isLoading()) {
             MSIMUikitLog.v("reloadOrRequestMoreMessage abort getInitRequestStatus().isLoading()");

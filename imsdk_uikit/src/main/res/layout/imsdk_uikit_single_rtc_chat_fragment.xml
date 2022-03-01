@@ -16,7 +16,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
-        <com.masonsoft.imsdk.uikit.widget.UserCacheAvatar
+        <com.masonsoft.imsdk.uikit.widget.MSIMUserInfoAvatar
             android:id="@+id/user_avatar_audio"
             android:layout_width="100dp"
             android:layout_height="100dp"
@@ -27,7 +27,7 @@
             app:roundSize="16dp"
             tools:visibility="gone" />
 
-        <com.masonsoft.imsdk.uikit.widget.UserCacheName
+        <com.masonsoft.imsdk.uikit.widget.MSIMUserInfoName
             android:id="@+id/username_audio"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -53,7 +53,7 @@
             tools:text="waiting"
             tools:visibility="gone" />
 
-        <com.masonsoft.imsdk.uikit.widget.UserCacheAvatar
+        <com.masonsoft.imsdk.uikit.widget.MSIMUserInfoAvatar
             android:id="@+id/user_avatar_video"
             android:layout_width="80dp"
             android:layout_height="80dp"
@@ -65,7 +65,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:roundSize="14dp" />
 
-        <com.masonsoft.imsdk.uikit.widget.UserCacheName
+        <com.masonsoft.imsdk.uikit.widget.MSIMUserInfoName
             android:id="@+id/username_video"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
