@@ -28,7 +28,7 @@ public abstract class MSIMUserInfoLoader extends DataLoaderImpl<MSIMUserInfo> im
             protected void onUserInfoChanged(@NonNull MSIMUserInfo userInfo) {
                 super.onUserInfoChanged(userInfo);
 
-                MSIMUserInfoLoader.this.onUserInfoChangedInternal(userInfo);
+                MSIMUserInfoLoader.this.onUserInfoChangedInternal(userInfo, false);
             }
         };
     }
@@ -52,8 +52,12 @@ public abstract class MSIMUserInfoLoader extends DataLoaderImpl<MSIMUserInfo> im
         setUserInfoInternal(userId, userInfo);
     }
 
-    public void setUserInfo(@NonNull MSIMUserInfo userInfo) {
-        setUserInfoInternal(userInfo.getUserId(), userInfo);
+    public void setUserInfo(@Nullable MSIMUserInfo userInfo) {
+        long userId = 0;
+        if (userInfo != null) {
+            userId = userInfo.getUserId();
+        }
+        setUserInfoInternal(userId, userInfo);
     }
 
     private void setUserInfoInternal(long userId, @Nullable MSIMUserInfo userInfo) {
@@ -82,11 +86,17 @@ public abstract class MSIMUserInfoLoader extends DataLoaderImpl<MSIMUserInfo> im
         requestLoadData();
     }
 
-    private void onUserInfoChangedInternal(@NonNull MSIMUserInfo userInfo) {
-        if (userInfo.getUserId() == mUserId) {
-            mUserInfo = userInfo;
-            onUserInfoLoad(mUserId, mUserInfo);
+    private void onUserInfoChangedInternal(@Nullable MSIMUserInfo userInfo, boolean acceptNull) {
+        if (!acceptNull && userInfo == null) {
+            return;
         }
+
+        if (userInfo != null && userInfo.getUserId() != mUserId) {
+            return;
+        }
+
+        mUserInfo = userInfo;
+        onUserInfoLoad(mUserId, mUserInfo);
     }
 
     protected void onUserInfoLoad(long userId, @Nullable MSIMUserInfo userInfo) {
@@ -103,9 +113,7 @@ public abstract class MSIMUserInfoLoader extends DataLoaderImpl<MSIMUserInfo> im
 
     @Override
     protected void onDataLoad(@Nullable MSIMUserInfo userInfo) {
-        if (userInfo != null) {
-            onUserInfoChangedInternal(userInfo);
-        }
+        onUserInfoChangedInternal(userInfo, true);
     }
 
 }
