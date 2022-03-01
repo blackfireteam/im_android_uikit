@@ -66,7 +66,9 @@ public class MSIMBaseMessageRevokeTextViewMSIM extends MSIMUserInfoTextView {
     }
 
     @Override
-    protected void onUserInfoChanged(@Nullable MSIMUserInfo userInfo) {
+    protected void onUserInfoLoad(long userId, @Nullable MSIMUserInfo userInfo) {
+        super.onUserInfoLoad(userId, userInfo);
+
         setText(buildRecallText(userInfo));
     }
 

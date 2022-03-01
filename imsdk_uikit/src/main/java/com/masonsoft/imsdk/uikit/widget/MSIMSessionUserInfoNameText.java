@@ -5,24 +5,24 @@ import android.util.AttributeSet;
 
 import com.masonsoft.imsdk.uikit.SessionUserIdChangedHelper;
 
-public class SessionMSIMUserCacheNameText extends MSIMUserCacheName {
+public class MSIMSessionUserInfoNameText extends MSIMUserCacheName {
 
     @SuppressWarnings("FieldCanBeLocal")
     private SessionUserIdChangedHelper mSessionUserIdChangedHelper;
 
-    public SessionMSIMUserCacheNameText(Context context) {
+    public MSIMSessionUserInfoNameText(Context context) {
         this(context, null);
     }
 
-    public SessionMSIMUserCacheNameText(Context context, AttributeSet attrs) {
+    public MSIMSessionUserInfoNameText(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public SessionMSIMUserCacheNameText(Context context, AttributeSet attrs, int defStyleAttr) {
+    public MSIMSessionUserInfoNameText(Context context, AttributeSet attrs, int defStyleAttr) {
         this(context, attrs, defStyleAttr, 0);
     }
 
-    public SessionMSIMUserCacheNameText(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public MSIMSessionUserInfoNameText(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         initFromAttributes(context, attrs, defStyleAttr, defStyleRes);
     }
@@ -31,10 +31,10 @@ public class SessionMSIMUserCacheNameText extends MSIMUserCacheName {
         mSessionUserIdChangedHelper = new SessionUserIdChangedHelper() {
             @Override
             protected void onSessionUserIdChanged(long sessionUserId) {
-                SessionMSIMUserCacheNameText.this.setTargetUserId(sessionUserId);
+                MSIMSessionUserInfoNameText.this.setUserInfo(sessionUserId, null);
             }
         };
-        setTargetUserId(mSessionUserIdChangedHelper.getSessionUserId());
+        MSIMSessionUserInfoNameText.this.setUserInfo(mSessionUserIdChangedHelper.getSessionUserId(), null);
     }
 
 }
