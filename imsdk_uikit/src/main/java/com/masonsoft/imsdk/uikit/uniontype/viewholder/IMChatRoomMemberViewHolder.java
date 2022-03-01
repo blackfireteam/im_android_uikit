@@ -39,8 +39,8 @@ public class IMChatRoomMemberViewHolder extends UnionTypeViewHolder {
         final MSIMChatRoomMember member = itemObject.getObject(MSIMChatRoomMember.class);
 
         final long userId = member.getUserId();
-        mBinding.avatar.setTargetUserId(userId);
-        mBinding.username.setTargetUserId(userId);
+        mBinding.avatar.setUserInfo(userId, null);
+        mBinding.username.setUserInfo(userId, null);
 
         ViewUtil.onClick(itemView, v -> {
             final Activity innerActivity = host.getActivity();

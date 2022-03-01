@@ -43,7 +43,7 @@ public class IMBaseMessageDefaultSendViewHolder extends IMBaseMessageDefaultView
 
         mBinding.sendStatusView.setBaseMessage(baseMessage);
 
-        mBinding.avatar.setTargetUserId(baseMessage.getFromUserId());
+        mBinding.avatar.setUserInfo(baseMessage.getFromUserId(), null);
         mBinding.avatar.setShowBorder(false);
 
         mBinding.readStatusView.setMessageAndConversation(baseMessage, conversation);

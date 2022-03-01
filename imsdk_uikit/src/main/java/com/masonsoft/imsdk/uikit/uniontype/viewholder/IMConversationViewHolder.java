@@ -42,11 +42,11 @@ public class IMConversationViewHolder extends UnionTypeViewHolder {
 
         final long targetUserId = conversation.getTargetUserId();
 
-        mBinding.avatar.setTargetUserId(targetUserId);
+        mBinding.avatar.setUserInfo(targetUserId, null);
         mBinding.avatar.setBorderColor(false);
-        mBinding.name.setTargetUserId(targetUserId);
-        mBinding.userVerifiedFlag.setTargetUserId(targetUserId);
-        mBinding.userGoldFlag.setTargetUserId(targetUserId);
+        mBinding.name.setUserInfo(targetUserId, null);
+        mBinding.userVerifiedFlag.setUserInfo(targetUserId, null);
+        mBinding.userGoldFlag.setUserInfo(targetUserId, null);
 
         mBinding.unreadCountView.setConversation(conversation);
         mBinding.chatRelation.setConversation(conversation);

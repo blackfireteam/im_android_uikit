@@ -28,7 +28,7 @@ public class IMBaseMessageRevokeReceivedViewHolder extends IMBaseMessageViewHold
         final MSIMBaseMessage baseMessage = itemObject.getObject(MSIMBaseMessage.class);
         Preconditions.checkNotNull(baseMessage);
 
-        mBinding.messageRevokeTextView.setTargetUserId(baseMessage.getFromUserId());
+        mBinding.messageRevokeTextView.setUserInfo(baseMessage.getFromUserId(), null);
     }
 
 }

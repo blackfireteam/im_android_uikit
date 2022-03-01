@@ -44,7 +44,7 @@ public class IMBaseMessageVideoSendViewHolder extends IMBaseMessageVideoViewHold
         mBinding.sendStatusView.setBaseMessage(baseMessage);
         mBinding.progressView.setBaseMessage(baseMessage);
 
-        mBinding.avatar.setTargetUserId(baseMessage.getFromUserId());
+        mBinding.avatar.setUserInfo(baseMessage.getFromUserId(), null);
         mBinding.avatar.setShowBorder(false);
 
         mBinding.readStatusView.setMessageAndConversation(baseMessage, conversation);

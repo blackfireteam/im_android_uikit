@@ -11,8 +11,8 @@ import com.masonsoft.imsdk.sample.LocalSettingsManager;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.api.DefaultApi;
 import com.masonsoft.imsdk.sample.im.DiscoverUserManager;
-import com.masonsoft.imsdk.uikit.widget.SessionUserIdChangedViewHelper;
-import com.masonsoft.imsdk.uikit.widget.UserCacheChangedViewHelper;
+import com.masonsoft.imsdk.uikit.SessionUserIdChangedHelper;
+import com.masonsoft.imsdk.uikit.widget.UserInfoChangedViewHelper;
 import com.masonsoft.imsdk.user.UserInfoManager;
 
 import io.github.idonans.core.Progress;
