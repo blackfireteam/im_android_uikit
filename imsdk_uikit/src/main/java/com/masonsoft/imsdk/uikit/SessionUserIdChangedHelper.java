@@ -1,4 +1,4 @@
-package com.masonsoft.imsdk.uikit.widget;
+package com.masonsoft.imsdk.uikit;
 
 import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.MSIMSessionListener;
@@ -6,11 +6,11 @@ import com.masonsoft.imsdk.MSIMSessionListenerProxy;
 
 import io.github.idonans.core.thread.Threads;
 
-public abstract class SessionUserIdChangedViewHelper {
+public abstract class SessionUserIdChangedHelper {
 
     private long mSessionUserId;
 
-    public SessionUserIdChangedViewHelper() {
+    public SessionUserIdChangedHelper() {
         mSessionUserId = MSIMManager.getInstance().getSessionUserId();
         MSIMManager.getInstance().addSessionListener(mSessionListener);
     }
@@ -42,7 +42,7 @@ public abstract class SessionUserIdChangedViewHelper {
                 Threads.postUi(() -> {
                     if (isSessionUserIdChanged()) {
                         mSessionUserId = MSIMManager.getInstance().getSessionUserId();
-                        SessionUserIdChangedViewHelper.this.onSessionUserIdChanged(mSessionUserId);
+                        SessionUserIdChangedHelper.this.onSessionUserIdChanged(mSessionUserId);
                     }
                 });
             }

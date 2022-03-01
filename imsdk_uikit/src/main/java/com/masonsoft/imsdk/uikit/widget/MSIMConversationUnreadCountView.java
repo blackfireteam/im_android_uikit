@@ -20,7 +20,7 @@ import io.github.idonans.appcontext.AppContext;
 import io.github.idonans.core.util.DimenUtil;
 import io.github.idonans.lang.util.ViewUtil;
 
-public class MSIMConversationUnreadCountView extends MSIMConversationDynamicFrameLayout {
+public class MSIMConversationUnreadCountView extends MSIMConversationFrameLayout {
 
     private final boolean DEBUG = MSIMUikitConstants.DEBUG_WIDGET;
 

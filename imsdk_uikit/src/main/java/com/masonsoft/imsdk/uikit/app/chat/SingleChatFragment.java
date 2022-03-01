@@ -146,7 +146,7 @@ public class SingleChatFragment extends CustomInputFragment {
         mContentBinding = ImsdkUikitSingleChatFragmentContentBinding.inflate(inflater, getCustomBinding().customContentContainer, true);
 
         ViewUtil.onClick(mTopBarBinding.topBarBack, v -> ActivityUtil.requestBackPressed(SingleChatFragment.this));
-        mTopBarBinding.topBarTitle.setTargetUserId(mTargetUserId);
+        mTopBarBinding.topBarTitle.setUserInfo(mTargetUserId, null);
         mTopBarBinding.beingTypedView.setTarget(MSIMManager.getInstance().getSessionUserId(), mTargetUserId);
 
         ViewUtil.onClick(mTopBarBinding.topBarMore, v -> showBottomActions());

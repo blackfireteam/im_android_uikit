@@ -14,7 +14,6 @@ import androidx.appcompat.widget.AppCompatTextView;
 import com.masonsoft.imsdk.MSIMBaseMessage;
 import com.masonsoft.imsdk.MSIMConstants;
 import com.masonsoft.imsdk.MSIMConversation;
-import com.masonsoft.imsdk.MSIMSelfUpdateListener;
 import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.uikit.R;
@@ -46,8 +45,6 @@ public class MSIMBaseMessageReadStatusView extends FrameLayout {
     protected MSIMBaseMessage mBaseMessage;
     @Nullable
     protected MSIMConversation mConversation;
-    @SuppressWarnings("FieldCanBeLocal")
-    private MSIMSelfUpdateListener mSelfUpdateListener;
 
     private void initFromAttributes(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         {
@@ -70,19 +67,12 @@ public class MSIMBaseMessageReadStatusView extends FrameLayout {
     public void setMessageAndConversation(@Nullable MSIMBaseMessage baseMessage, @Nullable MSIMConversation conversation) {
         mBaseMessage = baseMessage;
         mConversation = conversation;
-        mSelfUpdateListener = () -> onConversationOrMessageChanged(mConversation, mBaseMessage);
-        if (mBaseMessage != null) {
-            mBaseMessage.addOnSelfUpdateListener(mSelfUpdateListener);
-        }
-        if (mConversation != null) {
-            mConversation.addOnSelfUpdateListener(mSelfUpdateListener);
-        }
-        onConversationOrMessageChanged(mConversation, mBaseMessage);
+        onBaseMessageOrConversationChanged(mBaseMessage, mConversation);
     }
 
-    protected void onConversationOrMessageChanged(@Nullable MSIMConversation conversation, @Nullable MSIMBaseMessage baseMessage) {
+    protected void onBaseMessageOrConversationChanged(@Nullable MSIMBaseMessage baseMessage, @Nullable MSIMConversation conversation) {
         if (DEBUG) {
-            MSIMUikitLog.v("onConversationOrMessageChanged conversation:%s baseMessage:%s", conversation, baseMessage);
+            MSIMUikitLog.v("onBaseMessageOrConversationChanged baseMessage:%s conversation:%s", baseMessage, conversation);
         }
 
         if (baseMessage == null) {

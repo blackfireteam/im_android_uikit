@@ -47,7 +47,6 @@ import com.masonsoft.imsdk.uikit.entity.RtcMessagePayload;
 import com.masonsoft.imsdk.uikit.message.packet.GetAgoraTokenMessagePacket;
 import com.masonsoft.imsdk.uikit.util.TipUtil;
 import com.masonsoft.imsdk.uikit.widget.IMReceivedRtcMessageViewHelper;
-import com.masonsoft.imsdk.uikit.widget.SessionUserIdChangedViewHelper;
 import com.masonsoft.imsdk.util.Objects;
 import com.masonsoft.imsdk.util.WeakObservable;
 import com.tbruyelle.rxpermissions3.RxPermissions;
@@ -88,7 +87,7 @@ public class MSIMRtcMessageManager {
 
     private final IMReceivedRtcMessageViewHelper mReceivedRtcMessageViewHelper;
     @SuppressWarnings("FieldCanBeLocal")
-    private final SessionUserIdChangedViewHelper mSessionUserIdChangedViewHelper;
+    private final SessionUserIdChangedHelper mSessionUserIdChangedHelper;
 
     private static final String KEY_AGORA_APP_ID = "key:agoraAppId_20210817_t2mmmdc";
     @Nullable
@@ -107,7 +106,7 @@ public class MSIMRtcMessageManager {
             }
         };
 
-        mSessionUserIdChangedViewHelper = new SessionUserIdChangedViewHelper() {
+        mSessionUserIdChangedHelper = new SessionUserIdChangedHelper() {
             @Override
             protected void onSessionUserIdChanged(long sessionUserId) {
                 mReceivedRtcMessageViewHelper.setTarget(
@@ -119,7 +118,7 @@ public class MSIMRtcMessageManager {
             }
         };
         mReceivedRtcMessageViewHelper.setTarget(
-                mSessionUserIdChangedViewHelper.getSessionUserId(),
+                mSessionUserIdChangedHelper.getSessionUserId(),
                 MSIMConstants.ID_ANY
         );
 
@@ -443,7 +442,7 @@ public class MSIMRtcMessageManager {
      * @param video true: 视频通话，false: 语音通话
      */
     public void startRtcMessage(long targetUserId, @Nullable MSIMCallback<GeneralResult> callback, boolean video) {
-        final long sessionUserId = mSessionUserIdChangedViewHelper.getSessionUserId();
+        final long sessionUserId = mSessionUserIdChangedHelper.getSessionUserId();
 
         if (mRtcEngineWrapper != null && mRtcEngineWrapper.mRtcEngine != null) {
             // 当前正在通话中
@@ -563,7 +562,7 @@ public class MSIMRtcMessageManager {
     }
 
     public void acceptRtc(long fromUserId, long toUserId, @Nullable MSIMCallback<GeneralResult> callback, @NonNull RtcMessagePayload rtcMessagePayload) {
-        final long sessionUserId = mSessionUserIdChangedViewHelper.getSessionUserId();
+        final long sessionUserId = mSessionUserIdChangedHelper.getSessionUserId();
         final long targetUserId = getTargetUserId(sessionUserId, fromUserId, toUserId);
         final RtcEngineWrapper rtcEngineWrapper = getRtcEngineWrapper(targetUserId, rtcMessagePayload, false);
         if (rtcEngineWrapper == null) {
@@ -591,7 +590,7 @@ public class MSIMRtcMessageManager {
     }
 
     public void hangupRtc(long fromUserId, long toUserId, @Nullable MSIMCallback<GeneralResult> callback, @NonNull RtcMessagePayload rtcMessagePayload) {
-        final long sessionUserId = mSessionUserIdChangedViewHelper.getSessionUserId();
+        final long sessionUserId = mSessionUserIdChangedHelper.getSessionUserId();
         final long targetUserId = getTargetUserId(sessionUserId, fromUserId, toUserId);
         final RtcEngineWrapper rtcEngineWrapper = getRtcEngineWrapper(targetUserId, rtcMessagePayload, false);
         if (rtcEngineWrapper == null) {
@@ -633,7 +632,7 @@ public class MSIMRtcMessageManager {
     }
 
     private void timeoutRtc(long fromUserId, long toUserId, @Nullable MSIMCallback<GeneralResult> callback, @NonNull RtcMessagePayload rtcMessagePayload) {
-        final long sessionUserId = mSessionUserIdChangedViewHelper.getSessionUserId();
+        final long sessionUserId = mSessionUserIdChangedHelper.getSessionUserId();
         final long targetUserId = getTargetUserId(sessionUserId, fromUserId, toUserId);
         final RtcEngineWrapper rtcEngineWrapper = getRtcEngineWrapper(targetUserId, rtcMessagePayload, false);
         if (rtcEngineWrapper == null) {
@@ -679,7 +678,7 @@ public class MSIMRtcMessageManager {
      * 在 rtc 通话的过程中向对方发送 event 信令消息
      */
     private void sendRtcEventSignalingMessage(long targetUserId, @Nullable MSIMCallback<GeneralResult> callback, @NonNull RtcMessagePayload rtcMessagePayload) {
-        final long sessionUserId = mSessionUserIdChangedViewHelper.getSessionUserId();
+        final long sessionUserId = mSessionUserIdChangedHelper.getSessionUserId();
 
         final RtcEngineWrapper rtcEngineWrapper = getRtcEngineWrapper(targetUserId, rtcMessagePayload, false);
         if (rtcEngineWrapper != null) {
@@ -699,7 +698,7 @@ public class MSIMRtcMessageManager {
     @UiThread
     @Nullable
     public RtcEngineWrapper getRtcEngineWrapper(long targetUserId, @NonNull RtcMessagePayload rtcMessagePayload, boolean autoCreate) {
-        final long sessionUserId = mSessionUserIdChangedViewHelper.getSessionUserId();
+        final long sessionUserId = mSessionUserIdChangedHelper.getSessionUserId();
 
         if (mRtcEngineWrapper != null && mRtcEngineWrapper.mRtcEngine != null) {
             if (mRtcEngineWrapper.mSessionUserId == sessionUserId
