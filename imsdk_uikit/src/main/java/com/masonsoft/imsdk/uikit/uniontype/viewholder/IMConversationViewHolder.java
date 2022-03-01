@@ -46,9 +46,9 @@ public class IMConversationViewHolder extends UnionTypeViewHolder {
 
         mBinding.avatar.setUserInfo(targetUserId, targetUserInfo);
         mBinding.avatar.setBorderColor(false);
-        mBinding.name.setUserInfo(targetUserId, null);
-        mBinding.userVerifiedFlag.setUserInfo(targetUserId, null);
-        mBinding.userGoldFlag.setUserInfo(targetUserId, null);
+        mBinding.name.setUserInfo(targetUserId, targetUserInfo);
+        mBinding.userVerifiedFlag.setUserInfo(targetUserId, targetUserInfo);
+        mBinding.userGoldFlag.setUserInfo(targetUserId, targetUserInfo);
 
         mBinding.unreadCountView.setConversation(conversation);
         mBinding.chatRelation.setConversation(conversation);
