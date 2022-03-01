@@ -8,7 +8,6 @@ import androidx.annotation.Nullable;
 
 import com.masonsoft.imsdk.MSIMBaseMessage;
 import com.masonsoft.imsdk.MSIMConstants;
-import com.masonsoft.imsdk.MSIMSelfUpdateListener;
 import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.util.Objects;
@@ -38,8 +37,6 @@ public class MSIMBaseMessageProgressView extends ProgressView {
 
     @Nullable
     protected MSIMBaseMessage mBaseMessage;
-    @SuppressWarnings("FieldCanBeLocal")
-    private MSIMSelfUpdateListener mSelfUpdateListener;
 
     private void initFromAttributes(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         hideProgress();
@@ -65,7 +62,7 @@ public class MSIMBaseMessageProgressView extends ProgressView {
 
     private void showProgress(float progress) {
         if (DEBUG) {
-            MSIMUikitLog.v(Objects.defaultObjectTag(this) + " showProgress progress:%s", progress);
+            MSIMUikitLog.v("%s showProgress progress:%s", Objects.defaultObjectTag(this), progress);
         }
         ViewUtil.setVisibilityIfChanged(this, View.VISIBLE);
         setProgress(progress);
@@ -73,21 +70,20 @@ public class MSIMBaseMessageProgressView extends ProgressView {
 
     private void hideProgress() {
         if (DEBUG) {
-            MSIMUikitLog.v(Objects.defaultObjectTag(this) + " hideProgress");
+            MSIMUikitLog.v("%s hideProgress", Objects.defaultObjectTag(this));
         }
         ViewUtil.setVisibilityIfChanged(this, View.GONE);
     }
 
     public void setBaseMessage(@Nullable MSIMBaseMessage baseMessage) {
         mBaseMessage = baseMessage;
-        mSelfUpdateListener = () -> onBaseMessageChanged(mBaseMessage);
-        if (mBaseMessage != null) {
-            mBaseMessage.addOnSelfUpdateListener(mSelfUpdateListener);
-        }
         onBaseMessageChanged(mBaseMessage);
     }
 
     protected void onBaseMessageChanged(@Nullable MSIMBaseMessage baseMessage) {
+        if (DEBUG) {
+            MSIMUikitLog.v("%s onBaseMessageChanged %s", Objects.defaultObjectTag(this), baseMessage);
+        }
         updateProgress(baseMessage);
     }
 

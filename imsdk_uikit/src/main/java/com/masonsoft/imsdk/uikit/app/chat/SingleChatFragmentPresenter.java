@@ -5,7 +5,8 @@ import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
 import com.masonsoft.imsdk.MSIMConstants;
-import com.masonsoft.imsdk.MSIMConversation;
+import com.masonsoft.imsdk.MSIMConversationListener;
+import com.masonsoft.imsdk.MSIMConversationListenerProxy;
 import com.masonsoft.imsdk.MSIMConversationPageContext;
 import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.MSIMMessage;
@@ -17,7 +18,6 @@ import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.uikit.uniontype.DataObject;
 import com.masonsoft.imsdk.uikit.uniontype.UnionTypeViewHolderListeners;
 import com.masonsoft.imsdk.uikit.uniontype.viewholder.IMBaseMessageViewHolder;
-import com.masonsoft.imsdk.uikit.widget.MSIMConversationChangedViewHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -46,8 +46,7 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
     private long mConsumedTypedLastMessageSeq;
 
     private final MSIMMessagePageContext mMessagePageContext = new MSIMMessagePageContext();
-    @SuppressWarnings("FieldCanBeLocal")
-    private final MSIMConversationChangedViewHelper mConversationChangedViewHelper;
+    private final MSIMConversationListener mConversationListener;
 
     private final DisposableHolder mDefaultRequestHolder = new DisposableHolder();
 
@@ -57,28 +56,19 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
         mSessionUserId = MSIMManager.getInstance().getSessionUserId();
         mTargetUserId = view.getTargetUserId();
 
-        mConversationChangedViewHelper = new MSIMConversationChangedViewHelper(MSIMConversationPageContext.GLOBAL) {
-            @Override
-            protected void onConversationChanged(@Nullable MSIMConversation conversation, @Nullable Object customObject) {
-                if (conversation == null) {
-                    reloadOrRequestMoreMessage();
-                    return;
-                }
-
-                final long sessionUserId = conversation.getSessionUserId();
-                final int conversationType = conversation.getConversationType();
-                final long targetUserId = conversation.getTargetUserId();
-                if (mSessionUserId == sessionUserId
-                        && mConversationType == conversationType
-                        && mTargetUserId == targetUserId) {
-                    reloadOrRequestMoreMessage();
-                }
+        mConversationListener = new MSIMConversationListenerProxy(conversation -> {
+            final long sessionUserId = conversation.getSessionUserId();
+            final int conversationType = conversation.getConversationType();
+            final long targetUserId = conversation.getTargetUserId();
+            if (mSessionUserId == sessionUserId
+                    && mConversationType == conversationType
+                    && mTargetUserId == targetUserId) {
+                reloadOrRequestMoreMessage();
             }
-        };
-        mConversationChangedViewHelper.setConversationByTargetUserId(
-                mSessionUserId,
-                mConversationType,
-                mTargetUserId
+        }, true);
+        MSIMManager.getInstance().getConversationManager().addConversationListener(
+                MSIMConversationPageContext.GLOBAL,
+                mConversationListener
         );
     }
 
@@ -88,6 +78,11 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
     }
 
     private void reloadOrRequestMoreMessage() {
+        if (getView() == null) {
+            MSIMUikitLog.v("reloadOrRequestMoreMessage ignore. view is null.");
+            return;
+        }
+
         MSIMUikitLog.v("reloadOrRequestMoreMessage");
         if (getInitRequestStatus().isLoading()) {
             MSIMUikitLog.v("reloadOrRequestMoreMessage abort getInitRequestStatus().isLoading()");

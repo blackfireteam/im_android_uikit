@@ -114,10 +114,10 @@ public class SingleRtcChatFragment extends SystemInsetsFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mBinding = ImsdkUikitSingleRtcChatFragmentBinding.inflate(inflater, container, false);
-        mBinding.userAvatarAudio.setTargetUserId(mTargetUserId);
-        mBinding.usernameAudio.setTargetUserId(mTargetUserId);
-        mBinding.userAvatarVideo.setTargetUserId(mTargetUserId);
-        mBinding.usernameVideo.setTargetUserId(mTargetUserId);
+        mBinding.userAvatarAudio.setUserInfo(mTargetUserId, null);
+        mBinding.usernameAudio.setUserInfo(mTargetUserId, null);
+        mBinding.userAvatarVideo.setUserInfo(mTargetUserId, null);
+        mBinding.usernameVideo.setUserInfo(mTargetUserId, null);
 
         ViewUtil.onClick(mBinding.actionMutemic, v -> setMuteAudio(!mMuteAudio));
         ViewUtil.onClick(mBinding.actionSpeaker, v -> setSpeaker(!mSpeaker));

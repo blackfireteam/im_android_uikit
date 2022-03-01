@@ -69,6 +69,7 @@ public class HomeSparkViewHolder extends UnionTypeViewHolder {
 
         mBinding.imageLayout.setImageUrl(null, spark.pic);
         mBinding.username.setTargetUserId(spark.userId);
+
         updateLikeAndDislike(0, false);
 
         final ExtraUiData extraUiData = ExtraUiData.valueOf(itemObject);
@@ -112,10 +113,6 @@ public class HomeSparkViewHolder extends UnionTypeViewHolder {
 
             SingleChatActivity.start(innerActivity, spark.userId);
         });
-    }
-
-    private String buildDescText(@NonNull Spark spark) {
-        return "";
     }
 
     private void sendLikeMessage(long targetUserId) {

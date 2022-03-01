@@ -238,8 +238,7 @@ public class ChatRoomFragment extends CustomInputFragment {
             Threads.postBackground(() -> {
                 final long sessionUserId = MSIMManager.getInstance().getSessionUserId();
                 final MSIMChatRoomMessage message = MSIMChatRoomMessageFactory.createTextMessage(
-                        "[" + time + "] mock concurrent message [" + index + "/" + size + "]",
-                        chatRoomContext.getChatRoomContext()
+                        "[" + time + "] mock concurrent message [" + index + "/" + size + "]"
                 );
                 chatRoomContext.getChatRoomContext().getChatRoomManager().sendChatRoomMessage(
                         sessionUserId,
@@ -259,8 +258,7 @@ public class ChatRoomFragment extends CustomInputFragment {
 
         mEnqueueCallback = new LocalEnqueueCallback(true);
         final MSIMChatRoomMessage message = MSIMChatRoomMessageFactory.createTextMessage(
-                text,
-                chatRoomContext.getChatRoomContext()
+                text
         );
         chatRoomContext.getChatRoomContext().getChatRoomManager().sendChatRoomMessage(
                 chatRoomContext.getSessionUserId(),
@@ -282,13 +280,11 @@ public class ChatRoomFragment extends CustomInputFragment {
             final MSIMChatRoomMessage message;
             if (mediaInfo.isVideoMimeType()) {
                 message = MSIMChatRoomMessageFactory.createVideoMessage(
-                        mediaInfo.uri,
-                        chatRoomContext.getChatRoomContext()
+                        mediaInfo.uri
                 );
             } else {
                 message = MSIMChatRoomMessageFactory.createImageMessage(
-                        mediaInfo.uri,
-                        chatRoomContext.getChatRoomContext()
+                        mediaInfo.uri
                 );
             }
             chatRoomContext.getChatRoomContext().getChatRoomManager().sendChatRoomMessage(
@@ -315,8 +311,7 @@ public class ChatRoomFragment extends CustomInputFragment {
 
         mEnqueueCallback = new LocalEnqueueCallback(true);
         final MSIMChatRoomMessage message = MSIMChatRoomMessageFactory.createAudioMessage(
-                audioFilePath,
-                chatRoomContext.getChatRoomContext()
+                audioFilePath
         );
         chatRoomContext.getChatRoomContext().getChatRoomManager().sendChatRoomMessage(
                 chatRoomContext.getSessionUserId(),
@@ -339,8 +334,7 @@ public class ChatRoomFragment extends CustomInputFragment {
                 locationInfo.subTitle,
                 locationInfo.lat,
                 locationInfo.lng,
-                zoom,
-                chatRoomContext.getChatRoomContext()
+                zoom
         );
         chatRoomContext.getChatRoomContext().getChatRoomManager().sendChatRoomMessage(
                 chatRoomContext.getSessionUserId(),

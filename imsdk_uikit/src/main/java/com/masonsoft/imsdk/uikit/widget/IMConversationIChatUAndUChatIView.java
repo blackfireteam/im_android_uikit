@@ -10,7 +10,7 @@ import com.masonsoft.imsdk.MSIMConversation;
 import com.masonsoft.imsdk.MSIMConversationExt;
 import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 
-public class IMConversationIChatUAndUChatIView extends IMConversationDynamicTextView {
+public class IMConversationIChatUAndUChatIView extends IMConversationTextView {
 
     private final boolean DEBUG = MSIMUikitConstants.DEBUG_WIDGET;
 
@@ -39,6 +39,8 @@ public class IMConversationIChatUAndUChatIView extends IMConversationDynamicText
 
     @Override
     protected void onConversationChanged(@Nullable MSIMConversation conversation) {
+        super.onConversationChanged(conversation);
+
         if (conversation == null) {
             setText("");
             return;

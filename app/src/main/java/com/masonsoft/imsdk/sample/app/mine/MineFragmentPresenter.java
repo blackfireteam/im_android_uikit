@@ -29,28 +29,28 @@ public class MineFragmentPresenter extends DynamicPresenter<MineFragment.ViewImp
     private final DisposableHolder mRequestHolder = new DisposableHolder();
     private Object mLastUploadAvatarTag;
     @SuppressWarnings("unused")
-    private final SessionUserCacheChangedViewHelper mSessionUserCacheChangedViewHelper = new SessionUserCacheChangedViewHelper();
+    private final SessionUserInfoChangedViewHelper mSessionUserCacheChangedViewHelper = new SessionUserInfoChangedViewHelper();
 
     public MineFragmentPresenter(MineFragment.ViewImpl view) {
         super(view);
     }
 
-    private class SessionUserCacheChangedViewHelper extends UserCacheChangedViewHelper {
+    private class SessionUserInfoChangedViewHelper extends UserInfoChangedViewHelper {
 
         @SuppressWarnings("FieldCanBeLocal")
-        private final SessionUserIdChangedViewHelper mSessionUserIdChangedViewHelper = new SessionUserIdChangedViewHelper() {
+        private final SessionUserIdChangedHelper mSessionUserIdChangedHelper = new SessionUserIdChangedHelper() {
             @Override
             protected void onSessionUserIdChanged(long sessionUserId) {
-                SessionUserCacheChangedViewHelper.this.setTargetUserId(sessionUserId);
+                SessionUserInfoChangedViewHelper.this.setUserInfo(sessionUserId);
             }
         };
 
-        private SessionUserCacheChangedViewHelper() {
-            setTargetUserId(mSessionUserIdChangedViewHelper.getSessionUserId());
+        private SessionUserInfoChangedViewHelper() {
+            setUserInfo(mSessionUserIdChangedHelper.getSessionUserId());
         }
 
         @Override
-        protected void onUserCacheChanged(@Nullable MSIMUserInfo userInfo) {
+        protected void onUserInfoChanged(long userId, @Nullable MSIMUserInfo userInfo) {
             if (getView() == null) {
                 return;
             }

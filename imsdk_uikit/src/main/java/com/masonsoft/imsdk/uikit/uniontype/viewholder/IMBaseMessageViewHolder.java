@@ -19,7 +19,6 @@ import androidx.lifecycle.Lifecycle;
 
 import com.google.common.collect.Lists;
 import com.masonsoft.imsdk.MSIMBaseMessage;
-import com.masonsoft.imsdk.MSIMChatRoomContext;
 import com.masonsoft.imsdk.MSIMChatRoomInfo;
 import com.masonsoft.imsdk.MSIMChatRoomMessage;
 import com.masonsoft.imsdk.MSIMConstants;
@@ -28,6 +27,7 @@ import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.MSIMMessage;
 import com.masonsoft.imsdk.common.TopActivity;
 import com.masonsoft.imsdk.core.I18nResources;
+import com.masonsoft.imsdk.uikit.GlobalChatRoomManager;
 import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.uikit.R;
@@ -61,7 +61,7 @@ import io.github.idonans.uniontype.UnionTypeItemObject;
 import io.github.idonans.uniontype.UnionTypeMapper;
 import io.github.idonans.uniontype.UnionTypeViewHolder;
 
-public abstract class IMBaseMessageViewHolder extends MSIMSelfUpdateUnionTypeViewHolder {
+public abstract class IMBaseMessageViewHolder extends UnionTypeViewHolder {
 
     protected static final boolean DEBUG = true;
 
@@ -136,13 +136,7 @@ public abstract class IMBaseMessageViewHolder extends MSIMSelfUpdateUnionTypeVie
     }
 
     @Override
-    protected int getBestUnionType(@NonNull DataObject dataObject) {
-        return Helper.getDefaultUnionType(dataObject);
-    }
-
-    @Override
     public void onBindUpdate() {
-        super.onBindUpdate();
         final DataObject dataObject = getItemObject(DataObject.class);
         Preconditions.checkNotNull(dataObject);
         final MSIMBaseMessage baseMessage = dataObject.getObject(MSIMBaseMessage.class);
@@ -676,10 +670,16 @@ public abstract class IMBaseMessageViewHolder extends MSIMSelfUpdateUnionTypeVie
             // 是否有删除消息的权限
             boolean canDeleteMessage = false;
             if (holderFinder.baseMessage instanceof MSIMChatRoomMessage) {
-                final MSIMChatRoomContext chatRoomContext = ((MSIMChatRoomMessage) holderFinder.baseMessage).getChatRoomContext();
-                final MSIMChatRoomInfo chatRoomInfo = chatRoomContext.getChatRoomInfo();
-                if (chatRoomInfo != null) {
-                    canDeleteMessage = chatRoomInfo.hasActionDeleteMessage();
+                final MSIMChatRoomMessage chatRoomMessage = (MSIMChatRoomMessage) holderFinder.baseMessage;
+                final long sessionUserId = chatRoomMessage.getSessionUserId();
+                final long chatRoomId = chatRoomMessage.getChatRoomId();
+                final GlobalChatRoomManager.StaticChatRoomContext staticChatRoomContext =
+                        GlobalChatRoomManager.getInstance().getStaticChatRoomContext(sessionUserId, chatRoomId, false);
+                if (staticChatRoomContext != null) {
+                    final MSIMChatRoomInfo chatRoomInfo = staticChatRoomContext.getChatRoomContext().getChatRoomInfo();
+                    if (chatRoomInfo != null) {
+                        canDeleteMessage = chatRoomInfo.hasActionDeleteMessage();
+                    }
                 }
             }
 
@@ -813,11 +813,19 @@ public abstract class IMBaseMessageViewHolder extends MSIMSelfUpdateUnionTypeVie
                         message
                 );
             } else if (baseMessage instanceof MSIMChatRoomMessage) {
-                final MSIMChatRoomMessage message = (MSIMChatRoomMessage) baseMessage;
-                message.getChatRoomContext().getChatRoomManager().revokeMessage(
-                        message.getSessionUserId(),
-                        message
-                );
+                final MSIMChatRoomMessage chatRoomMessage = (MSIMChatRoomMessage) baseMessage;
+                final long sessionUserId = chatRoomMessage.getSessionUserId();
+                final long chatRoomId = chatRoomMessage.getChatRoomId();
+                final GlobalChatRoomManager.StaticChatRoomContext staticChatRoomContext =
+                        GlobalChatRoomManager.getInstance().getStaticChatRoomContext(sessionUserId, chatRoomId, false);
+                if (staticChatRoomContext != null) {
+                    staticChatRoomContext.getChatRoomContext().getChatRoomManager().revokeMessage(
+                            chatRoomMessage.getSessionUserId(),
+                            chatRoomMessage
+                    );
+                } else {
+                    MSIMUikitLog.e("unexpected. staticChatRoomContext is null.");
+                }
             } else {
                 MSIMUikitLog.e("revoke MSIMBaseMessage not impl: %s", baseMessage);
             }
@@ -837,10 +845,18 @@ public abstract class IMBaseMessageViewHolder extends MSIMSelfUpdateUnionTypeVie
                 final MSIMChatRoomMessage message = (MSIMChatRoomMessage) baseMessage;
                 final long serverMessageId = message.getServerMessageId();
                 if (serverMessageId > 0) {
-                    message.getChatRoomContext().getChatRoomManager().deleteMessages(
-                            message.getSessionUserId(),
-                            Lists.newArrayList(serverMessageId)
-                    );
+                    final long sessionUserId = message.getSessionUserId();
+                    final long chatRoomId = message.getChatRoomId();
+                    final GlobalChatRoomManager.StaticChatRoomContext staticChatRoomContext =
+                            GlobalChatRoomManager.getInstance().getStaticChatRoomContext(sessionUserId, chatRoomId, false);
+                    if (staticChatRoomContext != null) {
+                        staticChatRoomContext.getChatRoomContext().getChatRoomManager().deleteMessages(
+                                message.getSessionUserId(),
+                                Lists.newArrayList(serverMessageId)
+                        );
+                    } else {
+                        MSIMUikitLog.e("unexpected. staticChatRoomContext is null.");
+                    }
                 } else {
                     MSIMUikitLog.e("delete MSIMChatRoomMessage's server message id is invalid:%s", serverMessageId);
                 }

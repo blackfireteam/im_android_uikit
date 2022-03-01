@@ -21,7 +21,7 @@
         <attr name="smallCache" format="boolean" />
         <attr name="autoPlay" format="boolean" />
     </declare-styleable>
-    <declare-styleable name="UserCacheAvatar">
+    <declare-styleable name="MSIMUserInfoAvatar">
         <attr name="avatarSize">
             <enum name="small" value="0" />
             <enum name="middle" value="1" />

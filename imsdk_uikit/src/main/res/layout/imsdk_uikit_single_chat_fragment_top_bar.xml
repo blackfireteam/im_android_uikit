@@ -17,7 +17,7 @@
         android:scaleType="centerInside"
         android:src="@drawable/imsdk_uikit_ic_arrow_left" />
 
-    <com.masonsoft.imsdk.uikit.widget.UserCacheName
+    <com.masonsoft.imsdk.uikit.widget.MSIMUserCacheName
         android:id="@+id/top_bar_title"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"

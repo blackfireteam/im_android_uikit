@@ -12,21 +12,21 @@ import com.masonsoft.imsdk.uikit.R;
 
 import io.github.idonans.lang.util.ViewUtil;
 
-public class UserCacheGoldFlagView extends UserCacheDynamicImageView {
+public class MSIMUserInfoGoldFlagView extends MSIMUserInfoImageView {
 
-    public UserCacheGoldFlagView(Context context) {
+    public MSIMUserInfoGoldFlagView(Context context) {
         this(context, null);
     }
 
-    public UserCacheGoldFlagView(Context context, AttributeSet attrs) {
+    public MSIMUserInfoGoldFlagView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public UserCacheGoldFlagView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public MSIMUserInfoGoldFlagView(Context context, AttributeSet attrs, int defStyleAttr) {
         this(context, attrs, defStyleAttr, 0);
     }
 
-    public UserCacheGoldFlagView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public MSIMUserInfoGoldFlagView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         initFromAttributes(context, attrs, defStyleAttr, defStyleRes);
     }
@@ -37,7 +37,9 @@ public class UserCacheGoldFlagView extends UserCacheDynamicImageView {
     }
 
     @Override
-    protected void onUserCacheUpdate(@Nullable MSIMUserInfo userInfo) {
+    protected void onUserInfoLoad(long userId, @Nullable MSIMUserInfo userInfo) {
+        super.onUserInfoLoad(userId, userInfo);
+
         final boolean gold = userInfo != null && userInfo.isGold();
         ViewUtil.setVisibilityIfChanged(this, gold ? View.VISIBLE : View.GONE);
     }

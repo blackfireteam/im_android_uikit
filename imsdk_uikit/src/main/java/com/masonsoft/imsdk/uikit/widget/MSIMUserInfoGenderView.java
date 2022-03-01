@@ -10,21 +10,21 @@ import com.masonsoft.imsdk.MSIMUserInfo;
 import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 import com.masonsoft.imsdk.uikit.R;
 
-public class UserCacheGenderView extends UserCacheDynamicImageView {
+public class MSIMUserInfoGenderView extends MSIMUserInfoImageView {
 
-    public UserCacheGenderView(Context context) {
+    public MSIMUserInfoGenderView(Context context) {
         this(context, null);
     }
 
-    public UserCacheGenderView(Context context, AttributeSet attrs) {
+    public MSIMUserInfoGenderView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public UserCacheGenderView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public MSIMUserInfoGenderView(Context context, AttributeSet attrs, int defStyleAttr) {
         this(context, attrs, defStyleAttr, 0);
     }
 
-    public UserCacheGenderView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public MSIMUserInfoGenderView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         initFromAttributes(context, attrs, defStyleAttr, defStyleRes);
     }
@@ -35,7 +35,9 @@ public class UserCacheGenderView extends UserCacheDynamicImageView {
     }
 
     @Override
-    protected void onUserCacheUpdate(@Nullable MSIMUserInfo userInfo) {
+    protected void onUserInfoLoad(long userId, @Nullable MSIMUserInfo userInfo) {
+        super.onUserInfoLoad(userId, userInfo);
+
         if (userInfo == null) {
             setGender(MSIMUikitConstants.Gender.FEMALE);
         } else {

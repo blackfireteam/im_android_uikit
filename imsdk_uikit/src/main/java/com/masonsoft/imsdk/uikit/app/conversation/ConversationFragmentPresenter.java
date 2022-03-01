@@ -16,7 +16,7 @@ import com.masonsoft.imsdk.lang.GeneralResultException;
 import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.uikit.uniontype.DataObject;
 import com.masonsoft.imsdk.uikit.uniontype.IMUikitUnionTypeMapper;
-import com.masonsoft.imsdk.uikit.widget.SessionUserIdChangedViewHelper;
+import com.masonsoft.imsdk.uikit.SessionUserIdChangedHelper;
 import com.masonsoft.imsdk.util.Objects;
 import com.masonsoft.imsdk.util.TimeDiffDebugHelper;
 
@@ -38,7 +38,7 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
 
     private static final boolean DEBUG = true;
 
-    private final SessionUserIdChangedViewHelper mSessionUserIdChangedViewHelper;
+    private final SessionUserIdChangedHelper mSessionUserIdChangedHelper;
     @SuppressWarnings("FieldCanBeLocal")
     private final MSIMConversationListener mConversationListener;
     private final int mConversationType = MSIMConstants.ConversationType.C2C;
@@ -52,26 +52,21 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
     @UiThread
     public ConversationFragmentPresenter(@NonNull ConversationFragment.ViewImpl view) {
         super(view);
-        mSessionUserIdChangedViewHelper = new SessionUserIdChangedViewHelper() {
+        mSessionUserIdChangedHelper = new SessionUserIdChangedHelper() {
             @Override
             protected void onSessionUserIdChanged(long sessionUserId) {
                 reloadWithNewSessionUserId();
                 view.onSessionUserIdChanged(sessionUserId);
             }
         };
-        mConversationListener = new MSIMConversationListenerProxy(new MSIMConversationListener() {
-            @Override
-            public void onConversationChanged(long sessionUserId, long conversationId, int conversationType, long targetUserId) {
-                addOrUpdateConversation(sessionUserId, conversationId);
-            }
-        });
+        mConversationListener = new MSIMConversationListenerProxy(this::addOrUpdateConversation);
         MSIMManager.getInstance().getConversationManager().addConversationListener(mConversationPageContext, mConversationListener);
         mBatchQueueAddOrUpdateConversation.setConsumer(this::addOrUpdateConversation);
         view.onSessionUserIdChanged(getSessionUserId());
     }
 
     private long getSessionUserId() {
-        return mSessionUserIdChangedViewHelper.getSessionUserId();
+        return mSessionUserIdChangedHelper.getSessionUserId();
     }
 
     private void reloadWithNewSessionUserId() {
@@ -88,15 +83,12 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
         return getView() == null;
     }
 
-    private void addOrUpdateConversation(long sessionUserId, long conversationId) {
-        if (isAbort(sessionUserId)) {
+    private void addOrUpdateConversation(@NonNull MSIMConversation conversation) {
+        if (isAbort(conversation.getSessionUserId())) {
             return;
         }
 
-        final MSIMConversation conversation = MSIMManager.getInstance().getConversationManager().getConversation(sessionUserId, conversationId);
-        if (conversation != null) {
-            mBatchQueueAddOrUpdateConversation.add(conversation);
-        }
+        mBatchQueueAddOrUpdateConversation.add(conversation);
     }
 
     @WorkerThread

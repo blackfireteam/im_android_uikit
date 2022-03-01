@@ -148,7 +148,7 @@ public class SingleChatFragment extends CustomInputFragment {
         getCustomBinding().customSoftKeyboard.getCustomConfig().setShowSnapchat(false);
 
         ViewUtil.onClick(mTopBarBinding.topBarBack, v -> ActivityUtil.requestBackPressed(SingleChatFragment.this));
-        mTopBarBinding.topBarTitle.setTargetUserId(mTargetUserId);
+        mTopBarBinding.topBarTitle.setUserInfo(mTargetUserId, null);
         mTopBarBinding.beingTypedView.setTarget(MSIMManager.getInstance().getSessionUserId(), mTargetUserId);
 
         ViewUtil.onClick(mTopBarBinding.topBarMore, v -> showBottomActions());

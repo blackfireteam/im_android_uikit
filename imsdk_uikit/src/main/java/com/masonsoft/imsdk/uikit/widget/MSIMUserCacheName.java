@@ -7,26 +7,28 @@ import androidx.annotation.Nullable;
 
 import com.masonsoft.imsdk.MSIMUserInfo;
 
-public class UserCacheName extends UserCacheDynamicTextView {
+public class MSIMUserCacheName extends MSIMUserInfoTextView {
 
-    public UserCacheName(Context context) {
+    public MSIMUserCacheName(Context context) {
         this(context, null);
     }
 
-    public UserCacheName(Context context, AttributeSet attrs) {
+    public MSIMUserCacheName(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public UserCacheName(Context context, AttributeSet attrs, int defStyleAttr) {
+    public MSIMUserCacheName(Context context, AttributeSet attrs, int defStyleAttr) {
         this(context, attrs, defStyleAttr, 0);
     }
 
-    public UserCacheName(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public MSIMUserCacheName(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
     @Override
-    protected void onUserCacheUpdate(@Nullable MSIMUserInfo userInfo) {
+    protected void onUserInfoLoad(long userId, @Nullable MSIMUserInfo userInfo) {
+        super.onUserInfoLoad(userId, userInfo);
+
         if (userInfo == null) {
             setText(null);
         } else {

@@ -12,21 +12,21 @@ import com.masonsoft.imsdk.uikit.R;
 
 import io.github.idonans.lang.util.ViewUtil;
 
-public class UserCacheVerifiedFlagView extends UserCacheDynamicImageView {
+public class MSIMUserInfoVerifiedFlagView extends MSIMUserInfoImageView {
 
-    public UserCacheVerifiedFlagView(Context context) {
+    public MSIMUserInfoVerifiedFlagView(Context context) {
         this(context, null);
     }
 
-    public UserCacheVerifiedFlagView(Context context, AttributeSet attrs) {
+    public MSIMUserInfoVerifiedFlagView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public UserCacheVerifiedFlagView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public MSIMUserInfoVerifiedFlagView(Context context, AttributeSet attrs, int defStyleAttr) {
         this(context, attrs, defStyleAttr, 0);
     }
 
-    public UserCacheVerifiedFlagView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public MSIMUserInfoVerifiedFlagView(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         initFromAttributes(context, attrs, defStyleAttr, defStyleRes);
     }
@@ -37,7 +37,9 @@ public class UserCacheVerifiedFlagView extends UserCacheDynamicImageView {
     }
 
     @Override
-    protected void onUserCacheUpdate(@Nullable MSIMUserInfo userInfo) {
+    protected void onUserInfoLoad(long userId, @Nullable MSIMUserInfo userInfo) {
+        super.onUserInfoLoad(userId, userInfo);
+
         final boolean verified = userInfo != null && userInfo.isVerified();
         ViewUtil.setVisibilityIfChanged(this, verified ? View.VISIBLE : View.GONE);
     }

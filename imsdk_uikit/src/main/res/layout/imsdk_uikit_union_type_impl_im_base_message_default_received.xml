@@ -28,7 +28,7 @@
         app:alignItems="flex_start"
         app:flexDirection="row">
 
-        <com.masonsoft.imsdk.uikit.widget.UserCacheAvatar
+        <com.masonsoft.imsdk.uikit.widget.MSIMUserInfoAvatar
             android:id="@+id/avatar"
             android:layout_width="40dp"
             android:layout_height="40dp"
