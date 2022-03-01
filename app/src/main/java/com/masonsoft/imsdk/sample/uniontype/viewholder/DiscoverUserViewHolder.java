@@ -34,8 +34,8 @@ public class DiscoverUserViewHolder extends UnionTypeViewHolder {
         Preconditions.checkNotNull(itemObject);
         final long userId = (long) itemObject.object;
 
-        mBinding.avatar.setTargetUserId(userId);
-        mBinding.username.setTargetUserId(userId);
+        mBinding.avatar.setUserInfo(userId, null);
+        mBinding.username.setUserInfo(userId, null);
 
         ViewUtil.onClick(itemView, v -> {
             final Activity innerActivity = host.getActivity();
