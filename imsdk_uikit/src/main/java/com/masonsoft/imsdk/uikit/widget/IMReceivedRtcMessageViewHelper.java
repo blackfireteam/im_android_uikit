@@ -46,24 +46,20 @@ public abstract class IMReceivedRtcMessageViewHelper extends IMReceivedCustomSig
     private final MSIMMessageListener mMessageListener = new MSIMMessageListenerAdapter() {
         private final TaskQueue mDispatchQueue = new TaskQueue(1);
 
-        private boolean notMatch(long sessionUserId, long targetUserId) {
-            return !MSIMConstants.isIdMatch(IMReceivedRtcMessageViewHelper.this.getSessionUserId(), sessionUserId)
-                    || !MSIMConstants.isIdMatch(IMReceivedRtcMessageViewHelper.this.getTargetUserId(), targetUserId);
+        private boolean notMatch(@NonNull MSIMMessage message) {
+            return !MSIMConstants.isIdMatch(IMReceivedRtcMessageViewHelper.this.getSessionUserId(), message.getSessionUserId())
+                    || !MSIMConstants.isIdMatch(IMReceivedRtcMessageViewHelper.this.getTargetUserId(), message.getTargetUserId());
         }
 
         @Override
-        public void onMessageChanged(long sessionUserId, int conversationType, long targetUserId, long localMessageId) {
-            if (notMatch(sessionUserId, targetUserId)) {
+        public void onMessageChanged(@NonNull MSIMMessage message) {
+            super.onMessageChanged(message);
+
+            if (notMatch(message)) {
                 return;
             }
 
             mDispatchQueue.enqueue(() -> {
-                final MSIMMessage message = MSIMManager.getInstance().getMessageManager().getMessage(
-                        sessionUserId, conversationType, targetUserId, localMessageId);
-                if (message == null) {
-                    MSIMUikitLog.e("unexpected message is null");
-                    return;
-                }
                 final int messageType = message.getMessageType();
                 if (!MSIMConstants.MessageType.isCustomMessage(messageType)) {
                     MSIMUikitLog.i("ignore. message is not custom message. messageType:%s", messageType);
@@ -72,7 +68,7 @@ public abstract class IMReceivedRtcMessageViewHelper extends IMReceivedCustomSig
 
                 final CustomMessagePayload customMessagePayload = createCustomObject(message);
                 Threads.postUi(() -> {
-                    if (notMatch(sessionUserId, targetUserId)) {
+                    if (notMatch(message)) {
                         return;
                     }
 
