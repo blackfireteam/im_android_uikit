@@ -10,6 +10,8 @@ import com.masonsoft.imsdk.MSIMConversationListenerProxy;
 import com.masonsoft.imsdk.MSIMConversationPageContext;
 import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.MSIMMessage;
+import com.masonsoft.imsdk.MSIMMessageListener;
+import com.masonsoft.imsdk.MSIMMessageListenerProxy;
 import com.masonsoft.imsdk.MSIMMessagePageContext;
 import com.masonsoft.imsdk.lang.GeneralResult;
 import com.masonsoft.imsdk.lang.GeneralResultException;
@@ -18,12 +20,15 @@ import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.uikit.uniontype.DataObject;
 import com.masonsoft.imsdk.uikit.uniontype.UnionTypeViewHolderListeners;
 import com.masonsoft.imsdk.uikit.uniontype.viewholder.IMBaseMessageViewHolder;
+import com.masonsoft.imsdk.util.Objects;
+import com.masonsoft.imsdk.util.TimeDiffDebugHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import io.github.idonans.core.thread.BatchQueue;
 import io.github.idonans.dynamic.DynamicResult;
 import io.github.idonans.dynamic.page.PagePresenter;
 import io.github.idonans.lang.DisposableHolder;
@@ -47,8 +52,11 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
 
     private final MSIMMessagePageContext mMessagePageContext = new MSIMMessagePageContext();
     private final MSIMConversationListener mConversationListener;
+    private final MSIMMessageListener mMessageListener;
 
     private final DisposableHolder mDefaultRequestHolder = new DisposableHolder();
+
+    private final BatchQueue<MSIMMessage> mBatchQueueUpdateOrRemoveMessage = new BatchQueue<>();
 
     @UiThread
     public SingleChatFragmentPresenter(@NonNull SingleChatFragment.ViewImpl view) {
@@ -70,11 +78,64 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
                 MSIMConversationPageContext.GLOBAL,
                 mConversationListener
         );
+
+        mBatchQueueUpdateOrRemoveMessage.setConsumer(this::updateOrRemoveMessage);
+        mMessageListener = new MSIMMessageListenerProxy(this::updateOrRemoveMessage);
+        MSIMManager.getInstance().getMessageManager().addMessageListener(mMessagePageContext, mMessageListener);
     }
 
     @Nullable
     public SingleChatFragment.ViewImpl getView() {
         return (SingleChatFragment.ViewImpl) super.getView();
+    }
+
+    private void updateOrRemoveMessage(@NonNull MSIMMessage message) {
+        final long sessionUserId = message.getSessionUserId();
+        final int conversationType = message.getConversationType();
+        final long targetUserId = message.getTargetUserId();
+        if (mSessionUserId == sessionUserId
+                && mConversationType == conversationType
+                && mTargetUserId == targetUserId) {
+
+            mBatchQueueUpdateOrRemoveMessage.add(message);
+        }
+    }
+
+    private void updateOrRemoveMessage(@Nullable List<MSIMMessage> list) {
+        if (list == null || list.isEmpty()) {
+            return;
+        }
+
+        // 移除重复的消息
+        final List<MSIMMessage> removeDuplicateList = new ArrayList<>();
+        for (MSIMMessage message : list) {
+            removeDuplicateList.remove(message);
+            removeDuplicateList.add(message);
+        }
+
+        final List<UnionTypeItemObject> unionTypeItemObjectList = new ArrayList<>();
+        for (MSIMMessage message : removeDuplicateList) {
+            final UnionTypeItemObject unionTypeItemObject = createDefault(message);
+            if (unionTypeItemObject != null) {
+                unionTypeItemObjectList.add(unionTypeItemObject);
+            }
+        }
+
+        if (unionTypeItemObjectList.isEmpty()) {
+            return;
+        }
+
+        final SingleChatFragment.ViewImpl view = getView();
+        if (view == null) {
+            return;
+        }
+
+        final TimeDiffDebugHelper timeDiffDebugHelper = new TimeDiffDebugHelper(Objects.defaultObjectTag(this));
+        timeDiffDebugHelper.mark();
+        view.updateOrRemoveMessageList(unionTypeItemObjectList);
+        timeDiffDebugHelper.mark();
+        timeDiffDebugHelper.print("updateOrRemoveMessage unionTypeItemObjectList size:" + unionTypeItemObjectList.size());
+
     }
 
     private void reloadOrRequestMoreMessage() {
