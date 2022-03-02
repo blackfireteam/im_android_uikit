@@ -8,6 +8,7 @@ import androidx.annotation.NonNull;
 
 import com.masonsoft.imsdk.MSIMConversation;
 import com.masonsoft.imsdk.MSIMManager;
+import com.masonsoft.imsdk.MSIMUserInfo;
 import com.masonsoft.imsdk.core.I18nResources;
 import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 import com.masonsoft.imsdk.uikit.MSIMUikitLog;
@@ -41,8 +42,9 @@ public class IMConversationViewHolder extends UnionTypeViewHolder {
         final MSIMConversation conversation = itemObject.getObject(MSIMConversation.class);
 
         final long targetUserId = conversation.getTargetUserId();
+        final MSIMUserInfo targetUserInfo = conversation.getTargetUserInfo();
 
-        mBinding.avatar.setUserInfo(targetUserId, null);
+        mBinding.avatar.setUserInfo(targetUserId, targetUserInfo);
         mBinding.avatar.setBorderColor(false);
         mBinding.name.setUserInfo(targetUserId, null);
         mBinding.userVerifiedFlag.setUserInfo(targetUserId, null);

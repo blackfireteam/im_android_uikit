@@ -14,16 +14,14 @@ import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.lang.GeneralResult;
 import com.masonsoft.imsdk.lang.GeneralResultException;
 import com.masonsoft.imsdk.uikit.MSIMUikitLog;
+import com.masonsoft.imsdk.uikit.SessionUserIdChangedHelper;
 import com.masonsoft.imsdk.uikit.uniontype.DataObject;
 import com.masonsoft.imsdk.uikit.uniontype.IMUikitUnionTypeMapper;
-import com.masonsoft.imsdk.uikit.SessionUserIdChangedHelper;
 import com.masonsoft.imsdk.util.Objects;
 import com.masonsoft.imsdk.util.TimeDiffDebugHelper;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import io.github.idonans.core.thread.BatchQueue;
 import io.github.idonans.dynamic.DynamicResult;
@@ -98,16 +96,14 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
         }
 
         // 移除重复的会话
-        final Set<String> duplicate = new HashSet<>();
+        final List<MSIMConversation> removeDuplicateList = new ArrayList<>();
+        for (MSIMConversation conversation : updateList) {
+            removeDuplicateList.remove(conversation);
+            removeDuplicateList.add(conversation);
+        }
 
         final List<UnionTypeItemObject> unionTypeItemObjectList = new ArrayList<>();
-        for (MSIMConversation conversation : updateList) {
-            final String key = conversation.getSessionUserId() + "_" + conversation.getConversationId();
-            if (duplicate.contains(key)) {
-                continue;
-            }
-            duplicate.add(key);
-
+        for (MSIMConversation conversation : removeDuplicateList) {
             final UnionTypeItemObject unionTypeItemObject = createDefault(conversation);
             if (unionTypeItemObject != null) {
                 unionTypeItemObjectList.add(unionTypeItemObject);
@@ -277,19 +273,19 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
         public boolean isSameItem(@Nullable Object other) {
             if (other instanceof DeepDiffDataObject) {
                 final DeepDiffDataObject otherDataObject = (DeepDiffDataObject) other;
-                return ((MSIMConversation) this.object).getConversationId() == ((MSIMConversation) otherDataObject.object).getConversationId()
-                        && ((MSIMConversation) this.object).getSessionUserId() == ((MSIMConversation) otherDataObject.object).getSessionUserId();
+                final MSIMConversation thisConversation = getObject(MSIMConversation.class);
+                final MSIMConversation otherConversation = otherDataObject.getObject(MSIMConversation.class);
+                if (thisConversation == null || otherConversation == null) {
+                    return false;
+                }
+
+                return thisConversation.equals(otherConversation);
             }
             return false;
         }
 
         @Override
         public boolean isSameContent(@Nullable Object other) {
-            if (other instanceof DeepDiffDataObject) {
-                final DeepDiffDataObject otherDataObject = (DeepDiffDataObject) other;
-                return ((MSIMConversation) this.object).getConversationId() == ((MSIMConversation) otherDataObject.object).getConversationId()
-                        && ((MSIMConversation) this.object).getSessionUserId() == ((MSIMConversation) otherDataObject.object).getSessionUserId();
-            }
             return false;
         }
     }
