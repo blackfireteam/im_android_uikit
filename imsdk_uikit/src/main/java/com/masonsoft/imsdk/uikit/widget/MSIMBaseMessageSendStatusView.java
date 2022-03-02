@@ -82,7 +82,7 @@ public class MSIMBaseMessageSendStatusView extends MSIMBaseMessageFrameLayout {
         ViewUtil.setVisibilityIfChanged(mSendingView, View.GONE);
 
         ViewUtil.onClick(this, v -> {
-            final MSIMBaseMessage baseMessage = mBaseMessage;
+            final MSIMBaseMessage baseMessage = getBaseMessage();
             if (baseMessage != null) {
                 final int sendState = baseMessage.getSendStatus(MSIMConstants.SendStatus.SUCCESS);
                 if (sendState == MSIMConstants.SendStatus.FAIL) {
@@ -122,8 +122,7 @@ public class MSIMBaseMessageSendStatusView extends MSIMBaseMessageFrameLayout {
     };
 
     @Override
-    protected void onBaseMessageChanged(@Nullable MSIMBaseMessage baseMessage) {
-        super.onBaseMessageChanged(baseMessage);
+    protected void onBaseMessageUpdate(@Nullable MSIMBaseMessage baseMessage) {
         if (baseMessage == null) {
             mMessageSendStatus = MSIMConstants.SendStatus.SUCCESS;
             mMessageSendTimeMs = 0L;

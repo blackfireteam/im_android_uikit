@@ -42,7 +42,7 @@
                 android:scaleType="centerInside"
                 android:src="@drawable/imsdk_uikit_ic_user_online" />
 
-            <com.masonsoft.imsdk.uikit.widget.MSIMUserCacheName
+            <com.masonsoft.imsdk.uikit.widget.MSIMUserInfoName
                 android:id="@+id/username"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"

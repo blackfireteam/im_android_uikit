@@ -5,7 +5,8 @@ import android.util.AttributeSet;
 
 import com.masonsoft.imsdk.uikit.SessionUserIdChangedHelper;
 
-public class MSIMSessionUserInfoNameText extends MSIMUserCacheName {
+@Deprecated
+public class MSIMSessionUserInfoNameText extends MSIMUserInfoName {
 
     @SuppressWarnings("FieldCanBeLocal")
     private SessionUserIdChangedHelper mSessionUserIdChangedHelper;

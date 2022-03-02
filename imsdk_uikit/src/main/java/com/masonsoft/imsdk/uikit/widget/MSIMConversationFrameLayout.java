@@ -9,8 +9,6 @@ import androidx.annotation.Nullable;
 
 import com.masonsoft.imsdk.MSIMConversation;
 import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
-import com.masonsoft.imsdk.uikit.MSIMUikitLog;
-import com.masonsoft.imsdk.util.Objects;
 
 import io.github.idonans.appcontext.AppContext;
 
@@ -44,13 +42,14 @@ public abstract class MSIMConversationFrameLayout extends FrameLayout {
 
     public void setConversation(@Nullable MSIMConversation conversation) {
         mConversation = conversation;
-        onConversationChanged(mConversation);
+        onConversationUpdate(mConversation);
     }
 
-    protected void onConversationChanged(@Nullable MSIMConversation conversation) {
-        if (DEBUG) {
-            MSIMUikitLog.v("%s onConversationChanged %s", Objects.defaultObjectTag(this), conversation);
-        }
+    @Nullable
+    public MSIMConversation getConversation() {
+        return mConversation;
     }
+
+    protected abstract void onConversationUpdate(@Nullable MSIMConversation conversation);
 
 }

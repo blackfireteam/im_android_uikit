@@ -5,6 +5,7 @@ import android.util.AttributeSet;
 
 import com.masonsoft.imsdk.uikit.SessionUserIdChangedHelper;
 
+@Deprecated
 public class MSIMSessionUserInfoGenderView extends MSIMUserInfoGenderView {
 
     @SuppressWarnings("FieldCanBeLocal")

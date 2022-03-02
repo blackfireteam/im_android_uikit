@@ -60,7 +60,7 @@ public class MSIMConversationTimeView extends MSIMConversationFrameLayout {
     }
 
     @Override
-    protected void onConversationChanged(@Nullable MSIMConversation conversation) {
+    protected void onConversationUpdate(@Nullable MSIMConversation conversation) {
         if (conversation == null) {
             setTime(null);
         } else {

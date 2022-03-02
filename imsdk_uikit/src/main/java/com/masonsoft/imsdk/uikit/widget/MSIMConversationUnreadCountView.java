@@ -95,7 +95,7 @@ public class MSIMConversationUnreadCountView extends MSIMConversationFrameLayout
     }
 
     @Override
-    protected void onConversationChanged(@Nullable MSIMConversation conversation) {
+    protected void onConversationUpdate(@Nullable MSIMConversation conversation) {
         long unreadCount = 0L;
         if (conversation != null) {
             unreadCount = conversation.getUnreadCount();

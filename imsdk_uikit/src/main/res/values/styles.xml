@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="UserCacheAvatar">
+    <style name="UserInfoAvatar">
         <item name="roundAsCircle">true</item>
         <item name="smallCache">true</item>
         <item name="imagePlaceHolderLoading">@drawable/imsdk_uikit_ic_default_avatar</item>
         <item name="imagePlaceHolderFail">@drawable/imsdk_uikit_ic_default_avatar</item>
     </style>
 
-    <style name="SessionUserCacheAvatar" parent="UserCacheAvatar" />
+    <style name="SessionUserCacheAvatar" parent="UserInfoAvatar" />
 
     <style name="ProgressView">
         <item name="android:progressDrawable">

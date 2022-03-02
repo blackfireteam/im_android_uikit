@@ -7,28 +7,26 @@ import androidx.annotation.Nullable;
 
 import com.masonsoft.imsdk.MSIMUserInfo;
 
-public class MSIMUserCacheName extends MSIMUserInfoTextView {
+public class MSIMUserInfoName extends MSIMUserInfoTextView {
 
-    public MSIMUserCacheName(Context context) {
+    public MSIMUserInfoName(Context context) {
         this(context, null);
     }
 
-    public MSIMUserCacheName(Context context, AttributeSet attrs) {
+    public MSIMUserInfoName(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public MSIMUserCacheName(Context context, AttributeSet attrs, int defStyleAttr) {
+    public MSIMUserInfoName(Context context, AttributeSet attrs, int defStyleAttr) {
         this(context, attrs, defStyleAttr, 0);
     }
 
-    public MSIMUserCacheName(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public MSIMUserInfoName(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
     @Override
-    protected void onUserInfoLoad(long userId, @Nullable MSIMUserInfo userInfo) {
-        super.onUserInfoLoad(userId, userInfo);
-
+    protected void onUserInfoUpdate(long userId, @Nullable MSIMUserInfo userInfo) {
         if (userInfo == null) {
             setText(null);
         } else {

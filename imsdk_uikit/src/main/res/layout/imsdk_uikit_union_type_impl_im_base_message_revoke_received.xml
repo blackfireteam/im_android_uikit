@@ -19,7 +19,7 @@
         android:textSize="12sp"
         tools:text="17:30" />
 
-    <com.masonsoft.imsdk.uikit.widget.MSIMBaseMessageRevokeTextViewMSIM
+    <com.masonsoft.imsdk.uikit.widget.MSIMBaseMessageRevokeTextView
         android:id="@+id/message_revoke_text_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -63,8 +63,7 @@ public class MSIMBaseMessageSendStatusTextView extends MSIMBaseMessageFrameLayou
     }
 
     @Override
-    protected void onBaseMessageChanged(@Nullable MSIMBaseMessage baseMessage) {
-        super.onBaseMessageChanged(baseMessage);
+    protected void onBaseMessageUpdate(@Nullable MSIMBaseMessage baseMessage) {
         if (baseMessage == null) {
             mTextView.setText(null);
         } else {

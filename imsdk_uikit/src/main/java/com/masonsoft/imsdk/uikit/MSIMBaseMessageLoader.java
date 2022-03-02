@@ -14,6 +14,7 @@ import java.io.IOException;
 import io.github.idonans.core.util.IOUtil;
 import io.github.idonans.core.util.Preconditions;
 
+@Deprecated
 public abstract class MSIMBaseMessageLoader extends DataLoaderImpl<MSIMBaseMessage> implements Closeable {
 
     private static final boolean DEBUG = MSIMUikitConstants.DEBUG_WIDGET;
