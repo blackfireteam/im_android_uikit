@@ -7,13 +7,10 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatTextView;
 
 import com.masonsoft.imsdk.MSIMUserInfo;
-import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 
 import io.github.idonans.appcontext.AppContext;
 
 public abstract class MSIMUserInfoTextView extends AppCompatTextView {
-
-    private static final boolean DEBUG = MSIMUikitConstants.DEBUG_WIDGET;
 
     public MSIMUserInfoTextView(Context context) {
         this(context, null);
