@@ -8,7 +8,6 @@ import androidx.annotation.Nullable;
 
 import com.masonsoft.imsdk.MSIMBaseMessage;
 import com.masonsoft.imsdk.MSIMConstants;
-import com.masonsoft.imsdk.uikit.MSIMBaseMessageLoader;
 import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.util.Objects;
@@ -37,21 +36,13 @@ public class MSIMBaseMessageProgressView extends ProgressView {
         initFromAttributes(context, attrs, defStyleAttr, defStyleRes);
     }
 
-    private MSIMBaseMessageLoader mBaseMessageLoader;
+    @Nullable
+    private MSIMBaseMessage mBaseMessage;
 
     private void initFromAttributes(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         AppContext.setContextInEditMode(this);
 
         hideProgress();
-
-        mBaseMessageLoader = new MSIMBaseMessageLoader() {
-            @Override
-            protected void onBaseMessageLoad(@Nullable MSIMBaseMessage baseMessage) {
-                super.onBaseMessageLoad(baseMessage);
-
-                MSIMBaseMessageProgressView.this.onBaseMessageLoad(baseMessage);
-            }
-        };
     }
 
     private void updateProgress(@Nullable MSIMBaseMessage baseMessage) {
@@ -88,18 +79,16 @@ public class MSIMBaseMessageProgressView extends ProgressView {
     }
 
     public void setBaseMessage(@Nullable MSIMBaseMessage baseMessage) {
-        mBaseMessageLoader.setBaseMessage(baseMessage);
+        mBaseMessage = baseMessage;
+        this.onBaseMessageUpdate(mBaseMessage);
     }
 
     @Nullable
     public MSIMBaseMessage getBaseMessage() {
-        return mBaseMessageLoader.getBaseMessage();
+        return mBaseMessage;
     }
 
-    protected void onBaseMessageLoad(@Nullable MSIMBaseMessage baseMessage) {
-        if (DEBUG) {
-            MSIMUikitLog.v("%s onBaseMessageLoad %s", Objects.defaultObjectTag(this), baseMessage);
-        }
+    protected void onBaseMessageUpdate(@Nullable MSIMBaseMessage baseMessage) {
         updateProgress(baseMessage);
     }
 

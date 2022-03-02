@@ -51,7 +51,7 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:alpha="0.5" />
 
-        <com.masonsoft.imsdk.uikit.widget.MSIMUserCacheName
+        <com.masonsoft.imsdk.uikit.widget.MSIMUserInfoName
             android:id="@+id/username"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

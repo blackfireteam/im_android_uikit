@@ -5,15 +5,11 @@ import android.content.res.TypedArray;
 import android.util.AttributeSet;
 
 import androidx.annotation.IntDef;
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.masonsoft.imsdk.MSIMUserInfo;
 import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
-import com.masonsoft.imsdk.uikit.MSIMUikitLog;
-import com.masonsoft.imsdk.uikit.MSIMUserInfoLoader;
 import com.masonsoft.imsdk.uikit.R;
-import com.masonsoft.imsdk.util.Objects;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -36,7 +32,9 @@ public class MSIMUserInfoAvatar extends ImageLayout {
     @AvatarSize
     private int mAvatarSize = AVATAR_SIZE_SMALL;
 
-    private MSIMUserInfoLoader mUserInfoLoader;
+    private long mUserId;
+    @Nullable
+    private MSIMUserInfo mUserInfo;
 
     public MSIMUserInfoAvatar(Context context) {
         this(context, null);
@@ -47,7 +45,7 @@ public class MSIMUserInfoAvatar extends ImageLayout {
     }
 
     public MSIMUserInfoAvatar(Context context, AttributeSet attrs, int defStyleAttr) {
-        this(context, attrs, defStyleAttr, R.style.UserCacheAvatar);
+        this(context, attrs, defStyleAttr, R.style.UserInfoAvatar);
     }
 
     public MSIMUserInfoAvatar(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
@@ -62,43 +60,24 @@ public class MSIMUserInfoAvatar extends ImageLayout {
                 defStyleRes);
         mAvatarSize = a.getInt(R.styleable.MSIMUserInfoAvatar_avatarSize, mAvatarSize);
         a.recycle();
-
-        mUserInfoLoader = new MSIMUserInfoLoader() {
-            @Override
-            protected void onUserInfoLoad(long userId, @Nullable MSIMUserInfo userInfo) {
-                super.onUserInfoLoad(userId, userInfo);
-
-                MSIMUserInfoAvatar.this.onUserInfoLoad(userId, userInfo);
-            }
-        };
     }
 
     public long getUserId() {
-        return mUserInfoLoader.getUserId();
+        return mUserId;
     }
 
     @Nullable
     public MSIMUserInfo getUserInfo() {
-        return mUserInfoLoader.getUserInfo();
+        return mUserInfo;
     }
 
     public void setUserInfo(long userId, @Nullable MSIMUserInfo userInfo) {
-        mUserInfoLoader.setUserInfo(userId, userInfo);
+        mUserId = userId;
+        mUserInfo = userInfo;
+        this.onUserInfoUpdate(mUserId, mUserInfo);
     }
 
-    public void setUserInfo(@NonNull MSIMUserInfo userInfo) {
-        mUserInfoLoader.setUserInfo(userInfo);
-    }
-
-    public void requestLoadData() {
-        mUserInfoLoader.requestLoadData();
-    }
-
-    protected void onUserInfoLoad(long userId, @Nullable MSIMUserInfo userInfo) {
-        if (DEBUG) {
-            MSIMUikitLog.v("%s onUserInfoLoad %s %s", Objects.defaultObjectTag(this), userId, userInfo);
-        }
-
+    protected void onUserInfoUpdate(long userId, @Nullable MSIMUserInfo userInfo) {
         if (userInfo == null) {
             loadAvatar(null);
         } else {

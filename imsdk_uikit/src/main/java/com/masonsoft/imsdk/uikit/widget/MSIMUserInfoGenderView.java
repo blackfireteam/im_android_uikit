@@ -35,9 +35,7 @@ public class MSIMUserInfoGenderView extends MSIMUserInfoImageView {
     }
 
     @Override
-    protected void onUserInfoLoad(long userId, @Nullable MSIMUserInfo userInfo) {
-        super.onUserInfoLoad(userId, userInfo);
-
+    protected void onUserInfoUpdate(long userId, @Nullable MSIMUserInfo userInfo) {
         if (userInfo == null) {
             setGender(MSIMUikitConstants.Gender.FEMALE);
         } else {

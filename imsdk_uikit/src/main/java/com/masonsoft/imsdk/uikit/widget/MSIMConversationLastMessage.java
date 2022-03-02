@@ -40,7 +40,7 @@ public class MSIMConversationLastMessage extends MSIMConversationFrameLayout {
     }
 
     @Override
-    protected void onConversationChanged(@Nullable MSIMConversation conversation) {
+    protected void onConversationUpdate(@Nullable MSIMConversation conversation) {
         MSIMBaseMessage showMessage = null;
         if (conversation != null) {
             showMessage = conversation.getShowMessage();

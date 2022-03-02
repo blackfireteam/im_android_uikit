@@ -3,15 +3,11 @@ package com.masonsoft.imsdk.uikit.widget;
 import android.content.Context;
 import android.util.AttributeSet;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatTextView;
 
 import com.masonsoft.imsdk.MSIMUserInfo;
 import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
-import com.masonsoft.imsdk.uikit.MSIMUikitLog;
-import com.masonsoft.imsdk.uikit.MSIMUserInfoLoader;
-import com.masonsoft.imsdk.util.Objects;
 
 import io.github.idonans.appcontext.AppContext;
 
@@ -36,46 +32,29 @@ public abstract class MSIMUserInfoTextView extends AppCompatTextView {
         initFromAttributes(context, attrs, defStyleAttr, defStyleRes);
     }
 
-    private MSIMUserInfoLoader mUserInfoLoader;
+    private long mUserId;
+    @Nullable
+    private MSIMUserInfo mUserInfo;
 
     private void initFromAttributes(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         AppContext.setContextInEditMode(this);
-
-        mUserInfoLoader = new MSIMUserInfoLoader() {
-            @Override
-            protected void onUserInfoLoad(long userId, @Nullable MSIMUserInfo userInfo) {
-                super.onUserInfoLoad(userId, userInfo);
-
-                MSIMUserInfoTextView.this.onUserInfoLoad(userId, userInfo);
-            }
-        };
     }
 
     public long getUserId() {
-        return mUserInfoLoader.getUserId();
+        return mUserId;
     }
 
     @Nullable
     public MSIMUserInfo getUserInfo() {
-        return mUserInfoLoader.getUserInfo();
+        return mUserInfo;
     }
 
     public void setUserInfo(long userId, @Nullable MSIMUserInfo userInfo) {
-        mUserInfoLoader.setUserInfo(userId, userInfo);
+        mUserId = userId;
+        mUserInfo = userInfo;
+        this.onUserInfoUpdate(mUserId, mUserInfo);
     }
 
-    public void setUserInfo(@NonNull MSIMUserInfo userInfo) {
-        mUserInfoLoader.setUserInfo(userInfo);
-    }
-
-    public void requestLoadData() {
-        mUserInfoLoader.requestLoadData();
-    }
-
-    protected void onUserInfoLoad(long userId, @Nullable MSIMUserInfo userInfo) {
-        if (DEBUG) {
-            MSIMUikitLog.v("%s onUserInfoLoad %s %s", Objects.defaultObjectTag(this), userId, userInfo);
-        }
-    }
+    protected abstract void onUserInfoUpdate(long userId, @Nullable MSIMUserInfo userInfo);
 
 }

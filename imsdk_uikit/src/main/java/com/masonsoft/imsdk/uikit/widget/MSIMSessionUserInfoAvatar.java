@@ -6,6 +6,7 @@ import android.util.AttributeSet;
 import com.masonsoft.imsdk.uikit.R;
 import com.masonsoft.imsdk.uikit.SessionUserIdChangedHelper;
 
+@Deprecated
 public class MSIMSessionUserInfoAvatar extends MSIMUserInfoAvatar {
 
     @SuppressWarnings("FieldCanBeLocal")

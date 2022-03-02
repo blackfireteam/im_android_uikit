@@ -12,21 +12,21 @@ import com.masonsoft.imsdk.uikit.R;
 
 import io.github.idonans.appcontext.AppContext;
 
-public class MSIMBaseMessageRevokeTextViewMSIM extends MSIMUserInfoTextView {
+public class MSIMBaseMessageRevokeTextView extends MSIMUserInfoTextView {
 
-    public MSIMBaseMessageRevokeTextViewMSIM(Context context) {
+    public MSIMBaseMessageRevokeTextView(Context context) {
         this(context, null);
     }
 
-    public MSIMBaseMessageRevokeTextViewMSIM(Context context, AttributeSet attrs) {
+    public MSIMBaseMessageRevokeTextView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public MSIMBaseMessageRevokeTextViewMSIM(Context context, AttributeSet attrs, int defStyleAttr) {
+    public MSIMBaseMessageRevokeTextView(Context context, AttributeSet attrs, int defStyleAttr) {
         this(context, attrs, defStyleAttr, 0);
     }
 
-    public MSIMBaseMessageRevokeTextViewMSIM(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public MSIMBaseMessageRevokeTextView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         initFromAttributes(context, attrs, defStyleAttr, defStyleRes);
     }
@@ -66,9 +66,7 @@ public class MSIMBaseMessageRevokeTextViewMSIM extends MSIMUserInfoTextView {
     }
 
     @Override
-    protected void onUserInfoLoad(long userId, @Nullable MSIMUserInfo userInfo) {
-        super.onUserInfoLoad(userId, userInfo);
-
+    protected void onUserInfoUpdate(long userId, @Nullable MSIMUserInfo userInfo) {
         setText(buildRecallText(userInfo));
     }
 
