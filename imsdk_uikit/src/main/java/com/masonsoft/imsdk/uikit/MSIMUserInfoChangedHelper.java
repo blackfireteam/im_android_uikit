@@ -15,15 +15,24 @@ public abstract class MSIMUserInfoChangedHelper implements Closeable {
 
     private static final boolean DEBUG = MSIMUikitConstants.DEBUG_WIDGET;
     private final MSIMUserInfoListener mUserInfoListener;
+    private boolean mClosed;
 
     public MSIMUserInfoChangedHelper() {
-        mUserInfoListener = new MSIMUserInfoListenerProxy(this::onUserInfoChanged, true);
+        mUserInfoListener = new MSIMUserInfoListenerProxy(this::notifyUserInfoChanged, true);
         MSIMManager.getInstance().getUserInfoManager().addUserInfoListener(mUserInfoListener);
     }
 
     @Override
     public void close() throws IOException {
+        mClosed = true;
         MSIMManager.getInstance().getUserInfoManager().removeUserInfoListener(mUserInfoListener);
+    }
+
+    private void notifyUserInfoChanged(@NonNull MSIMUserInfo userInfo) {
+        if (mClosed) {
+            return;
+        }
+        this.onUserInfoChanged(userInfo);
     }
 
     protected void onUserInfoChanged(@NonNull MSIMUserInfo userInfo) {

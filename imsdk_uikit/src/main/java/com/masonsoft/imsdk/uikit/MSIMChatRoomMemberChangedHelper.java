@@ -16,17 +16,26 @@ public abstract class MSIMChatRoomMemberChangedHelper implements Closeable {
     private static final boolean DEBUG = MSIMUikitConstants.DEBUG_WIDGET;
     private final MSIMChatRoomContext mChatRoomContext;
     private final MSIMChatRoomMemberListener mChatRoomMemberListener;
+    private boolean mClosed;
 
     public MSIMChatRoomMemberChangedHelper(@NonNull MSIMChatRoomContext chatRoomContext) {
         mChatRoomContext = chatRoomContext;
-        mChatRoomMemberListener = new MSIMChatRoomMemberListenerProxy(this::onChatRoomMemberChanged, true);
+        mChatRoomMemberListener = new MSIMChatRoomMemberListenerProxy(this::notifyChatRoomMemberChanged, true);
 
         mChatRoomContext.getChatRoomManager().addChatRoomMemberListener(mChatRoomMemberListener);
     }
 
     @Override
     public void close() throws IOException {
+        mClosed = true;
         mChatRoomContext.getChatRoomManager().removeChatRoomMemberListener(mChatRoomMemberListener);
+    }
+
+    private void notifyChatRoomMemberChanged(MSIMChatRoomContext chatRoomContext, MSIMChatRoomMember member) {
+        if (mClosed) {
+            return;
+        }
+        this.onChatRoomMemberChanged(chatRoomContext, member);
     }
 
     protected void onChatRoomMemberChanged(MSIMChatRoomContext chatRoomContext, MSIMChatRoomMember member) {

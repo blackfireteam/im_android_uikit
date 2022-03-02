@@ -16,19 +16,28 @@ public abstract class MSIMMessageChangedHelper implements Closeable {
 
     private static final boolean DEBUG = MSIMUikitConstants.DEBUG_WIDGET;
     private final MSIMMessageListener mMessageListener;
+    private boolean mClosed;
 
     public MSIMMessageChangedHelper() {
         this(MSIMMessagePageContext.GLOBAL);
     }
 
     public MSIMMessageChangedHelper(@NonNull MSIMMessagePageContext messagePageContext) {
-        mMessageListener = new MSIMMessageListenerProxy(this::onMessageChanged, true);
+        mMessageListener = new MSIMMessageListenerProxy(this::notifyMessageChanged, true);
         MSIMManager.getInstance().getMessageManager().addMessageListener(messagePageContext, mMessageListener);
     }
 
     @Override
     public void close() throws IOException {
+        mClosed = true;
         MSIMManager.getInstance().getMessageManager().removeMessageListener(mMessageListener);
+    }
+
+    private void notifyMessageChanged(@NonNull MSIMMessage message) {
+        if (mClosed) {
+            return;
+        }
+        this.onMessageChanged(message);
     }
 
     protected void onMessageChanged(@NonNull MSIMMessage message) {
