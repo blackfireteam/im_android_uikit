@@ -17,18 +17,19 @@ public abstract class MSIMChatRoomMessageChangedHelper implements Closeable {
     private static final boolean DEBUG = MSIMUikitConstants.DEBUG_WIDGET;
     private final MSIMChatRoomContext mChatRoomContext;
     private final MSIMChatRoomMessageListener mChatRoomMessageListener;
+    private boolean mClosed;
 
     public MSIMChatRoomMessageChangedHelper(@NonNull MSIMChatRoomContext chatRoomContext) {
         mChatRoomContext = chatRoomContext;
         mChatRoomMessageListener = new MSIMChatRoomMessageListenerProxy(new MSIMChatRoomMessageListener() {
             @Override
             public void onMessageChanged(@NonNull MSIMChatRoomMessage message) {
-                MSIMChatRoomMessageChangedHelper.this.onMessageChanged(message);
+                MSIMChatRoomMessageChangedHelper.this.notifyMessageChanged(message);
             }
 
             @Override
             public void onReceivedTipMessageList(@NonNull List<CharSequence> list) {
-                MSIMChatRoomMessageChangedHelper.this.onReceivedTipMessageList(list);
+                MSIMChatRoomMessageChangedHelper.this.notifyReceivedTipMessageList(list);
             }
         }, true);
 
@@ -37,13 +38,28 @@ public abstract class MSIMChatRoomMessageChangedHelper implements Closeable {
 
     @Override
     public void close() throws IOException {
+        mClosed = true;
         mChatRoomContext.getChatRoomManager().removeChatRoomMessageListener(mChatRoomMessageListener);
+    }
+
+    private void notifyMessageChanged(@NonNull MSIMChatRoomMessage message) {
+        if (mClosed) {
+            return;
+        }
+        this.onMessageChanged(message);
     }
 
     protected void onMessageChanged(@NonNull MSIMChatRoomMessage message) {
         if (DEBUG) {
             MSIMUikitLog.v("%s onMessageChanged %s", Objects.defaultObjectTag(this), message);
         }
+    }
+
+    private void notifyReceivedTipMessageList(@NonNull List<CharSequence> list) {
+        if (mClosed) {
+            return;
+        }
+        this.onReceivedTipMessageList(list);
     }
 
     protected void onReceivedTipMessageList(@NonNull List<CharSequence> list) {
