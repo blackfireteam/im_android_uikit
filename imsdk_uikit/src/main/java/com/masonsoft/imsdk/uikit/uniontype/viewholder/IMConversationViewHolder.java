@@ -5,6 +5,7 @@ import android.view.View;
 import android.view.Window;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.masonsoft.imsdk.MSIMConversation;
 import com.masonsoft.imsdk.MSIMManager;
@@ -12,6 +13,7 @@ import com.masonsoft.imsdk.MSIMUserInfo;
 import com.masonsoft.imsdk.core.I18nResources;
 import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 import com.masonsoft.imsdk.uikit.MSIMUikitLog;
+import com.masonsoft.imsdk.uikit.MSIMUserInfoLoader;
 import com.masonsoft.imsdk.uikit.R;
 import com.masonsoft.imsdk.uikit.app.chat.SingleChatActivity;
 import com.masonsoft.imsdk.uikit.common.impopup.IMChatConversationMenuDialog;
@@ -29,10 +31,39 @@ import io.github.idonans.uniontype.UnionTypeViewHolder;
 public class IMConversationViewHolder extends UnionTypeViewHolder {
 
     private final ImsdkUikitUnionTypeImplImConversationBinding mBinding;
+    private final MSIMUserInfoLoader mTargetUserInfoLoader;
 
     public IMConversationViewHolder(@NonNull Host host) {
         super(host, R.layout.imsdk_uikit_union_type_impl_im_conversation);
         mBinding = ImsdkUikitUnionTypeImplImConversationBinding.bind(itemView);
+
+        mTargetUserInfoLoader = new MSIMUserInfoLoader() {
+            @Override
+            protected void onUserInfoLoad(long userId, @Nullable MSIMUserInfo userInfo) {
+                super.onUserInfoLoad(userId, userInfo);
+
+                IMConversationViewHolder.this.onTargetUserInfoLoad(userId, userInfo);
+            }
+        };
+    }
+
+    private void onTargetUserInfoLoad(long userId, @Nullable MSIMUserInfo userInfo) {
+        final DataObject itemObject = getItemObject(DataObject.class);
+        if (itemObject == null) {
+            return;
+        }
+        final MSIMConversation conversation = itemObject.getObject(MSIMConversation.class);
+        if (conversation == null) {
+            return;
+        }
+        final long targetUserId = conversation.getTargetUserId();
+        if (targetUserId != userId) {
+            return;
+        }
+
+        mBinding.avatar.setUserInfo(userId, userInfo);
+        mBinding.name.setUserInfo(userId, userInfo);
+        mBinding.userGender.setUserInfo(userId, userInfo);
     }
 
     @Override
@@ -42,12 +73,12 @@ public class IMConversationViewHolder extends UnionTypeViewHolder {
         final MSIMConversation conversation = itemObject.getObject(MSIMConversation.class);
 
         final long targetUserId = conversation.getTargetUserId();
-        final MSIMUserInfo targetUserInfo = conversation.getTargetUserInfo();
+        {
+            final MSIMUserInfo targetUserInfo = conversation.getTargetUserInfo();
+            mTargetUserInfoLoader.setUserInfo(targetUserId, targetUserInfo);
+        }
 
-        mBinding.avatar.setUserInfo(targetUserId, targetUserInfo);
         mBinding.avatar.setBorderColor(false);
-        mBinding.name.setUserInfo(targetUserId, targetUserInfo);
-        mBinding.userGender.setUserInfo(targetUserId, targetUserInfo);
 
         mBinding.unreadCountView.setConversation(conversation);
 
