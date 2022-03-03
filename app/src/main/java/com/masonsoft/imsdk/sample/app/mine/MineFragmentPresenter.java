@@ -12,8 +12,8 @@ import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.api.DefaultApi;
 import com.masonsoft.imsdk.sample.im.DiscoverUserManager;
 import com.masonsoft.imsdk.sample.util.JsonUtil;
-import com.masonsoft.imsdk.uikit.SessionUserIdChangedHelper;
-import com.masonsoft.imsdk.uikit.widget.UserInfoChangedViewHelper;
+import com.masonsoft.imsdk.uikit.MSIMUserInfoLoader;
+import com.masonsoft.imsdk.uikit.MSIMSessionUserIdChangedHelper;
 import com.masonsoft.imsdk.user.UserInfoManager;
 
 import io.github.idonans.core.Progress;
@@ -29,34 +29,29 @@ public class MineFragmentPresenter extends DynamicPresenter<MineFragment.ViewImp
 
     private final DisposableHolder mRequestHolder = new DisposableHolder();
     private Object mLastUploadAvatarTag;
-    @SuppressWarnings("unused")
-    private final SessionUserInfoChangedViewHelper mSessionUserCacheChangedViewHelper = new SessionUserInfoChangedViewHelper();
+    private MSIMUserInfoLoader mSessionUserInfoLoader;
+    private MSIMSessionUserIdChangedHelper mMSIMSessionUserIdChangedHelper;
 
     public MineFragmentPresenter(MineFragment.ViewImpl view) {
         super(view);
-    }
 
-    private class SessionUserInfoChangedViewHelper extends UserInfoChangedViewHelper {
-
-        @SuppressWarnings("FieldCanBeLocal")
-        private final SessionUserIdChangedHelper mSessionUserIdChangedHelper = new SessionUserIdChangedHelper() {
+        mSessionUserInfoLoader = new MSIMUserInfoLoader() {
             @Override
-            protected void onSessionUserIdChanged(long sessionUserId) {
-                SessionUserInfoChangedViewHelper.this.setUserInfo(sessionUserId);
+            protected void onUserInfoLoad(long userId, @Nullable MSIMUserInfo userInfo) {
+                super.onUserInfoLoad(userId, userInfo);
+
+                showSessionUserInfo(userInfo);
             }
         };
-
-        private SessionUserInfoChangedViewHelper() {
-            setUserInfo(mSessionUserIdChangedHelper.getSessionUserId());
-        }
-
-        @Override
-        protected void onUserInfoChanged(long userId, @Nullable MSIMUserInfo userInfo) {
-            if (getView() == null) {
-                return;
+        mMSIMSessionUserIdChangedHelper = new MSIMSessionUserIdChangedHelper() {
+            @Override
+            protected void onSessionUserIdChanged(long sessionUserId) {
+                if (mSessionUserInfoLoader != null) {
+                    mSessionUserInfoLoader.setUserInfo(sessionUserId, null);
+                }
             }
-            Threads.postUi(() -> showSessionUserInfo(userInfo));
-        }
+        };
+        Threads.postUi(() -> mSessionUserInfoLoader.setUserInfo(mMSIMSessionUserIdChangedHelper.getSessionUserId(), null));
     }
 
     private void showSessionUserInfo(@Nullable MSIMUserInfo userInfo) {
@@ -67,22 +62,22 @@ public class MineFragmentPresenter extends DynamicPresenter<MineFragment.ViewImp
     }
 
     public void requestSyncSessionUserInfo() {
-        mRequestHolder.set(Single.just("")
-                .map(input -> {
-                    final long sessionUserId = MSIMManager.getInstance().getSessionUserId();
-                    Preconditions.checkArgument(sessionUserId > 0);
-                    return MSIMManager.getInstance().getUserInfoManager().getUserInfo(sessionUserId);
-                })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(sessionUserInfo -> {
-                    final MineFragment.ViewImpl view = getView();
-                    if (view == null) {
-                        return;
-                    }
-
-                    view.showSessionUserInfo(sessionUserInfo);
-                }, SampleLog::e));
+//        mRequestHolder.set(Single.just("")
+//                .map(input -> {
+//                    final long sessionUserId = MSIMManager.getInstance().getSessionUserId();
+//                    Preconditions.checkArgument(sessionUserId > 0);
+//                    return MSIMManager.getInstance().getUserInfoManager().getUserInfo(sessionUserId);
+//                })
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(sessionUserInfo -> {
+//                    final MineFragment.ViewImpl view = getView();
+//                    if (view == null) {
+//                        return;
+//                    }
+//
+//                    view.showSessionUserInfo(sessionUserInfo);
+//                }, SampleLog::e));
     }
 
     public void uploadAvatar(Uri photoUri) {

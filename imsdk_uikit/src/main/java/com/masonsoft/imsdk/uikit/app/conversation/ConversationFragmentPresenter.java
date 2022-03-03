@@ -14,7 +14,7 @@ import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.lang.GeneralResult;
 import com.masonsoft.imsdk.lang.GeneralResultException;
 import com.masonsoft.imsdk.uikit.MSIMUikitLog;
-import com.masonsoft.imsdk.uikit.SessionUserIdChangedHelper;
+import com.masonsoft.imsdk.uikit.MSIMSessionUserIdChangedHelper;
 import com.masonsoft.imsdk.uikit.uniontype.DataObject;
 import com.masonsoft.imsdk.uikit.uniontype.IMUikitUnionTypeMapper;
 import com.masonsoft.imsdk.util.Objects;
@@ -36,7 +36,7 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
 
     private static final boolean DEBUG = true;
 
-    private final SessionUserIdChangedHelper mSessionUserIdChangedHelper;
+    private final MSIMSessionUserIdChangedHelper mMSIMSessionUserIdChangedHelper;
     @SuppressWarnings("FieldCanBeLocal")
     private final MSIMConversationListener mConversationListener;
     private final int mConversationType = MSIMConstants.ConversationType.C2C;
@@ -50,7 +50,7 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
     @UiThread
     public ConversationFragmentPresenter(@NonNull ConversationFragment.ViewImpl view) {
         super(view);
-        mSessionUserIdChangedHelper = new SessionUserIdChangedHelper() {
+        mMSIMSessionUserIdChangedHelper = new MSIMSessionUserIdChangedHelper() {
             @Override
             protected void onSessionUserIdChanged(long sessionUserId) {
                 reloadWithNewSessionUserId();
@@ -64,7 +64,7 @@ public class ConversationFragmentPresenter extends PagePresenter<UnionTypeItemOb
     }
 
     private long getSessionUserId() {
-        return mSessionUserIdChangedHelper.getSessionUserId();
+        return mMSIMSessionUserIdChangedHelper.getSessionUserId();
     }
 
     private void reloadWithNewSessionUserId() {

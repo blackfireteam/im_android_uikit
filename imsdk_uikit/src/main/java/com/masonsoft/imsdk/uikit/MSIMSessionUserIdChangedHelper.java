@@ -9,12 +9,12 @@ import java.io.IOException;
 
 import io.github.idonans.core.thread.Threads;
 
-public abstract class SessionUserIdChangedHelper implements Closeable {
+public abstract class MSIMSessionUserIdChangedHelper implements Closeable {
 
     private long mSessionUserId;
     private boolean mClosed;
 
-    public SessionUserIdChangedHelper() {
+    public MSIMSessionUserIdChangedHelper() {
         mSessionUserId = MSIMManager.getInstance().getSessionUserId();
         MSIMManager.getInstance().addSessionListener(mSessionListener);
     }
@@ -59,7 +59,7 @@ public abstract class SessionUserIdChangedHelper implements Closeable {
                 Threads.postUi(() -> {
                     if (isSessionUserIdChanged()) {
                         mSessionUserId = MSIMManager.getInstance().getSessionUserId();
-                        SessionUserIdChangedHelper.this.notifySessionUserIdChanged(mSessionUserId);
+                        MSIMSessionUserIdChangedHelper.this.notifySessionUserIdChanged(mSessionUserId);
                     }
                 });
             }
