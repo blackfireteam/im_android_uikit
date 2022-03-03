@@ -23,7 +23,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <com.masonsoft.imsdk.uikit.widget.MSIMSessionUserInfoAvatar
+            <com.masonsoft.imsdk.uikit.widget.MSIMUserInfoAvatar
                 android:id="@+id/avatar"
                 android:layout_width="116dp"
                 android:layout_height="116dp"
@@ -40,7 +40,7 @@
                     android:id="@+id/avatar_progress_view"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent" />
-            </com.masonsoft.imsdk.uikit.widget.MSIMSessionUserInfoAvatar>
+            </com.masonsoft.imsdk.uikit.widget.MSIMUserInfoAvatar>
 
             <ImageView
                 android:id="@+id/action_edit_avatar"
@@ -52,7 +52,7 @@
                 app:layout_constraintBottom_toBottomOf="@id/avatar"
                 app:layout_constraintEnd_toEndOf="@id/avatar" />
 
-            <com.masonsoft.imsdk.uikit.widget.MSIMSessionUserInfoNameText
+            <com.masonsoft.imsdk.uikit.widget.MSIMUserInfoName
                 android:id="@+id/username"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

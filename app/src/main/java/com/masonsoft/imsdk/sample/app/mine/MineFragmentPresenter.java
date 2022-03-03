@@ -11,8 +11,8 @@ import com.masonsoft.imsdk.sample.LocalSettingsManager;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.api.DefaultApi;
 import com.masonsoft.imsdk.sample.im.DiscoverUserManager;
-import com.masonsoft.imsdk.uikit.MSIMUserInfoLoader;
 import com.masonsoft.imsdk.uikit.MSIMSessionUserIdChangedHelper;
+import com.masonsoft.imsdk.uikit.MSIMUserInfoLoader;
 import com.masonsoft.imsdk.user.UserInfoManager;
 
 import io.github.idonans.core.Progress;
@@ -39,7 +39,7 @@ public class MineFragmentPresenter extends DynamicPresenter<MineFragment.ViewImp
             protected void onUserInfoLoad(long userId, @Nullable MSIMUserInfo userInfo) {
                 super.onUserInfoLoad(userId, userInfo);
 
-                showSessionUserInfo(userInfo);
+                showSessionUserInfo(userId, userInfo);
             }
         };
         mMSIMSessionUserIdChangedHelper = new MSIMSessionUserIdChangedHelper() {
@@ -50,33 +50,17 @@ public class MineFragmentPresenter extends DynamicPresenter<MineFragment.ViewImp
                 }
             }
         };
-        Threads.postUi(() -> mSessionUserInfoLoader.setUserInfo(mMSIMSessionUserIdChangedHelper.getSessionUserId(), null));
     }
 
-    private void showSessionUserInfo(@Nullable MSIMUserInfo userInfo) {
+    void start() {
+        mSessionUserInfoLoader.setUserInfo(mMSIMSessionUserIdChangedHelper.getSessionUserId(), null);
+    }
+
+    private void showSessionUserInfo(long userId, @Nullable MSIMUserInfo userInfo) {
         final MineFragment.ViewImpl view = getView();
         if (view != null) {
-            view.showSessionUserInfo(userInfo);
+            view.showSessionUserInfo(userId, userInfo);
         }
-    }
-
-    public void requestSyncSessionUserInfo() {
-//        mRequestHolder.set(Single.just("")
-//                .map(input -> {
-//                    final long sessionUserId = MSIMManager.getInstance().getSessionUserId();
-//                    Preconditions.checkArgument(sessionUserId > 0);
-//                    return MSIMManager.getInstance().getUserInfoManager().getUserInfo(sessionUserId);
-//                })
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(sessionUserInfo -> {
-//                    final MineFragment.ViewImpl view = getView();
-//                    if (view == null) {
-//                        return;
-//                    }
-//
-//                    view.showSessionUserInfo(sessionUserInfo);
-//                }, SampleLog::e));
     }
 
     public void uploadAvatar(Uri photoUri) {

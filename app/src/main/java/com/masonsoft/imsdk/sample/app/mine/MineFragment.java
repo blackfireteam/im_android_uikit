@@ -143,7 +143,7 @@ public class MineFragment extends SystemInsetsFragment {
         clearPresenter();
         mView = new ViewImpl();
         mPresenter = new MineFragmentPresenter(mView);
-        mPresenter.requestSyncSessionUserInfo();
+        mPresenter.start();
     }
 
     private void requestPickAvatarPermission() {
@@ -335,12 +335,15 @@ public class MineFragment extends SystemInsetsFragment {
 
     class ViewImpl implements DynamicView {
 
-        public void showSessionUserInfo(@Nullable MSIMUserInfo userInfo) {
-            SampleLog.v(Objects.defaultObjectTag(this) + " showSessionUserInfo userInfo:%s", userInfo);
+        public void showSessionUserInfo(long userId, @Nullable MSIMUserInfo userInfo) {
+            SampleLog.v(Objects.defaultObjectTag(this) + " showSessionUserInfo %s %s", userId, userInfo);
             if (mBinding == null) {
                 SampleLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
                 return;
             }
+
+            mBinding.avatar.setUserInfo(userId, userInfo);
+            mBinding.username.setUserInfo(userId, userInfo);
 
             final boolean gold = userInfo != null && userInfo.isGold();
             final boolean verified = userInfo != null && userInfo.isVerified();
@@ -444,7 +447,6 @@ public class MineFragment extends SystemInsetsFragment {
                 return;
             }
             TipUtil.show(R.string.imsdk_sample_tip_action_general_fail);
-            mPresenter.requestSyncSessionUserInfo();
         }
 
         public void onVerifiedModifySuccess() {
@@ -467,7 +469,6 @@ public class MineFragment extends SystemInsetsFragment {
                 return;
             }
             TipUtil.show(R.string.imsdk_sample_tip_action_general_fail);
-            mPresenter.requestSyncSessionUserInfo();
         }
 
         public void onSignOutSuccess() {
