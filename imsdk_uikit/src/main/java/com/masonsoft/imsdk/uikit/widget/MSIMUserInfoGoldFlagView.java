@@ -37,9 +37,7 @@ public class MSIMUserInfoGoldFlagView extends MSIMUserInfoImageView {
     }
 
     @Override
-    protected void onUserInfoLoad(long userId, @Nullable MSIMUserInfo userInfo) {
-        super.onUserInfoLoad(userId, userInfo);
-
+    protected void onUserInfoUpdate(long userId, @Nullable MSIMUserInfo userInfo) {
         final boolean gold = userInfo != null && userInfo.isGold();
         ViewUtil.setVisibilityIfChanged(this, gold ? View.VISIBLE : View.GONE);
     }

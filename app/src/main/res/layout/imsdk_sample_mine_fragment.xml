@@ -52,7 +52,7 @@
                 app:layout_constraintBottom_toBottomOf="@id/avatar"
                 app:layout_constraintEnd_toEndOf="@id/avatar" />
 
-            <com.masonsoft.imsdk.uikit.widget.SessionUserCacheNameText
+            <com.masonsoft.imsdk.uikit.widget.MSIMSessionUserInfoNameText
                 android:id="@+id/username"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

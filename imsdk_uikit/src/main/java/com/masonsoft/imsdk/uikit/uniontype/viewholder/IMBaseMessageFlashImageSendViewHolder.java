@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 
 import com.masonsoft.imsdk.MSIMBaseMessage;
 import com.masonsoft.imsdk.MSIMConversation;
+import com.masonsoft.imsdk.MSIMUserInfo;
 import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.uikit.R;
@@ -44,7 +45,9 @@ public class IMBaseMessageFlashImageSendViewHolder extends IMBaseMessageFlashIma
         mBinding.sendStatusView.setBaseMessage(baseMessage);
         mBinding.progressView.setBaseMessage(baseMessage);
 
-        mBinding.avatar.setTargetUserId(baseMessage.getFromUserId());
+        final long fromUserId = baseMessage.getFromUserId();
+        final MSIMUserInfo fromUserInfo = baseMessage.getFromUserInfo();
+        mBinding.avatar.setUserInfo(fromUserId, fromUserInfo);
         mBinding.avatar.setShowBorder(false);
 
         mBinding.readStatusView.setMessageAndConversation(baseMessage, conversation);

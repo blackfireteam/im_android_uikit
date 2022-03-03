@@ -37,9 +37,7 @@ public class MSIMUserInfoVerifiedFlagView extends MSIMUserInfoImageView {
     }
 
     @Override
-    protected void onUserInfoLoad(long userId, @Nullable MSIMUserInfo userInfo) {
-        super.onUserInfoLoad(userId, userInfo);
-
+    protected void onUserInfoUpdate(long userId, @Nullable MSIMUserInfo userInfo) {
         final boolean verified = userInfo != null && userInfo.isVerified();
         ViewUtil.setVisibilityIfChanged(this, verified ? View.VISIBLE : View.GONE);
     }

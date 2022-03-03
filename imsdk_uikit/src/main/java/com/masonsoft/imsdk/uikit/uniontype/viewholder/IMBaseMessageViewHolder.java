@@ -147,7 +147,7 @@ public abstract class IMBaseMessageViewHolder extends UnionTypeViewHolder {
         }
 
         if (mSnapchatContainer != null) {
-            mSnapchatContainer.setSnapchat(baseMessage.isSnapchat());
+            // mSnapchatContainer.setSnapchat(baseMessage.isSnapchat());
         }
     }
 
