@@ -3,13 +3,13 @@ package com.masonsoft.imsdk.uikit.widget;
 import android.content.Context;
 import android.util.AttributeSet;
 
-import com.masonsoft.imsdk.uikit.SessionUserIdChangedHelper;
+import com.masonsoft.imsdk.uikit.MSIMSessionUserIdChangedHelper;
 
 @Deprecated
 public class MSIMSessionUserInfoNameText extends MSIMUserInfoName {
 
     @SuppressWarnings("FieldCanBeLocal")
-    private SessionUserIdChangedHelper mSessionUserIdChangedHelper;
+    private MSIMSessionUserIdChangedHelper mMSIMSessionUserIdChangedHelper;
 
     public MSIMSessionUserInfoNameText(Context context) {
         this(context, null);
@@ -29,13 +29,13 @@ public class MSIMSessionUserInfoNameText extends MSIMUserInfoName {
     }
 
     private void initFromAttributes(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        mSessionUserIdChangedHelper = new SessionUserIdChangedHelper() {
+        mMSIMSessionUserIdChangedHelper = new MSIMSessionUserIdChangedHelper() {
             @Override
             protected void onSessionUserIdChanged(long sessionUserId) {
                 MSIMSessionUserInfoNameText.this.setUserInfo(sessionUserId, null);
             }
         };
-        MSIMSessionUserInfoNameText.this.setUserInfo(mSessionUserIdChangedHelper.getSessionUserId(), null);
+        MSIMSessionUserInfoNameText.this.setUserInfo(mMSIMSessionUserIdChangedHelper.getSessionUserId(), null);
     }
 
 }

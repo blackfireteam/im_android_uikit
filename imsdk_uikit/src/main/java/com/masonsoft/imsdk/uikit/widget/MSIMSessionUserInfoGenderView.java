@@ -3,13 +3,13 @@ package com.masonsoft.imsdk.uikit.widget;
 import android.content.Context;
 import android.util.AttributeSet;
 
-import com.masonsoft.imsdk.uikit.SessionUserIdChangedHelper;
+import com.masonsoft.imsdk.uikit.MSIMSessionUserIdChangedHelper;
 
 @Deprecated
 public class MSIMSessionUserInfoGenderView extends MSIMUserInfoGenderView {
 
     @SuppressWarnings("FieldCanBeLocal")
-    private SessionUserIdChangedHelper mSessionUserIdChangedHelper;
+    private MSIMSessionUserIdChangedHelper mMSIMSessionUserIdChangedHelper;
 
     public MSIMSessionUserInfoGenderView(Context context) {
         this(context, null);
@@ -29,14 +29,14 @@ public class MSIMSessionUserInfoGenderView extends MSIMUserInfoGenderView {
     }
 
     private void initFromAttributes(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        mSessionUserIdChangedHelper = new SessionUserIdChangedHelper() {
+        mMSIMSessionUserIdChangedHelper = new MSIMSessionUserIdChangedHelper() {
             @Override
             protected void onSessionUserIdChanged(long sessionUserId) {
                 MSIMSessionUserInfoGenderView.this.setUserInfo(sessionUserId, null);
             }
         };
 
-        MSIMSessionUserInfoGenderView.this.setUserInfo(mSessionUserIdChangedHelper.getSessionUserId(), null);
+        MSIMSessionUserInfoGenderView.this.setUserInfo(mMSIMSessionUserIdChangedHelper.getSessionUserId(), null);
     }
 
 }

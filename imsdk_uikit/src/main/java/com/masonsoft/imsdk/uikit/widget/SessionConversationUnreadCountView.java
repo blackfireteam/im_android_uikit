@@ -6,7 +6,7 @@ import android.util.AttributeSet;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.masonsoft.imsdk.uikit.SessionUserIdChangedHelper;
+import com.masonsoft.imsdk.uikit.MSIMSessionUserIdChangedHelper;
 
 public class SessionConversationUnreadCountView extends IMConversationAllUnreadCountView {
 
@@ -28,16 +28,16 @@ public class SessionConversationUnreadCountView extends IMConversationAllUnreadC
     }
 
     @SuppressWarnings("FieldCanBeLocal")
-    private SessionUserIdChangedHelper mSessionUserIdChangedHelper;
+    private MSIMSessionUserIdChangedHelper mMSIMSessionUserIdChangedHelper;
 
     private void initFromAttributes(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        mSessionUserIdChangedHelper = new SessionUserIdChangedHelper() {
+        mMSIMSessionUserIdChangedHelper = new MSIMSessionUserIdChangedHelper() {
             @Override
             protected void onSessionUserIdChanged(long sessionUserId) {
                 SessionConversationUnreadCountView.this.setSessionUserId(sessionUserId);
             }
         };
-        setSessionUserId(mSessionUserIdChangedHelper.getSessionUserId());
+        setSessionUserId(mMSIMSessionUserIdChangedHelper.getSessionUserId());
     }
 
 }

@@ -3,14 +3,14 @@ package com.masonsoft.imsdk.uikit.widget;
 import android.content.Context;
 import android.util.AttributeSet;
 
+import com.masonsoft.imsdk.uikit.MSIMSessionUserIdChangedHelper;
 import com.masonsoft.imsdk.uikit.R;
-import com.masonsoft.imsdk.uikit.SessionUserIdChangedHelper;
 
 @Deprecated
 public class MSIMSessionUserInfoAvatar extends MSIMUserInfoAvatar {
 
     @SuppressWarnings("FieldCanBeLocal")
-    private SessionUserIdChangedHelper mSessionUserIdChangedHelper;
+    private MSIMSessionUserIdChangedHelper mSessionUserIdChangedHelper;
 
     public MSIMSessionUserInfoAvatar(Context context) {
         this(context, null);
@@ -21,7 +21,7 @@ public class MSIMSessionUserInfoAvatar extends MSIMUserInfoAvatar {
     }
 
     public MSIMSessionUserInfoAvatar(Context context, AttributeSet attrs, int defStyleAttr) {
-        this(context, attrs, defStyleAttr, R.style.SessionUserCacheAvatar);
+        this(context, attrs, defStyleAttr, R.style.MSIMSessionUserInfoAvatar);
     }
 
     public MSIMSessionUserInfoAvatar(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
@@ -30,7 +30,7 @@ public class MSIMSessionUserInfoAvatar extends MSIMUserInfoAvatar {
     }
 
     private void initFromAttributes(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        mSessionUserIdChangedHelper = new SessionUserIdChangedHelper() {
+        mSessionUserIdChangedHelper = new MSIMSessionUserIdChangedHelper() {
             @Override
             protected void onSessionUserIdChanged(long sessionUserId) {
                 MSIMSessionUserInfoAvatar.this.setUserInfo(sessionUserId, null);

@@ -45,7 +45,7 @@ public class MSIMUserInfoAvatar extends ImageLayout {
     }
 
     public MSIMUserInfoAvatar(Context context, AttributeSet attrs, int defStyleAttr) {
-        this(context, attrs, defStyleAttr, R.style.UserInfoAvatar);
+        this(context, attrs, defStyleAttr, R.style.MSIMUserInfoAvatar);
     }
 
     public MSIMUserInfoAvatar(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
