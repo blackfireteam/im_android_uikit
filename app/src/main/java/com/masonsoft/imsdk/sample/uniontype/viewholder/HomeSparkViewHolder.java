@@ -4,15 +4,18 @@ import android.app.Activity;
 
 import androidx.annotation.FloatRange;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.MSIMMessage;
+import com.masonsoft.imsdk.MSIMUserInfo;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleUnionTypeImplHomeSparkBinding;
 import com.masonsoft.imsdk.sample.entity.Spark;
 import com.masonsoft.imsdk.uikit.CustomIMMessageFactory;
 import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
+import com.masonsoft.imsdk.uikit.MSIMUserInfoLoader;
 import com.masonsoft.imsdk.uikit.app.chat.SingleChatActivity;
 import com.masonsoft.imsdk.uikit.uniontype.DataObject;
 import com.masonsoft.imsdk.util.Objects;
@@ -28,10 +31,20 @@ import io.github.idonans.uniontype.UnionTypeViewHolder;
 public class HomeSparkViewHolder extends UnionTypeViewHolder {
 
     private final ImsdkSampleUnionTypeImplHomeSparkBinding mBinding;
+    private final MSIMUserInfoLoader mUserInfoLoader;
 
     public HomeSparkViewHolder(@NonNull Host host) {
         super(host, R.layout.imsdk_sample_union_type_impl_home_spark);
         mBinding = ImsdkSampleUnionTypeImplHomeSparkBinding.bind(itemView);
+
+        mUserInfoLoader = new MSIMUserInfoLoader() {
+            @Override
+            protected void onUserInfoLoad(long userId, @Nullable MSIMUserInfo userInfo) {
+                super.onUserInfoLoad(userId, userInfo);
+
+                HomeSparkViewHolder.this.onUserInfoLoad(userId, userInfo);
+            }
+        };
     }
 
     public void updateLikeAndDislike(@FloatRange(from = -1, to = 1) float progress) {
@@ -61,14 +74,34 @@ public class HomeSparkViewHolder extends UnionTypeViewHolder {
         }
     }
 
+    private void onUserInfoLoad(long userId, @Nullable MSIMUserInfo userInfo) {
+        final DataObject itemObject = getItemObject(DataObject.class);
+        if (itemObject == null) {
+            return;
+        }
+
+        final Spark spark = itemObject.getObject(Spark.class);
+        if (spark == null) {
+            return;
+        }
+
+        if (spark.userId != userId) {
+            return;
+        }
+
+        mBinding.username.setUserInfo(userId, userInfo);
+    }
+
     @Override
     public void onBindUpdate() {
         final DataObject itemObject = getItemObject(DataObject.class);
         Preconditions.checkNotNull(itemObject);
         final Spark spark = (Spark) itemObject.object;
+        Preconditions.checkNotNull(spark);
+
+        mUserInfoLoader.setUserInfo(spark.userId, null);
 
         mBinding.imageLayout.setImageUrl(null, spark.pic);
-        mBinding.username.setUserInfo(spark.userId, null);
 
         updateLikeAndDislike(0, false);
 
