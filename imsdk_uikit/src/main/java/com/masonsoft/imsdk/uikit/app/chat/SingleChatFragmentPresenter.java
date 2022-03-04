@@ -13,10 +13,12 @@ import com.masonsoft.imsdk.MSIMMessage;
 import com.masonsoft.imsdk.MSIMMessageListener;
 import com.masonsoft.imsdk.MSIMMessageListenerProxy;
 import com.masonsoft.imsdk.MSIMMessagePageContext;
+import com.masonsoft.imsdk.MSIMUserInfo;
 import com.masonsoft.imsdk.lang.GeneralResult;
 import com.masonsoft.imsdk.lang.GeneralResultException;
 import com.masonsoft.imsdk.uikit.CustomIMMessageFactory;
 import com.masonsoft.imsdk.uikit.MSIMUikitLog;
+import com.masonsoft.imsdk.uikit.MSIMUserInfoLoader;
 import com.masonsoft.imsdk.uikit.uniontype.DataObject;
 import com.masonsoft.imsdk.uikit.uniontype.UnionTypeViewHolderListeners;
 import com.masonsoft.imsdk.uikit.uniontype.viewholder.IMBaseMessageViewHolder;
@@ -58,11 +60,22 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
 
     private final BatchQueue<MSIMMessage> mBatchQueueUpdateOrRemoveMessage = new BatchQueue<>();
 
+    private MSIMUserInfoLoader mTargetUserInfoLoader;
+
     @UiThread
     public SingleChatFragmentPresenter(@NonNull SingleChatFragment.ViewImpl view) {
         super(view);
         mSessionUserId = MSIMManager.getInstance().getSessionUserId();
         mTargetUserId = view.getTargetUserId();
+
+        mTargetUserInfoLoader = new MSIMUserInfoLoader() {
+            @Override
+            protected void onUserInfoLoad(long userId, @Nullable MSIMUserInfo userInfo) {
+                super.onUserInfoLoad(userId, userInfo);
+
+                showTargetUserInfo(userId, userInfo);
+            }
+        };
 
         mConversationListener = new MSIMConversationListenerProxy(conversation -> {
             final long sessionUserId = conversation.getSessionUserId();
@@ -82,6 +95,17 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
         mBatchQueueUpdateOrRemoveMessage.setConsumer(this::updateOrRemoveMessage);
         mMessageListener = new MSIMMessageListenerProxy(this::updateOrRemoveMessage);
         MSIMManager.getInstance().getMessageManager().addMessageListener(mMessagePageContext, mMessageListener);
+    }
+
+    void start() {
+        mTargetUserInfoLoader.setUserInfo(mTargetUserId, null);
+    }
+
+    private void showTargetUserInfo(long userId, @Nullable MSIMUserInfo userInfo) {
+        final SingleChatFragment.ViewImpl view = getView();
+        if (view != null) {
+            view.showTargetUserInfo(userId, userInfo);
+        }
     }
 
     @Nullable

@@ -21,6 +21,7 @@ import com.masonsoft.imsdk.MSIMConstants;
 import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.MSIMMessage;
 import com.masonsoft.imsdk.MSIMMessageFactory;
+import com.masonsoft.imsdk.MSIMUserInfo;
 import com.masonsoft.imsdk.MSIMWeakCallback;
 import com.masonsoft.imsdk.lang.GeneralResult;
 import com.masonsoft.imsdk.uikit.MSIMRtcMessageManager;
@@ -151,7 +152,6 @@ public class SingleChatFragment extends CustomInputFragment {
         mContentBinding = ImsdkUikitSingleChatFragmentContentBinding.inflate(inflater, getCustomBinding().customContentContainer, true);
 
         ViewUtil.onClick(mTopBarBinding.topBarBack, v -> ActivityUtil.requestBackPressed(SingleChatFragment.this));
-        mTopBarBinding.topBarTitle.setUserInfo(mTargetUserId, null);
         mTopBarBinding.beingTypedView.setTarget(MSIMManager.getInstance().getSessionUserId(), mTargetUserId);
 
         ViewUtil.onClick(mTopBarBinding.topBarMore, v -> showBottomActions());
@@ -208,6 +208,7 @@ public class SingleChatFragment extends CustomInputFragment {
             }
         });
 
+        mPresenter.start();
         mPresenter.requestInit();
 
         return root;
@@ -379,6 +380,16 @@ public class SingleChatFragment extends CustomInputFragment {
         public ViewImpl(@NonNull UnionTypeAdapter adapter) {
             super(adapter);
             setAlwaysHideNoMoreData(true);
+        }
+
+        void showTargetUserInfo(long userId, @Nullable MSIMUserInfo userInfo) {
+            MSIMUikitLog.v(Objects.defaultObjectTag(this) + " showTargetUserInfo %s %s", userId, userInfo);
+            if (mTopBarBinding == null) {
+                MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
+                return;
+            }
+
+            mTopBarBinding.topBarTitle.setUserInfo(userId, userInfo);
         }
 
         /**
