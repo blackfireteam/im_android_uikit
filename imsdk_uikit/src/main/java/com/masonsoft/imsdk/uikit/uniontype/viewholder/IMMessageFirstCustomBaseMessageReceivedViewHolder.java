@@ -3,8 +3,10 @@ package com.masonsoft.imsdk.uikit.uniontype.viewholder;
 import android.app.Activity;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.masonsoft.imsdk.MSIMBaseMessage;
+import com.masonsoft.imsdk.MSIMUserInfo;
 import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.uikit.R;
@@ -32,8 +34,8 @@ public class IMMessageFirstCustomBaseMessageReceivedViewHolder extends IMMessage
         final DataObject itemObject = getItemObject(DataObject.class);
         Preconditions.checkNotNull(itemObject);
         final MSIMBaseMessage baseMessage = itemObject.getObject(MSIMBaseMessage.class);
+        Preconditions.checkNotNull(baseMessage);
 
-        mBinding.avatar.setUserInfo(baseMessage.getFromUserId(), null);
         mBinding.avatar.setShowBorder(false);
 
         ViewUtil.onClick(mBinding.avatar, v -> {
@@ -46,6 +48,11 @@ public class IMMessageFirstCustomBaseMessageReceivedViewHolder extends IMMessage
             // TODO FIXME open profile ?
             MSIMUikitLog.w("require open profile");
         });
+    }
+
+    @Override
+    protected void onFromUserInfoLoad(long userId, @Nullable MSIMUserInfo userInfo) {
+        mBinding.avatar.setUserInfo(userId, userInfo);
     }
 
 }

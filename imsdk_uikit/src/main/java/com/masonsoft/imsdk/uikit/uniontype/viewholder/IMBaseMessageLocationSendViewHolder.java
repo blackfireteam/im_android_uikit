@@ -3,9 +3,11 @@ package com.masonsoft.imsdk.uikit.uniontype.viewholder;
 import android.app.Activity;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.masonsoft.imsdk.MSIMBaseMessage;
 import com.masonsoft.imsdk.MSIMConversation;
+import com.masonsoft.imsdk.MSIMUserInfo;
 import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.uikit.R;
@@ -32,6 +34,7 @@ public class IMBaseMessageLocationSendViewHolder extends IMBaseMessageLocationVi
         final DataObject itemObject = getItemObject(DataObject.class);
         Preconditions.checkNotNull(itemObject);
         final MSIMBaseMessage baseMessage = itemObject.getObject(MSIMBaseMessage.class);
+        Preconditions.checkNotNull(baseMessage);
 
         final MSIMConversation conversation;
         final Object extObject1 = itemObject.getExtObjectObject1(null);
@@ -43,7 +46,6 @@ public class IMBaseMessageLocationSendViewHolder extends IMBaseMessageLocationVi
 
         mBinding.sendStatusView.setBaseMessage(baseMessage);
 
-        mBinding.avatar.setUserInfo(baseMessage.getFromUserId(), null);
         mBinding.avatar.setShowBorder(false);
 
         mBinding.readStatusView.setMessageAndConversation(baseMessage, conversation);
@@ -58,6 +60,11 @@ public class IMBaseMessageLocationSendViewHolder extends IMBaseMessageLocationVi
             // TODO FIXME open profile ?
             MSIMUikitLog.w("require open profile");
         });
+    }
+
+    @Override
+    protected void onFromUserInfoLoad(long userId, @Nullable MSIMUserInfo userInfo) {
+        mBinding.avatar.setUserInfo(userId, userInfo);
     }
 
 }
