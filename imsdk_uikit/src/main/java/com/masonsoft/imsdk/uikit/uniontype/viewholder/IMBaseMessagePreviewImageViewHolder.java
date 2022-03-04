@@ -10,6 +10,7 @@ import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.masonsoft.imsdk.MSIMBaseMessage;
 import com.masonsoft.imsdk.MSIMImageElement;
+import com.masonsoft.imsdk.MSIMUserInfo;
 import com.masonsoft.imsdk.uikit.R;
 import com.masonsoft.imsdk.uikit.uniontype.DataObject;
 import com.masonsoft.imsdk.uikit.uniontype.UnionTypeViewHolderListeners;
@@ -40,6 +41,7 @@ public class IMBaseMessagePreviewImageViewHolder extends IMBaseMessageViewHolder
         final DataObject itemObject = getItemObject(DataObject.class);
         Preconditions.checkNotNull(itemObject);
         final MSIMBaseMessage baseMessage = itemObject.getObject(MSIMBaseMessage.class);
+        Preconditions.checkNotNull(baseMessage);
 
         final List<String> firstAvailableUrls = new ArrayList<>();
         final MSIMImageElement element = baseMessage.getImageElement();
@@ -61,6 +63,10 @@ public class IMBaseMessagePreviewImageViewHolder extends IMBaseMessageViewHolder
                 listener.onItemClick(this);
             }
         });
+    }
+
+    @Override
+    protected void onFromUserInfoLoad(long userId, @Nullable MSIMUserInfo userInfo) {
     }
 
     public void setImageUrl(@Nullable String thumb, @Nullable String... firstAvailable) {

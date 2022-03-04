@@ -25,11 +25,13 @@ import com.masonsoft.imsdk.MSIMConstants;
 import com.masonsoft.imsdk.MSIMLocationElement;
 import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.MSIMMessage;
+import com.masonsoft.imsdk.MSIMUserInfo;
 import com.masonsoft.imsdk.common.TopActivity;
 import com.masonsoft.imsdk.core.I18nResources;
 import com.masonsoft.imsdk.uikit.GlobalChatRoomManager;
 import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 import com.masonsoft.imsdk.uikit.MSIMUikitLog;
+import com.masonsoft.imsdk.uikit.MSIMUserInfoLoader;
 import com.masonsoft.imsdk.uikit.R;
 import com.masonsoft.imsdk.uikit.common.impopup.IMBaseMessageMenuDialog;
 import com.masonsoft.imsdk.uikit.common.impreview.IMBaseMessageImageOrVideoPreviewDialog;
@@ -118,21 +120,54 @@ public abstract class IMBaseMessageViewHolder extends UnionTypeViewHolder {
     }
 
     @Nullable
-    private final SnapchatContainer mSnapchatContainer;
+    private SnapchatContainer mSnapchatContainer;
     @Nullable
-    private final TextView mMessageTime;
+    private TextView mMessageTime;
+    private MSIMUserInfoLoader mFromUserInfoLoader;
 
     public IMBaseMessageViewHolder(@NonNull Host host, int layout) {
         super(host, layout);
-        mMessageTime = itemView.findViewById(R.id.message_time);
-        mSnapchatContainer = itemView.findViewById(R.id.snapchat_container);
+        this.init();
     }
 
     public IMBaseMessageViewHolder(@NonNull Host host, @NonNull View itemView) {
         super(host, itemView);
+        this.init();
+    }
+
+    private void init() {
         mMessageTime = itemView.findViewById(R.id.message_time);
         mSnapchatContainer = itemView.findViewById(R.id.snapchat_container);
+
+        mFromUserInfoLoader = new MSIMUserInfoLoader() {
+            @Override
+            protected void onUserInfoLoad(long userId, @Nullable MSIMUserInfo userInfo) {
+                super.onUserInfoLoad(userId, userInfo);
+
+                IMBaseMessageViewHolder.this.onFromUserInfoLoadInternal(userId, userInfo);
+            }
+        };
     }
+
+    private void onFromUserInfoLoadInternal(long userId, @Nullable MSIMUserInfo userInfo) {
+        final DataObject dataObject = getItemObject(DataObject.class);
+        if (dataObject == null) {
+            return;
+        }
+        final MSIMBaseMessage baseMessage = dataObject.getObject(MSIMBaseMessage.class);
+        if (baseMessage == null) {
+            return;
+        }
+
+        final long fromUserId = baseMessage.getFromUserId();
+        if (fromUserId != userId) {
+            return;
+        }
+
+        this.onFromUserInfoLoad(userId, userInfo);
+    }
+
+    protected abstract void onFromUserInfoLoad(long userId, @Nullable MSIMUserInfo userInfo);
 
     @Override
     public void onBindUpdate() {
@@ -140,6 +175,12 @@ public abstract class IMBaseMessageViewHolder extends UnionTypeViewHolder {
         Preconditions.checkNotNull(dataObject);
         final MSIMBaseMessage baseMessage = dataObject.getObject(MSIMBaseMessage.class);
         Preconditions.checkNotNull(baseMessage);
+
+        {
+            final long fromUserId = baseMessage.getFromUserId();
+            final MSIMUserInfo fromUserInfo = baseMessage.getFromUserInfo();
+            mFromUserInfoLoader.setUserInfo(fromUserId, fromUserInfo);
+        }
 
         if (mMessageTime != null) {
             updateMessageTimeView(mMessageTime);

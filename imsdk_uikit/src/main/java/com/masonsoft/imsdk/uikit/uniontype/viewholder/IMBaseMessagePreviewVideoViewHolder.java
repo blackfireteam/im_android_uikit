@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.masonsoft.imsdk.MSIMBaseMessage;
+import com.masonsoft.imsdk.MSIMUserInfo;
 import com.masonsoft.imsdk.uikit.R;
 import com.masonsoft.imsdk.uikit.common.microlifecycle.MicroLifecycleComponentManager;
 import com.masonsoft.imsdk.uikit.common.microlifecycle.MicroLifecycleComponentManagerHost;
@@ -36,6 +37,7 @@ public class IMBaseMessagePreviewVideoViewHolder extends IMBaseMessageViewHolder
         final DataObject itemObject = getItemObject(DataObject.class);
         Preconditions.checkNotNull(itemObject);
         final MSIMBaseMessage baseMessage = itemObject.getObject(MSIMBaseMessage.class);
+        Preconditions.checkNotNull(baseMessage);
 
         mPreviewVideoView.setBaseMessage(baseMessage);
         mPreviewVideoView.setOnActionCloseClickListener(() -> {
@@ -54,6 +56,10 @@ public class IMBaseMessagePreviewVideoViewHolder extends IMBaseMessageViewHolder
         }
 
         createLocalMicroLifecycle();
+    }
+
+    @Override
+    protected void onFromUserInfoLoad(long userId, @Nullable MSIMUserInfo userInfo) {
     }
 
     private void createLocalMicroLifecycle() {
