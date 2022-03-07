@@ -59,4 +59,8 @@
         <attr name="snapchat" format="boolean" />
         <attr name="snapchatOverlay" format="reference" />
     </declare-styleable>
+    <declare-styleable name="MaxHeightScrollView">
+        <attr name="android:maxHeight" />
+    </declare-styleable>
+
 </resources>
