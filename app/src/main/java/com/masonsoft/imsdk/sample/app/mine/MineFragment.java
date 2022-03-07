@@ -22,7 +22,6 @@ import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.app.main.MainActivity;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleMineFragmentBinding;
-import com.masonsoft.imsdk.sample.selector.SimpleTextListPickerDialog;
 import com.masonsoft.imsdk.sample.util.JsonUtil;
 import com.masonsoft.imsdk.sample.util.StringUtil;
 import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
@@ -30,6 +29,7 @@ import com.masonsoft.imsdk.uikit.app.SystemInsetsFragment;
 import com.masonsoft.imsdk.uikit.common.mediapicker.MediaData;
 import com.masonsoft.imsdk.uikit.common.mediapicker.MediaPickerDialog;
 import com.masonsoft.imsdk.uikit.common.mediapicker.MediaSelector;
+import com.masonsoft.imsdk.uikit.common.simpledialog.SimpleBottomActionsDialog;
 import com.masonsoft.imsdk.uikit.common.simpledialog.SimpleContentConfirmDialog;
 import com.masonsoft.imsdk.uikit.common.simpledialog.SimpleContentInputDialog;
 import com.masonsoft.imsdk.uikit.common.simpledialog.SimpleLoadingDialog;
@@ -262,17 +262,17 @@ public class MineFragment extends SystemInsetsFragment {
         final List<String> departmentList = Arrays.asList(
                 ContextUtil.getContext().getResources().getStringArray(R.array.imsdk_sample_department_list)
         );
-        final SimpleTextListPickerDialog dialog = new SimpleTextListPickerDialog(
+        final SimpleBottomActionsDialog dialog = new SimpleBottomActionsDialog(
                 activity,
                 departmentList
         );
-        dialog.setOnTextSelectedListener(txt -> {
+        dialog.setOnActionClickListener((index, actionText) -> {
             if (mPresenter == null) {
                 SampleLog.e(MSIMUikitConstants.ErrorLog.PRESENTER_IS_NULL);
                 return;
             }
 
-            mPresenter.submitDepartment(txt);
+            mPresenter.submitDepartment(actionText);
         });
         dialog.show();
     }
@@ -296,17 +296,17 @@ public class MineFragment extends SystemInsetsFragment {
         final List<String> workplaceList = Arrays.asList(
                 ContextUtil.getContext().getResources().getStringArray(R.array.imsdk_sample_workplace_list)
         );
-        final SimpleTextListPickerDialog dialog = new SimpleTextListPickerDialog(
+        final SimpleBottomActionsDialog dialog = new SimpleBottomActionsDialog(
                 activity,
                 workplaceList
         );
-        dialog.setOnTextSelectedListener(txt -> {
+        dialog.setOnActionClickListener((index, actionText) -> {
             if (mPresenter == null) {
                 SampleLog.e(MSIMUikitConstants.ErrorLog.PRESENTER_IS_NULL);
                 return;
             }
 
-            mPresenter.submitWorkplace(txt);
+            mPresenter.submitWorkplace(actionText);
         });
         dialog.show();
     }
@@ -330,17 +330,17 @@ public class MineFragment extends SystemInsetsFragment {
         final List<String> genderList = Arrays.asList(
                 ContextUtil.getContext().getResources().getStringArray(R.array.imsdk_sample_gender_list)
         );
-        final SimpleTextListPickerDialog dialog = new SimpleTextListPickerDialog(
+        final SimpleBottomActionsDialog dialog = new SimpleBottomActionsDialog(
                 activity,
                 genderList
         );
-        dialog.setOnTextSelectedListener(txt -> {
+        dialog.setOnActionClickListener((index, actionText) -> {
             if (mPresenter == null) {
                 SampleLog.e(MSIMUikitConstants.ErrorLog.PRESENTER_IS_NULL);
                 return;
             }
 
-            mPresenter.submitGender(txtToGender(txt));
+            mPresenter.submitGender(txtToGender(actionText));
         });
         dialog.show();
     }

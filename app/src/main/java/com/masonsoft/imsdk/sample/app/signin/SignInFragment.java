@@ -20,9 +20,9 @@ import com.masonsoft.imsdk.sample.LocalSettingsManager;
 import com.masonsoft.imsdk.sample.R;
 import com.masonsoft.imsdk.sample.SampleLog;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleSignInFragmentBinding;
-import com.masonsoft.imsdk.sample.selector.SimpleTextListPickerDialog;
 import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 import com.masonsoft.imsdk.uikit.app.SystemInsetsFragment;
+import com.masonsoft.imsdk.uikit.common.simpledialog.SimpleBottomActionsDialog;
 import com.masonsoft.imsdk.uikit.common.simpledialog.SimpleContentConfirmDialog;
 import com.masonsoft.imsdk.uikit.common.simpledialog.SimpleLoadingDialog;
 import com.masonsoft.imsdk.uikit.util.ActivityUtil;
@@ -153,16 +153,16 @@ public class SignInFragment extends SystemInsetsFragment {
             SampleLog.e(MSIMUikitConstants.ErrorLog.ACTIVITY_IS_NULL);
             return;
         }
-        SimpleTextListPickerDialog selector = new SimpleTextListPickerDialog(
+        SimpleBottomActionsDialog dialog = new SimpleBottomActionsDialog(
                 activity,
                 LocalSettingsManager.getInstance().getApiServerLru().allApiServer()
         );
-        selector.setOnTextSelectedListener(text -> {
+        dialog.setOnActionClickListener((index, actionText) -> {
             if (mBinding != null) {
-                mBinding.apiServer.setText(text);
+                mBinding.apiServer.setText(actionText);
             }
         });
-        selector.show();
+        dialog.show();
     }
 
     @Override
