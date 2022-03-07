@@ -1,6 +1,5 @@
 package com.masonsoft.imsdk.uikit.common.mediapicker;
 
-import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.database.Cursor;
 import android.net.Uri;
@@ -10,6 +9,7 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.core.util.ObjectsCompat;
 
 import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
@@ -32,9 +32,6 @@ import io.github.idonans.core.util.HumanUtil;
 import io.github.idonans.core.util.IOUtil;
 
 public class MediaData {
-
-    @SuppressLint("AnnotateVersionCheck")
-    private static final boolean USE_CONTENT_URI = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q;
 
     @NonNull
     public final MediaBucket allMediaInfoListBucket;
@@ -178,8 +175,140 @@ public class MediaData {
 
     public static class MediaLoader extends WeakAbortSignal implements Runnable, Closeable {
 
+        private interface ColumnsMap {
+            String[] allColumns();
+
+            MediaInfo mapToMediaInfo(Uri mediaUri, Cursor cursor);
+        }
+
+        @RequiresApi(api = Build.VERSION_CODES.Q)
+        private static class ContentUriColumnsMap implements ColumnsMap {
+
+            @Override
+            public String[] allColumns() {
+                return new String[]{
+                        //////////////////////////////////////////////////////
+                        //////////////////////////////////////////////////////
+                        MediaStore.MediaColumns.SIZE,           // 媒体的大小，long型  132492
+                        MediaStore.MediaColumns.WIDTH,          // 媒体的宽度，int型  1920, 仅当媒体格式是图片或者视频时有效
+                        MediaStore.MediaColumns.HEIGHT,         // 媒体的高度，int型  1080, 仅当媒体格式是图片或者视频时有效
+                        MediaStore.MediaColumns.MIME_TYPE,      // 媒体的类型     image/jpeg
+                        MediaStore.MediaColumns.TITLE,
+                        MediaStore.MediaColumns.DATE_ADDED,     // 添加时间
+                        MediaStore.MediaColumns._ID,            // id
+                        MediaStore.Video.VideoColumns.DURATION, // video duration
+                        //////////////////////////////////////////////////////
+                        //////////////////////////////////////////////////////
+                        MediaStore.MediaColumns.BUCKET_ID,
+                        MediaStore.MediaColumns.BUCKET_DISPLAY_NAME,
+                        //////////////////////////////////////////////////////
+                        //////////////////////////////////////////////////////
+                };
+            }
+
+            @Override
+            public MediaInfo mapToMediaInfo(Uri mediaUri, Cursor cursor) {
+                MediaInfo target = new MediaInfo();
+                int index = -1;
+                target.size = CursorUtil.getLong(cursor, ++index);
+                target.width = CursorUtil.getInt(cursor, ++index);
+                target.height = CursorUtil.getInt(cursor, ++index);
+                target.mimeType = CursorUtil.getString(cursor, ++index);
+                if (target.mimeType != null) {
+                    target.mimeType = target.mimeType.trim().toLowerCase();
+                }
+                target.title = CursorUtil.getString(cursor, ++index);
+                target.addTime = CursorUtil.getLong(cursor, ++index);
+                target.id = CursorUtil.getInt(cursor, ++index);
+                target.durationMs = CursorUtil.getLong(cursor, ++index);
+
+                target.bucketId = CursorUtil.getString(cursor, ++index);
+                target.bucketDisplayName = CursorUtil.getString(cursor, ++index);
+                target.uri = mediaUri
+                        .buildUpon()
+                        .appendPath(String.valueOf(target.id))
+                        .build();
+
+                MSIMUikitLog.v("%s mapToMediaInfo %s", com.masonsoft.imsdk.util.Objects.defaultObjectTag(this), target);
+
+                if (TextUtils.isEmpty(target.mimeType)) {
+                    MSIMUikitLog.v("invalid mimeType:%s", target.mimeType);
+                    return null;
+                }
+
+                return target;
+            }
+        }
+
+        private static class DefaultColumnsMap implements ColumnsMap {
+            @Override
+            public String[] allColumns() {
+                return new String[]{
+                        //////////////////////////////////////////////////////
+                        //////////////////////////////////////////////////////
+                        MediaStore.MediaColumns.SIZE,           // 媒体的大小，long型  132492
+                        MediaStore.MediaColumns.WIDTH,          // 媒体的宽度，int型  1920, 仅当媒体格式是图片或者视频时有效
+                        MediaStore.MediaColumns.HEIGHT,         // 媒体的高度，int型  1080, 仅当媒体格式是图片或者视频时有效
+                        MediaStore.MediaColumns.MIME_TYPE,      // 媒体的类型     image/jpeg
+                        MediaStore.MediaColumns.TITLE,
+                        MediaStore.MediaColumns.DATE_ADDED,     // 添加时间
+                        MediaStore.MediaColumns._ID,            // id
+                        MediaStore.Video.VideoColumns.DURATION, // video duration
+                        //////////////////////////////////////////////////////
+                        //////////////////////////////////////////////////////
+                        MediaStore.MediaColumns.DATA,           // 媒体的真实路径  /storage/emulated/0/pp/downloader/wallpaper/aaa.jpg
+                        //////////////////////////////////////////////////////
+                        //////////////////////////////////////////////////////
+                };
+            }
+
+            @Override
+            public MediaInfo mapToMediaInfo(Uri mediaUri, Cursor cursor) {
+                MediaInfo target = new MediaInfo();
+                int index = -1;
+                target.size = CursorUtil.getLong(cursor, ++index);
+                target.width = CursorUtil.getInt(cursor, ++index);
+                target.height = CursorUtil.getInt(cursor, ++index);
+                target.mimeType = CursorUtil.getString(cursor, ++index);
+                if (target.mimeType != null) {
+                    target.mimeType = target.mimeType.trim().toLowerCase();
+                }
+                target.title = CursorUtil.getString(cursor, ++index);
+                target.addTime = CursorUtil.getLong(cursor, ++index);
+                target.id = CursorUtil.getInt(cursor, ++index);
+                target.durationMs = CursorUtil.getLong(cursor, ++index);
+
+                {
+                    final String path = CursorUtil.getString(cursor, ++index);
+                    if (TextUtils.isEmpty(path)) {
+                        MSIMUikitLog.v("invalid path:%s, target:%s", path, target);
+                        return null;
+                    }
+                    final File dir = new File(path).getParentFile();
+                    if (dir == null) {
+                        target.bucketId = "";
+                        target.bucketDisplayName = "";
+                    } else {
+                        target.bucketId = dir.getAbsolutePath();
+                        target.bucketDisplayName = dir.getName();
+                    }
+                    target.uri = Uri.fromFile(new File(path));
+                }
+
+                MSIMUikitLog.v("%s mapToMediaInfo %s", com.masonsoft.imsdk.util.Objects.defaultObjectTag(this), target);
+
+                if (TextUtils.isEmpty(target.mimeType)) {
+                    MSIMUikitLog.v("invalid mimeType:%s", target.mimeType);
+                    return null;
+                }
+
+                return target;
+            }
+        }
+
         private final MediaSelector mMediaSelector;
         private final Uri mMediaUri = MediaStore.Files.getContentUri("external");
+        private final ColumnsMap mColumnsMap;
 
         public MediaLoader(MediaLoaderCallback callback, MediaSelector mediaSelector) {
             super(callback);
@@ -187,6 +316,12 @@ public class MediaData {
                 mediaSelector = new MediaSelector.SimpleMediaSelector();
             }
             mMediaSelector = mediaSelector;
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                mColumnsMap = new ContentUriColumnsMap();
+            } else {
+                mColumnsMap = new DefaultColumnsMap();
+            }
         }
 
         public void start() {
@@ -299,94 +434,12 @@ public class MediaData {
 
         @NonNull
         private String[] allColumns() {
-            if (USE_CONTENT_URI) {
-                return new String[]{
-                        //////////////////////////////////////////////////////
-                        //////////////////////////////////////////////////////
-                        MediaStore.MediaColumns.SIZE,           // 媒体的大小，long型  132492
-                        MediaStore.MediaColumns.WIDTH,          // 媒体的宽度，int型  1920, 仅当媒体格式是图片或者视频时有效
-                        MediaStore.MediaColumns.HEIGHT,         // 媒体的高度，int型  1080, 仅当媒体格式是图片或者视频时有效
-                        MediaStore.MediaColumns.MIME_TYPE,      // 媒体的类型     image/jpeg
-                        MediaStore.MediaColumns.TITLE,
-                        MediaStore.MediaColumns.DATE_ADDED,     // 添加时间
-                        MediaStore.MediaColumns._ID,            // id
-                        MediaStore.Video.VideoColumns.DURATION, // video duration
-                        //////////////////////////////////////////////////////
-                        //////////////////////////////////////////////////////
-                        MediaStore.MediaColumns.BUCKET_ID,
-                        MediaStore.MediaColumns.BUCKET_DISPLAY_NAME,
-                        //////////////////////////////////////////////////////
-                        //////////////////////////////////////////////////////
-                };
-            } else {
-                return new String[]{
-                        //////////////////////////////////////////////////////
-                        //////////////////////////////////////////////////////
-                        MediaStore.MediaColumns.SIZE,           // 媒体的大小，long型  132492
-                        MediaStore.MediaColumns.WIDTH,          // 媒体的宽度，int型  1920, 仅当媒体格式是图片或者视频时有效
-                        MediaStore.MediaColumns.HEIGHT,         // 媒体的高度，int型  1080, 仅当媒体格式是图片或者视频时有效
-                        MediaStore.MediaColumns.MIME_TYPE,      // 媒体的类型     image/jpeg
-                        MediaStore.MediaColumns.TITLE,
-                        MediaStore.MediaColumns.DATE_ADDED,     // 添加时间
-                        MediaStore.MediaColumns._ID,            // id
-                        MediaStore.Video.VideoColumns.DURATION, // video duration
-                        //////////////////////////////////////////////////////
-                        //////////////////////////////////////////////////////
-                        MediaStore.MediaColumns.DATA,           // 媒体的真实路径  /storage/emulated/0/pp/downloader/wallpaper/aaa.jpg
-                        //////////////////////////////////////////////////////
-                        //////////////////////////////////////////////////////
-                };
-            }
+            return mColumnsMap.allColumns();
         }
 
         @Nullable
         private MediaInfo cursorToMediaInfo(Cursor cursor) {
-            MediaInfo target = new MediaInfo();
-            int index = -1;
-            target.size = CursorUtil.getLong(cursor, ++index);
-            target.width = CursorUtil.getInt(cursor, ++index);
-            target.height = CursorUtil.getInt(cursor, ++index);
-            target.mimeType = CursorUtil.getString(cursor, ++index);
-            if (target.mimeType != null) {
-                target.mimeType = target.mimeType.trim().toLowerCase();
-            }
-            target.title = CursorUtil.getString(cursor, ++index);
-            target.addTime = CursorUtil.getLong(cursor, ++index);
-            target.id = CursorUtil.getInt(cursor, ++index);
-            target.durationMs = CursorUtil.getLong(cursor, ++index);
-
-            if (USE_CONTENT_URI) {
-                target.bucketId = CursorUtil.getString(cursor, ++index);
-                target.bucketDisplayName = CursorUtil.getString(cursor, ++index);
-                target.uri = mMediaUri
-                        .buildUpon()
-                        .appendPath(String.valueOf(target.id))
-                        .build();
-            } else {
-                final String path = CursorUtil.getString(cursor, ++index);
-                if (TextUtils.isEmpty(path)) {
-                    MSIMUikitLog.v("invalid path:%s, target:%s", path, target);
-                    return null;
-                }
-                final File dir = new File(path).getParentFile();
-                if (dir == null) {
-                    target.bucketId = "";
-                    target.bucketDisplayName = "";
-                } else {
-                    target.bucketId = dir.getAbsolutePath();
-                    target.bucketDisplayName = dir.getName();
-                }
-                target.uri = Uri.fromFile(new File(path));
-            }
-
-            MSIMUikitLog.v("cursorToMediaInfo USE_CONTENT_URI:%s -> %s", USE_CONTENT_URI, target);
-
-            if (TextUtils.isEmpty(target.mimeType)) {
-                MSIMUikitLog.v("invalid mimeType:%s", target.mimeType);
-                return null;
-            }
-
-            return target;
+            return mColumnsMap.mapToMediaInfo(mMediaUri, cursor);
         }
 
         @Override
