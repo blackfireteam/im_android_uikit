@@ -51,6 +51,9 @@
     <string name="imsdk_sample_input_error_api_server_error">API 服务器地址错误</string>
     <string name="imsdk_sample_input_error_im_server_error">消息服务器地址错误</string>
     <string name="imsdk_sample_input_error_nickname_error">昵称在 3 – 20 字符</string>
+    <string name="imsdk_sample_input_error_department_error">请选择部门</string>
+    <string name="imsdk_sample_input_error_workplace_error">请选择办公地点</string>
+    <string name="imsdk_sample_input_error_gender_error">请选性别</string>
     <string name="imsdk_sample_input_error_invitation_code">邀请码错误</string>
     <string name="imsdk_sample_input_error_require_pick_avatar">头像未设置</string>
     <string name="imsdk_sample_switch_setting">设置</string>

@@ -1,108 +1,271 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white">
 
-    <EditText
-        android:id="@+id/edit_nickname"
+    <io.github.idonans.systeminsets.SystemInsetsLinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="15dp"
-        android:hint="@string/imsdk_sample_edit_hint_nickname"
-        android:imeOptions="actionNext"
-        android:importantForAutofill="no"
-        android:includeFontPadding="false"
-        android:inputType="text"
-        android:maxLines="1"
-        android:singleLine="true"
-        app:layout_constraintBottom_toTopOf="@id/edit_department"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="packed" />
-
-    <androidx.appcompat.widget.AppCompatSpinner
-        android:id="@+id/edit_department"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="15dp"
-        android:entries="@array/imsdk_sample_department_list"
-        android:prompt="@string/imsdk_sample_edit_hint_department"
-        android:spinnerMode="dialog"
-        app:layout_constraintBottom_toTopOf="@id/edit_workplace"
-        app:layout_constraintTop_toBottomOf="@id/edit_nickname"
-        app:layout_constraintVertical_chainStyle="packed" />
-
-    <androidx.appcompat.widget.AppCompatSpinner
-        android:id="@+id/edit_workplace"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="15dp"
-        android:entries="@array/imsdk_sample_workplace_list"
-        android:prompt="@string/imsdk_sample_edit_hint_workplace"
-        android:spinnerMode="dialog"
-        app:layout_constraintBottom_toTopOf="@id/edit_gender"
-        app:layout_constraintTop_toBottomOf="@id/edit_department"
-        app:layout_constraintVertical_chainStyle="packed" />
-
-    <RadioGroup
-        android:id="@+id/edit_gender"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="15dp"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@id/edit_invitation_code"
-        app:layout_constraintTop_toBottomOf="@id/edit_workplace"
-        app:layout_constraintVertical_chainStyle="packed">
-
-        <RadioButton
-            android:id="@+id/edit_gender_male"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/imsdk_sample_gender_male" />
-
-        <RadioButton
-            android:id="@+id/edit_gender_female"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/imsdk_sample_gender_female" />
-    </RadioGroup>
-
-    <EditText
-        android:id="@+id/edit_invitation_code"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="15dp"
-        android:hint="@string/imsdk_sample_edit_hint_invitation_code"
-        android:imeOptions="actionGo"
-        android:importantForAutofill="no"
-        android:includeFontPadding="false"
-        android:inputType="text"
-        android:maxLines="1"
-        android:singleLine="true"
-        app:layout_constraintBottom_toTopOf="@id/submit"
-        app:layout_constraintTop_toBottomOf="@id/edit_gender"
-        app:layout_constraintVertical_chainStyle="packed" />
-
-    <Button
-        android:id="@+id/submit"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="15dp"
-        android:background="@drawable/imsdk_uikit_button_background_selector"
-        android:includeFontPadding="false"
-        android:text="@string/imsdk_sample_sign_up_next"
-        android:textColor="@color/imsdk_sample_button_text_selector"
-        android:textSize="16sp"
-        app:layout_constraintBottom_toTopOf="@id/bottom_system_insets"
-        app:layout_constraintTop_toBottomOf="@id/edit_invitation_code" />
-
-    <io.github.idonans.systeminsets.SystemInsetsFrameLayout
-        android:id="@+id/bottom_system_insets"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/submit"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:systemInsetPaddingBottom="all"
-        app:systemInsetPaddingBottomNotConsume="true" />
+        app:systemInsetPaddingBottomNotConsume="true"
+        app:systemInsetPaddingTop="all"
+        app:systemInsetPaddingTopNotConsume="true">
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="20dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#fff8f8f8" />
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="54dp"
+            android:orientation="horizontal"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:gravity="center"
+                android:includeFontPadding="false"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:text="@string/imsdk_sample_profile_modify_nickname"
+                android:textColor="#ff999999"
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/edit_nickname"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@null"
+                android:imeOptions="actionNext"
+                android:importantForAutofill="no"
+                android:includeFontPadding="false"
+                android:inputType="text"
+                android:maxLines="1"
+                android:paddingHorizontal="10dp"
+                android:singleLine="true"
+                android:textColor="#ff282828"
+                android:textSize="18sp"
+                tools:text="张三" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#fff8f8f8" />
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/modify_department"
+            android:layout_width="match_parent"
+            android:layout_height="54dp"
+            android:orientation="horizontal"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:gravity="center"
+                android:includeFontPadding="false"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:text="@string/imsdk_sample_edit_hint_department"
+                android:textColor="#ff999999"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/txt_department"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:includeFontPadding="false"
+                android:maxLines="1"
+                android:paddingHorizontal="10dp"
+                android:singleLine="true"
+                android:textColor="#ff282828"
+                android:textSize="18sp"
+                tools:text="市场营销部" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|end"
+                android:contentDescription="@string/imsdk_uikit_empty_text_hint"
+                android:src="@drawable/imsdk_uikit_ic_arrow_right_black_tiny" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#fff8f8f8" />
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/modify_workplace"
+            android:layout_width="match_parent"
+            android:layout_height="54dp"
+            android:orientation="horizontal"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:gravity="center"
+                android:includeFontPadding="false"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:text="@string/imsdk_sample_edit_hint_workplace"
+                android:textColor="#ff999999"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/txt_workplace"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:includeFontPadding="false"
+                android:maxLines="1"
+                android:paddingHorizontal="10dp"
+                android:singleLine="true"
+                android:textColor="#ff282828"
+                android:textSize="18sp"
+                tools:text="未来科技馆" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|end"
+                android:contentDescription="@string/imsdk_uikit_empty_text_hint"
+                android:src="@drawable/imsdk_uikit_ic_arrow_right_black_tiny" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#fff8f8f8" />
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/modify_gender"
+            android:layout_width="match_parent"
+            android:layout_height="54dp"
+            android:orientation="horizontal"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:gravity="center"
+                android:includeFontPadding="false"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:text="@string/imsdk_sample_profile_modify_gender"
+                android:textColor="#ff999999"
+                android:textSize="18sp" />
+
+            <TextView
+                android:id="@+id/txt_gender"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:includeFontPadding="false"
+                android:maxLines="1"
+                android:paddingHorizontal="10dp"
+                android:singleLine="true"
+                android:textColor="#ff282828"
+                android:textSize="18sp"
+                tools:text="男" />
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|end"
+                android:contentDescription="@string/imsdk_uikit_empty_text_hint"
+                android:src="@drawable/imsdk_uikit_ic_arrow_right_black_tiny" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#fff8f8f8" />
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="54dp"
+            android:orientation="horizontal"
+            android:paddingStart="15dp"
+            android:paddingEnd="15dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:gravity="center"
+                android:includeFontPadding="false"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:text="@string/imsdk_sample_edit_hint_invitation_code"
+                android:textColor="#ff999999"
+                android:textSize="18sp" />
+
+            <EditText
+                android:id="@+id/edit_invitation_code"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@null"
+                android:imeOptions="actionNext"
+                android:importantForAutofill="no"
+                android:includeFontPadding="false"
+                android:inputType="text"
+                android:maxLines="1"
+                android:paddingHorizontal="10dp"
+                android:singleLine="true"
+                android:textColor="#ff282828"
+                android:textSize="18sp"
+                tools:text="123" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#fff8f8f8" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="20dp" />
+
+        <Button
+            android:id="@+id/submit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="15dp"
+            android:background="@drawable/imsdk_uikit_button_background_selector"
+            android:includeFontPadding="false"
+            android:text="@string/imsdk_sample_sign_up_next"
+            android:textColor="@color/imsdk_sample_button_text_selector"
+            android:textSize="16sp" />
+    </io.github.idonans.systeminsets.SystemInsetsLinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

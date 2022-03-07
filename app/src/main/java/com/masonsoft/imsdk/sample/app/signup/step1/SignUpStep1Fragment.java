@@ -21,8 +21,13 @@ import com.masonsoft.imsdk.sample.app.signup.SignUpView;
 import com.masonsoft.imsdk.sample.app.signup.step2.SignUpStep2Activity;
 import com.masonsoft.imsdk.sample.databinding.ImsdkSampleSignUpStep1FragmentBinding;
 import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
+import com.masonsoft.imsdk.uikit.common.simpledialog.SimpleBottomActionsDialog;
+
+import java.util.Arrays;
+import java.util.List;
 
 import io.github.idonans.core.FormValidator;
+import io.github.idonans.core.util.ContextUtil;
 import io.github.idonans.core.util.ToastUtil;
 import io.github.idonans.lang.util.ViewUtil;
 
@@ -50,6 +55,9 @@ public class SignUpStep1Fragment extends SignUpFragment {
         FormValidator.bind(
                 new FormValidator.InputView[]{
                         FormValidator.InputViewFactory.create(mBinding.editNickname),
+                        FormValidator.InputViewFactory.create(mBinding.txtDepartment),
+                        FormValidator.InputViewFactory.create(mBinding.txtWorkplace),
+                        FormValidator.InputViewFactory.create(mBinding.txtGender),
                         FormValidator.InputViewFactory.create(mBinding.editInvitationCode),
                 },
                 new FormValidator.SubmitView[]{
@@ -58,7 +66,7 @@ public class SignUpStep1Fragment extends SignUpFragment {
         );
         mBinding.editInvitationCode.setOnEditorActionListener((v, actionId, event) -> {
             SampleLog.v("onEditorAction actionId:%s, event:%s", actionId, event);
-            if (actionId == EditorInfo.IME_ACTION_GO) {
+            if (actionId == EditorInfo.IME_ACTION_NEXT) {
                 onSubmit();
                 return true;
             }
@@ -67,18 +75,136 @@ public class SignUpStep1Fragment extends SignUpFragment {
 
         final SignUpArgument args = getSignUpArgument();
         mBinding.editNickname.setText(args.nickname);
-        if (args.gender == MSIMUikitConstants.Gender.MALE) {
-            mBinding.editGenderMale.setChecked(true);
-        } else {
-            mBinding.editGenderFemale.setChecked(true);
-        }
+        mBinding.txtDepartment.setText(args.department);
+        mBinding.txtWorkplace.setText(args.workplace);
+        mBinding.txtGender.setText(genderToTxt(args.gender));
 
+        ViewUtil.onClick(mBinding.modifyDepartment, v -> startModifyDepartment());
+        ViewUtil.onClick(mBinding.modifyWorkplace, v -> startModifyWorkplace());
+        ViewUtil.onClick(mBinding.modifyGender, v -> startModifyGender());
         ViewUtil.onClick(mBinding.submit, v -> onSubmit());
 
         mView = new ViewImpl();
         mPresenter = new SignUpStep1FragmentPresenter(mView);
 
         return mBinding.getRoot();
+    }
+
+    private void startModifyDepartment() {
+        final Activity activity = getActivity();
+        if (activity == null) {
+            SampleLog.e(MSIMUikitConstants.ErrorLog.ACTIVITY_IS_NULL);
+            return;
+        }
+        if (isStateSaved()) {
+            SampleLog.e(MSIMUikitConstants.ErrorLog.FRAGMENT_MANAGER_STATE_SAVED);
+            return;
+        }
+
+        if (mBinding == null) {
+            SampleLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
+            return;
+        }
+
+        final List<String> departmentList = Arrays.asList(
+                ContextUtil.getContext().getResources().getStringArray(R.array.imsdk_sample_department_list)
+        );
+        final SimpleBottomActionsDialog dialog = new SimpleBottomActionsDialog(
+                activity,
+                departmentList
+        );
+        dialog.setOnActionClickListener((index, actionText) -> {
+            if (mPresenter == null) {
+                SampleLog.e(MSIMUikitConstants.ErrorLog.PRESENTER_IS_NULL);
+                return;
+            }
+
+            mBinding.txtDepartment.setText(actionText);
+        });
+        dialog.show();
+    }
+
+    private void startModifyWorkplace() {
+        final Activity activity = getActivity();
+        if (activity == null) {
+            SampleLog.e(MSIMUikitConstants.ErrorLog.ACTIVITY_IS_NULL);
+            return;
+        }
+        if (isStateSaved()) {
+            SampleLog.e(MSIMUikitConstants.ErrorLog.FRAGMENT_MANAGER_STATE_SAVED);
+            return;
+        }
+
+        if (mBinding == null) {
+            SampleLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
+            return;
+        }
+
+        final List<String> workplaceList = Arrays.asList(
+                ContextUtil.getContext().getResources().getStringArray(R.array.imsdk_sample_workplace_list)
+        );
+        final SimpleBottomActionsDialog dialog = new SimpleBottomActionsDialog(
+                activity,
+                workplaceList
+        );
+        dialog.setOnActionClickListener((index, actionText) -> {
+            if (mPresenter == null) {
+                SampleLog.e(MSIMUikitConstants.ErrorLog.PRESENTER_IS_NULL);
+                return;
+            }
+
+            mBinding.txtWorkplace.setText(actionText);
+        });
+        dialog.show();
+    }
+
+    static long txtToGender(String txt) {
+        final String txtGenderMale = I18nResources.getString(R.string.imsdk_sample_gender_male);
+        if (txtGenderMale.equals(txt)) {
+            return MSIMUikitConstants.Gender.MALE;
+        }
+        return MSIMUikitConstants.Gender.FEMALE;
+    }
+
+    static String genderToTxt(long gender) {
+        if (MSIMUikitConstants.Gender.MALE == gender) {
+            return I18nResources.getString(R.string.imsdk_sample_gender_male);
+        }
+        return I18nResources.getString(R.string.imsdk_sample_gender_female);
+    }
+
+    private void startModifyGender() {
+        final Activity activity = getActivity();
+        if (activity == null) {
+            SampleLog.e(MSIMUikitConstants.ErrorLog.ACTIVITY_IS_NULL);
+            return;
+        }
+        if (isStateSaved()) {
+            SampleLog.e(MSIMUikitConstants.ErrorLog.FRAGMENT_MANAGER_STATE_SAVED);
+            return;
+        }
+
+        if (mBinding == null) {
+            SampleLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
+            return;
+        }
+
+        final List<String> genderList = Arrays.asList(
+                ContextUtil.getContext().getResources().getStringArray(R.array.imsdk_sample_gender_list)
+        );
+        final SimpleBottomActionsDialog dialog = new SimpleBottomActionsDialog(
+                activity,
+                genderList
+        );
+        dialog.setOnActionClickListener((index, actionText) -> {
+            if (mPresenter == null) {
+                SampleLog.e(MSIMUikitConstants.ErrorLog.PRESENTER_IS_NULL);
+                return;
+            }
+
+            mBinding.txtGender.setText(actionText);
+        });
+        dialog.show();
     }
 
     private void onSubmit() {
@@ -105,26 +231,35 @@ public class SignUpStep1Fragment extends SignUpFragment {
             return;
         }
 
+        final String department = mBinding.txtDepartment.getText().toString().trim();
+        if (TextUtils.isEmpty(department)) {
+            ToastUtil.show(I18nResources.getString(R.string.imsdk_sample_input_error_department_error));
+            return;
+        }
+
+        final String workplace = mBinding.txtWorkplace.getText().toString().trim();
+        if (TextUtils.isEmpty(workplace)) {
+            ToastUtil.show(I18nResources.getString(R.string.imsdk_sample_input_error_workplace_error));
+            return;
+        }
+
+        final String gender = mBinding.txtGender.getText().toString().trim();
+        if (TextUtils.isEmpty(gender)) {
+            ToastUtil.show(I18nResources.getString(R.string.imsdk_sample_input_error_gender_error));
+            return;
+        }
+
         final String invitationCode = mBinding.editInvitationCode.getText().toString().trim().toLowerCase();
         if (!"msipo".equals(invitationCode)) {
             ToastUtil.show(I18nResources.getString(R.string.imsdk_sample_input_error_invitation_code));
             return;
         }
 
-        final String department = mBinding.editDepartment.getSelectedItem().toString();
-        final String workplace = mBinding.editWorkplace.getSelectedItem().toString();
-        final long gender;
-        if (mBinding.editGenderMale.isChecked()) {
-            gender = MSIMUikitConstants.Gender.MALE;
-        } else {
-            gender = MSIMUikitConstants.Gender.FEMALE;
-        }
-
         final SignUpArgument signUpArgument = getSignUpArgument();
         signUpArgument.nickname = nickname;
         signUpArgument.department = department;
         signUpArgument.workplace = workplace;
-        signUpArgument.gender = gender;
+        signUpArgument.gender = txtToGender(gender);
         saveSignUpArgument();
 
         SignUpStep2Activity.start(activity, signUpArgument);
