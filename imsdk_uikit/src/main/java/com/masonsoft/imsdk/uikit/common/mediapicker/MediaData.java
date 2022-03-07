@@ -178,7 +178,7 @@ public class MediaData {
         private interface ColumnsMap {
             String[] allColumns();
 
-            MediaInfo mapToMediaInfo(Uri mediaUri, Cursor cursor);
+            MediaInfo mapToMediaInfo(Cursor cursor);
         }
 
         @RequiresApi(api = Build.VERSION_CODES.Q)
@@ -207,7 +207,7 @@ public class MediaData {
             }
 
             @Override
-            public MediaInfo mapToMediaInfo(Uri mediaUri, Cursor cursor) {
+            public MediaInfo mapToMediaInfo(Cursor cursor) {
                 MediaInfo target = new MediaInfo();
                 int index = -1;
                 target.size = CursorUtil.getLong(cursor, ++index);
@@ -224,10 +224,8 @@ public class MediaData {
 
                 target.bucketId = CursorUtil.getString(cursor, ++index);
                 target.bucketDisplayName = CursorUtil.getString(cursor, ++index);
-                target.uri = mediaUri
-                        .buildUpon()
-                        .appendPath(String.valueOf(target.id))
-                        .build();
+
+                target.uri = MediaStore.Files.getContentUri("external", target.id);
 
                 MSIMUikitLog.v("%s mapToMediaInfo %s", com.masonsoft.imsdk.util.Objects.defaultObjectTag(this), target);
 
@@ -263,7 +261,7 @@ public class MediaData {
             }
 
             @Override
-            public MediaInfo mapToMediaInfo(Uri mediaUri, Cursor cursor) {
+            public MediaInfo mapToMediaInfo(Cursor cursor) {
                 MediaInfo target = new MediaInfo();
                 int index = -1;
                 target.size = CursorUtil.getLong(cursor, ++index);
@@ -439,7 +437,7 @@ public class MediaData {
 
         @Nullable
         private MediaInfo cursorToMediaInfo(Cursor cursor) {
-            return mColumnsMap.mapToMediaInfo(mMediaUri, cursor);
+            return mColumnsMap.mapToMediaInfo(cursor);
         }
 
         @Override
