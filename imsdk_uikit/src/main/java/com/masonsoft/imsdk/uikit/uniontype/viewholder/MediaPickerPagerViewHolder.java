@@ -7,13 +7,11 @@ import androidx.annotation.NonNull;
 import com.facebook.imagepipeline.common.ResizeOptions;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
-import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.uikit.R;
-import com.masonsoft.imsdk.uikit.common.ItemClickUnionTypeAdapter;
 import com.masonsoft.imsdk.uikit.common.mediapicker.MediaData;
+import com.masonsoft.imsdk.uikit.common.mediapicker.UnionTypeMediaData;
 import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitUnionTypeImplMediaPickerPagerBinding;
 import com.masonsoft.imsdk.uikit.uniontype.DataObject;
-import com.masonsoft.imsdk.util.Objects;
 
 import io.github.idonans.core.util.ContextUtil;
 import io.github.idonans.core.util.Preconditions;
@@ -37,9 +35,9 @@ public class MediaPickerPagerViewHolder extends UnionTypeViewHolder {
         final DataObject itemObject = getItemObject(DataObject.class);
         Preconditions.checkNotNull(itemObject);
         final MediaData.MediaInfo mediaInfo = itemObject.getObject(MediaData.MediaInfo.class);
-        final MediaData mediaData = itemObject.getExtObjectObject1(null);
-
-        MSIMUikitLog.v(Objects.defaultObjectTag(this) + " onBindUpdate uri:%s", mediaInfo.uri);
+        final UnionTypeMediaData unionTypeMediaData = itemObject.getExtObjectObject1(null);
+        Preconditions.checkNotNull(mediaInfo);
+        Preconditions.checkNotNull(unionTypeMediaData);
 
         if (mediaInfo.isVideoMimeType()) {
             ViewUtil.setVisibilityIfChanged(mBinding.videoFlag, View.VISIBLE);
@@ -61,13 +59,6 @@ public class MediaPickerPagerViewHolder extends UnionTypeViewHolder {
         mBinding.image.setOnClickListener(v -> {
             if (itemObject.getExtHolderItemClick1() != null) {
                 itemObject.getExtHolderItemClick1().onItemClick(MediaPickerPagerViewHolder.this);
-            }
-
-            if (host.getAdapter() instanceof ItemClickUnionTypeAdapter) {
-                final ItemClickUnionTypeAdapter adapter = (ItemClickUnionTypeAdapter) host.getAdapter();
-                if (adapter.getOnItemClickListener() != null) {
-                    adapter.getOnItemClickListener().onItemClick(MediaPickerPagerViewHolder.this);
-                }
             }
         });
     }

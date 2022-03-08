@@ -8,7 +8,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.util.ObjectsCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.PagerSnapHelper;
@@ -34,6 +33,7 @@ import io.github.idonans.core.util.DimenUtil;
 import io.github.idonans.core.util.Preconditions;
 import io.github.idonans.lang.util.ViewUtil;
 import io.github.idonans.uniontype.Host;
+import io.github.idonans.uniontype.UnionTypeAdapter;
 import io.github.idonans.uniontype.UnionTypeItemObject;
 
 public class MediaPickerDialog implements MediaData.MediaLoaderCallback, ViewBackLayer.OnBackPressedListener {
@@ -42,15 +42,25 @@ public class MediaPickerDialog implements MediaData.MediaLoaderCallback, ViewBac
 
     private final Activity mActivity;
     private final LayoutInflater mInflater;
+    @NonNull
     private final ImsdkUikitCommonMediaPickerDialogBinding mBinding;
+    @NonNull
     private ViewDialog mViewDialog;
-    public GridView mGridView;
+
+    @NonNull
+    private GridView mGridView;
+    @NonNull
     private BucketView mBucketView;
+
+    @Nullable
     private PagerView mPagerView;
 
     @Nullable
     private UnionTypeMediaData mUnionTypeMediaData;
     private MediaData.MediaLoader mMediaLoader;
+
+    private boolean mPendingToShowViewDialog;
+    private boolean mUnionTypeMediaDataLoadFinish;
 
     public MediaPickerDialog(Activity activity, ViewGroup parentView) {
         mActivity = activity;
@@ -66,7 +76,7 @@ public class MediaPickerDialog implements MediaData.MediaLoaderCallback, ViewBac
 
         mGridView = new GridView(mBinding);
         mBucketView = new BucketView(mBinding);
-        mPagerView = new PagerView(mBinding);
+        // mPagerView = new PagerView(mBinding);
 
         mMediaLoader = new MediaData.MediaLoader(this, mInnerMediaSelector);
         mMediaLoader.start();
@@ -127,48 +137,20 @@ public class MediaPickerDialog implements MediaData.MediaLoaderCallback, ViewBac
         mOutMediaSelector = mediaSelector;
     }
 
-    private void notifyMediaDataChanged() {
-        if (mUnionTypeMediaData == null) {
-            MSIMUikitLog.e("notifyMediaDataChanged mUnionTypeMediaData is null");
-            return;
-        }
-        if (mUnionTypeMediaData.mediaData.bucketSelected != null) {
-            List<UnionTypeItemObject> gridItems = mUnionTypeMediaData.unionTypeGridItemsMap.get(mUnionTypeMediaData.mediaData.bucketSelected);
-            mGridView.mGridDataAdapter.getData()
-                    .beginTransaction()
-                    .add((transaction, groupArrayList) -> {
-                        // mGridView.mDataAdapter.setGroupItems(0, gridItems);
-                        groupArrayList.setGroupItems(0, gridItems);
-                    })
-                    .commit();
+    private void onUnionTypeMediaDataLoadFinish() {
+        mUnionTypeMediaDataLoadFinish = true;
+        Preconditions.checkNotNull(mUnionTypeMediaData);
+        Preconditions.checkNotNull(mUnionTypeMediaData.mediaData.bucketSelected);
+        mUnionTypeMediaData.unionTypeMediaDataObservable.registerObserver(mUnionTypeMediaDataObserver);
 
-            List<UnionTypeItemObject> pagerItems = mUnionTypeMediaData.unionTypePagerItemsMap.get(mUnionTypeMediaData.mediaData.bucketSelected);
-            mPagerView.mDataAdapter.getData()
-                    .beginTransaction()
-                    .add((transaction, groupArrayList) -> {
-                        // mPagerView.mDataAdapter.setGroupItems(0, pagerItems);
-                        groupArrayList.setGroupItems(0, pagerItems);
-                    })
-                    .commit(() -> {
-                        mPagerView.mRecyclerView.getLayoutManager().scrollToPosition(mUnionTypeMediaData.pagerPendingIndex);
-                    });
+        mGridView.syncTitleBar();
+        mGridView.syncContent();
 
-        }
-        mBucketView.mDataAdapter.getData()
-                .beginTransaction()
-                .add((transaction, groupArrayList) -> {
-                    //mBucketView.mDataAdapter.setGroupItems(0, mUnionTypeMediaData.unionTypeBucketItems);
-                    groupArrayList.setGroupItems(0, mUnionTypeMediaData.unionTypeBucketItems);
-                })
-                .commit();
+        mBucketView.syncContent();
 
-        String bucketSelectedName = I18nResources.getString(R.string.imsdk_uikit_custom_soft_keyboard_item_media_bucket_all);
-        if (mUnionTypeMediaData.mediaData.bucketSelected != null
-                && !mUnionTypeMediaData.mediaData.bucketSelected.allMediaInfo) {
-            bucketSelectedName = mUnionTypeMediaData.mediaData.bucketSelected.bucketDisplayName;
+        if (mPendingToShowViewDialog) {
+            mViewDialog.show();
         }
-        mGridView.mGridTopBarTitleText.setText(bucketSelectedName);
-        mGridView.updateConfirmSubmitStatus();
     }
 
     class GridView {
@@ -179,7 +161,7 @@ public class MediaPickerDialog implements MediaData.MediaLoaderCallback, ViewBac
         private final TextView mGridTopBarSubmit;
         private final RecyclerView mGridRecyclerView;
 
-        private final ItemClickUnionTypeAdapter mGridDataAdapter;
+        private final UnionTypeAdapter mGridDataAdapter;
 
         private GridView(ImsdkUikitCommonMediaPickerDialogBinding parentBinding) {
             mGridTopBarClose = parentBinding.gridTopBarClose;
@@ -194,19 +176,9 @@ public class MediaPickerDialog implements MediaData.MediaLoaderCallback, ViewBac
                     new GridLayoutManager(mGridRecyclerView.getContext(), 4));
             mGridRecyclerView.setHasFixedSize(true);
             mGridRecyclerView.addItemDecoration(new GridItemDecoration(4, DimenUtil.dp2px(2), false));
-            mGridDataAdapter = new ItemClickUnionTypeAdapter();
+            mGridDataAdapter = new UnionTypeAdapter();
             mGridDataAdapter.setHost(Host.Factory.create(mActivity, mGridRecyclerView, mGridDataAdapter));
             mGridDataAdapter.setUnionTypeMapper(new IMUikitUnionTypeMapper());
-            mGridDataAdapter.setOnItemClickListener(viewHolder -> {
-                Preconditions.checkNotNull(mUnionTypeMediaData);
-                final int position = viewHolder.getAdapterPosition();
-                mUnionTypeMediaData.pagerPendingIndex = Math.max(position, 0);
-                notifyMediaDataChanged();
-                mPagerView.mDataAdapter.getData().beginTransaction().add((transaction, groupArrayList) -> {
-                    // ignore
-                }).commit(() -> mPagerView.show());
-            });
-
             mGridRecyclerView.setAdapter(mGridDataAdapter);
 
             ViewUtil.onClick(mGridTopBarClose, v -> {
@@ -241,14 +213,19 @@ public class MediaPickerDialog implements MediaData.MediaLoaderCallback, ViewBac
             });
         }
 
-        public void updateConfirmSubmitStatus() {
+        public void syncTitleBar() {
+            Preconditions.checkNotNull(mUnionTypeMediaData);
+            Preconditions.checkNotNull(mUnionTypeMediaData.mediaData.bucketSelected);
+            String bucketSelectedName = I18nResources.getString(R.string.imsdk_uikit_custom_soft_keyboard_item_media_bucket_all);
+            if (mUnionTypeMediaData.mediaData.bucketSelected != null
+                    && !mUnionTypeMediaData.mediaData.bucketSelected.allMediaInfo) {
+                bucketSelectedName = mUnionTypeMediaData.mediaData.bucketSelected.bucketDisplayName;
+            }
+            mGridTopBarTitleText.setText(bucketSelectedName);
+
             boolean enable;
             int count;
-            if (mUnionTypeMediaData == null) {
-                MSIMUikitLog.e("mUnionTypeMediaData is null");
-                count = 0;
-                enable = false;
-            } else if (mInnerMediaSelector.canFinishSelect(mUnionTypeMediaData.mediaData.mediaInfoListSelected)) {
+            if (mInnerMediaSelector.canFinishSelect(mUnionTypeMediaData.mediaData.mediaInfoListSelected)) {
                 count = mUnionTypeMediaData.mediaData.mediaInfoListSelected.size();
                 enable = true;
             } else {
@@ -263,12 +240,22 @@ public class MediaPickerDialog implements MediaData.MediaLoaderCallback, ViewBac
             }
             mGridTopBarSubmit.setEnabled(enable);
         }
+
+        public void syncContent() {
+            Preconditions.checkNotNull(mUnionTypeMediaData);
+            Preconditions.checkNotNull(mUnionTypeMediaData.mediaData.bucketSelected);
+            final List<UnionTypeItemObject> gridItems = mUnionTypeMediaData.unionTypeGridItemsMap.get(mUnionTypeMediaData.mediaData.bucketSelected);
+            mGridDataAdapter.getData()
+                    .beginTransaction()
+                    .add((transaction, groupArrayList) -> groupArrayList.setGroupItems(0, gridItems))
+                    .commit();
+        }
     }
 
     private class BucketView {
         private final ViewDialog mBucketViewDialog;
         private final RecyclerView mRecyclerView;
-        private final ItemClickUnionTypeAdapter mDataAdapter;
+        private final UnionTypeAdapter mDataAdapter;
 
         private BucketView(ImsdkUikitCommonMediaPickerDialogBinding parentBinding) {
             final ViewGroup parentView = parentBinding.bucketOverlayContainer;
@@ -287,34 +274,21 @@ public class MediaPickerDialog implements MediaData.MediaLoaderCallback, ViewBac
             mRecyclerView.setLayoutManager(
                     new LinearLayoutManager(mRecyclerView.getContext()));
             mRecyclerView.setHasFixedSize(false);
-            mDataAdapter = new ItemClickUnionTypeAdapter();
+            mDataAdapter = new UnionTypeAdapter();
             mDataAdapter.setHost(Host.Factory.create(mActivity, mRecyclerView, mDataAdapter));
             mDataAdapter.setUnionTypeMapper(new IMUikitUnionTypeMapper());
-            mDataAdapter.setOnItemClickListener(viewHolder -> {
-                Preconditions.checkNotNull(mUnionTypeMediaData);
-                int size = mUnionTypeMediaData.mediaData.allSubBuckets.size();
-                final int position = viewHolder.getAdapterPosition();
-                if ((position < 0 || position >= size)) {
-                    MSIMUikitLog.e("BucketView onItemClick invalid position: %s, size:%s", position, size);
-                    BucketView.this.hide();
-                    return;
-                }
-
-                MediaData.MediaBucket mediaBucket = mUnionTypeMediaData.mediaData.allSubBuckets.get(position);
-                if (ObjectsCompat.equals(mUnionTypeMediaData.mediaData.bucketSelected, mediaBucket)) {
-                    if (DEBUG) {
-                        MSIMUikitLog.v("BucketView onItemClick ignore. same as last bucket selected");
-                    }
-                    BucketView.this.hide();
-                    return;
-                }
-
-                BucketView.this.hide();
-                mUnionTypeMediaData.mediaData.bucketSelected = mediaBucket;
-                notifyMediaDataChanged();
-            });
-
             mRecyclerView.setAdapter(mDataAdapter);
+        }
+
+        public void syncContent() {
+            Preconditions.checkNotNull(mUnionTypeMediaData);
+            Preconditions.checkNotNull(mUnionTypeMediaData.mediaData.bucketSelected);
+            mDataAdapter.getData()
+                    .beginTransaction()
+                    .add((transaction, groupArrayList) -> {
+                        groupArrayList.setGroupItems(0, mUnionTypeMediaData.unionTypeBucketItems);
+                    })
+                    .commit();
         }
 
         public void show() {
@@ -334,7 +308,48 @@ public class MediaPickerDialog implements MediaData.MediaLoaderCallback, ViewBac
         }
     }
 
-    private class PagerView {
+    public void showBucketView() {
+        mBucketView.show();
+    }
+
+    public void hideBucketView() {
+        mBucketView.hide();
+    }
+
+    public void showPagerView(int position) {
+        if (mUnionTypeMediaData == null) {
+            return;
+        }
+
+        if (mPagerView == null) {
+            mPagerView = new PagerView(mBinding);
+        }
+
+        List<UnionTypeItemObject> pagerItems = mUnionTypeMediaData.unionTypePagerItemsMap.get(mUnionTypeMediaData.mediaData.bucketSelected);
+        final PagerView finalPagerView = mPagerView;
+        finalPagerView.mDataAdapter.getData()
+                .beginTransaction()
+                .add((transaction, groupArrayList) -> {
+                    // mPagerView.mDataAdapter.setGroupItems(0, pagerItems);
+                    groupArrayList.setGroupItems(0, pagerItems);
+                })
+                .commit(() -> {
+                    if (mPagerView == finalPagerView) {
+                        //noinspection ConstantConditions
+                        finalPagerView.mRecyclerView.getLayoutManager().scrollToPosition(position);
+                        finalPagerView.show();
+                    }
+                });
+    }
+
+    public void hidePagerView() {
+        if (mPagerView != null) {
+            mPagerView.hide();
+        }
+        mPagerView = null;
+    }
+
+    private class PagerView implements ViewBackLayer.OnHideListener {
 
         private final ViewDialog mPagerViewDialog;
         @SuppressWarnings("FieldCanBeLocal")
@@ -347,6 +362,7 @@ public class MediaPickerDialog implements MediaData.MediaLoaderCallback, ViewBac
             mPagerViewDialog = new ViewDialog.Builder(mActivity)
                     .setParentView(parentView)
                     .setContentView(R.layout.imsdk_uikit_common_media_picker_dialog_pager_view)
+                    .setOnHideListener(this)
                     .create();
             //noinspection ConstantConditions
             mBinding = ImsdkUikitCommonMediaPickerDialogPagerViewBinding.bind(mPagerViewDialog.getContentView());
@@ -372,6 +388,13 @@ public class MediaPickerDialog implements MediaData.MediaLoaderCallback, ViewBac
             mPagerViewDialog.hide(false);
         }
 
+        @Override
+        public void onHide(boolean cancel) {
+            if (mPagerView == this) {
+                mPagerView = null;
+            }
+        }
+
         public boolean onBackPressed() {
             if (mPagerViewDialog.isShown()) {
                 mPagerViewDialog.hide(false);
@@ -381,11 +404,16 @@ public class MediaPickerDialog implements MediaData.MediaLoaderCallback, ViewBac
         }
     }
 
+
     public void show() {
-        Threads.postUi(() -> mViewDialog.show(), 220L);
+        mPendingToShowViewDialog = true;
+        if (mUnionTypeMediaDataLoadFinish) {
+            mViewDialog.show();
+        }
     }
 
     public void hide() {
+        mPendingToShowViewDialog = false;
         mViewDialog.hide(false);
         mMediaLoader.close();
     }
@@ -399,17 +427,17 @@ public class MediaPickerDialog implements MediaData.MediaLoaderCallback, ViewBac
         UnionTypeMediaData unionTypeMediaData = new UnionTypeMediaData(this, mediaData);
         Threads.runOnUi(() -> {
             mUnionTypeMediaData = unionTypeMediaData;
-            notifyMediaDataChanged();
+            onUnionTypeMediaDataLoadFinish();
         });
     }
 
     @Override
     public boolean onBackPressed() {
-        if (mBucketView.onBackPressed()) {
+        if (mPagerView != null && mPagerView.onBackPressed()) {
             return true;
         }
 
-        if (mPagerView.onBackPressed()) {
+        if (mBucketView.onBackPressed()) {
             return true;
         }
 
@@ -431,5 +459,22 @@ public class MediaPickerDialog implements MediaData.MediaLoaderCallback, ViewBac
     public void setOnMediaPickListener(OnMediaPickListener listener) {
         mOnMediaPickListener = listener;
     }
+
+    private final UnionTypeMediaDataObservable.UnionTypeMediaDataObserver mUnionTypeMediaDataObserver = new UnionTypeMediaDataObservable.UnionTypeMediaDataObserver() {
+        @Override
+        public void onBucketSelectedChanged(UnionTypeMediaData unionTypeMediaData) {
+            if (mUnionTypeMediaData != unionTypeMediaData) {
+                return;
+            }
+
+            mGridView.syncTitleBar();
+            mGridView.syncContent();
+        }
+
+        @Override
+        public void onMediaInfoSelectedChanged(UnionTypeMediaData unionTypeMediaData) {
+            mGridView.syncTitleBar();
+        }
+    };
 
 }

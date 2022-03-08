@@ -4,6 +4,7 @@ import com.masonsoft.imsdk.uikit.uniontype.UnionTypeViewHolderListeners;
 
 import io.github.idonans.uniontype.UnionTypeAdapter;
 
+@Deprecated
 public class ItemClickUnionTypeAdapter extends UnionTypeAdapter {
 
     private UnionTypeViewHolderListeners.OnItemClickListener mOnItemClickListener;

@@ -1,14 +1,17 @@
 package com.masonsoft.imsdk.uikit.uniontype.viewholder;
 
 import android.annotation.SuppressLint;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 
 import com.masonsoft.imsdk.uikit.R;
-import com.masonsoft.imsdk.uikit.common.ItemClickUnionTypeAdapter;
 import com.masonsoft.imsdk.uikit.common.mediapicker.MediaData;
+import com.masonsoft.imsdk.uikit.common.mediapicker.UnionTypeMediaData;
+import com.masonsoft.imsdk.uikit.common.mediapicker.UnionTypeMediaDataObservable;
 import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitUnionTypeImplMediaPickerBucketBinding;
 import com.masonsoft.imsdk.uikit.uniontype.DataObject;
+import com.masonsoft.imsdk.uikit.uniontype.UnionTypeViewHolderListeners;
 
 import io.github.idonans.core.util.Preconditions;
 import io.github.idonans.lang.util.ViewUtil;
@@ -30,7 +33,11 @@ public class MediaPickerBucketViewHolder extends UnionTypeViewHolder {
         final DataObject itemObject = getItemObject(DataObject.class);
         Preconditions.checkNotNull(itemObject);
         final MediaData.MediaBucket mediaBucket = itemObject.getObject(MediaData.MediaBucket.class);
-        final MediaData mediaData = itemObject.getExtObjectObject1(null);
+        final UnionTypeMediaData unionTypeMediaData = itemObject.getExtObjectObject1(null);
+        Preconditions.checkNotNull(mediaBucket);
+        Preconditions.checkNotNull(unionTypeMediaData);
+        unionTypeMediaData.unionTypeMediaDataObservable.registerObserver(mUnionTypeMediaDataObserver);
+
         String url = null;
         if (mediaBucket.cover != null) {
             url = mediaBucket.cover.uri.toString();
@@ -42,18 +49,47 @@ public class MediaPickerBucketViewHolder extends UnionTypeViewHolder {
         } else {
             mBinding.title.setText(mediaBucket.bucketDisplayName);
         }
-        ViewUtil.onClick(itemView, v -> {
-            if (itemObject.getExtHolderItemClick1() != null) {
-                itemObject.getExtHolderItemClick1().onItemClick(MediaPickerBucketViewHolder.this);
-            }
 
-            if (host.getAdapter() instanceof ItemClickUnionTypeAdapter) {
-                ItemClickUnionTypeAdapter adapter = (ItemClickUnionTypeAdapter) host.getAdapter();
-                if (adapter.getOnItemClickListener() != null) {
-                    adapter.getOnItemClickListener().onItemClick(MediaPickerBucketViewHolder.this);
-                }
+        final boolean select = mediaBucket == unionTypeMediaData.mediaData.bucketSelected;
+        ViewUtil.setVisibilityIfChanged(mBinding.flagSelectOk, select ? View.VISIBLE : View.GONE);
+
+        ViewUtil.onClick(itemView, v -> {
+            final UnionTypeViewHolderListeners.OnItemClickListener listener = itemObject.getExtHolderItemClick1();
+            if (listener != null) {
+                listener.onItemClick(MediaPickerBucketViewHolder.this);
             }
         });
     }
+
+    private final UnionTypeMediaDataObservable.UnionTypeMediaDataObserver mUnionTypeMediaDataObserver = new UnionTypeMediaDataObservable.UnionTypeMediaDataObserver() {
+        @Override
+        public void onBucketSelectedChanged(UnionTypeMediaData unionTypeMediaData) {
+            final DataObject itemObject = getItemObject(DataObject.class);
+            if (itemObject == null) {
+                return;
+            }
+            final MediaData.MediaBucket mediaBucket = itemObject.getObject(MediaData.MediaBucket.class);
+            if (mediaBucket == null) {
+                return;
+            }
+
+            final UnionTypeMediaData currentUnionTypeMediaData = itemObject.getExtObjectObject1(null);
+            if (currentUnionTypeMediaData == null) {
+                return;
+            }
+
+            if (currentUnionTypeMediaData != unionTypeMediaData) {
+                return;
+            }
+
+            final boolean select = mediaBucket == unionTypeMediaData.mediaData.bucketSelected;
+            ViewUtil.setVisibilityIfChanged(mBinding.flagSelectOk, select ? View.VISIBLE : View.GONE);
+        }
+
+        @Override
+        public void onMediaInfoSelectedChanged(UnionTypeMediaData unionTypeMediaData) {
+            // ignore
+        }
+    };
 
 }

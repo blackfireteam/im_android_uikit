@@ -5,11 +5,12 @@ import android.view.View;
 import androidx.annotation.NonNull;
 
 import com.masonsoft.imsdk.uikit.R;
-import com.masonsoft.imsdk.uikit.common.ItemClickUnionTypeAdapter;
 import com.masonsoft.imsdk.uikit.common.mediapicker.MediaData;
 import com.masonsoft.imsdk.uikit.common.mediapicker.UnionTypeMediaData;
+import com.masonsoft.imsdk.uikit.common.mediapicker.UnionTypeMediaDataObservable;
 import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitUnionTypeImplMediaPickerGridBinding;
 import com.masonsoft.imsdk.uikit.uniontype.DataObject;
+import com.masonsoft.imsdk.uikit.uniontype.UnionTypeViewHolderListeners;
 
 import io.github.idonans.core.util.Preconditions;
 import io.github.idonans.lang.util.ViewUtil;
@@ -30,8 +31,10 @@ public class MediaPickerGridViewHolder extends UnionTypeViewHolder {
         final DataObject itemObject = getItemObject(DataObject.class);
         Preconditions.checkNotNull(itemObject);
         MediaData.MediaInfo mediaInfo = itemObject.getObject(MediaData.MediaInfo.class);
-        MediaData mediaData = itemObject.getExtObjectObject1(null);
-        UnionTypeMediaData unionTypeMediaData = itemObject.getExtObjectObject2(null);
+        UnionTypeMediaData unionTypeMediaData = itemObject.getExtObjectObject1(null);
+        Preconditions.checkNotNull(mediaInfo);
+        Preconditions.checkNotNull(unionTypeMediaData);
+        unionTypeMediaData.unionTypeMediaDataObservable.registerObserver(mUnionTypeMediaDataObserver);
 
         if (mediaInfo.isVideoMimeType()) {
             ViewUtil.setVisibilityIfChanged(mBinding.videoFlag, View.VISIBLE);
@@ -41,7 +44,7 @@ public class MediaPickerGridViewHolder extends UnionTypeViewHolder {
             mBinding.durationText.setText(null);
         }
         mBinding.image.setImageUrl(null, mediaInfo.uri.toString());
-        int selectedIndex = mediaData.indexOfSelected(mediaInfo);
+        int selectedIndex = unionTypeMediaData.mediaData.indexOfSelected(mediaInfo);
         if (selectedIndex >= 0) {
             mBinding.flagSelect.setSelected(true);
             mBinding.flagSelectText.setText(String.valueOf(selectedIndex + 1));
@@ -50,33 +53,17 @@ public class MediaPickerGridViewHolder extends UnionTypeViewHolder {
             mBinding.flagSelectText.setText(null);
         }
 
-        ViewUtil.onClick(mBinding.flagSelect, v -> {
-            int currentSelectedIndex = mediaData.indexOfSelected(mediaInfo);
-            if (currentSelectedIndex >= 0) {
-                // 取消选中
-                if (mediaData.mediaSelector.canDeselect(mediaData.mediaInfoListSelected, currentSelectedIndex, mediaInfo)) {
-                    mediaData.mediaInfoListSelected.remove(mediaInfo);
-                }
-            } else {
-                // 选中
-                if (mediaData.mediaSelector.canSelect(mediaData.mediaInfoListSelected, mediaInfo)) {
-                    mediaData.mediaInfoListSelected.add(mediaInfo);
-                }
-            }
-            host.getAdapter().notifyDataSetChanged();
-            if (unionTypeMediaData != null) {
-                unionTypeMediaData.childClick();
+        ViewUtil.onClick(itemView, v -> {
+            final UnionTypeViewHolderListeners.OnItemClickListener listener = itemObject.getExtHolderItemClick1();
+            if (listener != null) {
+                listener.onItemClick(MediaPickerGridViewHolder.this);
             }
         });
-        ViewUtil.onClick(itemView, v -> {
-            if (itemObject.getExtHolderItemClick1() != null) {
-                itemObject.getExtHolderItemClick1().onItemClick(MediaPickerGridViewHolder.this);
-            }
-            if (host.getAdapter() instanceof ItemClickUnionTypeAdapter) {
-                final ItemClickUnionTypeAdapter adapter = (ItemClickUnionTypeAdapter) host.getAdapter();
-                if (adapter.getOnItemClickListener() != null) {
-                    adapter.getOnItemClickListener().onItemClick(MediaPickerGridViewHolder.this);
-                }
+
+        ViewUtil.onClick(mBinding.flagSelect, v -> {
+            final UnionTypeViewHolderListeners.OnItemClickListener listener = itemObject.getExtHolderItemClick2();
+            if (listener != null) {
+                listener.onItemClick(MediaPickerGridViewHolder.this);
             }
         });
     }
@@ -87,5 +74,42 @@ public class MediaPickerGridViewHolder extends UnionTypeViewHolder {
         final long s = durationS % 60;
         return min + ":" + s;
     }
+
+    private final UnionTypeMediaDataObservable.UnionTypeMediaDataObserver mUnionTypeMediaDataObserver = new UnionTypeMediaDataObservable.UnionTypeMediaDataObserver() {
+        @Override
+        public void onBucketSelectedChanged(UnionTypeMediaData unionTypeMediaData) {
+            // ignore
+        }
+
+        @Override
+        public void onMediaInfoSelectedChanged(UnionTypeMediaData unionTypeMediaData) {
+            final DataObject itemObject = getItemObject(DataObject.class);
+            if (itemObject == null) {
+                return;
+            }
+            final MediaData.MediaInfo mediaInfo = itemObject.getObject(MediaData.MediaInfo.class);
+            if (mediaInfo == null) {
+                return;
+            }
+
+            final UnionTypeMediaData currentUnionTypeMediaData = itemObject.getExtObjectObject1(null);
+            if (currentUnionTypeMediaData == null) {
+                return;
+            }
+
+            if (currentUnionTypeMediaData != unionTypeMediaData) {
+                return;
+            }
+
+            int selectedIndex = unionTypeMediaData.mediaData.indexOfSelected(mediaInfo);
+            if (selectedIndex >= 0) {
+                mBinding.flagSelect.setSelected(true);
+                mBinding.flagSelectText.setText(String.valueOf(selectedIndex + 1));
+            } else {
+                mBinding.flagSelect.setSelected(false);
+                mBinding.flagSelectText.setText(null);
+            }
+        }
+    };
 
 }
