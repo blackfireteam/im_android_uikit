@@ -26,18 +26,29 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/duration_text"
+    <io.github.idonans.systeminsets.SystemInsetsFrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:includeFontPadding="false"
-        android:maxLines="1"
-        android:padding="5dp"
-        android:singleLine="true"
-        android:textColor="@android:color/white"
-        android:textSize="12sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        tools:text="1" />
+        app:systemInsetPaddingBottom="all"
+        app:systemInsetPaddingBottomNotConsume="true"
+        app:systemInsetPaddingLeft="all"
+        app:systemInsetPaddingLeftNotConsume="true"
+        app:systemInsetPaddingRight="all"
+        app:systemInsetPaddingRightNotConsume="true">
+
+        <TextView
+            android:id="@+id/duration_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:maxLines="1"
+            android:padding="5dp"
+            android:singleLine="true"
+            android:textColor="@android:color/white"
+            android:textSize="12sp"
+            tools:text="1" />
+    </io.github.idonans.systeminsets.SystemInsetsFrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
