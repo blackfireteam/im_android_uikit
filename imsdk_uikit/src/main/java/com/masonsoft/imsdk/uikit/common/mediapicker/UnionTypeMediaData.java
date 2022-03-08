@@ -63,6 +63,6 @@ public class UnionTypeMediaData {
     }
 
     public void childClick() {
-        dialog.mGridView.updateConfirmNextStatus();
+        dialog.mGridView.updateConfirmSubmitStatus();
     }
 }

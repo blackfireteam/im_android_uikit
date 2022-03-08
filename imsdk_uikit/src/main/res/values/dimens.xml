@@ -2,4 +2,5 @@
 <resources>
     <dimen name="imsdk_uikit_main_top_bar_height">45dp</dimen>
     <dimen name="imsdk_uikit_main_bottom_bar_height">60dp</dimen>
+    <dimen name="imsdk_uikit_media_picker_image_grid_size">60dp</dimen>
 </resources>

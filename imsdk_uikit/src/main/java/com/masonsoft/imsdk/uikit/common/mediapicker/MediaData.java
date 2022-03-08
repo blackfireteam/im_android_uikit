@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.util.LruCache;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -77,11 +78,29 @@ public class MediaData {
         public String mimeType;
         public String title;
         public long addTime;
+        public long lastModify;
         public int id;
         public MediaBucket mMediaBucket;
 
-        private String bucketId;
-        private String bucketDisplayName;
+        public String bucketId;
+        public String bucketDisplayName;
+
+        private MediaInfo copyForInternalCache() {
+            final MediaInfo cache = new MediaInfo();
+            cache.uri = this.uri;
+            cache.size = this.size;
+            cache.durationMs = this.durationMs;
+            cache.width = this.width;
+            cache.height = this.height;
+            cache.mimeType = this.mimeType;
+            cache.title = this.title;
+            cache.addTime = this.addTime;
+            cache.lastModify = this.lastModify;
+            cache.id = this.id;
+            cache.bucketId = this.bucketId;
+            cache.bucketDisplayName = this.bucketDisplayName;
+            return cache;
+        }
 
         public boolean isImageMimeType() {
             return this.mimeType != null && this.mimeType.startsWith("image/");
@@ -127,6 +146,7 @@ public class MediaData {
             builder.append(" mimeType:").append(this.mimeType);
             builder.append(" title:").append(this.title);
             builder.append(" addTime:").append(this.addTime);
+            builder.append(" lastModify:").append(this.lastModify);
             builder.append(" id:").append(this.id);
             builder.append(" bucketId:").append(this.bucketId);
             builder.append(" bucketDisplayName:").append(this.bucketDisplayName);
@@ -174,6 +194,32 @@ public class MediaData {
 
     public static class MediaLoader extends WeakAbortSignal implements Runnable, Closeable {
 
+        private static class MediaInfoInternalCache {
+            private static final LruCache<String, MediaInfo> CACHE = new LruCache<>(1000);
+
+            static void putWithCopy(MediaInfo mediaInfo) {
+                if (mediaInfo == null) {
+                    return;
+                }
+
+                final String key = buildKey(mediaInfo.id, mediaInfo.lastModify);
+                CACHE.put(key, mediaInfo.copyForInternalCache());
+            }
+
+            static MediaInfo getWithCopy(int id, long lastModify) {
+                final String key = buildKey(id, lastModify);
+                final MediaInfo cache = CACHE.get(key);
+                if (cache != null) {
+                    return cache.copyForInternalCache();
+                }
+                return null;
+            }
+
+            private static String buildKey(int id, long lastModify) {
+                return id + "_" + lastModify;
+            }
+        }
+
         private interface ColumnsMap {
             String[] allColumns();
 
@@ -188,13 +234,17 @@ public class MediaData {
                 return new String[]{
                         //////////////////////////////////////////////////////
                         //////////////////////////////////////////////////////
+                        MediaStore.MediaColumns._ID,            // id
+                        MediaStore.MediaColumns.DATE_MODIFIED,  // 文件的最后修改时间
+                        //////////////////////////////////////////////////////
+                        //////////////////////////////////////////////////////
                         MediaStore.MediaColumns.SIZE,           // 媒体的大小，long型  132492
                         MediaStore.MediaColumns.WIDTH,          // 媒体的宽度，int型  1920, 仅当媒体格式是图片或者视频时有效
                         MediaStore.MediaColumns.HEIGHT,         // 媒体的高度，int型  1080, 仅当媒体格式是图片或者视频时有效
                         MediaStore.MediaColumns.MIME_TYPE,      // 媒体的类型     image/jpeg
                         MediaStore.MediaColumns.TITLE,
                         MediaStore.MediaColumns.DATE_ADDED,     // 添加时间
-                        MediaStore.MediaColumns._ID,            // id
+
                         MediaStore.Video.VideoColumns.DURATION, // video duration
                         //////////////////////////////////////////////////////
                         //////////////////////////////////////////////////////
@@ -207,8 +257,19 @@ public class MediaData {
 
             @Override
             public MediaInfo mapToMediaInfo(Cursor cursor) {
-                MediaInfo target = new MediaInfo();
                 int index = -1;
+                final int id = CursorUtil.getInt(cursor, ++index);
+                final long lastModify = CursorUtil.getLong(cursor, ++index);
+                final MediaInfo cache = MediaInfoInternalCache.getWithCopy(id, lastModify);
+                if (cache != null) {
+                    MSIMUikitLog.v("%s mapToMediaInfo[hit cache] %s", com.masonsoft.imsdk.util.Objects.defaultObjectTag(this), cache);
+                    return cache;
+                }
+
+                MediaInfo target = new MediaInfo();
+                target.id = id;
+                target.lastModify = lastModify;
+
                 target.size = CursorUtil.getLong(cursor, ++index);
                 target.width = CursorUtil.getInt(cursor, ++index);
                 target.height = CursorUtil.getInt(cursor, ++index);
@@ -218,7 +279,6 @@ public class MediaData {
                 }
                 target.title = CursorUtil.getString(cursor, ++index);
                 target.addTime = CursorUtil.getLong(cursor, ++index);
-                target.id = CursorUtil.getInt(cursor, ++index);
                 target.durationMs = CursorUtil.getLong(cursor, ++index);
 
                 target.bucketId = CursorUtil.getString(cursor, ++index);
@@ -228,25 +288,7 @@ public class MediaData {
 
                 MSIMUikitLog.v("%s mapToMediaInfo %s", com.masonsoft.imsdk.util.Objects.defaultObjectTag(this), target);
 
-                if (TextUtils.isEmpty(target.mimeType)) {
-                    MSIMUikitLog.v("invalid mimeType: %s", target.mimeType);
-                    return null;
-                }
-
-                if (target.uri == null) {
-                    MSIMUikitLog.v("invalid uri: null");
-                    return null;
-                }
-
-                if (TextUtils.isEmpty(target.bucketId)) {
-                    MSIMUikitLog.v("invalid bucketId: %s", target.bucketId);
-                    return null;
-                }
-
-                if (TextUtils.isEmpty(target.bucketDisplayName)) {
-                    MSIMUikitLog.v("invalid bucketDisplayName: %s", target.bucketDisplayName);
-                    return null;
-                }
+                MediaInfoInternalCache.putWithCopy(target);
 
                 return target;
             }
@@ -258,13 +300,16 @@ public class MediaData {
                 return new String[]{
                         //////////////////////////////////////////////////////
                         //////////////////////////////////////////////////////
+                        MediaStore.MediaColumns._ID,            // id
+                        MediaStore.MediaColumns.DATE_MODIFIED,  // 文件的最后修改时间
+                        //////////////////////////////////////////////////////
+                        //////////////////////////////////////////////////////
                         MediaStore.MediaColumns.SIZE,           // 媒体的大小，long型  132492
                         MediaStore.MediaColumns.WIDTH,          // 媒体的宽度，int型  1920, 仅当媒体格式是图片或者视频时有效
                         MediaStore.MediaColumns.HEIGHT,         // 媒体的高度，int型  1080, 仅当媒体格式是图片或者视频时有效
                         MediaStore.MediaColumns.MIME_TYPE,      // 媒体的类型     image/jpeg
                         MediaStore.MediaColumns.TITLE,
                         MediaStore.MediaColumns.DATE_ADDED,     // 添加时间
-                        MediaStore.MediaColumns._ID,            // id
                         MediaStore.Video.VideoColumns.DURATION, // video duration
                         //////////////////////////////////////////////////////
                         //////////////////////////////////////////////////////
@@ -276,8 +321,19 @@ public class MediaData {
 
             @Override
             public MediaInfo mapToMediaInfo(Cursor cursor) {
-                MediaInfo target = new MediaInfo();
                 int index = -1;
+                final int id = CursorUtil.getInt(cursor, ++index);
+                final long lastModify = CursorUtil.getLong(cursor, ++index);
+                final MediaInfo cache = MediaInfoInternalCache.getWithCopy(id, lastModify);
+                if (cache != null) {
+                    MSIMUikitLog.v("%s mapToMediaInfo[hit cache] %s", com.masonsoft.imsdk.util.Objects.defaultObjectTag(this), cache);
+                    return cache;
+                }
+
+                MediaInfo target = new MediaInfo();
+                target.id = id;
+                target.lastModify = lastModify;
+
                 target.size = CursorUtil.getLong(cursor, ++index);
                 target.width = CursorUtil.getInt(cursor, ++index);
                 target.height = CursorUtil.getInt(cursor, ++index);
@@ -287,7 +343,6 @@ public class MediaData {
                 }
                 target.title = CursorUtil.getString(cursor, ++index);
                 target.addTime = CursorUtil.getLong(cursor, ++index);
-                target.id = CursorUtil.getInt(cursor, ++index);
                 target.durationMs = CursorUtil.getLong(cursor, ++index);
 
                 {
@@ -309,25 +364,7 @@ public class MediaData {
 
                 MSIMUikitLog.v("%s mapToMediaInfo %s", com.masonsoft.imsdk.util.Objects.defaultObjectTag(this), target);
 
-                if (TextUtils.isEmpty(target.mimeType)) {
-                    MSIMUikitLog.v("invalid mimeType:%s", target.mimeType);
-                    return null;
-                }
-
-                if (target.uri == null) {
-                    MSIMUikitLog.v("invalid uri: null");
-                    return null;
-                }
-
-                if (TextUtils.isEmpty(target.bucketId)) {
-                    MSIMUikitLog.v("invalid bucketId: %s", target.bucketId);
-                    return null;
-                }
-
-                if (TextUtils.isEmpty(target.bucketDisplayName)) {
-                    MSIMUikitLog.v("invalid bucketDisplayName: %s", target.bucketDisplayName);
-                    return null;
-                }
+                MediaInfoInternalCache.putWithCopy(target);
 
                 return target;
             }
@@ -380,12 +417,13 @@ public class MediaData {
                 cursor = contentResolver.query(
                         MediaStore.Files.getContentUri("external"),
                         allColumns(),
-                        MediaStore.Files.FileColumns.MEDIA_TYPE + " = ? or " + MediaStore.Files.FileColumns.MEDIA_TYPE + " = ?",
+                        MediaStore.Files.FileColumns.DATE_ADDED + " > 0 and " + MediaStore.Files.FileColumns.MIME_TYPE + " is not null and (" +
+                                MediaStore.Files.FileColumns.MEDIA_TYPE + " = ? or " + MediaStore.Files.FileColumns.MEDIA_TYPE + " = ? )",
                         new String[]{
                                 String.valueOf(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE),
                                 String.valueOf(MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO)
                         },
-                        MediaStore.MediaColumns._ID + " desc");
+                        MediaStore.MediaColumns.DATE_ADDED + " desc");
                 Preconditions.checkNotNull(cursor);
                 while (cursor.moveToNext()) {
                     AbortUtil.throwIfAbort(this);

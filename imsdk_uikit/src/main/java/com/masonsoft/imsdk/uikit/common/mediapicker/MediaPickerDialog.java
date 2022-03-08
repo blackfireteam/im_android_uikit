@@ -75,12 +75,18 @@ public class MediaPickerDialog implements MediaData.MediaLoaderCallback, ViewBac
     private final MediaSelector mInnerMediaSelector = new MediaSelector.SimpleMediaSelector() {
         @Override
         public boolean accept(@NonNull MediaData.MediaInfo info) {
+            if (!super.accept(info)) {
+                return false;
+            }
+
             if (mOutMediaSelector != null) {
+                //noinspection RedundantIfStatement
                 if (!mOutMediaSelector.accept(info)) {
                     return false;
                 }
             }
-            return super.accept(info);
+
+            return true;
         }
 
         @Override
@@ -128,7 +134,7 @@ public class MediaPickerDialog implements MediaData.MediaLoaderCallback, ViewBac
         }
         if (mUnionTypeMediaData.mediaData.bucketSelected != null) {
             List<UnionTypeItemObject> gridItems = mUnionTypeMediaData.unionTypeGridItemsMap.get(mUnionTypeMediaData.mediaData.bucketSelected);
-            mGridView.mDataAdapter.getData()
+            mGridView.mGridDataAdapter.getData()
                     .beginTransaction()
                     .add((transaction, groupArrayList) -> {
                         // mGridView.mDataAdapter.setGroupItems(0, gridItems);
@@ -156,37 +162,42 @@ public class MediaPickerDialog implements MediaData.MediaLoaderCallback, ViewBac
                 })
                 .commit();
 
-        String bucketSelectedName = I18nResources.getString(R.string.imsdk_uikit_custom_soft_keyboard_item_media);
+        String bucketSelectedName = I18nResources.getString(R.string.imsdk_uikit_custom_soft_keyboard_item_media_bucket_all);
         if (mUnionTypeMediaData.mediaData.bucketSelected != null
                 && !mUnionTypeMediaData.mediaData.bucketSelected.allMediaInfo) {
             bucketSelectedName = mUnionTypeMediaData.mediaData.bucketSelected.bucketDisplayName;
         }
-        mGridView.mGridTopBarTitle.setText(bucketSelectedName);
-        mGridView.updateConfirmNextStatus();
+        mGridView.mGridTopBarTitleText.setText(bucketSelectedName);
+        mGridView.updateConfirmSubmitStatus();
     }
 
     class GridView {
         private final View mGridTopBarClose;
-        private final TextView mGridTopBarTitle;
-        private final RecyclerView mRecyclerView;
-        private final TextView mActionSubmit;
+        private final View mGridTopBarTitle;
+        private final TextView mGridTopBarTitleText;
+        private final View mGridTopBarTitleArrow;
+        private final TextView mGridTopBarSubmit;
+        private final RecyclerView mGridRecyclerView;
 
-        private final ItemClickUnionTypeAdapter mDataAdapter;
+        private final ItemClickUnionTypeAdapter mGridDataAdapter;
 
         private GridView(ImsdkUikitCommonMediaPickerDialogBinding parentBinding) {
             mGridTopBarClose = parentBinding.gridTopBarClose;
             mGridTopBarTitle = parentBinding.gridTopBarTitle;
-            mRecyclerView = parentBinding.gridRecyclerView;
-            mActionSubmit = parentBinding.actionSubmit;
+            mGridTopBarTitleText = parentBinding.gridTopBarTitleText;
+            mGridTopBarTitleArrow = parentBinding.gridTopBarTitleArrow;
+            mGridTopBarSubmit = parentBinding.gridTopBarSubmit;
+            mGridRecyclerView = parentBinding.gridRecyclerView;
 
-            mRecyclerView.setLayoutManager(
-                    new GridLayoutManager(mRecyclerView.getContext(), 3));
-            mRecyclerView.setHasFixedSize(true);
-            mRecyclerView.addItemDecoration(new GridItemDecoration(3, DimenUtil.dp2px(2), false));
-            mDataAdapter = new ItemClickUnionTypeAdapter();
-            mDataAdapter.setHost(Host.Factory.create(mActivity, mRecyclerView, mDataAdapter));
-            mDataAdapter.setUnionTypeMapper(new IMUikitUnionTypeMapper());
-            mDataAdapter.setOnItemClickListener(viewHolder -> {
+            mGridRecyclerView.setItemAnimator(null);
+            mGridRecyclerView.setLayoutManager(
+                    new GridLayoutManager(mGridRecyclerView.getContext(), 4));
+            mGridRecyclerView.setHasFixedSize(true);
+            mGridRecyclerView.addItemDecoration(new GridItemDecoration(4, DimenUtil.dp2px(2), false));
+            mGridDataAdapter = new ItemClickUnionTypeAdapter();
+            mGridDataAdapter.setHost(Host.Factory.create(mActivity, mGridRecyclerView, mGridDataAdapter));
+            mGridDataAdapter.setUnionTypeMapper(new IMUikitUnionTypeMapper());
+            mGridDataAdapter.setOnItemClickListener(viewHolder -> {
                 Preconditions.checkNotNull(mUnionTypeMediaData);
                 final int position = viewHolder.getAdapterPosition();
                 mUnionTypeMediaData.pagerPendingIndex = Math.max(position, 0);
@@ -196,7 +207,7 @@ public class MediaPickerDialog implements MediaData.MediaLoaderCallback, ViewBac
                 }).commit(() -> mPagerView.show());
             });
 
-            mRecyclerView.setAdapter(mDataAdapter);
+            mGridRecyclerView.setAdapter(mGridDataAdapter);
 
             ViewUtil.onClick(mGridTopBarClose, v -> {
                 if (MediaPickerDialog.this.onBackPressed()) {
@@ -210,7 +221,7 @@ public class MediaPickerDialog implements MediaData.MediaLoaderCallback, ViewBac
                 }
                 mBucketView.show();
             });
-            ViewUtil.onClick(mActionSubmit, v -> {
+            ViewUtil.onClick(mGridTopBarSubmit, v -> {
                 if (mUnionTypeMediaData == null) {
                     MSIMUikitLog.e("mUnionTypeMediaData is null");
                     return;
@@ -230,7 +241,7 @@ public class MediaPickerDialog implements MediaData.MediaLoaderCallback, ViewBac
             });
         }
 
-        public void updateConfirmNextStatus() {
+        public void updateConfirmSubmitStatus() {
             boolean enable;
             int count;
             if (mUnionTypeMediaData == null) {
@@ -244,8 +255,13 @@ public class MediaPickerDialog implements MediaData.MediaLoaderCallback, ViewBac
                 count = mUnionTypeMediaData.mediaData.mediaInfoListSelected.size();
                 enable = false;
             }
-            mActionSubmit.setText(I18nResources.getString(R.string.imsdk_uikit_custom_soft_keyboard_item_media_picker_submit_format, count));
-            mActionSubmit.setEnabled(enable);
+
+            if (count > 0) {
+                mGridTopBarSubmit.setText(I18nResources.getString(R.string.imsdk_uikit_custom_soft_keyboard_item_media_picker_submit_format, count));
+            } else {
+                mGridTopBarSubmit.setText(I18nResources.getString(R.string.imsdk_uikit_custom_soft_keyboard_item_media_picker_submit_0));
+            }
+            mGridTopBarSubmit.setEnabled(enable);
         }
     }
 

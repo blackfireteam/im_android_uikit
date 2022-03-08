@@ -16,11 +16,13 @@
     <string name="imsdk_uikit_tip_video_too_short">视频太短</string>
     <string name="imsdk_uikit_tip_video_too_large">视频太大</string>
     <string name="imsdk_uikit_tip_only_allow_image_or_video">仅支持图片或者视频</string>
+    <string name="imsdk_uikit_custom_soft_keyboard_item_flash_image">闪照</string>
     <string name="imsdk_uikit_custom_soft_keyboard_item_media">相册</string>
     <string name="imsdk_uikit_custom_soft_keyboard_item_media_bucket_all">图片和视频</string>
-    <string name="imsdk_uikit_custom_soft_keyboard_item_media_picker_submit_format">确定(%1$s)</string>
-    <string name="imsdk_uikit_custom_soft_keyboard_item_media_picker_submit_0">确定(0)</string>
-    <string name="imsdk_uikit_custom_soft_keyboard_item_flash_image">闪照</string>
+    <string name="imsdk_uikit_custom_soft_keyboard_item_media_picker_submit_format">发送(%1$s)</string>
+    <string name="imsdk_uikit_custom_soft_keyboard_item_media_picker_submit_0">发送</string>
+    <string name="imsdk_uikit_custom_soft_keyboard_item_media_picker_preview_format">预览(%1$s)</string>
+    <string name="imsdk_uikit_custom_soft_keyboard_item_media_picker_preview_0">预览</string>
     <string name="imsdk_uikit_custom_soft_keyboard_item_rtc_audio">语音通话</string>
     <string name="imsdk_uikit_custom_soft_keyboard_item_rtc_video">视频通话</string>
     <string name="imsdk_uikit_custom_soft_keyboard_item_location">位置</string>

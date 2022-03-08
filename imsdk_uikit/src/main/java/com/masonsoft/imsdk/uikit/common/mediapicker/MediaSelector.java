@@ -1,10 +1,12 @@
 package com.masonsoft.imsdk.uikit.common.mediapicker;
 
+import android.text.TextUtils;
+
 import androidx.annotation.NonNull;
 
-import com.masonsoft.imsdk.uikit.util.TipUtil;
 import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 import com.masonsoft.imsdk.uikit.R;
+import com.masonsoft.imsdk.uikit.util.TipUtil;
 
 import java.util.List;
 
@@ -39,7 +41,11 @@ public interface MediaSelector {
 
         @Override
         public boolean accept(@NonNull MediaData.MediaInfo info) {
-            return true;
+            return info.uri != null
+                    && info.addTime > 0
+                    && !TextUtils.isEmpty(info.mimeType)
+                    && !TextUtils.isEmpty(info.bucketId)
+                    && !TextUtils.isEmpty(info.bucketDisplayName);
         }
 
         @Override
