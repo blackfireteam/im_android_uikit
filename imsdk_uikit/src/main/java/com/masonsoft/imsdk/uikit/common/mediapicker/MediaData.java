@@ -30,6 +30,7 @@ import io.github.idonans.core.util.AbortUtil;
 import io.github.idonans.core.util.ContextUtil;
 import io.github.idonans.core.util.HumanUtil;
 import io.github.idonans.core.util.IOUtil;
+import io.github.idonans.core.util.Preconditions;
 
 public class MediaData {
 
@@ -60,15 +61,14 @@ public class MediaData {
     /**
      * 获取选择 media 的选中顺序，如果没有选中返回 -1.
      *
-     * @param mediaInfo
-     * @return
+     * @param mediaInfo media info
+     * @return 获取选择 media 的选中顺序，如果没有选中返回 -1.
      */
     public int indexOfSelected(MediaInfo mediaInfo) {
         return mediaInfoListSelected.indexOf(mediaInfo);
     }
 
     public static class MediaInfo {
-        @NonNull
         public Uri uri;
         public long size;
         public long durationMs;
@@ -78,7 +78,6 @@ public class MediaData {
         public String title;
         public long addTime;
         public int id;
-        @NonNull
         public MediaBucket mMediaBucket;
 
         private String bucketId;
@@ -143,7 +142,7 @@ public class MediaData {
 
     public static class MediaBucket {
         /**
-         * 是否是总的那个 bucket, 包含了所有的图片
+         * 是否是总的那个 bucket, 包含了所有的 media info
          */
         public boolean allMediaInfo;
         public String bucketDisplayName;
@@ -230,7 +229,22 @@ public class MediaData {
                 MSIMUikitLog.v("%s mapToMediaInfo %s", com.masonsoft.imsdk.util.Objects.defaultObjectTag(this), target);
 
                 if (TextUtils.isEmpty(target.mimeType)) {
-                    MSIMUikitLog.v("invalid mimeType:%s", target.mimeType);
+                    MSIMUikitLog.v("invalid mimeType: %s", target.mimeType);
+                    return null;
+                }
+
+                if (target.uri == null) {
+                    MSIMUikitLog.v("invalid uri: null");
+                    return null;
+                }
+
+                if (TextUtils.isEmpty(target.bucketId)) {
+                    MSIMUikitLog.v("invalid bucketId: %s", target.bucketId);
+                    return null;
+                }
+
+                if (TextUtils.isEmpty(target.bucketDisplayName)) {
+                    MSIMUikitLog.v("invalid bucketDisplayName: %s", target.bucketDisplayName);
                     return null;
                 }
 
@@ -300,12 +314,26 @@ public class MediaData {
                     return null;
                 }
 
+                if (target.uri == null) {
+                    MSIMUikitLog.v("invalid uri: null");
+                    return null;
+                }
+
+                if (TextUtils.isEmpty(target.bucketId)) {
+                    MSIMUikitLog.v("invalid bucketId: %s", target.bucketId);
+                    return null;
+                }
+
+                if (TextUtils.isEmpty(target.bucketDisplayName)) {
+                    MSIMUikitLog.v("invalid bucketDisplayName: %s", target.bucketDisplayName);
+                    return null;
+                }
+
                 return target;
             }
         }
 
         private final MediaSelector mMediaSelector;
-        private final Uri mMediaUri = MediaStore.Files.getContentUri("external");
         private final ColumnsMap mColumnsMap;
 
         public MediaLoader(MediaLoaderCallback callback, MediaSelector mediaSelector) {
@@ -348,22 +376,19 @@ public class MediaData {
             Cursor cursor = null;
             try {
                 AbortUtil.throwIfAbort(this);
-
                 ContentResolver contentResolver = ContextUtil.getContext().getContentResolver();
                 cursor = contentResolver.query(
-                        mMediaUri,
+                        MediaStore.Files.getContentUri("external"),
                         allColumns(),
-                        MediaStore.Files.FileColumns.MEDIA_TYPE + " in (?,?)",
+                        MediaStore.Files.FileColumns.MEDIA_TYPE + " = ? or " + MediaStore.Files.FileColumns.MEDIA_TYPE + " = ?",
                         new String[]{
                                 String.valueOf(MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE),
                                 String.valueOf(MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO)
                         },
-                        MediaStore.MediaColumns._ID + " asc");
-                com.google.common.base.Preconditions.checkNotNull(cursor);
-
-                for (cursor.moveToLast(); !cursor.isBeforeFirst(); cursor.moveToPrevious()) {
+                        MediaStore.MediaColumns._ID + " desc");
+                Preconditions.checkNotNull(cursor);
+                while (cursor.moveToNext()) {
                     AbortUtil.throwIfAbort(this);
-
                     MediaInfo itemMediaInfo = cursorToMediaInfo(cursor);
                     if (itemMediaInfo == null) {
                         continue;
