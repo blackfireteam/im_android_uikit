@@ -7,4 +7,5 @@
     <color name="imsdk_uikit_color_button_text_color_disable">#ffffffff</color>
     <color name="imsdk_uikit_color_button_text_color_enable">#ffffffff</color>
     <color name="imsdk_uikit_color_divider_line">#80CCCCCC</color>
+    <color name="imsdk_uikit_color_media_picker_background">#ff333333</color>
 </resources>

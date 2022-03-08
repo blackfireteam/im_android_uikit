@@ -15,7 +15,7 @@ import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitUnionTypeImplMediaPickerP
 import com.masonsoft.imsdk.uikit.uniontype.DataObject;
 import com.masonsoft.imsdk.util.Objects;
 
-import io.github.idonans.core.util.DimenUtil;
+import io.github.idonans.core.util.ContextUtil;
 import io.github.idonans.core.util.Preconditions;
 import io.github.idonans.lang.util.ViewUtil;
 import io.github.idonans.uniontype.Host;
@@ -24,10 +24,12 @@ import io.github.idonans.uniontype.UnionTypeViewHolder;
 public class MediaPickerPagerViewHolder extends UnionTypeViewHolder {
 
     private final ImsdkUikitUnionTypeImplMediaPickerPagerBinding mBinding;
+    private final int mGridImageResize;
 
     public MediaPickerPagerViewHolder(@NonNull Host host) {
         super(host, R.layout.imsdk_uikit_union_type_impl_media_picker_pager);
         mBinding = ImsdkUikitUnionTypeImplMediaPickerPagerBinding.bind(itemView);
+        mGridImageResize = ContextUtil.getContext().getResources().getDimensionPixelSize(R.dimen.imsdk_uikit_media_picker_image_grid_size);
     }
 
     @Override
@@ -47,10 +49,9 @@ public class MediaPickerPagerViewHolder extends UnionTypeViewHolder {
             mBinding.durationText.setText(null);
         }
 
-        // grid image resize 80dp
         mBinding.image.setImageUrl(
                 ImageRequestBuilder.newBuilderWithSource(mediaInfo.uri)
-                        .setResizeOptions(ResizeOptions.forSquareSize(DimenUtil.dp2px(80)))
+                        .setResizeOptions(ResizeOptions.forSquareSize(mGridImageResize))
                         .setCacheChoice(ImageRequest.CacheChoice.DEFAULT)
                         .build(),
                 ImageRequestBuilder.newBuilderWithSource(mediaInfo.uri)

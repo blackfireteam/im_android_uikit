@@ -5,76 +5,113 @@
     android:id="@+id/pager_overlay_container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:background="#FF000000">
+    android:background="@color/imsdk_uikit_color_media_picker_background">
 
     <io.github.idonans.systeminsets.SystemInsetsLinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        app:systemInsetPaddingBottom="all"
+        app:systemInsetPaddingBottomNotConsume="true"
         app:systemInsetPaddingTop="all"
         app:systemInsetPaddingTopNotConsume="true">
 
         <FrameLayout
+            android:id="@+id/grid_top_bar"
             android:layout_width="match_parent"
-            android:layout_height="57dp"
-            android:background="@drawable/imsdk_uikit_ic_common_rect_top_corners_16dp_white"
+            android:layout_height="45dp"
             android:clickable="true"
             android:focusable="true">
 
             <ImageView
                 android:id="@+id/grid_top_bar_close"
-                android:layout_width="56dp"
+                android:layout_width="50dp"
                 android:layout_height="match_parent"
                 android:contentDescription="@string/imsdk_uikit_empty_text_hint"
                 android:scaleType="centerInside"
-                android:src="@drawable/imsdk_uikit_ic_common_close_black" />
+                android:src="@drawable/imsdk_uikit_ic_common_close_white" />
 
-            <TextView
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:id="@+id/grid_top_bar_title"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:drawablePadding="4dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="50dp"
+                android:background="@drawable/imsdk_uikit_ic_common_rect_corners_15dp_fill_ff515151"
                 android:gravity="center"
-                android:includeFontPadding="false"
-                android:maxLines="1"
-                android:paddingStart="60dp"
-                android:paddingEnd="60dp"
-                android:singleLine="true"
-                android:text="@string/imsdk_uikit_custom_soft_keyboard_item_media"
-                android:textColor="#333333"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                app:drawableEndCompat="@drawable/imsdk_uikit_ic_common_arrow_down_black" />
+                android:orientation="horizontal"
+                android:paddingHorizontal="5dp">
+
+                <TextView
+                    android:id="@+id/grid_top_bar_title_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:includeFontPadding="false"
+                    android:maxLines="1"
+                    android:paddingHorizontal="10dp"
+                    android:singleLine="true"
+                    android:textColor="@android:color/white"
+                    android:textSize="16sp"
+                    tools:text="@string/imsdk_uikit_custom_soft_keyboard_item_media_bucket_all" />
+
+                <View
+                    android:id="@+id/grid_top_bar_title_arrow"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:background="@drawable/imsdk_uikit_ic_arrow_top_white_circle_bg_hover" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
             <TextView
-                android:id="@+id/action_submit"
-                android:layout_width="95dp"
+                android:id="@+id/grid_top_bar_submit"
+                android:layout_width="wrap_content"
                 android:layout_height="30dp"
                 android:layout_gravity="center_vertical|end"
-                android:layout_marginEnd="15dp"
-                android:background="@drawable/imsdk_uikit_ic_common_rect_corners_4dp_fill_enable_black_normal_cccccc"
+                android:layout_marginEnd="20dp"
+                android:background="@drawable/imsdk_uikit_ic_common_rect_corners_6dp_fill_enable_green_normal_444444"
                 android:enabled="false"
                 android:gravity="center"
                 android:includeFontPadding="false"
                 android:maxLines="1"
+                android:paddingHorizontal="15dp"
                 android:singleLine="true"
                 android:text="@string/imsdk_uikit_custom_soft_keyboard_item_media_picker_submit_0"
-                android:textColor="@android:color/white"
-                android:textSize="14sp" />
+                android:textColor="@color/imsdk_uikit_color_text_gray_white_selector"
+                android:textSize="16sp" />
         </FrameLayout>
 
         <FrameLayout
             android:id="@+id/bucket_overlay_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@android:color/white">
+            android:layout_height="match_parent">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/grid_recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="#FFf2f2f2" />
+                android:layout_marginBottom="60dp" />
+
+            <FrameLayout
+                android:id="@+id/grid_bottom_action_bar"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_gravity="bottom">
+
+                <TextView
+                    android:id="@+id/grid_bottom_action_preview"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:enabled="false"
+                    android:gravity="center"
+                    android:includeFontPadding="false"
+                    android:maxLines="1"
+                    android:paddingHorizontal="20dp"
+                    android:singleLine="true"
+                    android:text="@string/imsdk_uikit_custom_soft_keyboard_item_media_picker_preview_0"
+                    android:textColor="@color/imsdk_uikit_color_text_gray_white_selector2"
+                    android:textSize="16sp" />
+            </FrameLayout>
         </FrameLayout>
     </io.github.idonans.systeminsets.SystemInsetsLinearLayout>
 

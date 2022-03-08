@@ -1,5 +1,7 @@
 package com.masonsoft.imsdk.uikit.uniontype.viewholder;
 
+import android.annotation.SuppressLint;
+
 import androidx.annotation.NonNull;
 
 import com.masonsoft.imsdk.uikit.R;
@@ -22,6 +24,7 @@ public class MediaPickerBucketViewHolder extends UnionTypeViewHolder {
         mBinding = ImsdkUikitUnionTypeImplMediaPickerBucketBinding.bind(itemView);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindUpdate() {
         final DataObject itemObject = getItemObject(DataObject.class);
@@ -33,7 +36,7 @@ public class MediaPickerBucketViewHolder extends UnionTypeViewHolder {
             url = mediaBucket.cover.uri.toString();
         }
         mBinding.image.setImageUrl(null, url);
-        mBinding.count.setText(String.valueOf(mediaBucket.mediaInfoList.size()));
+        mBinding.count.setText("(" + mediaBucket.mediaInfoList.size() + ")");
         if (mediaBucket.allMediaInfo) {
             mBinding.title.setText(R.string.imsdk_uikit_custom_soft_keyboard_item_media_bucket_all);
         } else {

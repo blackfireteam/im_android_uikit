@@ -10,7 +10,7 @@
         android:id="@+id/image"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:imageResize="80dp"
+        app:imageResize="@dimen/imsdk_uikit_media_picker_image_grid_size"
         app:layout_constraintDimensionRatio="w,164:123"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
