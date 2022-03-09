@@ -46,10 +46,12 @@ public class MediaPickerGridViewHolder extends UnionTypeViewHolder {
         mBinding.image.setImageUrl(null, mediaInfo.uri.toString());
         int selectedIndex = unionTypeMediaData.mediaData.indexOfSelected(mediaInfo);
         if (selectedIndex >= 0) {
-            mBinding.flagSelect.setSelected(true);
+            showSelectedHover(false);
+            mBinding.flagSelectText.setSelected(true);
             mBinding.flagSelectText.setText(String.valueOf(selectedIndex + 1));
         } else {
-            mBinding.flagSelect.setSelected(false);
+            hideSelectedHover(false);
+            mBinding.flagSelectText.setSelected(false);
             mBinding.flagSelectText.setText(null);
         }
 
@@ -60,12 +62,42 @@ public class MediaPickerGridViewHolder extends UnionTypeViewHolder {
             }
         });
 
-        ViewUtil.onClick(mBinding.flagSelect, v -> {
+        ViewUtil.onClick(mBinding.flagSelectContainer, v -> {
             final UnionTypeViewHolderListeners.OnItemClickListener listener = itemObject.getExtHolderItemClick2();
             if (listener != null) {
                 listener.onItemClick(MediaPickerGridViewHolder.this);
             }
         });
+    }
+
+    private void showSelectedHover(boolean animate) {
+        if (mBinding.selectedHover.getAlpha() > 0.9f) {
+            mBinding.selectedHover.animate().cancel();
+            mBinding.selectedHover.setAlpha(1f);
+            return;
+        }
+
+        if (animate) {
+            mBinding.selectedHover.animate().alpha(1f).start();
+        } else {
+            mBinding.selectedHover.animate().cancel();
+            mBinding.selectedHover.setAlpha(1f);
+        }
+    }
+
+    private void hideSelectedHover(boolean animate) {
+        if (mBinding.selectedHover.getAlpha() < 0.1f) {
+            mBinding.selectedHover.animate().cancel();
+            mBinding.selectedHover.setAlpha(0f);
+            return;
+        }
+
+        if (animate) {
+            mBinding.selectedHover.animate().alpha(0f).start();
+        } else {
+            mBinding.selectedHover.animate().cancel();
+            mBinding.selectedHover.setAlpha(0f);
+        }
     }
 
     private String formatDuration(long durationMs) {
@@ -103,10 +135,12 @@ public class MediaPickerGridViewHolder extends UnionTypeViewHolder {
 
             int selectedIndex = unionTypeMediaData.mediaData.indexOfSelected(mediaInfo);
             if (selectedIndex >= 0) {
-                mBinding.flagSelect.setSelected(true);
+                showSelectedHover(true);
+                mBinding.flagSelectText.setSelected(true);
                 mBinding.flagSelectText.setText(String.valueOf(selectedIndex + 1));
             } else {
-                mBinding.flagSelect.setSelected(false);
+                hideSelectedHover(true);
+                mBinding.flagSelectText.setSelected(false);
                 mBinding.flagSelectText.setText(null);
             }
         }

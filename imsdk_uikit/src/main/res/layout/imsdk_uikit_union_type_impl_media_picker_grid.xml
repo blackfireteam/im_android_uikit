@@ -16,6 +16,16 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <View
+        android:id="@+id/selected_hover"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="#50000000"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <ImageView
         android:id="@+id/video_flag"
         android:layout_width="wrap_content"
@@ -28,38 +38,37 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:id="@+id/flag_select"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
-        android:contentDescription="@string/imsdk_uikit_empty_text_hint"
-        android:scaleType="centerInside"
-        android:src="@drawable/imsdk_uikit_ic_common_circle_flag_selector"
+    <FrameLayout
+        android:id="@+id/flag_select_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <TextView
-        android:id="@+id/flag_select_text"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
-        android:gravity="center"
-        android:includeFontPadding="false"
-        android:maxLines="1"
-        android:singleLine="true"
-        android:textColor="@android:color/white"
-        android:textSize="12sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="1" />
+        <TextView
+            android:id="@+id/flag_select_text"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:background="@drawable/imsdk_uikit_ic_common_rect_corners_12dp_green_white_stroke_selector"
+            android:gravity="center"
+            android:includeFontPadding="false"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:textColor="@android:color/white"
+            android:textSize="12sp"
+            tools:text="1" />
+    </FrameLayout>
 
     <TextView
         android:id="@+id/duration_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginBottom="5dp"
         android:gravity="center"
         android:includeFontPadding="false"
         android:maxLines="1"
-        android:padding="5dp"
         android:singleLine="true"
         android:textColor="@android:color/white"
         android:textSize="12sp"
