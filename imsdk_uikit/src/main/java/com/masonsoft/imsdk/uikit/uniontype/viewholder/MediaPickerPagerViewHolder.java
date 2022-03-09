@@ -56,7 +56,7 @@ public class MediaPickerPagerViewHolder extends UnionTypeViewHolder {
                         .build()
         );
 
-        mBinding.image.setOnClickListener(v -> {
+        ViewUtil.onClick(mBinding.image, v -> {
             if (itemObject.getExtHolderItemClick1() != null) {
                 itemObject.getExtHolderItemClick1().onItemClick(MediaPickerPagerViewHolder.this);
             }

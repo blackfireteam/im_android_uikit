@@ -1,5 +1,6 @@
 package com.masonsoft.imsdk.uikit.common.mediapicker;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,17 +11,18 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.PagerSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.viewpager2.widget.LocalViewPager2Helper;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.masonsoft.imsdk.core.I18nResources;
 import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.uikit.R;
-import com.masonsoft.imsdk.uikit.common.ItemClickUnionTypeAdapter;
 import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitCommonMediaPickerDialogBinding;
 import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitCommonMediaPickerDialogBucketViewBinding;
 import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitCommonMediaPickerDialogPagerViewBinding;
+import com.masonsoft.imsdk.uikit.uniontype.DataObject;
 import com.masonsoft.imsdk.uikit.uniontype.IMUikitUnionTypeMapper;
 import com.masonsoft.imsdk.uikit.widget.GridItemDecoration;
 
@@ -192,24 +194,7 @@ public class MediaPickerDialog implements MediaData.MediaLoaderCallback, ViewBac
                 }
                 mBucketView.show();
             });
-            ViewUtil.onClick(mGridTopBarSubmit, v -> {
-                if (mUnionTypeMediaData == null) {
-                    MSIMUikitLog.e("mUnionTypeMediaData is null");
-                    return;
-                }
-                if (mUnionTypeMediaData.mediaData.mediaInfoListSelected.isEmpty()) {
-                    MSIMUikitLog.e("mUnionTypeMediaData.mediaData.mediaInfoListSelected.isEmpty()");
-                    return;
-                }
-
-                if (mOnMediaPickListener == null) {
-                    MSIMUikitLog.v("ignore. mOnMediaPickListener is null.");
-                    return;
-                }
-                if (mOnMediaPickListener.onMediaPick(mUnionTypeMediaData.mediaData.mediaInfoListSelected)) {
-                    MediaPickerDialog.this.hide();
-                }
-            });
+            ViewUtil.onClick(mGridTopBarSubmit, v -> MediaPickerDialog.this.submit());
         }
 
         public void syncTitleBar() {
@@ -222,22 +207,7 @@ public class MediaPickerDialog implements MediaData.MediaLoaderCallback, ViewBac
             }
             mGridTopBarTitleText.setText(bucketSelectedName);
 
-            boolean enable;
-            int count;
-            if (mInnerMediaSelector.canFinishSelect(mUnionTypeMediaData.mediaData.mediaInfoListSelected)) {
-                count = mUnionTypeMediaData.mediaData.mediaInfoListSelected.size();
-                enable = true;
-            } else {
-                count = mUnionTypeMediaData.mediaData.mediaInfoListSelected.size();
-                enable = false;
-            }
-
-            if (count > 0) {
-                mGridTopBarSubmit.setText(I18nResources.getString(R.string.imsdk_uikit_custom_soft_keyboard_item_media_picker_submit_format, count));
-            } else {
-                mGridTopBarSubmit.setText(I18nResources.getString(R.string.imsdk_uikit_custom_soft_keyboard_item_media_picker_submit_0));
-            }
-            mGridTopBarSubmit.setEnabled(enable);
+            syncSharedSubmitButton(mGridTopBarSubmit);
         }
 
         public void syncContent() {
@@ -248,6 +218,48 @@ public class MediaPickerDialog implements MediaData.MediaLoaderCallback, ViewBac
                     .beginTransaction()
                     .add((transaction, groupArrayList) -> groupArrayList.setGroupItems(0, gridItems))
                     .commit();
+        }
+    }
+
+    private void syncSharedSubmitButton(TextView submitButton) {
+        if (mUnionTypeMediaData == null) {
+            return;
+        }
+
+        boolean enable;
+        int count;
+        if (mInnerMediaSelector.canFinishSelect(mUnionTypeMediaData.mediaData.mediaInfoListSelected)) {
+            count = mUnionTypeMediaData.mediaData.mediaInfoListSelected.size();
+            enable = true;
+        } else {
+            count = mUnionTypeMediaData.mediaData.mediaInfoListSelected.size();
+            enable = false;
+        }
+
+        if (count > 0) {
+            submitButton.setText(I18nResources.getString(R.string.imsdk_uikit_custom_soft_keyboard_item_media_picker_submit_format, count));
+        } else {
+            submitButton.setText(I18nResources.getString(R.string.imsdk_uikit_custom_soft_keyboard_item_media_picker_submit_0));
+        }
+        submitButton.setEnabled(enable);
+    }
+
+    private void submit() {
+        if (mUnionTypeMediaData == null) {
+            MSIMUikitLog.e("mUnionTypeMediaData is null");
+            return;
+        }
+        if (mUnionTypeMediaData.mediaData.mediaInfoListSelected.isEmpty()) {
+            MSIMUikitLog.e("mUnionTypeMediaData.mediaData.mediaInfoListSelected.isEmpty()");
+            return;
+        }
+
+        if (mOnMediaPickListener == null) {
+            MSIMUikitLog.v("ignore. mOnMediaPickListener is null.");
+            return;
+        }
+        if (mOnMediaPickListener.onMediaPick(mUnionTypeMediaData.mediaData.mediaInfoListSelected)) {
+            MediaPickerDialog.this.hide();
         }
     }
 
@@ -328,14 +340,10 @@ public class MediaPickerDialog implements MediaData.MediaLoaderCallback, ViewBac
         final PagerView finalPagerView = mPagerView;
         finalPagerView.mDataAdapter.getData()
                 .beginTransaction()
-                .add((transaction, groupArrayList) -> {
-                    // mPagerView.mDataAdapter.setGroupItems(0, pagerItems);
-                    groupArrayList.setGroupItems(0, pagerItems);
-                })
+                .add((transaction, groupArrayList) -> groupArrayList.setGroupItems(0, pagerItems))
                 .commit(() -> {
                     if (mPagerView == finalPagerView) {
-                        //noinspection ConstantConditions
-                        finalPagerView.mRecyclerView.getLayoutManager().scrollToPosition(position);
+                        finalPagerView.mViewPager.setCurrentItem(position, false);
                         finalPagerView.show();
                     }
                 });
@@ -348,13 +356,22 @@ public class MediaPickerDialog implements MediaData.MediaLoaderCallback, ViewBac
         mPagerView = null;
     }
 
+    public void togglePagerViewActionBar() {
+        if (mPagerView == null) {
+            return;
+        }
+        mPagerView.toggleActionBar();
+    }
+
     private class PagerView implements ViewBackLayer.OnHideListener {
 
         private final ViewDialog mPagerViewDialog;
         @SuppressWarnings("FieldCanBeLocal")
         private final ImsdkUikitCommonMediaPickerDialogPagerViewBinding mBinding;
-        private final RecyclerView mRecyclerView;
-        private final ItemClickUnionTypeAdapter mDataAdapter;
+        private final ViewPager2 mViewPager;
+        private final UnionTypeAdapter mDataAdapter;
+        private boolean mShowActionBar = true;
+        private final int mDiffY = DimenUtil.dp2px(100);
 
         private PagerView(ImsdkUikitCommonMediaPickerDialogBinding parentBinding) {
             final ViewGroup parentView = parentBinding.pagerOverlayContainer;
@@ -365,18 +382,136 @@ public class MediaPickerDialog implements MediaData.MediaLoaderCallback, ViewBac
                     .create();
             //noinspection ConstantConditions
             mBinding = ImsdkUikitCommonMediaPickerDialogPagerViewBinding.bind(mPagerViewDialog.getContentView());
-            mRecyclerView = mBinding.recyclerView;
-            mRecyclerView.setLayoutManager(
-                    new LinearLayoutManager(mRecyclerView.getContext(), RecyclerView.HORIZONTAL, false));
-            mRecyclerView.setHasFixedSize(true);
-            mRecyclerView.setScrollingTouchSlop(RecyclerView.TOUCH_SLOP_PAGING);
-            PagerSnapHelper pagerSnapHelper = new PagerSnapHelper();
-            pagerSnapHelper.attachToRecyclerView(mRecyclerView);
-            mDataAdapter = new ItemClickUnionTypeAdapter();
-            mDataAdapter.setHost(Host.Factory.create(mActivity, mRecyclerView, mDataAdapter));
+            mViewPager = mBinding.viewPager;
+            mDataAdapter = new UnionTypeAdapter();
+            mDataAdapter.setHost(Host.Factory.create(mActivity, LocalViewPager2Helper.getRecyclerView(mViewPager), mDataAdapter));
             mDataAdapter.setUnionTypeMapper(new IMUikitUnionTypeMapper());
-            mDataAdapter.setOnItemClickListener(viewHolder -> PagerView.this.hide());
-            mRecyclerView.setAdapter(mDataAdapter);
+            mViewPager.setAdapter(mDataAdapter);
+            syncActionBar();
+
+            mViewPager.registerOnPageChangeCallback(mOnPageChangeCallback);
+
+            ViewUtil.onClick(mBinding.pagerTopBarClose, v -> MediaPickerDialog.this.hide());
+            ViewUtil.onClick(mBinding.pagerTopBarSubmit, v -> MediaPickerDialog.this.submit());
+            ViewUtil.onClick(mBinding.pagerBottomBarFlagSelectContainer, v -> PagerView.this.toggleSelected());
+            syncActionBarContent();
+        }
+
+        @SuppressWarnings("FieldCanBeLocal")
+        private final ViewPager2.OnPageChangeCallback mOnPageChangeCallback = new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+
+                Threads.postUi(PagerView.this::syncActionBarContent);
+            }
+        };
+
+        public void toggleActionBar() {
+            mShowActionBar = !mShowActionBar;
+            syncActionBar();
+        }
+
+        private void syncActionBar() {
+            if (mShowActionBar) {
+                mBinding.pagerTopBar.animate().translationY(0).start();
+                mBinding.pagerBottomBar.animate().translationY(0).start();
+            } else {
+                mBinding.pagerTopBar.animate().translationY(-mDiffY).start();
+                mBinding.pagerBottomBar.animate().translationY(mDiffY).start();
+            }
+        }
+
+        @SuppressLint("SetTextI18n")
+        private void syncActionBarContent() {
+            syncSharedSubmitButton(mBinding.pagerTopBarSubmit);
+
+            final int currentItem = mViewPager.getCurrentItem();
+            if (currentItem >= 0) {
+                final UnionTypeItemObject unionTypeItemObject = mDataAdapter.getItem(currentItem);
+                if (unionTypeItemObject != null) {
+                    final DataObject itemObject = unionTypeItemObject.getItemObject(DataObject.class);
+                    if (itemObject == null) {
+                        return;
+                    }
+                    final MediaData.MediaInfo mediaInfo = itemObject.getObject(MediaData.MediaInfo.class);
+                    if (mediaInfo == null) {
+                        return;
+                    }
+
+                    final UnionTypeMediaData currentUnionTypeMediaData = itemObject.getExtObjectObject1(null);
+                    if (currentUnionTypeMediaData == null) {
+                        return;
+                    }
+
+                    if (currentUnionTypeMediaData != mUnionTypeMediaData) {
+                        return;
+                    }
+
+                    int selectedIndex = currentUnionTypeMediaData.mediaData.indexOfSelected(mediaInfo);
+                    if (selectedIndex >= 0) {
+                        mBinding.pagerBottomBarFlagSelectText.setSelected(true);
+                        mBinding.pagerBottomBarFlagSelectText.setText(String.valueOf(selectedIndex + 1));
+                    } else {
+                        mBinding.pagerBottomBarFlagSelectText.setSelected(false);
+                        mBinding.pagerBottomBarFlagSelectText.setText(null);
+                    }
+                    mBinding.pagerBottomBarFlagSelectContainer.setEnabled(true);
+
+                    mBinding.pagerTopBarTitleText.setText((currentItem + 1) + "/" + mDataAdapter.getItemCount());
+                    return;
+                }
+            }
+
+            mBinding.pagerBottomBarFlagSelectText.setSelected(false);
+            mBinding.pagerBottomBarFlagSelectText.setText(null);
+            mBinding.pagerTopBarTitleText.setText(null);
+            mBinding.pagerBottomBarFlagSelectContainer.setEnabled(false);
+        }
+
+        private void toggleSelected() {
+            final int currentItem = mViewPager.getCurrentItem();
+            if (currentItem < 0) {
+                return;
+            }
+            final UnionTypeItemObject unionTypeItemObject = mDataAdapter.getItem(currentItem);
+            if (unionTypeItemObject == null) {
+                return;
+            }
+            final DataObject itemObject = unionTypeItemObject.getItemObject(DataObject.class);
+            if (itemObject == null) {
+                return;
+            }
+
+            final MediaData.MediaInfo mediaInfo = itemObject.getObject(MediaData.MediaInfo.class);
+            final UnionTypeMediaData unionTypeMediaData = itemObject.getExtObjectObject1(null);
+            if (mediaInfo == null) {
+                return;
+            }
+            if (unionTypeMediaData != mUnionTypeMediaData) {
+                return;
+            }
+
+            // 切换选中状态
+            boolean notifyChanged = false;
+            int currentSelectedIndex = unionTypeMediaData.mediaData.indexOfSelected(mediaInfo);
+            if (currentSelectedIndex >= 0) {
+                // 取消选中
+                if (unionTypeMediaData.mediaData.mediaSelector.canDeselect(unionTypeMediaData.mediaData.mediaInfoListSelected, currentSelectedIndex, mediaInfo)) {
+                    unionTypeMediaData.mediaData.mediaInfoListSelected.remove(mediaInfo);
+                    notifyChanged = true;
+                }
+            } else {
+                // 选中
+                if (unionTypeMediaData.mediaData.mediaSelector.canSelect(unionTypeMediaData.mediaData.mediaInfoListSelected, mediaInfo)) {
+                    unionTypeMediaData.mediaData.mediaInfoListSelected.add(mediaInfo);
+                    notifyChanged = true;
+                }
+            }
+
+            if (notifyChanged) {
+                unionTypeMediaData.unionTypeMediaDataObservable.notifyMediaInfoSelectedChanged(unionTypeMediaData);
+            }
         }
 
         public void show() {
@@ -473,6 +608,10 @@ public class MediaPickerDialog implements MediaData.MediaLoaderCallback, ViewBac
         @Override
         public void onMediaInfoSelectedChanged(UnionTypeMediaData unionTypeMediaData) {
             mGridView.syncTitleBar();
+
+            if (mPagerView != null) {
+                mPagerView.syncActionBarContent();
+            }
         }
     };
 
