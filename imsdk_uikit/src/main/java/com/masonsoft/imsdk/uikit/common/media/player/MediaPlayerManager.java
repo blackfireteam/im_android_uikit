@@ -19,8 +19,8 @@ import com.google.android.exoplayer2.upstream.cache.CacheDataSink;
 import com.google.android.exoplayer2.upstream.cache.CacheDataSource;
 import com.google.android.exoplayer2.upstream.cache.NoOpCacheEvictor;
 import com.google.android.exoplayer2.upstream.cache.SimpleCache;
-import com.masonsoft.imsdk.uikit.util.OkHttpClientUtil;
 import com.masonsoft.imsdk.uikit.MSIMUikitLog;
+import com.masonsoft.imsdk.uikit.util.OkHttpClientUtil;
 
 import java.io.File;
 
@@ -28,6 +28,7 @@ import io.github.idonans.core.Singleton;
 import io.github.idonans.core.manager.ProcessManager;
 import io.github.idonans.core.util.ContextUtil;
 import io.github.idonans.core.util.FileUtil;
+import okhttp3.Call;
 
 public class MediaPlayerManager {
 
@@ -61,7 +62,7 @@ public class MediaPlayerManager {
             DefaultDataSourceFactory dataSourceFactory = new DefaultDataSourceFactory(
                     ContextUtil.getContext(),
                     defaultBandwidthMeter,
-                    new OkHttpDataSource.Factory(OkHttpClientUtil.createDefaultOkHttpClient())
+                    new OkHttpDataSource.Factory((Call.Factory) OkHttpClientUtil.createDefaultOkHttpClient())
                             .setUserAgent(USER_AGENT));
 
             File cacheDir = createMediaCacheDir();
