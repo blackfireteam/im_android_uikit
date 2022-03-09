@@ -1,7 +1,5 @@
 package com.masonsoft.imsdk.uikit.uniontype.viewholder;
 
-import android.view.View;
-
 import androidx.annotation.NonNull;
 
 import com.facebook.imagepipeline.common.ResizeOptions;
@@ -39,14 +37,6 @@ public class MediaPickerPagerViewHolder extends UnionTypeViewHolder {
         Preconditions.checkNotNull(mediaInfo);
         Preconditions.checkNotNull(unionTypeMediaData);
 
-        if (mediaInfo.isVideoMimeType()) {
-            ViewUtil.setVisibilityIfChanged(mBinding.videoFlag, View.VISIBLE);
-            mBinding.durationText.setText(formatDuration(mediaInfo.durationMs));
-        } else {
-            ViewUtil.setVisibilityIfChanged(mBinding.videoFlag, View.GONE);
-            mBinding.durationText.setText(null);
-        }
-
         mBinding.image.setImageUrl(
                 ImageRequestBuilder.newBuilderWithSource(mediaInfo.uri)
                         .setResizeOptions(ResizeOptions.forSquareSize(mGridImageResize))
@@ -61,13 +51,6 @@ public class MediaPickerPagerViewHolder extends UnionTypeViewHolder {
                 itemObject.getExtHolderItemClick1().onItemClick(MediaPickerPagerViewHolder.this);
             }
         });
-    }
-
-    private String formatDuration(long durationMs) {
-        final long durationS = (long) Math.ceil(durationMs / 1000f);
-        final long min = durationS / 60;
-        final long s = durationS % 60;
-        return min + ":" + s;
     }
 
 }

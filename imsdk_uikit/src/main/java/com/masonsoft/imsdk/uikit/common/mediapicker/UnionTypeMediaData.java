@@ -7,6 +7,7 @@ import com.masonsoft.imsdk.uikit.uniontype.DataObject;
 import com.masonsoft.imsdk.uikit.uniontype.IMUikitUnionTypeMapper;
 import com.masonsoft.imsdk.uikit.uniontype.viewholder.MediaPickerBucketViewHolder;
 import com.masonsoft.imsdk.uikit.uniontype.viewholder.MediaPickerGridViewHolder;
+import com.masonsoft.imsdk.uikit.uniontype.viewholder.MediaPickerPagerVideoViewHolder;
 import com.masonsoft.imsdk.uikit.uniontype.viewholder.MediaPickerPagerViewHolder;
 
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 
 import io.github.idonans.uniontype.UnionTypeItemObject;
+import io.github.idonans.uniontype.UnionTypeViewHolder;
 
 public class UnionTypeMediaData {
 
@@ -53,12 +55,21 @@ public class UnionTypeMediaData {
                                 .putExtHolderItemClick2(UnionTypeMediaData.this::onGridItemClick2)
                 ));
 
-                pagerItems.add(new UnionTypeItemObject(
-                        IMUikitUnionTypeMapper.UNION_TYPE_IMPL_MEDIA_PICKER_PAGER,
-                        new DataObject(mediaInfo)
-                                .putExtObjectObject1(UnionTypeMediaData.this)
-                                .putExtHolderItemClick1(UnionTypeMediaData.this::onPagerItemClick1)
-                                .putExtHolderItemClick2(UnionTypeMediaData.this::onPagerItemClick2)));
+                if (mediaInfo.isVideoMimeType()) {
+                    pagerItems.add(new UnionTypeItemObject(
+                            IMUikitUnionTypeMapper.UNION_TYPE_IMPL_MEDIA_PICKER_PAGER_VIDEO,
+                            new DataObject(mediaInfo)
+                                    .putExtObjectObject1(UnionTypeMediaData.this)
+                                    .putExtHolderItemClickPayload1(UnionTypeMediaData.this::onPagerVideoItemClick1)
+                    ));
+                } else {
+                    pagerItems.add(new UnionTypeItemObject(
+                            IMUikitUnionTypeMapper.UNION_TYPE_IMPL_MEDIA_PICKER_PAGER,
+                            new DataObject(mediaInfo)
+                                    .putExtObjectObject1(UnionTypeMediaData.this)
+                                    .putExtHolderItemClick1(UnionTypeMediaData.this::onPagerImageItemClick1)
+                    ));
+                }
             }
 
             this.unionTypeGridItemsMap.put(bucket, gridItems);
@@ -70,11 +81,6 @@ public class UnionTypeMediaData {
                             .putExtHolderItemClick1(UnionTypeMediaData.this::onBucketItemClick)
             ));
         }
-    }
-
-    @Deprecated
-    public void childClick() {
-        // dialog.mGridView.updateConfirmSubmitStatus();
     }
 
     private void onBucketItemClick(RecyclerView.ViewHolder _holder) {
@@ -173,12 +179,12 @@ public class UnionTypeMediaData {
         }
     }
 
-    private void onPagerItemClick1(RecyclerView.ViewHolder _holder) {
+    private void onPagerImageItemClick1(RecyclerView.ViewHolder _holder) {
         if (!(_holder instanceof MediaPickerPagerViewHolder)) {
             return;
         }
 
-        final MediaPickerPagerViewHolder holder = (MediaPickerPagerViewHolder) _holder;
+        final UnionTypeViewHolder holder = (UnionTypeViewHolder) _holder;
         final DataObject itemObject = holder.getItemObject(DataObject.class);
         if (itemObject == null) {
             return;
@@ -197,12 +203,12 @@ public class UnionTypeMediaData {
         unionTypeMediaData.dialog.togglePagerViewActionBar();
     }
 
-    private void onPagerItemClick2(RecyclerView.ViewHolder _holder) {
-        if (!(_holder instanceof MediaPickerPagerViewHolder)) {
+    private void onPagerVideoItemClick1(RecyclerView.ViewHolder _holder, Object payload) {
+        if (!(_holder instanceof MediaPickerPagerVideoViewHolder)) {
             return;
         }
 
-        final MediaPickerPagerViewHolder holder = (MediaPickerPagerViewHolder) _holder;
+        final UnionTypeViewHolder holder = (UnionTypeViewHolder) _holder;
         final DataObject itemObject = holder.getItemObject(DataObject.class);
         if (itemObject == null) {
             return;
@@ -217,8 +223,9 @@ public class UnionTypeMediaData {
             return;
         }
 
-        // 关闭 Pager 视图
-        unionTypeMediaData.dialog.hidePagerView();
+        final int visibility = (int) payload;
+        // 展开或者收起操作栏
+        unionTypeMediaData.dialog.setPagerViewActionBarVisibility(visibility);
     }
 
 }

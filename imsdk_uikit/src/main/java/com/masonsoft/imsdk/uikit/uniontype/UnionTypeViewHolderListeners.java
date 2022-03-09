@@ -12,4 +12,8 @@ public interface UnionTypeViewHolderListeners {
         void onItemLongClick(UnionTypeViewHolder viewHolder);
     }
 
+    interface OnItemClickPayloadListener {
+        void onItemClick(UnionTypeViewHolder viewHolder, Object payload);
+    }
+
 }

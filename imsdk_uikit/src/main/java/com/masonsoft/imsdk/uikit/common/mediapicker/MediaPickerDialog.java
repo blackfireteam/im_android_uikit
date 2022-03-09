@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -19,6 +20,9 @@ import com.masonsoft.imsdk.core.I18nResources;
 import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.uikit.R;
+import com.masonsoft.imsdk.uikit.common.microlifecycle.CenterRecyclerViewMicroLifecycleComponentManager;
+import com.masonsoft.imsdk.uikit.common.microlifecycle.MicroLifecycleComponentManager;
+import com.masonsoft.imsdk.uikit.common.microlifecycle.MicroLifecycleComponentManagerHost;
 import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitCommonMediaPickerDialogBinding;
 import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitCommonMediaPickerDialogBucketViewBinding;
 import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitCommonMediaPickerDialogPagerViewBinding;
@@ -32,6 +36,7 @@ import io.github.idonans.backstack.ViewBackLayer;
 import io.github.idonans.backstack.dialog.ViewDialog;
 import io.github.idonans.core.thread.Threads;
 import io.github.idonans.core.util.DimenUtil;
+import io.github.idonans.core.util.IOUtil;
 import io.github.idonans.core.util.Preconditions;
 import io.github.idonans.lang.util.ViewUtil;
 import io.github.idonans.uniontype.Host;
@@ -363,6 +368,13 @@ public class MediaPickerDialog implements MediaData.MediaLoaderCallback, ViewBac
         mPagerView.toggleActionBar();
     }
 
+    public void setPagerViewActionBarVisibility(int visibility) {
+        if (mPagerView == null) {
+            return;
+        }
+        mPagerView.setActionBarVisibility(visibility);
+    }
+
     private class PagerView implements ViewBackLayer.OnHideListener {
 
         private final ViewDialog mPagerViewDialog;
@@ -372,6 +384,7 @@ public class MediaPickerDialog implements MediaData.MediaLoaderCallback, ViewBac
         private final UnionTypeAdapter mDataAdapter;
         private boolean mShowActionBar = true;
         private final int mDiffY = DimenUtil.dp2px(100);
+        private MicroLifecycleComponentManager mMicroLifecycleComponentManager;
 
         private PagerView(ImsdkUikitCommonMediaPickerDialogBinding parentBinding) {
             final ViewGroup parentView = parentBinding.pagerOverlayContainer;
@@ -383,7 +396,8 @@ public class MediaPickerDialog implements MediaData.MediaLoaderCallback, ViewBac
             //noinspection ConstantConditions
             mBinding = ImsdkUikitCommonMediaPickerDialogPagerViewBinding.bind(mPagerViewDialog.getContentView());
             mViewPager = mBinding.viewPager;
-            mDataAdapter = new UnionTypeAdapter();
+            mMicroLifecycleComponentManager = new CenterRecyclerViewMicroLifecycleComponentManager(LocalViewPager2Helper.getRecyclerView(mViewPager), ((FragmentActivity) mActivity).getLifecycle());
+            mDataAdapter = new UnionTypeAdapterImpl();
             mDataAdapter.setHost(Host.Factory.create(mActivity, LocalViewPager2Helper.getRecyclerView(mViewPager), mDataAdapter));
             mDataAdapter.setUnionTypeMapper(new IMUikitUnionTypeMapper());
             mViewPager.setAdapter(mDataAdapter);
@@ -397,6 +411,13 @@ public class MediaPickerDialog implements MediaData.MediaLoaderCallback, ViewBac
             syncActionBarContent();
         }
 
+        private class UnionTypeAdapterImpl extends UnionTypeAdapter implements MicroLifecycleComponentManagerHost {
+            @Override
+            public MicroLifecycleComponentManager getMicroLifecycleComponentManager() {
+                return mMicroLifecycleComponentManager;
+            }
+        }
+
         @SuppressWarnings("FieldCanBeLocal")
         private final ViewPager2.OnPageChangeCallback mOnPageChangeCallback = new ViewPager2.OnPageChangeCallback() {
             @Override
@@ -406,6 +427,11 @@ public class MediaPickerDialog implements MediaData.MediaLoaderCallback, ViewBac
                 Threads.postUi(PagerView.this::syncActionBarContent);
             }
         };
+
+        public void setActionBarVisibility(int visibility) {
+            mShowActionBar = visibility == View.VISIBLE;
+            syncActionBar();
+        }
 
         public void toggleActionBar() {
             mShowActionBar = !mShowActionBar;
@@ -527,6 +553,8 @@ public class MediaPickerDialog implements MediaData.MediaLoaderCallback, ViewBac
             if (mPagerView == this) {
                 mPagerView = null;
             }
+
+            IOUtil.closeQuietly(mMicroLifecycleComponentManager);
         }
 
         public boolean onBackPressed() {

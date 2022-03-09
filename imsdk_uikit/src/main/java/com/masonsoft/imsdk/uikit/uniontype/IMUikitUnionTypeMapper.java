@@ -26,6 +26,7 @@ import com.masonsoft.imsdk.uikit.uniontype.viewholder.IMMessageFirstCustomBaseMe
 import com.masonsoft.imsdk.uikit.uniontype.viewholder.LocationPickerSimpleLocationItemViewHolder;
 import com.masonsoft.imsdk.uikit.uniontype.viewholder.MediaPickerBucketViewHolder;
 import com.masonsoft.imsdk.uikit.uniontype.viewholder.MediaPickerGridViewHolder;
+import com.masonsoft.imsdk.uikit.uniontype.viewholder.MediaPickerPagerVideoViewHolder;
 import com.masonsoft.imsdk.uikit.uniontype.viewholder.MediaPickerPagerViewHolder;
 
 import io.github.idonans.dynamic.uniontype.loadingstatus.UnionTypeLoadingStatus;
@@ -35,7 +36,8 @@ public class IMUikitUnionTypeMapper extends UnionTypeLoadingStatus {
     private static int sNextUnionType = 1;
     public static final int UNION_TYPE_IMPL_MEDIA_PICKER_GRID = sNextUnionType++; // 媒体选择器 Grid 视图中的一个 item
     public static final int UNION_TYPE_IMPL_MEDIA_PICKER_BUCKET = sNextUnionType++; // 媒体选择器 bucket 视图中的一个 item
-    public static final int UNION_TYPE_IMPL_MEDIA_PICKER_PAGER = sNextUnionType++; // 媒体选择器 Pager 视图中的一个 item
+    public static final int UNION_TYPE_IMPL_MEDIA_PICKER_PAGER = sNextUnionType++; // 媒体选择器 Pager 视图中的一个图片 item
+    public static final int UNION_TYPE_IMPL_MEDIA_PICKER_PAGER_VIDEO = sNextUnionType++; // 媒体选择器 Pager 视图中的一个视频 item
     public static final int UNION_TYPE_IMPL_IM_CONVERSATION = sNextUnionType++; // 会话列表中的一条会话
     public static final int UNION_TYPE_IMPL_IM_MESSAGE_DEFAULT_RECEIVED = sNextUnionType++; // 聊天消息-接收的消息(fallback)
     public static final int UNION_TYPE_IMPL_IM_MESSAGE_DEFAULT_SEND = sNextUnionType++; // 聊天消息-发送的消息(fallback)
@@ -67,6 +69,7 @@ public class IMUikitUnionTypeMapper extends UnionTypeLoadingStatus {
         put(UNION_TYPE_IMPL_MEDIA_PICKER_GRID, MediaPickerGridViewHolder::new);
         put(UNION_TYPE_IMPL_MEDIA_PICKER_BUCKET, MediaPickerBucketViewHolder::new);
         put(UNION_TYPE_IMPL_MEDIA_PICKER_PAGER, MediaPickerPagerViewHolder::new);
+        put(UNION_TYPE_IMPL_MEDIA_PICKER_PAGER_VIDEO, MediaPickerPagerVideoViewHolder::new);
         put(UNION_TYPE_IMPL_IM_CONVERSATION, IMConversationViewHolder::new);
         put(UNION_TYPE_IMPL_IM_MESSAGE_DEFAULT_RECEIVED, IMBaseMessageDefaultReceivedViewHolder::new);
         put(UNION_TYPE_IMPL_IM_MESSAGE_DEFAULT_SEND, IMBaseMessageDefaultSendViewHolder::new);

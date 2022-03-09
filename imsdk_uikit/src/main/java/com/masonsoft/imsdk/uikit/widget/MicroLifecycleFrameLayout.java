@@ -16,6 +16,8 @@ import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.util.Objects;
 
+import io.github.idonans.appcontext.AppContext;
+
 public abstract class MicroLifecycleFrameLayout extends FrameLayout {
 
     protected static final boolean DEBUG = MSIMUikitConstants.DEBUG_WIDGET;
@@ -76,6 +78,7 @@ public abstract class MicroLifecycleFrameLayout extends FrameLayout {
     }
 
     private void initFromAttributes(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        AppContext.setContextInEditMode(this);
         mInflater = LayoutInflater.from(context);
     }
 

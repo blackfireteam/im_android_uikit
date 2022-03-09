@@ -17,6 +17,8 @@ public class DataObject {
     public static final String EXT_KEY_HOLDER_ITEM_CLICK_2 = "ext_key_holder_item_click_2";
     public static final String EXT_KEY_HOLDER_ITEM_LONG_CLICK_1 = "ext_key_holder_item_long_click_1";
     public static final String EXT_KEY_HOLDER_ITEM_LONG_CLICK_2 = "ext_key_holder_item_long_click_2";
+    public static final String EXT_KEY_HOLDER_ITEM_CLICK_PAYLOAD_1 = "ext_key_holder_item_click_payload_1";
+    public static final String EXT_KEY_HOLDER_ITEM_CLICK_PAYLOAD_2 = "ext_key_holder_item_click_payload_2";
 
     public final Object object;
     private final Map<String, Object> mExtObjects = new HashMap<>();
@@ -110,6 +112,22 @@ public class DataObject {
 
     public UnionTypeViewHolderListeners.OnItemClickListener getExtHolderItemClick2() {
         return getExtObject(EXT_KEY_HOLDER_ITEM_CLICK_2, null);
+    }
+
+    public DataObject putExtHolderItemClickPayload1(UnionTypeViewHolderListeners.OnItemClickPayloadListener listener) {
+        return putExtObject(EXT_KEY_HOLDER_ITEM_CLICK_PAYLOAD_1, listener);
+    }
+
+    public UnionTypeViewHolderListeners.OnItemClickPayloadListener getExtHolderItemClickPayload1() {
+        return getExtObject(EXT_KEY_HOLDER_ITEM_CLICK_PAYLOAD_1, null);
+    }
+
+    public DataObject putExtHolderItemClickPayload2(UnionTypeViewHolderListeners.OnItemClickPayloadListener listener) {
+        return putExtObject(EXT_KEY_HOLDER_ITEM_CLICK_PAYLOAD_2, listener);
+    }
+
+    public UnionTypeViewHolderListeners.OnItemClickPayloadListener getExtHolderItemClickPayload2() {
+        return getExtObject(EXT_KEY_HOLDER_ITEM_CLICK_PAYLOAD_2, null);
     }
 
     public DataObject putExtHolderItemLongClick1(UnionTypeViewHolderListeners.OnItemLongClickListener listener) {
