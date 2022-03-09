@@ -391,7 +391,7 @@ public class MediaPickerDialog implements MediaData.MediaLoaderCallback, ViewBac
 
             mViewPager.registerOnPageChangeCallback(mOnPageChangeCallback);
 
-            ViewUtil.onClick(mBinding.pagerTopBarClose, v -> MediaPickerDialog.this.hide());
+            ViewUtil.onClick(mBinding.pagerTopBarClose, v -> PagerView.this.hide());
             ViewUtil.onClick(mBinding.pagerTopBarSubmit, v -> MediaPickerDialog.this.submit());
             ViewUtil.onClick(mBinding.pagerBottomBarFlagSelectContainer, v -> PagerView.this.toggleSelected());
             syncActionBarContent();
