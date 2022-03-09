@@ -76,7 +76,6 @@ public class MediaPickerDialog implements MediaData.MediaLoaderCallback, ViewBac
 
         mGridView = new GridView(mBinding);
         mBucketView = new BucketView(mBinding);
-        // mPagerView = new PagerView(mBinding);
 
         mMediaLoader = new MediaData.MediaLoader(this, mInnerMediaSelector);
         mMediaLoader.start();

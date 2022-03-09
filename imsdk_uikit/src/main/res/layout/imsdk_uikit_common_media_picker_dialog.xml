@@ -89,29 +89,7 @@
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/grid_recycler_view"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginBottom="60dp" />
-
-            <FrameLayout
-                android:id="@+id/grid_bottom_action_bar"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:layout_gravity="bottom">
-
-                <TextView
-                    android:id="@+id/grid_bottom_action_preview"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:enabled="false"
-                    android:gravity="center"
-                    android:includeFontPadding="false"
-                    android:maxLines="1"
-                    android:paddingHorizontal="20dp"
-                    android:singleLine="true"
-                    android:text="@string/imsdk_uikit_custom_soft_keyboard_item_media_picker_preview_0"
-                    android:textColor="@color/imsdk_uikit_color_text_gray_white_selector2"
-                    android:textSize="16sp" />
-            </FrameLayout>
+                android:layout_height="match_parent" />
         </FrameLayout>
     </io.github.idonans.systeminsets.SystemInsetsLinearLayout>
 
