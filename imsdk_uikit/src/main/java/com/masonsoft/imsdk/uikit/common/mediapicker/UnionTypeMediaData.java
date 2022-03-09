@@ -7,6 +7,7 @@ import com.masonsoft.imsdk.uikit.uniontype.DataObject;
 import com.masonsoft.imsdk.uikit.uniontype.IMUikitUnionTypeMapper;
 import com.masonsoft.imsdk.uikit.uniontype.viewholder.MediaPickerBucketViewHolder;
 import com.masonsoft.imsdk.uikit.uniontype.viewholder.MediaPickerGridViewHolder;
+import com.masonsoft.imsdk.uikit.uniontype.viewholder.MediaPickerPagerViewHolder;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -55,7 +56,9 @@ public class UnionTypeMediaData {
                 pagerItems.add(new UnionTypeItemObject(
                         IMUikitUnionTypeMapper.UNION_TYPE_IMPL_MEDIA_PICKER_PAGER,
                         new DataObject(mediaInfo)
-                                .putExtObjectObject1(UnionTypeMediaData.this)));
+                                .putExtObjectObject1(UnionTypeMediaData.this)
+                                .putExtHolderItemClick1(UnionTypeMediaData.this::onPagerItemClick1)
+                                .putExtHolderItemClick2(UnionTypeMediaData.this::onPagerItemClick2)));
             }
 
             this.unionTypeGridItemsMap.put(bucket, gridItems);
@@ -168,6 +171,54 @@ public class UnionTypeMediaData {
         if (notifyChanged) {
             this.unionTypeMediaDataObservable.notifyMediaInfoSelectedChanged(this);
         }
+    }
+
+    private void onPagerItemClick1(RecyclerView.ViewHolder _holder) {
+        if (!(_holder instanceof MediaPickerPagerViewHolder)) {
+            return;
+        }
+
+        final MediaPickerPagerViewHolder holder = (MediaPickerPagerViewHolder) _holder;
+        final DataObject itemObject = holder.getItemObject(DataObject.class);
+        if (itemObject == null) {
+            return;
+        }
+
+        final MediaData.MediaInfo mediaInfo = itemObject.getObject(MediaData.MediaInfo.class);
+        final UnionTypeMediaData unionTypeMediaData = itemObject.getExtObjectObject1(null);
+        if (mediaInfo == null) {
+            return;
+        }
+        if (unionTypeMediaData != this) {
+            return;
+        }
+
+        // 展开或者收起操作栏
+        unionTypeMediaData.dialog.togglePagerViewActionBar();
+    }
+
+    private void onPagerItemClick2(RecyclerView.ViewHolder _holder) {
+        if (!(_holder instanceof MediaPickerPagerViewHolder)) {
+            return;
+        }
+
+        final MediaPickerPagerViewHolder holder = (MediaPickerPagerViewHolder) _holder;
+        final DataObject itemObject = holder.getItemObject(DataObject.class);
+        if (itemObject == null) {
+            return;
+        }
+
+        final MediaData.MediaInfo mediaInfo = itemObject.getObject(MediaData.MediaInfo.class);
+        final UnionTypeMediaData unionTypeMediaData = itemObject.getExtObjectObject1(null);
+        if (mediaInfo == null) {
+            return;
+        }
+        if (unionTypeMediaData != this) {
+            return;
+        }
+
+        // 关闭 Pager 视图
+        unionTypeMediaData.dialog.hidePagerView();
     }
 
 }

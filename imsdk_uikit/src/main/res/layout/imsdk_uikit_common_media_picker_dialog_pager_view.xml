@@ -1,6 +1,129 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.masonsoft.imsdk.uikit.widget.PagerRecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/recycler_view"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#333333" />
+    android:background="@color/imsdk_uikit_color_media_picker_background"
+    android:clickable="true"
+    android:focusable="true">
+
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#ff000000"
+        android:orientation="horizontal" />
+
+    <io.github.idonans.systeminsets.SystemInsetsFrameLayout
+        android:id="@+id/pager_top_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/imsdk_uikit_color_media_picker_background"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:systemInsetPaddingTop="all"
+        app:systemInsetPaddingTopNotConsume="true">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:clickable="true"
+            android:focusable="true">
+
+            <ImageView
+                android:id="@+id/pager_top_bar_close"
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:contentDescription="@string/imsdk_uikit_empty_text_hint"
+                android:scaleType="centerInside"
+                android:src="@drawable/imsdk_uikit_ic_arrow_left_white" />
+
+            <TextView
+                android:id="@+id/pager_top_bar_title_text"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:includeFontPadding="false"
+                android:maxLines="1"
+                android:paddingHorizontal="10dp"
+                android:singleLine="true"
+                android:textColor="@android:color/white"
+                android:textSize="16sp"
+                tools:text="1/200" />
+
+            <TextView
+                android:id="@+id/pager_top_bar_submit"
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_gravity="center_vertical|end"
+                android:layout_marginEnd="20dp"
+                android:background="@drawable/imsdk_uikit_ic_common_rect_corners_6dp_fill_enable_green_normal_444444"
+                android:enabled="false"
+                android:gravity="center"
+                android:includeFontPadding="false"
+                android:maxLines="1"
+                android:paddingHorizontal="15dp"
+                android:singleLine="true"
+                android:text="@string/imsdk_uikit_custom_soft_keyboard_item_media_picker_submit_0"
+                android:textColor="@color/imsdk_uikit_color_text_gray_white_selector"
+                android:textSize="16sp" />
+        </FrameLayout>
+    </io.github.idonans.systeminsets.SystemInsetsFrameLayout>
+
+    <io.github.idonans.systeminsets.SystemInsetsFrameLayout
+        android:id="@+id/pager_bottom_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/imsdk_uikit_color_media_picker_background"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:systemInsetPaddingBottom="all"
+        app:systemInsetPaddingBottomNotConsume="true">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:clickable="true"
+            android:focusable="true">
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/pager_bottom_bar_flag_select_container"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="end"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="10dp">
+
+                <TextView
+                    android:id="@+id/pager_bottom_bar_flag_select_text"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:background="@drawable/imsdk_uikit_ic_common_rect_corners_12dp_green_white_stroke_selector"
+                    android:gravity="center"
+                    android:includeFontPadding="false"
+                    android:maxLines="1"
+                    android:singleLine="true"
+                    android:textColor="@android:color/white"
+                    android:textSize="12sp"
+                    tools:text="1" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:includeFontPadding="false"
+                    android:maxLines="1"
+                    android:paddingStart="5dp"
+                    android:paddingEnd="0dp"
+                    android:singleLine="true"
+                    android:text="@string/imsdk_uikit_custom_soft_keyboard_item_media_picker_pager_select"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
+        </FrameLayout>
+    </io.github.idonans.systeminsets.SystemInsetsFrameLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
