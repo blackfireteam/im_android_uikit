@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -14,41 +13,4 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageView
-        android:id="@+id/video_flag"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:contentDescription="@string/imsdk_uikit_empty_text_hint"
-        android:scaleType="centerInside"
-        android:src="@android:drawable/ic_media_play"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <io.github.idonans.systeminsets.SystemInsetsFrameLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:systemInsetPaddingBottom="all"
-        app:systemInsetPaddingBottomNotConsume="true"
-        app:systemInsetPaddingLeft="all"
-        app:systemInsetPaddingLeftNotConsume="true"
-        app:systemInsetPaddingRight="all"
-        app:systemInsetPaddingRightNotConsume="true">
-
-        <TextView
-            android:id="@+id/duration_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:includeFontPadding="false"
-            android:maxLines="1"
-            android:padding="5dp"
-            android:singleLine="true"
-            android:textColor="@android:color/white"
-            android:textSize="12sp"
-            tools:text="1" />
-    </io.github.idonans.systeminsets.SystemInsetsFrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
