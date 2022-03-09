@@ -6,7 +6,6 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.EditorInfo;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -58,20 +57,11 @@ public class SignUpStep1Fragment extends SignUpFragment {
                         FormValidator.InputViewFactory.create(mBinding.txtDepartment),
                         FormValidator.InputViewFactory.create(mBinding.txtWorkplace),
                         FormValidator.InputViewFactory.create(mBinding.txtGender),
-                        FormValidator.InputViewFactory.create(mBinding.editInvitationCode),
                 },
                 new FormValidator.SubmitView[]{
                         FormValidator.SubmitViewFactory.create(mBinding.submit),
                 }
         );
-        mBinding.editInvitationCode.setOnEditorActionListener((v, actionId, event) -> {
-            SampleLog.v("onEditorAction actionId:%s, event:%s", actionId, event);
-            if (actionId == EditorInfo.IME_ACTION_NEXT) {
-                onSubmit();
-                return true;
-            }
-            return false;
-        });
 
         final SignUpArgument args = getSignUpArgument();
         mBinding.editNickname.setText(args.nickname);
@@ -246,12 +236,6 @@ public class SignUpStep1Fragment extends SignUpFragment {
         final String gender = mBinding.txtGender.getText().toString().trim();
         if (TextUtils.isEmpty(gender)) {
             ToastUtil.show(I18nResources.getString(R.string.imsdk_sample_input_error_gender_error));
-            return;
-        }
-
-        final String invitationCode = mBinding.editInvitationCode.getText().toString().trim().toLowerCase();
-        if (!"msipo".equals(invitationCode)) {
-            ToastUtil.show(I18nResources.getString(R.string.imsdk_sample_input_error_invitation_code));
             return;
         }
 

@@ -211,48 +211,6 @@
             android:layout_height="1dp"
             android:background="#fff8f8f8" />
 
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:layout_width="match_parent"
-            android:layout_height="54dp"
-            android:orientation="horizontal"
-            android:paddingStart="15dp"
-            android:paddingEnd="15dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:gravity="center"
-                android:includeFontPadding="false"
-                android:maxLines="1"
-                android:singleLine="true"
-                android:text="@string/imsdk_sample_edit_hint_invitation_code"
-                android:textColor="#ff999999"
-                android:textSize="18sp" />
-
-            <EditText
-                android:id="@+id/edit_invitation_code"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:background="@null"
-                android:imeOptions="actionNext"
-                android:importantForAutofill="no"
-                android:includeFontPadding="false"
-                android:inputType="text"
-                android:maxLines="1"
-                android:paddingHorizontal="10dp"
-                android:singleLine="true"
-                android:textColor="#ff282828"
-                android:textSize="18sp"
-                tools:text="123" />
-        </androidx.appcompat.widget.LinearLayoutCompat>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="#fff8f8f8" />
-
         <Space
             android:layout_width="match_parent"
             android:layout_height="20dp" />
