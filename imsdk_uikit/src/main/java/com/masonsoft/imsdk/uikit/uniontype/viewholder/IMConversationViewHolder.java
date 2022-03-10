@@ -5,7 +5,6 @@ import android.view.View;
 import android.view.Window;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.masonsoft.imsdk.MSIMConversation;
 import com.masonsoft.imsdk.MSIMManager;
@@ -39,15 +38,15 @@ public class IMConversationViewHolder extends UnionTypeViewHolder {
 
         mTargetUserInfoLoader = new MSIMUserInfoLoader() {
             @Override
-            protected void onUserInfoLoad(long userId, @Nullable MSIMUserInfo userInfo) {
-                super.onUserInfoLoad(userId, userInfo);
+            protected void onUserInfoLoad(@NonNull MSIMUserInfo userInfo) {
+                super.onUserInfoLoad(userInfo);
 
-                IMConversationViewHolder.this.onTargetUserInfoLoad(userId, userInfo);
+                IMConversationViewHolder.this.onTargetUserInfoLoad(userInfo);
             }
         };
     }
 
-    private void onTargetUserInfoLoad(long userId, @Nullable MSIMUserInfo userInfo) {
+    private void onTargetUserInfoLoad(@NonNull MSIMUserInfo userInfo) {
         final DataObject itemObject = getItemObject(DataObject.class);
         if (itemObject == null) {
             return;
@@ -57,14 +56,14 @@ public class IMConversationViewHolder extends UnionTypeViewHolder {
             return;
         }
         final long targetUserId = conversation.getTargetUserId();
-        if (targetUserId != userId) {
+        if (targetUserId != userInfo.getUserId()) {
             return;
         }
 
-        mBinding.avatar.setUserInfo(userId, userInfo);
-        mBinding.name.setUserInfo(userId, userInfo);
-        mBinding.userVerifiedFlag.setUserInfo(userId, userInfo);
-        mBinding.userGoldFlag.setUserInfo(userId, userInfo);
+        mBinding.avatar.setUserInfo(userInfo);
+        mBinding.name.setUserInfo(userInfo);
+        mBinding.userVerifiedFlag.setUserInfo(userInfo);
+        mBinding.userGoldFlag.setUserInfo(userInfo);
     }
 
     @Override
@@ -75,8 +74,12 @@ public class IMConversationViewHolder extends UnionTypeViewHolder {
 
         final long targetUserId = conversation.getTargetUserId();
         {
-            final MSIMUserInfo targetUserInfo = conversation.getTargetUserInfo();
-            mTargetUserInfoLoader.setUserInfo(targetUserId, targetUserInfo);
+            MSIMUserInfo targetUserInfo = conversation.getTargetUserInfo();
+            if (targetUserInfo == null) {
+                targetUserInfo = MSIMUserInfo.mock(targetUserId);
+            }
+            Preconditions.checkNotNull(targetUserId);
+            mTargetUserInfoLoader.setUserInfo(targetUserInfo);
         }
 
         mBinding.avatar.setBorderColor(false);

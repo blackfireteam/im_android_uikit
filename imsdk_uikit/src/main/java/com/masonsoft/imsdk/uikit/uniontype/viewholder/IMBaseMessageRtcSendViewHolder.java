@@ -3,7 +3,6 @@ package com.masonsoft.imsdk.uikit.uniontype.viewholder;
 import android.app.Activity;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.masonsoft.imsdk.MSIMBaseMessage;
 import com.masonsoft.imsdk.MSIMConversation;
@@ -63,8 +62,8 @@ public class IMBaseMessageRtcSendViewHolder extends IMBaseMessageRtcViewHolder {
     }
 
     @Override
-    protected void onFromUserInfoLoad(long userId, @Nullable MSIMUserInfo userInfo) {
-        mBinding.avatar.setUserInfo(userId, userInfo);
+    protected void onFromUserInfoLoad(@NonNull MSIMUserInfo userInfo) {
+        mBinding.avatar.setUserInfo(userInfo);
     }
 
 }

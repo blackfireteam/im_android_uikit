@@ -4,7 +4,6 @@ import android.app.Activity;
 
 import androidx.annotation.FloatRange;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.MSIMMessage;
@@ -39,10 +38,10 @@ public class HomeSparkViewHolder extends UnionTypeViewHolder {
 
         mUserInfoLoader = new MSIMUserInfoLoader() {
             @Override
-            protected void onUserInfoLoad(long userId, @Nullable MSIMUserInfo userInfo) {
-                super.onUserInfoLoad(userId, userInfo);
+            protected void onUserInfoLoad(@NonNull MSIMUserInfo userInfo) {
+                super.onUserInfoLoad(userInfo);
 
-                HomeSparkViewHolder.this.onUserInfoLoad(userId, userInfo);
+                HomeSparkViewHolder.this.onUserInfoLoad(userInfo);
             }
         };
     }
@@ -74,7 +73,7 @@ public class HomeSparkViewHolder extends UnionTypeViewHolder {
         }
     }
 
-    private void onUserInfoLoad(long userId, @Nullable MSIMUserInfo userInfo) {
+    private void onUserInfoLoad(@NonNull MSIMUserInfo userInfo) {
         final DataObject itemObject = getItemObject(DataObject.class);
         if (itemObject == null) {
             return;
@@ -85,11 +84,11 @@ public class HomeSparkViewHolder extends UnionTypeViewHolder {
             return;
         }
 
-        if (spark.userId != userId) {
+        if (spark.userId != userInfo.getUserId()) {
             return;
         }
 
-        mBinding.username.setUserInfo(userId, userInfo);
+        mBinding.username.setUserInfo(userInfo);
     }
 
     @Override
@@ -99,7 +98,7 @@ public class HomeSparkViewHolder extends UnionTypeViewHolder {
         final Spark spark = (Spark) itemObject.object;
         Preconditions.checkNotNull(spark);
 
-        mUserInfoLoader.setUserInfo(spark.userId, null);
+        mUserInfoLoader.setUserInfo(MSIMUserInfo.mock(spark.userId));
 
         mBinding.imageLayout.setImageUrl(null, spark.pic);
 

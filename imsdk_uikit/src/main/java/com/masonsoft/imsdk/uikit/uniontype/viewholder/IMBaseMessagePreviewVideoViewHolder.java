@@ -59,7 +59,7 @@ public class IMBaseMessagePreviewVideoViewHolder extends IMBaseMessageViewHolder
     }
 
     @Override
-    protected void onFromUserInfoLoad(long userId, @Nullable MSIMUserInfo userInfo) {
+    protected void onFromUserInfoLoad(@NonNull MSIMUserInfo userInfo) {
     }
 
     private void createLocalMicroLifecycle() {

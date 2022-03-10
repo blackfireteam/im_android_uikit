@@ -3,7 +3,7 @@ package com.masonsoft.imsdk.uikit.widget;
 import android.content.Context;
 import android.util.AttributeSet;
 
-import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
 
 import com.masonsoft.imsdk.MSIMUserInfo;
 
@@ -26,12 +26,8 @@ public class MSIMUserInfoName extends MSIMUserInfoTextView {
     }
 
     @Override
-    protected void onUserInfoUpdate(long userId, @Nullable MSIMUserInfo userInfo) {
-        if (userInfo == null) {
-            setText(null);
-        } else {
-            setText(userInfo.getNickname());
-        }
+    protected void onUserInfoUpdate(@NonNull MSIMUserInfo userInfo) {
+        setText(userInfo.getNickname());
     }
 
 }

@@ -335,18 +335,18 @@ public class MineFragment extends SystemInsetsFragment {
 
     class ViewImpl implements DynamicView {
 
-        public void showSessionUserInfo(long userId, @Nullable MSIMUserInfo userInfo) {
-            SampleLog.v(Objects.defaultObjectTag(this) + " showSessionUserInfo %s %s", userId, userInfo);
+        public void showSessionUserInfo(@NonNull MSIMUserInfo userInfo) {
+            SampleLog.v(Objects.defaultObjectTag(this) + " showSessionUserInfo %s", userInfo);
             if (mBinding == null) {
                 SampleLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
                 return;
             }
 
-            mBinding.avatar.setUserInfo(userId, userInfo);
-            mBinding.username.setUserInfo(userId, userInfo);
+            mBinding.avatar.setUserInfo(userInfo);
+            mBinding.username.setUserInfo(userInfo);
 
-            final boolean gold = userInfo != null && userInfo.isGold();
-            final boolean verified = userInfo != null && userInfo.isVerified();
+            final boolean gold = userInfo.isGold();
+            final boolean verified = userInfo.isVerified();
 
             clearCheckedChangeListener();
             mBinding.modifyGoldSwitch.setChecked(gold);
