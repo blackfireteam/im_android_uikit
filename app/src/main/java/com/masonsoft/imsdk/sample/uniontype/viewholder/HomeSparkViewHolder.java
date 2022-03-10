@@ -102,7 +102,7 @@ public class HomeSparkViewHolder extends UnionTypeViewHolder {
         final Spark spark = (Spark) itemObject.object;
         Preconditions.checkNotNull(spark);
 
-        mUserInfoLoader.setUserInfo(MSIMUserInfo.mock(spark.profile.getUid()));
+        mUserInfoLoader.setUserInfo(MSIMUserInfo.mock(spark.profile.getUid()), false);
 
         mBinding.imageLayout.setImageUrl(null, spark.profile.getAvatar());
         mBinding.desc.setText(buildDescText(spark));

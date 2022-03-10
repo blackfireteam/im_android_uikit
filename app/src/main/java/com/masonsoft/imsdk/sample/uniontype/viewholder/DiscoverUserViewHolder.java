@@ -47,7 +47,7 @@ public class DiscoverUserViewHolder extends UnionTypeViewHolder {
         Preconditions.checkNotNull(itemObject);
         long userId = (long) itemObject.object;
 
-        mUserInfoLoader.setUserInfo(MSIMUserInfo.mock(userId));
+        mUserInfoLoader.setUserInfo(MSIMUserInfo.mock(userId), false);
 
         ViewUtil.onClick(itemView, v -> onItemClick());
     }

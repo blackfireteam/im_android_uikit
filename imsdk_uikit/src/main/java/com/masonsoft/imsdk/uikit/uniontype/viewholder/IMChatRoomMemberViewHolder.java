@@ -7,8 +7,10 @@ import androidx.annotation.NonNull;
 
 import com.masonsoft.imsdk.MSIMChatRoomMember;
 import com.masonsoft.imsdk.MSIMConstants;
+import com.masonsoft.imsdk.MSIMUserInfo;
 import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 import com.masonsoft.imsdk.uikit.MSIMUikitLog;
+import com.masonsoft.imsdk.uikit.MSIMUserInfoLoader;
 import com.masonsoft.imsdk.uikit.R;
 import com.masonsoft.imsdk.uikit.app.chat.SingleChatActivity;
 import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitUnionTypeImplChatRoomMemberBinding;
@@ -26,10 +28,45 @@ import io.github.idonans.uniontype.UnionTypeViewHolder;
 public class IMChatRoomMemberViewHolder extends UnionTypeViewHolder {
 
     private final ImsdkUikitUnionTypeImplChatRoomMemberBinding mBinding;
+    private MSIMUserInfoLoader mMemberUserInfoLoader;
 
     public IMChatRoomMemberViewHolder(@NonNull Host host) {
         super(host, R.layout.imsdk_uikit_union_type_impl_chat_room_member);
         mBinding = ImsdkUikitUnionTypeImplChatRoomMemberBinding.bind(itemView);
+
+        this.init();
+    }
+
+    private void init() {
+        mMemberUserInfoLoader = new MSIMUserInfoLoader() {
+            @Override
+            protected void onUserInfoLoad(@NonNull MSIMUserInfo userInfo) {
+                super.onUserInfoLoad(userInfo);
+
+                IMChatRoomMemberViewHolder.this.onMemberUserInfoLoadInternal(userInfo);
+            }
+        };
+    }
+
+    private void onMemberUserInfoLoadInternal(@NonNull MSIMUserInfo userInfo) {
+        final DataObject itemObject = getItemObject(DataObject.class);
+        if (itemObject == null) {
+            return;
+        }
+        final MSIMChatRoomMember member = itemObject.getObject(MSIMChatRoomMember.class);
+        if (member == null) {
+            return;
+        }
+        if (member.getUserId() != userInfo.getUserId()) {
+            return;
+        }
+
+        this.onMemberUserInfoLoad(userInfo);
+    }
+
+    private void onMemberUserInfoLoad(@NonNull MSIMUserInfo userInfo) {
+        mBinding.avatar.setUserInfo(userInfo);
+        mBinding.username.setUserInfo(userInfo);
     }
 
     @Override
@@ -39,8 +76,7 @@ public class IMChatRoomMemberViewHolder extends UnionTypeViewHolder {
         final MSIMChatRoomMember member = itemObject.getObject(MSIMChatRoomMember.class);
 
         final long userId = member.getUserId();
-        mBinding.avatar.setUserInfo(userId, null);
-        mBinding.username.setUserInfo(userId, null);
+        mMemberUserInfoLoader.setUserInfo(MSIMUserInfo.mock(userId), false);
 
         ViewUtil.onClick(itemView, v -> {
             final Activity innerActivity = host.getActivity();

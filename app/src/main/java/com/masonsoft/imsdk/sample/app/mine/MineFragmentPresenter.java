@@ -46,14 +46,17 @@ public class MineFragmentPresenter extends DynamicPresenter<MineFragment.ViewImp
             @Override
             protected void onSessionUserIdChanged(long sessionUserId) {
                 if (mSessionUserInfoLoader != null) {
-                    mSessionUserInfoLoader.setUserInfo(MSIMUserInfo.mock(sessionUserId));
+                    mSessionUserInfoLoader.setUserInfo(MSIMUserInfo.mock(sessionUserId), false);
                 }
             }
         };
     }
 
     void start() {
-        mSessionUserInfoLoader.setUserInfo(MSIMUserInfo.mock(mMSIMSessionUserIdChangedHelper.getSessionUserId()));
+        mSessionUserInfoLoader.setUserInfo(
+                MSIMUserInfo.mock(mMSIMSessionUserIdChangedHelper.getSessionUserId()),
+                false
+        );
     }
 
     private void showSessionUserInfo(@NonNull MSIMUserInfo userInfo) {

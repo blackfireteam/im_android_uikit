@@ -74,11 +74,13 @@ public class IMConversationViewHolder extends UnionTypeViewHolder {
         final long targetUserId = conversation.getTargetUserId();
         {
             MSIMUserInfo targetUserInfo = conversation.getTargetUserInfo();
+            boolean forceReplace = true;
             if (targetUserInfo == null) {
                 targetUserInfo = MSIMUserInfo.mock(targetUserId);
+                forceReplace = false;
             }
             Preconditions.checkNotNull(targetUserId);
-            mTargetUserInfoLoader.setUserInfo(targetUserInfo);
+            mTargetUserInfoLoader.setUserInfo(targetUserInfo, forceReplace);
         }
 
         mBinding.avatar.setBorderColor(false);

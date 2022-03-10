@@ -179,12 +179,14 @@ public abstract class IMBaseMessageViewHolder extends UnionTypeViewHolder {
 
         {
             final long fromUserId = baseMessage.getFromUserId();
+            boolean forceReplace = true;
             MSIMUserInfo fromUserInfo = baseMessage.getFromUserInfo();
             if (fromUserInfo == null) {
                 fromUserInfo = MSIMUserInfo.mock(fromUserId);
+                forceReplace = false;
             }
             Preconditions.checkNotNull(fromUserInfo);
-            mFromUserInfoLoader.setUserInfo(fromUserInfo);
+            mFromUserInfoLoader.setUserInfo(fromUserInfo, forceReplace);
         }
 
         if (mMessageTime != null) {

@@ -15,9 +15,11 @@ import androidx.annotation.Nullable;
 
 import com.google.common.base.Verify;
 import com.masonsoft.imsdk.MSIMManager;
+import com.masonsoft.imsdk.MSIMUserInfo;
 import com.masonsoft.imsdk.uikit.MSIMRtcMessageManager;
 import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 import com.masonsoft.imsdk.uikit.MSIMUikitLog;
+import com.masonsoft.imsdk.uikit.MSIMUserInfoLoader;
 import com.masonsoft.imsdk.uikit.R;
 import com.masonsoft.imsdk.uikit.app.SystemInsetsFragment;
 import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitSingleRtcChatFragmentBinding;
@@ -28,6 +30,7 @@ import io.agora.rtc.RtcEngine;
 import io.agora.rtc.video.VideoCanvas;
 import io.github.idonans.core.thread.Threads;
 import io.github.idonans.core.util.IOUtil;
+import io.github.idonans.core.util.Preconditions;
 import io.github.idonans.lang.util.ViewUtil;
 
 /**
@@ -64,6 +67,8 @@ public class SingleRtcChatFragment extends SystemInsetsFragment {
     @Nullable
     private MSIMRtcMessageManager.RtcEngineWrapper mRtcEngineWrapper;
 
+    private MSIMUserInfoLoader mTargetUserInfoLoader;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,6 +89,21 @@ public class SingleRtcChatFragment extends SystemInsetsFragment {
                 }
             }
         }
+
+        mTargetUserInfoLoader = new MSIMUserInfoLoader() {
+            @Override
+            protected void onUserInfoLoad(@NonNull MSIMUserInfo userInfo) {
+                super.onUserInfoLoad(userInfo);
+
+                if (mBinding != null) {
+                    mBinding.userAvatarAudio.setUserInfo(userInfo);
+                    mBinding.usernameAudio.setUserInfo(userInfo);
+                    mBinding.userAvatarVideo.setUserInfo(userInfo);
+                    mBinding.usernameVideo.setUserInfo(userInfo);
+                }
+            }
+        };
+        mTargetUserInfoLoader.setUserInfo(MSIMUserInfo.mock(mTargetUserId), false);
 
         mRtcEngineWrapper = MSIMRtcMessageManager.getInstance().getRtcEngineWrapper(
                 mTargetUserId,
@@ -114,10 +134,14 @@ public class SingleRtcChatFragment extends SystemInsetsFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         mBinding = ImsdkUikitSingleRtcChatFragmentBinding.inflate(inflater, container, false);
-        mBinding.userAvatarAudio.setUserInfo(mTargetUserId, null);
-        mBinding.usernameAudio.setUserInfo(mTargetUserId, null);
-        mBinding.userAvatarVideo.setUserInfo(mTargetUserId, null);
-        mBinding.usernameVideo.setUserInfo(mTargetUserId, null);
+
+        Preconditions.checkNotNull(mTargetUserInfoLoader);
+        final MSIMUserInfo targetUserInfo = mTargetUserInfoLoader.getUserInfo();
+        Preconditions.checkNotNull(targetUserInfo);
+        mBinding.userAvatarAudio.setUserInfo(targetUserInfo);
+        mBinding.usernameAudio.setUserInfo(targetUserInfo);
+        mBinding.userAvatarVideo.setUserInfo(targetUserInfo);
+        mBinding.usernameVideo.setUserInfo(targetUserInfo);
 
         ViewUtil.onClick(mBinding.actionMutemic, v -> setMuteAudio(!mMuteAudio));
         ViewUtil.onClick(mBinding.actionSpeaker, v -> setSpeaker(!mSpeaker));
@@ -602,6 +626,8 @@ public class SingleRtcChatFragment extends SystemInsetsFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        IOUtil.closeQuietly(mTargetUserInfoLoader);
+        mTargetUserInfoLoader = null;
 
         if (mRtcEngineWrapper != null) {
             mRtcEngineWrapper.stopVibrator();
