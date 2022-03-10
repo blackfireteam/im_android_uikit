@@ -3,6 +3,7 @@ package com.masonsoft.imsdk.uikit.uniontype.viewholder;
 import androidx.annotation.NonNull;
 
 import com.masonsoft.imsdk.MSIMBaseMessage;
+import com.masonsoft.imsdk.MSIMConversation;
 import com.masonsoft.imsdk.MSIMUserInfo;
 import com.masonsoft.imsdk.uikit.R;
 import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitUnionTypeImplImBaseMessageRevokeSendBinding;
@@ -28,6 +29,11 @@ public class IMBaseMessageRevokeSendViewHolder extends IMBaseMessageViewHolder {
         Preconditions.checkNotNull(itemObject);
         final MSIMBaseMessage baseMessage = itemObject.getObject(MSIMBaseMessage.class);
         Preconditions.checkNotNull(baseMessage);
+    }
+
+    @Override
+    protected void onConversationLoad(@NonNull MSIMConversation conversation) {
+        // ignore
     }
 
     @Override

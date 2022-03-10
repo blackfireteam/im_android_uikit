@@ -9,6 +9,7 @@ import com.facebook.imagepipeline.common.ResizeOptions;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.masonsoft.imsdk.MSIMBaseMessage;
+import com.masonsoft.imsdk.MSIMConversation;
 import com.masonsoft.imsdk.MSIMImageElement;
 import com.masonsoft.imsdk.MSIMUserInfo;
 import com.masonsoft.imsdk.uikit.R;
@@ -66,7 +67,13 @@ public class IMBaseMessagePreviewImageViewHolder extends IMBaseMessageViewHolder
     }
 
     @Override
+    protected void onConversationLoad(@NonNull MSIMConversation conversation) {
+        // ignore
+    }
+
+    @Override
     protected void onFromUserInfoLoad(@NonNull MSIMUserInfo userInfo) {
+        // ignore
     }
 
     public void setImageUrl(@Nullable String thumb, @Nullable String... firstAvailable) {

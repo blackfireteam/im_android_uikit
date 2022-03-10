@@ -5,6 +5,7 @@ import android.app.Activity;
 import androidx.annotation.NonNull;
 
 import com.masonsoft.imsdk.MSIMBaseMessage;
+import com.masonsoft.imsdk.MSIMConversation;
 import com.masonsoft.imsdk.MSIMUserInfo;
 import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 import com.masonsoft.imsdk.uikit.MSIMUikitLog;
@@ -46,6 +47,11 @@ public class IMBaseMessageTextReceivedViewHolder extends IMBaseMessageTextViewHo
             // TODO FIXME open profile ?
             MSIMUikitLog.w("require open profile");
         });
+    }
+
+    @Override
+    protected void onConversationLoad(@NonNull MSIMConversation conversation) {
+        // ignore
     }
 
     @Override

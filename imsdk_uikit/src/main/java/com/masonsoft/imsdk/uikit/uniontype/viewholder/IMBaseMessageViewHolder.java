@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
 
+import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,6 +23,7 @@ import com.masonsoft.imsdk.MSIMBaseMessage;
 import com.masonsoft.imsdk.MSIMChatRoomInfo;
 import com.masonsoft.imsdk.MSIMChatRoomMessage;
 import com.masonsoft.imsdk.MSIMConstants;
+import com.masonsoft.imsdk.MSIMConversation;
 import com.masonsoft.imsdk.MSIMLocationElement;
 import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.MSIMMessage;
@@ -29,6 +31,7 @@ import com.masonsoft.imsdk.MSIMUserInfo;
 import com.masonsoft.imsdk.common.TopActivity;
 import com.masonsoft.imsdk.core.I18nResources;
 import com.masonsoft.imsdk.uikit.GlobalChatRoomManager;
+import com.masonsoft.imsdk.uikit.MSIMConversationLoader;
 import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.uikit.MSIMUserInfoLoader;
@@ -125,6 +128,7 @@ public abstract class IMBaseMessageViewHolder extends UnionTypeViewHolder {
     @Nullable
     private TextView mMessageTime;
     private MSIMUserInfoLoader mFromUserInfoLoader;
+    private MSIMConversationLoader mConversationLoader;
 
     public IMBaseMessageViewHolder(@NonNull Host host, int layout) {
         super(host, layout);
@@ -146,6 +150,14 @@ public abstract class IMBaseMessageViewHolder extends UnionTypeViewHolder {
                 super.onUserInfoLoad(userInfo);
 
                 IMBaseMessageViewHolder.this.onFromUserInfoLoadInternal(userInfo);
+            }
+        };
+        mConversationLoader = new MSIMConversationLoader() {
+            @Override
+            protected void onConversationLoad(@NonNull MSIMConversation conversation) {
+                super.onConversationLoad(conversation);
+
+                IMBaseMessageViewHolder.this.onConversationLoadInternal(conversation);
             }
         };
     }
@@ -170,6 +182,47 @@ public abstract class IMBaseMessageViewHolder extends UnionTypeViewHolder {
 
     protected abstract void onFromUserInfoLoad(@NonNull MSIMUserInfo userInfo);
 
+    @Nullable
+    protected MSIMUserInfo getFromUserInfoUnsafe() {
+        return mFromUserInfoLoader.getUserInfo();
+    }
+
+    private void onConversationLoadInternal(@NonNull MSIMConversation conversation) {
+        final DataObject dataObject = getItemObject(DataObject.class);
+        if (dataObject == null) {
+            return;
+        }
+        final MSIMBaseMessage baseMessage = dataObject.getObject(MSIMBaseMessage.class);
+        if (baseMessage == null) {
+            return;
+        }
+
+        if (!(baseMessage instanceof MSIMMessage)) {
+            return;
+        }
+
+        final MSIMMessage message = (MSIMMessage) baseMessage;
+        final long sessionUserId = message.getSessionUserId();
+        final int conversationType = message.getConversationType();
+        final long targetUserId = message.getTargetUserId();
+
+        if (sessionUserId != conversation.getSessionUserId()
+                || conversationType != conversation.getConversationType()
+                || targetUserId != conversation.getTargetUserId()) {
+            return;
+        }
+
+        this.onConversationLoad(conversation);
+    }
+
+    protected abstract void onConversationLoad(@NonNull MSIMConversation conversation);
+
+    @Nullable
+    protected MSIMConversation getConversationUnsafe() {
+        return mConversationLoader.getConversation();
+    }
+
+    @CallSuper
     @Override
     public void onBindUpdate() {
         final DataObject dataObject = getItemObject(DataObject.class);
@@ -195,6 +248,29 @@ public abstract class IMBaseMessageViewHolder extends UnionTypeViewHolder {
 
         if (mSnapchatContainer != null) {
             mSnapchatContainer.setSnapchat(baseMessage.isSnapchat());
+        }
+
+        if (baseMessage instanceof MSIMMessage) {
+            final MSIMMessage message = (MSIMMessage) baseMessage;
+            final long sessionUserId = message.getSessionUserId();
+            final int conversationType = message.getConversationType();
+            final long targetUserId = message.getTargetUserId();
+            boolean forceReplace = true;
+            MSIMConversation conversation = MSIMManager.getInstance().getConversationManager().getConversationByTargetUserId(
+                    sessionUserId,
+                    conversationType,
+                    targetUserId
+            );
+            if (conversation == null) {
+                conversation = MSIMConversation.mock(
+                        sessionUserId,
+                        conversationType,
+                        targetUserId
+                );
+                forceReplace = false;
+            }
+            Preconditions.checkNotNull(conversation);
+            mConversationLoader.setConversation(conversation, forceReplace);
         }
     }
 

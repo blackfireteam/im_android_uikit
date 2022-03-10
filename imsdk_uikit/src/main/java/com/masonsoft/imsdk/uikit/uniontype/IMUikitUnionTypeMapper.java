@@ -21,8 +21,6 @@ import com.masonsoft.imsdk.uikit.uniontype.viewholder.IMBaseMessageVoiceReceived
 import com.masonsoft.imsdk.uikit.uniontype.viewholder.IMBaseMessageVoiceSendViewHolder;
 import com.masonsoft.imsdk.uikit.uniontype.viewholder.IMChatRoomMemberViewHolder;
 import com.masonsoft.imsdk.uikit.uniontype.viewholder.IMConversationViewHolder;
-import com.masonsoft.imsdk.uikit.uniontype.viewholder.IMMessageFirstCustomBaseMessageReceivedViewHolder;
-import com.masonsoft.imsdk.uikit.uniontype.viewholder.IMMessageFirstCustomBaseMessageSendViewHolder;
 import com.masonsoft.imsdk.uikit.uniontype.viewholder.LocationPickerSimpleLocationItemViewHolder;
 import com.masonsoft.imsdk.uikit.uniontype.viewholder.MediaPickerBucketViewHolder;
 import com.masonsoft.imsdk.uikit.uniontype.viewholder.MediaPickerGridViewHolder;
@@ -57,10 +55,6 @@ public class IMUikitUnionTypeMapper extends UnionTypeLoadingStatus {
     public static final int UNION_TYPE_IMPL_IM_MESSAGE_RTC_SEND = sNextUnionType++; // 聊天消息-发送的 rtc 信息
     public static final int UNION_TYPE_IMPL_IM_MESSAGE_PREVIEW_IMAGE = sNextUnionType++; // 聊天消息-横向全屏预览-图片
     public static final int UNION_TYPE_IMPL_IM_MESSAGE_PREVIEW_VIDEO = sNextUnionType++; // 聊天消息-横向全屏预览-视频
-    @Deprecated
-    public static final int UNION_TYPE_IMPL_IM_MESSAGE_FIRST_CUSTOM_MESSAGE_RECEIVED = sNextUnionType++; // 聊天消息-接收的自定义消息
-    @Deprecated
-    public static final int UNION_TYPE_IMPL_IM_MESSAGE_FIRST_CUSTOM_MESSAGE_SEND = sNextUnionType++; // 聊天消息-发送的自定义消息
     public static final int UNION_TYPE_IMPL_IM_MESSAGE_TIP_TEXT = sNextUnionType++; // 聊天消息中的提示性文字
     public static final int UNION_TYPE_IMPL_CHAT_ROOM_MEMBER = sNextUnionType++; // 聊天室在线用户
     public static final int UNION_TYPE_IMPL_LOCATION_PICKER_SIMPLE_LOCATION_ITEM = sNextUnionType++; // 地址选择器视图中的一个 item, LocationInfo 类型
@@ -89,8 +83,6 @@ public class IMUikitUnionTypeMapper extends UnionTypeLoadingStatus {
         put(UNION_TYPE_IMPL_IM_MESSAGE_RTC_SEND, IMBaseMessageRtcSendViewHolder::new);
         put(UNION_TYPE_IMPL_IM_MESSAGE_PREVIEW_IMAGE, IMBaseMessagePreviewImageViewHolder::new);
         put(UNION_TYPE_IMPL_IM_MESSAGE_PREVIEW_VIDEO, IMBaseMessagePreviewVideoViewHolder::new);
-        put(UNION_TYPE_IMPL_IM_MESSAGE_FIRST_CUSTOM_MESSAGE_RECEIVED, IMMessageFirstCustomBaseMessageReceivedViewHolder::new);
-        put(UNION_TYPE_IMPL_IM_MESSAGE_FIRST_CUSTOM_MESSAGE_SEND, IMMessageFirstCustomBaseMessageSendViewHolder::new);
         put(UNION_TYPE_IMPL_IM_MESSAGE_TIP_TEXT, IMBaseMessageTipTextViewHolder::new);
         put(UNION_TYPE_IMPL_CHAT_ROOM_MEMBER, IMChatRoomMemberViewHolder::new);
         put(UNION_TYPE_IMPL_LOCATION_PICKER_SIMPLE_LOCATION_ITEM, LocationPickerSimpleLocationItemViewHolder::new);

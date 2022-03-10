@@ -35,19 +35,11 @@ public class IMBaseMessageDefaultSendViewHolder extends IMBaseMessageDefaultView
         final MSIMBaseMessage baseMessage = itemObject.getObject(MSIMBaseMessage.class);
         Preconditions.checkNotNull(baseMessage);
 
-        final MSIMConversation conversation;
-        final Object extObject1 = itemObject.getExtObjectObject1(null);
-        if (extObject1 instanceof MSIMConversation) {
-            conversation = (MSIMConversation) extObject1;
-        } else {
-            conversation = null;
-        }
-
         mBinding.sendStatusView.setBaseMessage(baseMessage);
 
         mBinding.avatar.setShowBorder(false);
 
-        mBinding.readStatusView.setMessageAndConversation(baseMessage, conversation);
+        mBinding.readStatusView.setMessageAndConversation(baseMessage, getConversationUnsafe());
 
         ViewUtil.onClick(mBinding.avatar, v -> {
             Activity innerActivity = host.getActivity();
@@ -59,6 +51,16 @@ public class IMBaseMessageDefaultSendViewHolder extends IMBaseMessageDefaultView
             // TODO FIXME open profile ?
             MSIMUikitLog.w("require open profile");
         });
+    }
+
+    @Override
+    protected void onConversationLoad(@NonNull MSIMConversation conversation) {
+        final DataObject itemObject = getItemObject(DataObject.class);
+        Preconditions.checkNotNull(itemObject);
+        final MSIMBaseMessage baseMessage = itemObject.getObject(MSIMBaseMessage.class);
+        Preconditions.checkNotNull(baseMessage);
+
+        mBinding.readStatusView.setMessageAndConversation(baseMessage, conversation);
     }
 
     @Override
