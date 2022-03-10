@@ -43,11 +43,21 @@ public abstract class MSIMUserInfoLoader extends DataLoaderImpl<MSIMUserInfo> im
         return mUserInfo;
     }
 
-    public void setUserInfo(@NonNull MSIMUserInfo userInfo) {
-        setUserInfoInternal(userInfo);
+    public void setUserInfo(@NonNull MSIMUserInfo userInfo, boolean forceReplace) {
+        setUserInfoInternal(userInfo, forceReplace);
     }
 
-    private void setUserInfoInternal(@NonNull MSIMUserInfo userInfo) {
+    private void setUserInfoInternal(@NonNull MSIMUserInfo userInfo, boolean forceReplace) {
+        final MSIMUserInfo currentUserInfo = mUserInfo;
+        if (!forceReplace) {
+            if (currentUserInfo != null) {
+                if (currentUserInfo.getUserId() == userInfo.getUserId()) {
+                    // 继续使用当前缓存的 UserInfo
+                    userInfo = currentUserInfo;
+                }
+            }
+        }
+
         mUserInfo = userInfo;
         onUserInfoLoad(userInfo);
 

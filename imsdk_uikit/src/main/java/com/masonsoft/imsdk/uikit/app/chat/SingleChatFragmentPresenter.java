@@ -107,7 +107,7 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
     }
 
     void start() {
-        mTargetUserInfoLoader.setUserInfo(MSIMUserInfo.mock(mTargetUserId));
+        mTargetUserInfoLoader.setUserInfo(MSIMUserInfo.mock(mTargetUserId), false);
     }
 
     private void showTargetUserInfo(@NonNull MSIMUserInfo userInfo) {
