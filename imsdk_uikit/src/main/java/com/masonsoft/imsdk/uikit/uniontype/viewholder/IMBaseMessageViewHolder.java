@@ -37,6 +37,7 @@ import com.masonsoft.imsdk.uikit.common.impopup.IMBaseMessageMenuDialog;
 import com.masonsoft.imsdk.uikit.common.impreview.IMBaseMessageImageOrVideoPreviewDialog;
 import com.masonsoft.imsdk.uikit.common.locationpicker.LocationInfo;
 import com.masonsoft.imsdk.uikit.common.locationpreview.LocationPreviewDialog;
+import com.masonsoft.imsdk.uikit.entity.CustomMessagePayload;
 import com.masonsoft.imsdk.uikit.uniontype.DataObject;
 import com.masonsoft.imsdk.uikit.uniontype.IMUikitUnionTypeMapper;
 import com.masonsoft.imsdk.uikit.util.ClipboardUtil;
@@ -355,9 +356,15 @@ public abstract class IMBaseMessageViewHolder extends UnionTypeViewHolder {
 
             // 自定义消息
             if (MSIMConstants.MessageType.isCustomMessage(messageType)) {
-                return received
-                        ? IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_FIRST_CUSTOM_MESSAGE_RECEIVED
-                        : IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_FIRST_CUSTOM_MESSAGE_SEND;
+                final CustomMessagePayload customMessagePayload = CustomMessagePayload.fromDataObjectWithCache(dataObject);
+                if (customMessagePayload != null) {
+                    if (customMessagePayload.isTypeAudio() || customMessagePayload.isTypeVideo()) {
+                        // 语音、视频电话相关
+                        return received
+                                ? IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_RTC_RECEIVED
+                                : IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_RTC_SEND;
+                    }
+                }
             }
 
             // fallback

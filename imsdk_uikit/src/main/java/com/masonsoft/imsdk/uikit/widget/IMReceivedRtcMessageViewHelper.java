@@ -66,7 +66,10 @@ public abstract class IMReceivedRtcMessageViewHelper extends IMReceivedCustomSig
                     return;
                 }
 
-                final CustomMessagePayload customMessagePayload = createCustomObject(message);
+                final CustomMessagePayload customMessagePayload = CustomMessagePayload.fromBaseMessage(message);
+                if (customMessagePayload == null) {
+                    return;
+                }
                 Threads.postUi(() -> {
                     if (notMatch(message)) {
                         return;

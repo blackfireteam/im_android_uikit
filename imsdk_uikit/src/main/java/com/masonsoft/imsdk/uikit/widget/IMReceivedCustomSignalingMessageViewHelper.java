@@ -47,12 +47,6 @@ public abstract class IMReceivedCustomSignalingMessageViewHelper {
         return mTargetUserId;
     }
 
-    @Nullable
-    protected CustomMessagePayload createCustomObject(@NonNull MSIMMessage message) {
-        final String body = message.getBody();
-        return new CustomMessagePayload(body);
-    }
-
     protected abstract void onReceivedCustomSignalingMessage(@NonNull MSIMMessage message, @Nullable CustomMessagePayload customMessagePayload);
 
     @SuppressWarnings("FieldCanBeLocal")
@@ -68,7 +62,11 @@ public abstract class IMReceivedCustomSignalingMessageViewHelper {
                 return;
             }
 
-            final CustomMessagePayload customMessagePayload = createCustomObject(message);
+            final CustomMessagePayload customMessagePayload = CustomMessagePayload.fromBaseMessage(message);
+            if (customMessagePayload == null) {
+                return;
+            }
+
             Threads.postUi(() -> {
                 if (notMatch(message)) {
                     return;
