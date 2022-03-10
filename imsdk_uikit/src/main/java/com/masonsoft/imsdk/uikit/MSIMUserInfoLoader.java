@@ -51,7 +51,7 @@ public abstract class MSIMUserInfoLoader extends DataLoaderImpl<MSIMUserInfo> im
         final MSIMUserInfo currentUserInfo = mUserInfo;
         if (!forceReplace) {
             if (currentUserInfo != null) {
-                if (currentUserInfo.getUserId() == userInfo.getUserId()) {
+                if (match(currentUserInfo, userInfo)) {
                     // 继续使用当前缓存的 UserInfo
                     userInfo = currentUserInfo;
                 }
@@ -70,13 +70,15 @@ public abstract class MSIMUserInfoLoader extends DataLoaderImpl<MSIMUserInfo> im
             return;
         }
 
-        final long userId = currentUserInfo.getUserId();
-        if (userId > 0 && userId == userInfo.getUserId()) {
-            if (currentUserInfo == mUserInfo) {
-                mUserInfo = userInfo;
-                onUserInfoLoad(userInfo);
-            }
+        if (match(currentUserInfo, userInfo)) {
+            mUserInfo = userInfo;
+            onUserInfoLoad(userInfo);
         }
+    }
+
+    private boolean match(@NonNull MSIMUserInfo obj1, @NonNull MSIMUserInfo obj2) {
+        final long userId = obj1.getUserId();
+        return userId > 0 && userId == obj2.getUserId();
     }
 
     protected void onUserInfoLoad(@NonNull MSIMUserInfo userInfo) {
