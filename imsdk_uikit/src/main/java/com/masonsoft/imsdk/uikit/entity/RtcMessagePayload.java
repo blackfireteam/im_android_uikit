@@ -8,6 +8,7 @@ import androidx.annotation.Nullable;
 import com.google.gson.JsonObject;
 import com.masonsoft.imsdk.lang.StateProp;
 import com.masonsoft.imsdk.uikit.MSIMUikitLog;
+import com.masonsoft.imsdk.uikit.uniontype.DataObject;
 import com.masonsoft.imsdk.util.Objects;
 
 public class RtcMessagePayload {
@@ -210,6 +211,36 @@ public class RtcMessagePayload {
             MSIMUikitLog.e(e);
         }
         return null;
+    }
+
+    private static final String RTC_MESSAGE_PAYLOAD_CACHE_KEY = "RtcMessagePayloadCacheKey_20220309_xx9o3rhm2lf";
+
+    @Nullable
+    public static RtcMessagePayload fromDataObjectWithCache(@Nullable DataObject dataObject) {
+        if (dataObject == null) {
+            return null;
+        }
+
+        RtcMessagePayload rtcMessagePayload = dataObject.getExtObject(RTC_MESSAGE_PAYLOAD_CACHE_KEY, null);
+        if (rtcMessagePayload != null) {
+            return rtcMessagePayload;
+        }
+
+        final CustomMessagePayload customMessagePayload = CustomMessagePayload.fromDataObjectWithCache(dataObject);
+        if (customMessagePayload == null) {
+            return null;
+        }
+
+        if (!customMessagePayload.hasType()
+                || !customMessagePayload.hasOriginJson()) {
+            return null;
+        }
+
+        rtcMessagePayload = RtcMessagePayload.fromJsonObject(customMessagePayload.requireOriginJson());
+        if (rtcMessagePayload != null) {
+            dataObject.putExtObject(RTC_MESSAGE_PAYLOAD_CACHE_KEY, rtcMessagePayload);
+        }
+        return rtcMessagePayload;
     }
 
 }

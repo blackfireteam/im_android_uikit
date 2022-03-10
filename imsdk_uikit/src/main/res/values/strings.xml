@@ -97,4 +97,13 @@
     <string name="imsdk_uikit_text_cancel">取消</string>
     <string name="imsdk_uikit_text_send">发送</string>
     <string name="imsdk_uikit_text_location_info">位置信息</string>
+    <string name="imsdk_uikit_rtc_message_info_cancel_received">对方已取消</string>
+    <string name="imsdk_uikit_rtc_message_info_cancel_send">已取消</string>
+    <string name="imsdk_uikit_rtc_message_info_reject_received">已拒绝</string>
+    <string name="imsdk_uikit_rtc_message_info_reject_send">对方已拒绝</string>
+    <string name="imsdk_uikit_rtc_message_info_timeout_received">无应答</string>
+    <string name="imsdk_uikit_rtc_message_info_timeout_send">对方无应答</string>
+    <string name="imsdk_uikit_rtc_message_info_linebusy_received">忙线未接听</string>
+    <string name="imsdk_uikit_rtc_message_info_linebusy_send">对方忙线未接听</string>
+    <string name="imsdk_uikit_rtc_message_info_duration_format">通话时长：%1$s</string>
 </resources>

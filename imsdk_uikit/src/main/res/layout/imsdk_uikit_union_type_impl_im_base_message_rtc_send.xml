@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/message_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:includeFontPadding="false"
+        android:maxLines="1"
+        android:padding="10dp"
+        android:singleLine="true"
+        android:textColor="#999999"
+        android:textSize="12sp"
+        tools:text="17:30" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="23dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginBottom="10dp"
+        android:orientation="vertical">
+
+        <com.google.android.flexbox.FlexboxLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:alignItems="flex_start"
+            app:flexDirection="row_reverse">
+
+            <com.masonsoft.imsdk.uikit.widget.MSIMUserInfoAvatar
+                android:id="@+id/avatar"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="15dp"
+                app:layout_flexGrow="0"
+                app:layout_flexShrink="0" />
+
+            <com.masonsoft.imsdk.uikit.widget.SnapchatContainer
+                android:id="@+id/snapchat_container"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="0dp"
+                app:layout_flexGrow="0"
+                app:layout_flexShrink="1">
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/rtc_click_container"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/imsdk_uikit_chat_bubble_send"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingHorizontal="9dp">
+
+                    <TextView
+                        android:id="@+id/message_text"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center_vertical"
+                        android:includeFontPadding="false"
+                        android:lineSpacingMultiplier="1.2"
+                        android:minHeight="40dp"
+                        android:paddingHorizontal="3dp"
+                        android:paddingVertical="10dp"
+                        android:textColor="@android:color/white"
+                        android:textSize="15sp"
+                        tools:text="已取消" />
+
+                    <View
+                        android:id="@+id/message_rtc_type_audio"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_marginHorizontal="3dp"
+                        android:background="@drawable/imsdk_uikit_ic_rtc_type_audio_send" />
+
+                    <View
+                        android:id="@+id/message_rtc_type_video"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_marginHorizontal="3dp"
+                        android:background="@drawable/imsdk_uikit_ic_rtc_type_video_send" />
+                </androidx.appcompat.widget.LinearLayoutCompat>
+            </com.masonsoft.imsdk.uikit.widget.SnapchatContainer>
+
+            <com.masonsoft.imsdk.uikit.widget.MSIMBaseMessageSendStatusView
+                android:id="@+id/send_status_view"
+                android:layout_width="42dp"
+                android:layout_height="22dp"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                app:layout_alignSelf="center"
+                app:layout_flexGrow="0"
+                app:layout_flexShrink="0"
+                tools:ignore="TouchTargetSizeCheck" />
+        </com.google.android.flexbox.FlexboxLayout>
+
+        <com.masonsoft.imsdk.uikit.widget.MSIMBaseMessageReadStatusView
+            android:id="@+id/read_status_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:layout_marginTop="5dp"
+            android:layout_marginEnd="65dp" />
+    </LinearLayout>
+</LinearLayout>
