@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.masonsoft.imsdk.MSIMBaseMessage;
+import com.masonsoft.imsdk.MSIMConversation;
 import com.masonsoft.imsdk.MSIMUserInfo;
 import com.masonsoft.imsdk.uikit.R;
 import com.masonsoft.imsdk.uikit.common.microlifecycle.MicroLifecycleComponentManager;
@@ -59,7 +60,13 @@ public class IMBaseMessagePreviewVideoViewHolder extends IMBaseMessageViewHolder
     }
 
     @Override
+    protected void onConversationLoad(@NonNull MSIMConversation conversation) {
+        // ignore
+    }
+
+    @Override
     protected void onFromUserInfoLoad(@NonNull MSIMUserInfo userInfo) {
+        // ignore
     }
 
     private void createLocalMicroLifecycle() {

@@ -5,9 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.UiThread;
 
 import com.masonsoft.imsdk.MSIMConstants;
-import com.masonsoft.imsdk.MSIMConversationListener;
-import com.masonsoft.imsdk.MSIMConversationListenerProxy;
-import com.masonsoft.imsdk.MSIMConversationPageContext;
+import com.masonsoft.imsdk.MSIMConversation;
 import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.MSIMMessage;
 import com.masonsoft.imsdk.MSIMMessageFactory;
@@ -55,7 +53,6 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
     private long mConsumedTypedLastMessageSeq;
 
     private final MSIMMessagePageContext mMessagePageContext = new MSIMMessagePageContext();
-    private final MSIMConversationListener mConversationListener;
     private final MSIMMessageListener mMessageListener;
 
     private final DisposableHolder mDefaultRequestHolder = new DisposableHolder();
@@ -84,22 +81,14 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
                 showTargetUserInfo(userInfo);
             }
         };
+        mConversationLoader = new MSIMConversationLoader() {
+            @Override
+            protected void onConversationLoad(@NonNull MSIMConversation conversation) {
+                super.onConversationLoad(conversation);
 
-        mConversationListener = new MSIMConversationListenerProxy(conversation -> {
-            final long sessionUserId = conversation.getSessionUserId();
-            final int conversationType = conversation.getConversationType();
-            final long targetUserId = conversation.getTargetUserId();
-            if (mSessionUserId == sessionUserId
-                    && mConversationType == conversationType
-                    && mTargetUserId == targetUserId) {
                 reloadOrRequestMoreMessage();
-
             }
-        }, true);
-        MSIMManager.getInstance().getConversationManager().addConversationListener(
-                MSIMConversationPageContext.GLOBAL,
-                mConversationListener
-        );
+        };
 
         mBatchQueueUpdateOrRemoveMessage.setConsumer(this::updateOrRemoveMessage);
         mMessageListener = new MSIMMessageListenerProxy(this::updateOrRemoveMessage);
@@ -108,6 +97,7 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
 
     void start() {
         mTargetUserInfoLoader.setUserInfo(MSIMUserInfo.mock(mTargetUserId), false);
+        mConversationLoader.setConversation(MSIMConversation.mock(mSessionUserId, mConversationType, mTargetUserId), false);
     }
 
     private void showTargetUserInfo(@NonNull MSIMUserInfo userInfo) {

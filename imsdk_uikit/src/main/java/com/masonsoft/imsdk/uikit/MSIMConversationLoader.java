@@ -27,7 +27,7 @@ public abstract class MSIMConversationLoader extends DataLoaderImpl<MSIMConversa
             protected void onConversationChanged(@NonNull MSIMConversation conversation) {
                 super.onConversationChanged(conversation);
 
-                MSIMConversationLoader.this.onConversationChangedInternal(conversation, false);
+                MSIMConversationLoader.this.onConversationChangedInternal(conversation);
             }
         };
     }
@@ -43,31 +43,59 @@ public abstract class MSIMConversationLoader extends DataLoaderImpl<MSIMConversa
         return mConversation;
     }
 
-    public void setConversation(@Nullable MSIMConversation conversation) {
-        setConversationInternal(conversation);
+    public void setConversation(@NonNull MSIMConversation conversation, boolean forceReplace) {
+        setConversationInternal(conversation, forceReplace);
     }
 
-    private void setConversationInternal(@Nullable MSIMConversation conversation) {
+    private void setConversationInternal(@NonNull MSIMConversation conversation, boolean forceReplace) {
+        final MSIMConversation currentConversation = mConversation;
+        if (!forceReplace) {
+            if (currentConversation != null) {
+                if (match(currentConversation, conversation)) {
+                    // 继续使用当前 conversation
+                    conversation = currentConversation;
+                }
+            }
+        }
+
         mConversation = conversation;
-        onConversationLoad(mConversation);
+        onConversationLoad(conversation);
 
         requestLoadData();
     }
 
-    private void onConversationChangedInternal(@Nullable MSIMConversation conversation, boolean acceptNull) {
-        if (!acceptNull && conversation == null) {
+    private void onConversationChangedInternal(@NonNull MSIMConversation conversation) {
+        final MSIMConversation currentConversation = mConversation;
+        if (currentConversation == null) {
             return;
         }
 
-        if (conversation != null && mConversation != null && !conversation.equals(mConversation)) {
-            return;
+        if (match(currentConversation, conversation)) {
+            mConversation = conversation;
+            onConversationLoad(conversation);
         }
-
-        mConversation = conversation;
-        onConversationLoad(mConversation);
     }
 
-    protected void onConversationLoad(@Nullable MSIMConversation conversation) {
+    private boolean match(@NonNull MSIMConversation obj1, @NonNull MSIMConversation obj2) {
+        final long sessionUserId = obj1.getSessionUserId();
+        final long conversationId = obj1.getConversationId();
+        final int conversationType = obj1.getConversationType();
+        final long targetUserId = obj1.getTargetUserId();
+
+        if (sessionUserId > 0) {
+            if (conversationId > 0) {
+                return conversationId == obj2.getConversationId();
+            }
+
+            return conversationType == obj2.getConversationType()
+                    && targetUserId > 0
+                    && targetUserId == obj2.getTargetUserId();
+        }
+
+        return false;
+    }
+
+    protected void onConversationLoad(@NonNull MSIMConversation conversation) {
         if (DEBUG) {
             MSIMUikitLog.v("%s onConversationLoad %s", Objects.defaultObjectTag(this), conversation);
         }
@@ -81,15 +109,36 @@ public abstract class MSIMConversationLoader extends DataLoaderImpl<MSIMConversa
             return null;
         }
 
-        return MSIMManager.getInstance().getConversationManager().getConversation(
-                conversation.getSessionUserId(),
-                conversation.getConversationId()
-        );
+        final long sessionUserId = conversation.getSessionUserId();
+        final long conversationId = conversation.getConversationId();
+        final int conversationType = conversation.getConversationType();
+        final long targetUserId = conversation.getTargetUserId();
+
+        if (sessionUserId > 0) {
+            if (conversationId > 0) {
+                return MSIMManager.getInstance().getConversationManager().getConversation(
+                        sessionUserId,
+                        conversationId
+                );
+            }
+
+            if (targetUserId > 0) {
+                return MSIMManager.getInstance().getConversationManager().getConversationByTargetUserId(
+                        sessionUserId,
+                        conversationType,
+                        targetUserId
+                );
+            }
+        }
+
+        return null;
     }
 
     @Override
     protected void onDataLoad(@Nullable MSIMConversation conversation) {
-        onConversationChangedInternal(conversation, true);
+        if (conversation != null) {
+            onConversationChangedInternal(conversation);
+        }
     }
 
 }
