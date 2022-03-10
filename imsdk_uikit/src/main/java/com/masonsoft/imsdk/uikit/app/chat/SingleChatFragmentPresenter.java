@@ -10,6 +10,7 @@ import com.masonsoft.imsdk.MSIMConversationListenerProxy;
 import com.masonsoft.imsdk.MSIMConversationPageContext;
 import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.MSIMMessage;
+import com.masonsoft.imsdk.MSIMMessageFactory;
 import com.masonsoft.imsdk.MSIMMessageListener;
 import com.masonsoft.imsdk.MSIMMessageListenerProxy;
 import com.masonsoft.imsdk.MSIMMessagePageContext;
@@ -424,10 +425,12 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
         if (received && duration <= TimeUnit.SECONDS.toMillis(5)) {
             // 最后一条消息是对方刚刚发送的
             mConsumedTypedLastMessageSeq = seq;
+            final String body = CustomIMMessageFactory.createCustomSignalingTyped();
+            final MSIMMessage message = MSIMMessageFactory.createCustomSignalingMessage(body);
             MSIMManager.getInstance().getMessageManager().sendCustomSignaling(
                     lastMessage.getSessionUserId(),
                     lastMessage.getFromUserId(),
-                    CustomIMMessageFactory.createCustomSignalingTyped()
+                    message
             );
         }
     }

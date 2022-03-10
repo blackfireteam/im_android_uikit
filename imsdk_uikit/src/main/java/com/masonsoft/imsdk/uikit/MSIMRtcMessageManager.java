@@ -429,7 +429,8 @@ public class MSIMRtcMessageManager {
                 final String body = CustomIMMessageFactory.createCustomRtcMessage(
                         rtcMessagePayload.copyWithEvent(RtcMessagePayload.Event.LINEBUSY)
                 );
-                MSIMManager.getInstance().getMessageManager().sendCustomSignaling(sessionUserId, targetUserId, body);
+                final MSIMMessage message = MSIMMessageFactory.createCustomSignalingMessage(body, true);
+                MSIMManager.getInstance().getMessageManager().sendCustomSignaling(sessionUserId, targetUserId, message);
                 return true;
             }
         }
@@ -468,7 +469,7 @@ public class MSIMRtcMessageManager {
                         );
                         MSIMManager.getInstance().getMessageManager().sendMessage(
                                 sessionUserId,
-                                MSIMMessageFactory.createCustomMessage(body, true, false),
+                                MSIMMessageFactory.createCustomMessage(body, true, false, true),
                                 targetUserId
                         );
                     } else if (disconnectedReason == RtcEngineWrapper.DISCONNECTED_REASON_TIMEOUT_TARGET) {
@@ -478,7 +479,7 @@ public class MSIMRtcMessageManager {
                         );
                         MSIMManager.getInstance().getMessageManager().sendMessage(
                                 sessionUserId,
-                                MSIMMessageFactory.createCustomMessage(body, true, false),
+                                MSIMMessageFactory.createCustomMessage(body, true, false, true),
                                 targetUserId
                         );
                     } else if (disconnectedReason == RtcEngineWrapper.DISCONNECTED_REASON_CANCEL_MYSELF) {
@@ -488,7 +489,7 @@ public class MSIMRtcMessageManager {
                         );
                         MSIMManager.getInstance().getMessageManager().sendMessage(
                                 sessionUserId,
-                                MSIMMessageFactory.createCustomMessage(body, true, false),
+                                MSIMMessageFactory.createCustomMessage(body, true, false, true),
                                 targetUserId
                         );
                     } else if (disconnectedReason == RtcEngineWrapper.DISCONNECTED_REASON_REJECT_TARGET) {
@@ -498,7 +499,7 @@ public class MSIMRtcMessageManager {
                         );
                         MSIMManager.getInstance().getMessageManager().sendMessage(
                                 sessionUserId,
-                                MSIMMessageFactory.createCustomMessage(body, true, false),
+                                MSIMMessageFactory.createCustomMessage(body, true, false, true),
                                 targetUserId
                         );
                     } else if (disconnectedReason == RtcEngineWrapper.DISCONNECTED_REASON_ERROR_TARGET
@@ -509,7 +510,7 @@ public class MSIMRtcMessageManager {
                         );
                         MSIMManager.getInstance().getMessageManager().sendMessage(
                                 sessionUserId,
-                                MSIMMessageFactory.createCustomMessage(body, true, false),
+                                MSIMMessageFactory.createCustomMessage(body, true, false, true),
                                 targetUserId
                         );
                     } else if (disconnectedReason == RtcEngineWrapper.DISCONNECTED_REASON_UNKNOWN_TARGET
@@ -520,7 +521,7 @@ public class MSIMRtcMessageManager {
                         );
                         MSIMManager.getInstance().getMessageManager().sendMessage(
                                 sessionUserId,
-                                MSIMMessageFactory.createCustomMessage(body, true, false),
+                                MSIMMessageFactory.createCustomMessage(body, true, false, true),
                                 targetUserId
                         );
                     } else if (disconnectedReason == RtcEngineWrapper.DISCONNECTED_REASON_HANGUP_TARGET
@@ -540,7 +541,7 @@ public class MSIMRtcMessageManager {
                         );
                         MSIMManager.getInstance().getMessageManager().sendMessage(
                                 sessionUserId,
-                                MSIMMessageFactory.createCustomMessage(body, true, false),
+                                MSIMMessageFactory.createCustomMessage(body, true, false, true),
                                 targetUserId
                         );
                     } else {
@@ -683,7 +684,8 @@ public class MSIMRtcMessageManager {
         final RtcEngineWrapper rtcEngineWrapper = getRtcEngineWrapper(targetUserId, rtcMessagePayload, false);
         if (rtcEngineWrapper != null) {
             final String body = CustomIMMessageFactory.createCustomRtcMessage(rtcMessagePayload);
-            MSIMManager.getInstance().getMessageManager().sendCustomSignaling(sessionUserId, targetUserId, body, callback);
+            MSIMMessage message = MSIMMessageFactory.createCustomSignalingMessage(body, true);
+            MSIMManager.getInstance().getMessageManager().sendCustomSignaling(sessionUserId, targetUserId, message, callback);
         } else {
             if (callback != null) {
                 callback.onCallback(GeneralResult.valueOf(GeneralResult.ERROR_CODE_UNKNOWN));
