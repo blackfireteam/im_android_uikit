@@ -382,14 +382,14 @@ public class SingleChatFragment extends CustomInputFragment {
             setAlwaysHideNoMoreData(true);
         }
 
-        void showTargetUserInfo(long userId, @Nullable MSIMUserInfo userInfo) {
-            MSIMUikitLog.v(Objects.defaultObjectTag(this) + " showTargetUserInfo %s %s", userId, userInfo);
+        void showTargetUserInfo(@NonNull MSIMUserInfo userInfo) {
+            MSIMUikitLog.v(Objects.defaultObjectTag(this) + " showTargetUserInfo %s", userInfo);
             if (mTopBarBinding == null) {
                 MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
                 return;
             }
 
-            mTopBarBinding.topBarTitle.setUserInfo(userId, userInfo);
+            mTopBarBinding.topBarTitle.setUserInfo(userInfo);
         }
 
         /**

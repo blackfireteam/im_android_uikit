@@ -18,7 +18,6 @@ public abstract class MSIMUserInfoLoader extends DataLoaderImpl<MSIMUserInfo> im
 
     private final MSIMUserInfoChangedHelper mHelper;
 
-    protected long mUserId;
     @Nullable
     protected MSIMUserInfo mUserInfo;
 
@@ -28,7 +27,7 @@ public abstract class MSIMUserInfoLoader extends DataLoaderImpl<MSIMUserInfo> im
             protected void onUserInfoChanged(@NonNull MSIMUserInfo userInfo) {
                 super.onUserInfoChanged(userInfo);
 
-                MSIMUserInfoLoader.this.onUserInfoChangedInternal(userInfo, false);
+                MSIMUserInfoLoader.this.onUserInfoChangedInternal(userInfo);
             }
         };
     }
@@ -39,81 +38,58 @@ public abstract class MSIMUserInfoLoader extends DataLoaderImpl<MSIMUserInfo> im
         IOUtil.closeQuietly(mHelper);
     }
 
-    public long getUserId() {
-        return mUserId;
-    }
-
     @Nullable
     public MSIMUserInfo getUserInfo() {
         return mUserInfo;
     }
 
-    public void setUserInfo(long userId, @Nullable MSIMUserInfo userInfo) {
-        setUserInfoInternal(userId, userInfo);
+    public void setUserInfo(@NonNull MSIMUserInfo userInfo) {
+        setUserInfoInternal(userInfo);
     }
 
-    public void setUserInfo(@Nullable MSIMUserInfo userInfo) {
-        long userId = 0;
-        if (userInfo != null) {
-            userId = userInfo.getUserId();
-        }
-        setUserInfoInternal(userId, userInfo);
-    }
-
-    private void setUserInfoInternal(long userId, @Nullable MSIMUserInfo userInfo) {
-        if (userId > 0) {
-            if (userInfo != null) {
-                if (userInfo.getUserId() != userId) {
-                    MSIMUikitLog.e("unexpected. user info is not equals user id %s => %s", userId, userInfo);
-                    return;
-                }
-            }
-        }
-
-        if (userInfo != null) {
-            mUserId = userInfo.getUserId();
-            mUserInfo = userInfo;
-        } else {
-            mUserId = userId;
-            if (mUserInfo != null) {
-                if (mUserInfo.getUserId() != mUserId) {
-                    mUserInfo = null;
-                }
-            }
-        }
-        onUserInfoLoad(mUserId, mUserInfo);
+    private void setUserInfoInternal(@NonNull MSIMUserInfo userInfo) {
+        mUserInfo = userInfo;
+        onUserInfoLoad(userInfo);
 
         requestLoadData();
     }
 
-    private void onUserInfoChangedInternal(@Nullable MSIMUserInfo userInfo, boolean acceptNull) {
-        if (!acceptNull && userInfo == null) {
+    private void onUserInfoChangedInternal(@NonNull MSIMUserInfo userInfo) {
+        final MSIMUserInfo currentUserInfo = mUserInfo;
+        if (currentUserInfo == null) {
             return;
         }
 
-        if (userInfo != null && userInfo.getUserId() != mUserId) {
-            return;
+        final long userId = currentUserInfo.getUserId();
+        if (userId > 0 && userId == userInfo.getUserId()) {
+            if (currentUserInfo == mUserInfo) {
+                mUserInfo = userInfo;
+                onUserInfoLoad(userInfo);
+            }
         }
-
-        mUserInfo = userInfo;
-        onUserInfoLoad(mUserId, mUserInfo);
     }
 
-    protected void onUserInfoLoad(long userId, @Nullable MSIMUserInfo userInfo) {
+    protected void onUserInfoLoad(@NonNull MSIMUserInfo userInfo) {
         if (DEBUG) {
-            MSIMUikitLog.v("%s onUserInfoLoad %s %s", Objects.defaultObjectTag(this), userId, userInfo);
+            MSIMUikitLog.v("%s onUserInfoLoad %s", Objects.defaultObjectTag(this), userInfo);
         }
     }
 
     @Nullable
     @Override
     protected MSIMUserInfo loadData() {
-        return MSIMManager.getInstance().getUserInfoManager().getUserInfo(mUserId);
+        final MSIMUserInfo currentUserInfo = mUserInfo;
+        if (currentUserInfo == null) {
+            return null;
+        }
+        return MSIMManager.getInstance().getUserInfoManager().getUserInfo(currentUserInfo.getUserId());
     }
 
     @Override
     protected void onDataLoad(@Nullable MSIMUserInfo userInfo) {
-        onUserInfoChangedInternal(userInfo, true);
+        if (userInfo != null) {
+            onUserInfoChangedInternal(userInfo);
+        }
     }
 
 }

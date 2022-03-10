@@ -66,7 +66,7 @@ public class IMBaseMessagePreviewImageViewHolder extends IMBaseMessageViewHolder
     }
 
     @Override
-    protected void onFromUserInfoLoad(long userId, @Nullable MSIMUserInfo userInfo) {
+    protected void onFromUserInfoLoad(@NonNull MSIMUserInfo userInfo) {
     }
 
     public void setImageUrl(@Nullable String thumb, @Nullable String... firstAvailable) {

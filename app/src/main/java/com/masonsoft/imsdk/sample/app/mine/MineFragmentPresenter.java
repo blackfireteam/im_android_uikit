@@ -2,7 +2,7 @@ package com.masonsoft.imsdk.sample.app.mine;
 
 import android.net.Uri;
 
-import androidx.annotation.Nullable;
+import androidx.annotation.NonNull;
 
 import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.MSIMUserInfo;
@@ -37,30 +37,29 @@ public class MineFragmentPresenter extends DynamicPresenter<MineFragment.ViewImp
 
         mSessionUserInfoLoader = new MSIMUserInfoLoader() {
             @Override
-            protected void onUserInfoLoad(long userId, @Nullable MSIMUserInfo userInfo) {
-                super.onUserInfoLoad(userId, userInfo);
-
-                showSessionUserInfo(userId, userInfo);
+            protected void onUserInfoLoad(@NonNull MSIMUserInfo userInfo) {
+                super.onUserInfoLoad(userInfo);
+                showSessionUserInfo(userInfo);
             }
         };
         mMSIMSessionUserIdChangedHelper = new MSIMSessionUserIdChangedHelper() {
             @Override
             protected void onSessionUserIdChanged(long sessionUserId) {
                 if (mSessionUserInfoLoader != null) {
-                    mSessionUserInfoLoader.setUserInfo(sessionUserId, null);
+                    mSessionUserInfoLoader.setUserInfo(MSIMUserInfo.mock(sessionUserId));
                 }
             }
         };
     }
 
     void start() {
-        mSessionUserInfoLoader.setUserInfo(mMSIMSessionUserIdChangedHelper.getSessionUserId(), null);
+        mSessionUserInfoLoader.setUserInfo(MSIMUserInfo.mock(mMSIMSessionUserIdChangedHelper.getSessionUserId()));
     }
 
-    private void showSessionUserInfo(long userId, @Nullable MSIMUserInfo userInfo) {
+    private void showSessionUserInfo(@NonNull MSIMUserInfo userInfo) {
         final MineFragment.ViewImpl view = getView();
         if (view != null) {
-            view.showSessionUserInfo(userId, userInfo);
+            view.showSessionUserInfo(userInfo);
         }
     }
 

@@ -142,15 +142,15 @@ public abstract class IMBaseMessageViewHolder extends UnionTypeViewHolder {
 
         mFromUserInfoLoader = new MSIMUserInfoLoader() {
             @Override
-            protected void onUserInfoLoad(long userId, @Nullable MSIMUserInfo userInfo) {
-                super.onUserInfoLoad(userId, userInfo);
+            protected void onUserInfoLoad(@NonNull MSIMUserInfo userInfo) {
+                super.onUserInfoLoad(userInfo);
 
-                IMBaseMessageViewHolder.this.onFromUserInfoLoadInternal(userId, userInfo);
+                IMBaseMessageViewHolder.this.onFromUserInfoLoadInternal(userInfo);
             }
         };
     }
 
-    private void onFromUserInfoLoadInternal(long userId, @Nullable MSIMUserInfo userInfo) {
+    private void onFromUserInfoLoadInternal(@NonNull MSIMUserInfo userInfo) {
         final DataObject dataObject = getItemObject(DataObject.class);
         if (dataObject == null) {
             return;
@@ -161,14 +161,14 @@ public abstract class IMBaseMessageViewHolder extends UnionTypeViewHolder {
         }
 
         final long fromUserId = baseMessage.getFromUserId();
-        if (fromUserId != userId) {
+        if (fromUserId != userInfo.getUserId()) {
             return;
         }
 
-        this.onFromUserInfoLoad(userId, userInfo);
+        this.onFromUserInfoLoad(userInfo);
     }
 
-    protected abstract void onFromUserInfoLoad(long userId, @Nullable MSIMUserInfo userInfo);
+    protected abstract void onFromUserInfoLoad(@NonNull MSIMUserInfo userInfo);
 
     @Override
     public void onBindUpdate() {
@@ -179,8 +179,12 @@ public abstract class IMBaseMessageViewHolder extends UnionTypeViewHolder {
 
         {
             final long fromUserId = baseMessage.getFromUserId();
-            final MSIMUserInfo fromUserInfo = baseMessage.getFromUserInfo();
-            mFromUserInfoLoader.setUserInfo(fromUserId, fromUserInfo);
+            MSIMUserInfo fromUserInfo = baseMessage.getFromUserInfo();
+            if (fromUserInfo == null) {
+                fromUserInfo = MSIMUserInfo.mock(fromUserId);
+            }
+            Preconditions.checkNotNull(fromUserInfo);
+            mFromUserInfoLoader.setUserInfo(fromUserInfo);
         }
 
         if (mMessageTime != null) {

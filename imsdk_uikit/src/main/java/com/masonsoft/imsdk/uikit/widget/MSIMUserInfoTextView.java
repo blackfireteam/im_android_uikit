@@ -3,6 +3,7 @@ package com.masonsoft.imsdk.uikit.widget;
 import android.content.Context;
 import android.util.AttributeSet;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatTextView;
 
@@ -29,7 +30,6 @@ public abstract class MSIMUserInfoTextView extends AppCompatTextView {
         initFromAttributes(context, attrs, defStyleAttr, defStyleRes);
     }
 
-    private long mUserId;
     @Nullable
     private MSIMUserInfo mUserInfo;
 
@@ -37,21 +37,16 @@ public abstract class MSIMUserInfoTextView extends AppCompatTextView {
         AppContext.setContextInEditMode(this);
     }
 
-    public long getUserId() {
-        return mUserId;
-    }
-
     @Nullable
     public MSIMUserInfo getUserInfo() {
         return mUserInfo;
     }
 
-    public void setUserInfo(long userId, @Nullable MSIMUserInfo userInfo) {
-        mUserId = userId;
+    public void setUserInfo(@NonNull MSIMUserInfo userInfo) {
         mUserInfo = userInfo;
-        this.onUserInfoUpdate(mUserId, mUserInfo);
+        this.onUserInfoUpdate(userInfo);
     }
 
-    protected abstract void onUserInfoUpdate(long userId, @Nullable MSIMUserInfo userInfo);
+    protected abstract void onUserInfoUpdate(@NonNull MSIMUserInfo userInfo);
 
 }

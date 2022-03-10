@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.util.AttributeSet;
 
 import androidx.annotation.IntDef;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.masonsoft.imsdk.MSIMUserInfo;
@@ -32,7 +33,6 @@ public class MSIMUserInfoAvatar extends ImageLayout {
     @AvatarSize
     private int mAvatarSize = AVATAR_SIZE_SMALL;
 
-    private long mUserId;
     @Nullable
     private MSIMUserInfo mUserInfo;
 
@@ -62,27 +62,18 @@ public class MSIMUserInfoAvatar extends ImageLayout {
         a.recycle();
     }
 
-    public long getUserId() {
-        return mUserId;
-    }
-
     @Nullable
     public MSIMUserInfo getUserInfo() {
         return mUserInfo;
     }
 
-    public void setUserInfo(long userId, @Nullable MSIMUserInfo userInfo) {
-        mUserId = userId;
+    public void setUserInfo(@NonNull MSIMUserInfo userInfo) {
         mUserInfo = userInfo;
-        this.onUserInfoUpdate(mUserId, mUserInfo);
+        this.onUserInfoUpdate(mUserInfo);
     }
 
-    protected void onUserInfoUpdate(long userId, @Nullable MSIMUserInfo userInfo) {
-        if (userInfo == null) {
-            loadAvatar(null);
-        } else {
-            loadAvatar(userInfo.getAvatar());
-        }
+    protected void onUserInfoUpdate(@NonNull MSIMUserInfo userInfo) {
+        loadAvatar(userInfo.getAvatar());
     }
 
     private void loadAvatar(String url) {

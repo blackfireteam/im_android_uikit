@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.masonsoft.imsdk.MSIMUserInfo;
@@ -66,7 +67,7 @@ public class MSIMBaseMessageRevokeTextView extends MSIMUserInfoTextView {
     }
 
     @Override
-    protected void onUserInfoUpdate(long userId, @Nullable MSIMUserInfo userInfo) {
+    protected void onUserInfoUpdate(@NonNull MSIMUserInfo userInfo) {
         setText(buildRecallText(userInfo));
     }
 

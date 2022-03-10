@@ -3,7 +3,6 @@ package com.masonsoft.imsdk.sample.uniontype.viewholder;
 import android.app.Activity;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.masonsoft.imsdk.MSIMUserInfo;
 import com.masonsoft.imsdk.sample.R;
@@ -34,10 +33,10 @@ public class DiscoverUserViewHolder extends UnionTypeViewHolder {
 
         mUserInfoLoader = new MSIMUserInfoLoader() {
             @Override
-            protected void onUserInfoLoad(long userId, @Nullable MSIMUserInfo userInfo) {
-                super.onUserInfoLoad(userId, userInfo);
+            protected void onUserInfoLoad(@NonNull MSIMUserInfo userInfo) {
+                super.onUserInfoLoad(userInfo);
 
-                DiscoverUserViewHolder.this.onUserInfoLoad(userId, userInfo);
+                DiscoverUserViewHolder.this.onUserInfoLoad(userInfo);
             }
         };
     }
@@ -48,7 +47,7 @@ public class DiscoverUserViewHolder extends UnionTypeViewHolder {
         Preconditions.checkNotNull(itemObject);
         long userId = (long) itemObject.object;
 
-        mUserInfoLoader.setUserInfo(userId, null);
+        mUserInfoLoader.setUserInfo(MSIMUserInfo.mock(userId));
 
         ViewUtil.onClick(itemView, v -> onItemClick());
     }
@@ -77,7 +76,7 @@ public class DiscoverUserViewHolder extends UnionTypeViewHolder {
         SingleChatActivity.start(innerActivity, currentUserId);
     }
 
-    private void onUserInfoLoad(long userId, @Nullable MSIMUserInfo userInfo) {
+    private void onUserInfoLoad(@NonNull MSIMUserInfo userInfo) {
         final DataObject itemObject = getItemObject(DataObject.class);
         if (itemObject == null) {
             return;
@@ -86,12 +85,12 @@ public class DiscoverUserViewHolder extends UnionTypeViewHolder {
         if (currentUserId == null) {
             return;
         }
-        if (currentUserId != userId) {
+        if (currentUserId != userInfo.getUserId()) {
             return;
         }
 
-        mBinding.avatar.setUserInfo(userId, userInfo);
-        mBinding.username.setUserInfo(userId, userInfo);
+        mBinding.avatar.setUserInfo(userInfo);
+        mBinding.username.setUserInfo(userInfo);
     }
 
 }

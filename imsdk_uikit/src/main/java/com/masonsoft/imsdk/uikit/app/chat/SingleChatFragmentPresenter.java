@@ -18,6 +18,7 @@ import com.masonsoft.imsdk.MSIMUserInfo;
 import com.masonsoft.imsdk.lang.GeneralResult;
 import com.masonsoft.imsdk.lang.GeneralResultException;
 import com.masonsoft.imsdk.uikit.CustomIMMessageFactory;
+import com.masonsoft.imsdk.uikit.MSIMConversationLoader;
 import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.uikit.MSIMUserInfoLoader;
 import com.masonsoft.imsdk.uikit.uniontype.DataObject;
@@ -62,19 +63,25 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
     private final BatchQueue<MSIMMessage> mBatchQueueUpdateOrRemoveMessage = new BatchQueue<>();
 
     private MSIMUserInfoLoader mTargetUserInfoLoader;
+    private MSIMConversationLoader mConversationLoader;
 
     @UiThread
     public SingleChatFragmentPresenter(@NonNull SingleChatFragment.ViewImpl view) {
         super(view);
         mSessionUserId = MSIMManager.getInstance().getSessionUserId();
         mTargetUserId = view.getTargetUserId();
+        MSIMManager.getInstance().getConversationManager().getConversationByTargetUserId(
+                mSessionUserId,
+                MSIMConstants.ConversationType.C2C,
+                mTargetUserId
+        );
 
         mTargetUserInfoLoader = new MSIMUserInfoLoader() {
             @Override
-            protected void onUserInfoLoad(long userId, @Nullable MSIMUserInfo userInfo) {
-                super.onUserInfoLoad(userId, userInfo);
+            protected void onUserInfoLoad(@NonNull MSIMUserInfo userInfo) {
+                super.onUserInfoLoad(userInfo);
 
-                showTargetUserInfo(userId, userInfo);
+                showTargetUserInfo(userInfo);
             }
         };
 
@@ -86,6 +93,7 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
                     && mConversationType == conversationType
                     && mTargetUserId == targetUserId) {
                 reloadOrRequestMoreMessage();
+
             }
         }, true);
         MSIMManager.getInstance().getConversationManager().addConversationListener(
@@ -99,13 +107,13 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
     }
 
     void start() {
-        mTargetUserInfoLoader.setUserInfo(mTargetUserId, null);
+        mTargetUserInfoLoader.setUserInfo(MSIMUserInfo.mock(mTargetUserId));
     }
 
-    private void showTargetUserInfo(long userId, @Nullable MSIMUserInfo userInfo) {
+    private void showTargetUserInfo(@NonNull MSIMUserInfo userInfo) {
         final SingleChatFragment.ViewImpl view = getView();
         if (view != null) {
-            view.showTargetUserInfo(userId, userInfo);
+            view.showTargetUserInfo(userInfo);
         }
     }
 

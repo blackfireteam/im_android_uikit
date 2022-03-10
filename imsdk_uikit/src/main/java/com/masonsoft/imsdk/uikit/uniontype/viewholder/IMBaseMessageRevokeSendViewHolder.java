@@ -1,7 +1,6 @@
 package com.masonsoft.imsdk.uikit.uniontype.viewholder;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.masonsoft.imsdk.MSIMBaseMessage;
 import com.masonsoft.imsdk.MSIMUserInfo;
@@ -32,8 +31,8 @@ public class IMBaseMessageRevokeSendViewHolder extends IMBaseMessageViewHolder {
     }
 
     @Override
-    protected void onFromUserInfoLoad(long userId, @Nullable MSIMUserInfo userInfo) {
-        mBinding.messageRevokeTextView.setUserInfo(userId, userInfo);
+    protected void onFromUserInfoLoad(@NonNull MSIMUserInfo userInfo) {
+        mBinding.messageRevokeTextView.setUserInfo(userInfo);
     }
 
 }

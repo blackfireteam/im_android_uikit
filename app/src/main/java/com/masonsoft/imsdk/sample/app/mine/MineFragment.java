@@ -399,28 +399,22 @@ public class MineFragment extends SystemInsetsFragment {
 
     class ViewImpl implements DynamicView {
 
-        public void showSessionUserInfo(long userId, @Nullable MSIMUserInfo userInfo) {
-            SampleLog.v(Objects.defaultObjectTag(this) + " showSessionUserInfo %s %s", userId, userInfo);
+        public void showSessionUserInfo(@NonNull MSIMUserInfo userInfo) {
+            SampleLog.v(Objects.defaultObjectTag(this) + " showSessionUserInfo %s", userInfo);
             if (mBinding == null) {
                 SampleLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
                 return;
             }
 
-            mBinding.avatar.setUserInfo(userId, userInfo);
+            mBinding.avatar.setUserInfo(userInfo);
 
             {
-                String nickname = null;
-                if (userInfo != null) {
-                    nickname = userInfo.getNickname();
-                }
+                String nickname = userInfo.getNickname();
                 mBinding.txtUsername.setText(nickname);
             }
 
             try {
-                String custom = null;
-                if (userInfo != null) {
-                    custom = userInfo.getCustom();
-                }
+                String custom = userInfo.getCustom();
                 final Map<String, Object> map = JsonUtil.toMapOrEmpty(custom);
 
                 String department = StringUtil.toStringOrEmpty(map.get("department"));
@@ -433,10 +427,7 @@ public class MineFragment extends SystemInsetsFragment {
             }
 
             {
-                long gender = MSIMUikitConstants.Gender.FEMALE;
-                if (userInfo != null) {
-                    gender = userInfo.getGender(gender);
-                }
+                long gender = userInfo.getGender(MSIMUikitConstants.Gender.FEMALE);
                 mBinding.txtGender.setText(genderToTxt(gender));
             }
 
