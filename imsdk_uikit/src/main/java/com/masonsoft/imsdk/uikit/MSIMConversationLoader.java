@@ -82,7 +82,7 @@ public abstract class MSIMConversationLoader extends DataLoaderImpl<MSIMConversa
         final int conversationType = obj1.getConversationType();
         final long targetUserId = obj1.getTargetUserId();
 
-        if (sessionUserId > 0) {
+        if (sessionUserId > 0 && sessionUserId == obj2.getSessionUserId()) {
             if (conversationId > 0) {
                 return conversationId == obj2.getConversationId();
             }
