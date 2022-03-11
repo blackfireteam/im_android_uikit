@@ -15,6 +15,7 @@ import com.masonsoft.imsdk.MSIMMessagePageContext;
 import com.masonsoft.imsdk.MSIMUserInfo;
 import com.masonsoft.imsdk.lang.GeneralResult;
 import com.masonsoft.imsdk.lang.GeneralResultException;
+import com.masonsoft.imsdk.lang.SafetyRunnable;
 import com.masonsoft.imsdk.uikit.CustomIMMessageFactory;
 import com.masonsoft.imsdk.uikit.MSIMConversationLoader;
 import com.masonsoft.imsdk.uikit.MSIMUikitLog;
@@ -26,11 +27,14 @@ import com.masonsoft.imsdk.util.Objects;
 import com.masonsoft.imsdk.util.TimeDiffDebugHelper;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import io.github.idonans.core.thread.BatchQueue;
+import io.github.idonans.core.thread.Threads;
+import io.github.idonans.core.util.IOUtil;
 import io.github.idonans.dynamic.DynamicResult;
 import io.github.idonans.dynamic.page.PagePresenter;
 import io.github.idonans.lang.DisposableHolder;
@@ -279,6 +283,8 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
         }
 
         super.onInitRequestResult(view, result);
+
+        reloadAndCheckUpdate(result.items);
     }
 
     @Override
@@ -336,6 +342,8 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
     protected void onPrePageRequestResult(@NonNull SingleChatFragment.ViewImpl view, @NonNull DynamicResult<UnionTypeItemObject, GeneralResult> result) {
         MSIMUikitLog.v("onPrePageRequestResult");
         super.onPrePageRequestResult(view, result);
+
+        reloadAndCheckUpdate(result.items);
     }
 
     @Override
@@ -397,12 +405,15 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
         }
 
         super.onNextPageRequestResult(view, result);
+
+        reloadAndCheckUpdate(result.items);
     }
 
     @Override
     public void setAbort() {
         super.setAbort();
         mDefaultRequestHolder.clear();
+        IOUtil.closeQuietly(mMessagePageContext);
     }
 
     /**
@@ -431,6 +442,57 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
                     message
             );
         }
+    }
+
+    private void reloadAndCheckUpdate(final @Nullable Collection<UnionTypeItemObject> targetList) {
+        if (targetList == null || targetList.isEmpty()) {
+            return;
+        }
+
+        final List<MSIMMessage> messageList = new ArrayList<>();
+        for (UnionTypeItemObject unionTypeItemObject : targetList) {
+            final DataObject dataObject = unionTypeItemObject.getItemObject(DataObject.class);
+            if (dataObject == null) {
+                continue;
+            }
+            final MSIMMessage message = dataObject.getObject(MSIMMessage.class);
+            if (message == null) {
+                continue;
+            }
+            messageList.add(message);
+        }
+        reloadAndCheckUpdate(messageList);
+    }
+
+    private void reloadAndCheckUpdate(final @Nullable List<MSIMMessage> messageList) {
+        if (messageList == null || messageList.isEmpty()) {
+            return;
+        }
+        Threads.postBackground(new SafetyRunnable(() -> {
+            for (MSIMMessage message : messageList) {
+                if (SingleChatFragmentPresenter.this.isAbort()) {
+                    break;
+                }
+                if (message == null) {
+                    continue;
+                }
+
+                MSIMMessage reloadMessage = MSIMManager.getInstance().getMessageManager().getMessage(
+                        message.getSessionUserId(),
+                        message.getConversationType(),
+                        message.getTargetUserId(),
+                        message.getMessageId()
+                );
+                if (reloadMessage == null) {
+                    continue;
+                }
+                if (message.getLastModify() <= reloadMessage.getLastModify()) {
+                    continue;
+                }
+
+                updateOrRemoveMessage(reloadMessage);
+            }
+        }));
     }
 
 }

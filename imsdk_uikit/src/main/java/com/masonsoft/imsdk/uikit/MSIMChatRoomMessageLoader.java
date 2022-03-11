@@ -12,6 +12,8 @@ import java.io.IOException;
 
 import io.github.idonans.core.util.IOUtil;
 
+// TODO FIXME
+@Deprecated
 public abstract class MSIMChatRoomMessageLoader extends DataLoaderImpl<MSIMChatRoomMessage> implements Closeable {
 
     private static final boolean DEBUG = MSIMUikitConstants.DEBUG_WIDGET;
