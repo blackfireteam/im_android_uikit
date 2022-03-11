@@ -11,13 +11,26 @@
         android:id="@+id/layer_emoji"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone">
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/layer_emoji_tab_layout"
+            android:layout_width="match_parent"
+            android:layout_height="45dp" />
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/layer_emoji_pager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="45dp"
             android:scrollbars="none" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginTop="45dp"
+            android:background="@color/imsdk_uikit_color_divider_line" />
     </FrameLayout>
 
     <FrameLayout

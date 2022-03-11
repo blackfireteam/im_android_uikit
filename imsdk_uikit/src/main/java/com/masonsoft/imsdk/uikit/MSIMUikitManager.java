@@ -17,6 +17,7 @@ import com.masonsoft.imsdk.core.IMLog;
 import com.masonsoft.imsdk.uikit.common.fileupload.CacheFileUploadProvider;
 import com.masonsoft.imsdk.uikit.common.fileupload.TencentOSSFileUploadProvider2;
 import com.masonsoft.imsdk.uikit.util.OkHttpClientUtil;
+import com.masonsoft.imsdk.uikit.widget.CustomSoftKeyboard;
 
 import io.github.idonans.core.Singleton;
 import io.github.idonans.core.manager.ProcessManager;
@@ -50,6 +51,11 @@ public class MSIMUikitManager {
         MSIMRtcMessageManager.getInstance().start();
 
         initFresco();
+
+        {
+            // 预加载自定义键盘上的表情
+            CustomSoftKeyboard.EmotionLoader.preload();
+        }
     }
 
     private void initFresco() {

@@ -16,10 +16,17 @@ import android.widget.Space;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.util.Pair;
 import androidx.emoji.widget.EmojiTextView;
 import androidx.gridlayout.widget.GridLayout;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.dd.plist.NSArray;
+import com.dd.plist.NSDictionary;
+import com.dd.plist.NSObject;
+import com.dd.plist.NSString;
+import com.dd.plist.PropertyListParser;
 import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.uikit.R;
@@ -28,6 +35,8 @@ import com.masonsoft.imsdk.uikit.common.locationpicker.LocationPickerDialog;
 import com.masonsoft.imsdk.uikit.common.mediapicker.MediaData;
 import com.masonsoft.imsdk.uikit.common.mediapicker.MediaPickerDialog;
 import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitWidgetCustomSoftKeyboardBinding;
+import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitWidgetCustomSoftKeyboardLayerEmojiEmotionViewHolderBinding;
+import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitWidgetCustomSoftKeyboardLayerEmojiEmotionViewHolderItemViewHolderBinding;
 import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitWidgetCustomSoftKeyboardLayerEmojiViewHolderBinding;
 import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitWidgetCustomSoftKeyboardLayerMoreItemViewBinding;
 import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitWidgetCustomSoftKeyboardLayerMoreViewHolderBinding;
@@ -35,8 +44,13 @@ import com.masonsoft.imsdk.uikit.util.ActivityUtil;
 import com.masonsoft.imsdk.uikit.util.TipUtil;
 import com.tbruyelle.rxpermissions3.RxPermissions;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import io.github.idonans.core.thread.Threads;
+import io.github.idonans.core.util.AssetUtil;
 import io.github.idonans.core.util.DimenUtil;
 import io.github.idonans.lang.DisposableHolder;
 import io.github.idonans.lang.util.ViewUtil;
@@ -219,22 +233,37 @@ public class CustomSoftKeyboard extends FrameLayout {
         mOnInputListener = onInputListener;
     }
 
-    private class LayerEmojiPagerAdapter extends RecyclerView.Adapter<LayerEmojiViewHolder> {
+    private class LayerEmojiPagerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
         @NonNull
         @Override
-        public LayerEmojiViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             final LayoutInflater inflater = LayoutInflater.from(getContext());
-            return new LayerEmojiViewHolder(inflater.inflate(R.layout.imsdk_uikit_widget_custom_soft_keyboard_layer_emoji_view_holder, parent, false));
+
+            return new EmotionViewHolder(parent, inflater) {
+                @Override
+                protected void onDeleteClick() {
+                    super.onDeleteClick();
+
+                    if (mOnInputListener != null) {
+                        mOnInputListener.onDeleteOne();
+                    }
+                }
+
+                @Override
+                protected void onEmotionClick(String name) {
+                    super.onEmotionClick(name);
+
+                    if (mOnInputListener != null) {
+                        mOnInputListener.onInputText(name);
+                    }
+                }
+            };
+            // return new LayerEmojiViewHolder(inflater.inflate(R.layout.imsdk_uikit_widget_custom_soft_keyboard_layer_emoji_view_holder, parent, false));
         }
 
         @Override
-        public void onBindViewHolder(@NonNull LayerEmojiViewHolder holder, int position) {
-        }
-
-        @Override
-        public int getItemViewType(int position) {
-            return super.getItemViewType(position);
+        public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         }
 
         @Override
@@ -583,4 +612,163 @@ public class CustomSoftKeyboard extends FrameLayout {
         locationPickerDialog.show();
     }
 
+    public static class EmotionLoader {
+
+        private static boolean sInit;
+        private static final String ASSET_DIR = "msimsdk/uikit/emotion";
+        private static final String PLIST_FILENAME = "emoji.plist";
+
+        private static List<Pair<String, String>> DATA_LIST = new ArrayList<>();
+        private static Map<String, Pair<String, String>> MAP_LIST = new HashMap<>();
+
+        public static void preload() {
+            Threads.postBackground(EmotionLoader::preloadIfNeed);
+        }
+
+        private synchronized static void preloadIfNeed() {
+            try {
+                if (sInit) {
+                    return;
+                }
+                sInit = true;
+
+                final byte[] plistContent = AssetUtil.readAll(ASSET_DIR + "/" + PLIST_FILENAME, null, null);
+                final NSArray nsArray = (NSArray) PropertyListParser.parse(plistContent);
+                for (NSObject nsObject : nsArray.getArray()) {
+                    final NSDictionary nsDictionary = (NSDictionary) nsObject;
+                    //noinspection ConstantConditions
+                    final String faceName = ((NSString) nsDictionary.get("face_name")).getContent();
+                    final String assetFile = ASSET_DIR + "/" + faceName + "@2x.png";
+                    final Pair<String, String> pair = Pair.create(faceName, assetFile);
+                    DATA_LIST.add(pair);
+                    MAP_LIST.put(faceName, pair);
+                }
+            } catch (Throwable e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        public static int size() {
+            preloadIfNeed();
+            return DATA_LIST.size();
+        }
+
+        public static String getName(int index) {
+            preloadIfNeed();
+            return DATA_LIST.get(index).first;
+        }
+
+        public static String getValue(int index) {
+            preloadIfNeed();
+            return DATA_LIST.get(index).second;
+        }
+
+        public static String getValue(String name) {
+            preloadIfNeed();
+            //noinspection ConstantConditions
+            return MAP_LIST.get(name).second;
+        }
+
+        public static String getAssetValue(int index) {
+            return "asset:///" + getValue(index);
+        }
+
+        public static String getAssetValue(String name) {
+            return "asset:///" + getValue(name);
+        }
+    }
+
+    static class EmotionViewHolder extends RecyclerView.ViewHolder {
+
+        private final ImsdkUikitWidgetCustomSoftKeyboardLayerEmojiEmotionViewHolderBinding mBinding;
+        private final LayoutInflater mInflater;
+
+        public EmotionViewHolder(@NonNull ViewGroup parent, @NonNull LayoutInflater inflater) {
+            super(inflater.inflate(R.layout.imsdk_uikit_widget_custom_soft_keyboard_layer_emoji_emotion_view_holder, parent, false));
+            mBinding = ImsdkUikitWidgetCustomSoftKeyboardLayerEmojiEmotionViewHolderBinding.bind(itemView);
+            mInflater = inflater;
+
+            this.init(parent.getContext());
+        }
+
+        private void init(Context context) {
+            ViewUtil.onClick(mBinding.actionDelete,
+                    100L,
+                    v -> EmotionViewHolder.this.onDeleteClick());
+
+            final int spanCount = context.getResources().getInteger(R.integer.imsdk_uikit_widget_custom_soft_keyboard_emoji_columns);
+            final GridLayoutManager layoutManager = new GridLayoutManager(
+                    context, spanCount, GridLayoutManager.VERTICAL, false
+            );
+            mBinding.recyclerView.setLayoutManager(layoutManager);
+            mBinding.recyclerView.setAdapter(new EmotionAdapter(mInflater) {
+                @Override
+                protected void onEmotionItemClick(String name) {
+                    super.onEmotionItemClick(name);
+                    EmotionViewHolder.this.onEmotionClick(name);
+                }
+            });
+        }
+
+        protected void onDeleteClick() {
+        }
+
+        protected void onEmotionClick(String name) {
+        }
+
+        static class EmotionAdapter extends RecyclerView.Adapter<ItemViewHolder> {
+
+            private final LayoutInflater mInflater;
+
+            private EmotionAdapter(LayoutInflater inflater) {
+                mInflater = inflater;
+            }
+
+            @NonNull
+            @Override
+            public ItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+                final ItemViewHolder viewHolder = new ItemViewHolder(parent, mInflater);
+
+                ViewUtil.onClick(viewHolder.itemView,
+                        100L,
+                        v -> {
+                            final int position = viewHolder.getAbsoluteAdapterPosition();
+                            if (position < 0) {
+                                return;
+                            }
+                            final String name = EmotionLoader.getName(position);
+                            onEmotionItemClick(name);
+                        });
+
+                return viewHolder;
+            }
+
+            @Override
+            public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
+                final String assetValue = EmotionLoader.getAssetValue(position);
+                holder.mItemBinding.imageLayout.setImageUrl(null, assetValue);
+            }
+
+            @Override
+            public int getItemCount() {
+                return EmotionLoader.size();
+            }
+
+            protected void onEmotionItemClick(String name) {
+            }
+        }
+
+        static class ItemViewHolder extends RecyclerView.ViewHolder {
+
+            private final ImsdkUikitWidgetCustomSoftKeyboardLayerEmojiEmotionViewHolderItemViewHolderBinding mItemBinding;
+
+            ItemViewHolder(@NonNull ViewGroup parent, @NonNull LayoutInflater inflater) {
+                super(inflater.inflate(R.layout.imsdk_uikit_widget_custom_soft_keyboard_layer_emoji_emotion_view_holder_item_view_holder, parent, false));
+                mItemBinding = ImsdkUikitWidgetCustomSoftKeyboardLayerEmojiEmotionViewHolderItemViewHolderBinding.bind(itemView);
+            }
+        }
+    }
+
 }
+
+
