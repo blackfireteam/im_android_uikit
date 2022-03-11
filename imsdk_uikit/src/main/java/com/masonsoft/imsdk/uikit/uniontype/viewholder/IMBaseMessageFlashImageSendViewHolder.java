@@ -3,7 +3,6 @@ package com.masonsoft.imsdk.uikit.uniontype.viewholder;
 import android.app.Activity;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.masonsoft.imsdk.MSIMBaseMessage;
 import com.masonsoft.imsdk.MSIMConversation;
@@ -36,20 +35,12 @@ public class IMBaseMessageFlashImageSendViewHolder extends IMBaseMessageFlashIma
         final MSIMBaseMessage baseMessage = itemObject.getObject(MSIMBaseMessage.class);
         Preconditions.checkNotNull(baseMessage);
 
-        final MSIMConversation conversation;
-        final Object extObject1 = itemObject.getExtObjectObject1(null);
-        if (extObject1 instanceof MSIMConversation) {
-            conversation = (MSIMConversation) extObject1;
-        } else {
-            conversation = null;
-        }
-
         mBinding.sendStatusView.setBaseMessage(baseMessage);
         mBinding.progressView.setBaseMessage(baseMessage);
 
         mBinding.avatar.setShowBorder(false);
 
-        mBinding.readStatusView.setMessageAndConversation(baseMessage, conversation);
+        mBinding.readStatusView.setMessageAndConversation(baseMessage, getConversationUnsafe());
 
         ViewUtil.onClick(mBinding.avatar, v -> {
             final Activity innerActivity = host.getActivity();
@@ -64,8 +55,18 @@ public class IMBaseMessageFlashImageSendViewHolder extends IMBaseMessageFlashIma
     }
 
     @Override
-    protected void onFromUserInfoLoad(long userId, @Nullable MSIMUserInfo userInfo) {
-        mBinding.avatar.setUserInfo(userId, userInfo);
+    protected void onConversationLoad(@NonNull MSIMConversation conversation) {
+        final DataObject itemObject = getItemObject(DataObject.class);
+        Preconditions.checkNotNull(itemObject);
+        final MSIMBaseMessage baseMessage = itemObject.getObject(MSIMBaseMessage.class);
+        Preconditions.checkNotNull(baseMessage);
+
+        mBinding.readStatusView.setMessageAndConversation(baseMessage, conversation);
+    }
+
+    @Override
+    protected void onFromUserInfoLoad(@NonNull MSIMUserInfo userInfo) {
+        mBinding.avatar.setUserInfo(userInfo);
     }
 
 }

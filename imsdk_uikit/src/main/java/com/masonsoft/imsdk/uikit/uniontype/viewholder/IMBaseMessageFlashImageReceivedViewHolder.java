@@ -3,9 +3,9 @@ package com.masonsoft.imsdk.uikit.uniontype.viewholder;
 import android.app.Activity;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.masonsoft.imsdk.MSIMBaseMessage;
+import com.masonsoft.imsdk.MSIMConversation;
 import com.masonsoft.imsdk.MSIMUserInfo;
 import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 import com.masonsoft.imsdk.uikit.MSIMUikitLog;
@@ -50,8 +50,13 @@ public class IMBaseMessageFlashImageReceivedViewHolder extends IMBaseMessageFlas
     }
 
     @Override
-    protected void onFromUserInfoLoad(long userId, @Nullable MSIMUserInfo userInfo) {
-        mBinding.avatar.setUserInfo(userId, userInfo);
+    protected void onConversationLoad(@NonNull MSIMConversation conversation) {
+        // ignore
+    }
+
+    @Override
+    protected void onFromUserInfoLoad(@NonNull MSIMUserInfo userInfo) {
+        mBinding.avatar.setUserInfo(userInfo);
     }
 
 }
