@@ -483,10 +483,11 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
                         message.getTargetUserId(),
                         message.getMessageId()
                 );
+
                 if (reloadMessage == null) {
                     continue;
                 }
-                if (message.getLastModify() <= reloadMessage.getLastModify()) {
+                if (message.getLastModify() >= reloadMessage.getLastModify()) {
                     continue;
                 }
 
