@@ -4,8 +4,6 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +15,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.util.Pair;
-import androidx.emoji.widget.EmojiTextView;
 import androidx.gridlayout.widget.GridLayout;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -37,7 +34,6 @@ import com.masonsoft.imsdk.uikit.common.mediapicker.MediaPickerDialog;
 import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitWidgetCustomSoftKeyboardBinding;
 import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitWidgetCustomSoftKeyboardLayerEmojiEmotionViewHolderBinding;
 import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitWidgetCustomSoftKeyboardLayerEmojiEmotionViewHolderItemViewHolderBinding;
-import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitWidgetCustomSoftKeyboardLayerEmojiViewHolderBinding;
 import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitWidgetCustomSoftKeyboardLayerMoreItemViewBinding;
 import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitWidgetCustomSoftKeyboardLayerMoreViewHolderBinding;
 import com.masonsoft.imsdk.uikit.util.ActivityUtil;
@@ -259,7 +255,6 @@ public class CustomSoftKeyboard extends FrameLayout {
                     }
                 }
             };
-            // return new LayerEmojiViewHolder(inflater.inflate(R.layout.imsdk_uikit_widget_custom_soft_keyboard_layer_emoji_view_holder, parent, false));
         }
 
         @Override
@@ -270,58 +265,6 @@ public class CustomSoftKeyboard extends FrameLayout {
         public int getItemCount() {
             return 1;
         }
-    }
-
-    private class LayerEmojiViewHolder extends RecyclerView.ViewHolder {
-
-        private final ImsdkUikitWidgetCustomSoftKeyboardLayerEmojiViewHolderBinding mBinding;
-
-        public LayerEmojiViewHolder(@NonNull View itemView) {
-            super(itemView);
-            mBinding = ImsdkUikitWidgetCustomSoftKeyboardLayerEmojiViewHolderBinding.bind(itemView);
-            final Context context = getContext();
-            final String[] allEmoji = CustomKeyboardDataBuiltin.EMOJI;
-            final int columns = context.getResources().getInteger(R.integer.imsdk_uikit_widget_custom_soft_keyboard_emoji_columns);
-            final int size = allEmoji.length;
-            final int itemViewWidth = DimenUtil.dp2px(30);
-            final int itemViewHeight = DimenUtil.dp2px(30);
-            mBinding.gridLayout.setColumnCount(columns);
-            mBinding.gridLayout.setUseDefaultMargins(true);
-            ViewUtil.onClick(mBinding.actionDelete, 100, v -> {
-                if (mOnInputListener != null) {
-                    mOnInputListener.onDeleteOne();
-                }
-            });
-
-            for (String emoji : allEmoji) {
-                inflateEmojiItemView(context, itemViewWidth, itemViewHeight, emoji);
-            }
-        }
-
-        private void inflateEmojiItemView(Context context, int itemViewWidth, int itemViewHeight, final String emojiText) {
-            final EmojiTextView itemView = new EmojiTextView(context);
-
-            GridLayout.LayoutParams lp = new GridLayout.LayoutParams();
-            lp.width = itemViewWidth;
-            lp.height = itemViewHeight;
-            lp.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1, 1.0f);
-            itemView.setLayoutParams(lp);
-
-            itemView.setIncludeFontPadding(false);
-            itemView.setGravity(Gravity.CENTER);
-            itemView.setText(emojiText);
-            itemView.setTextColor(0xFF333333);
-            itemView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 26);
-
-            mBinding.gridLayout.addView(itemView);
-
-            ViewUtil.onClick(itemView, 100, v -> {
-                if (mOnInputListener != null) {
-                    mOnInputListener.onInputText(emojiText);
-                }
-            });
-        }
-
     }
 
     private class LayerMorePagerAdapter extends RecyclerView.Adapter<LayerMoreViewHolder> {
@@ -696,7 +639,7 @@ public class CustomSoftKeyboard extends FrameLayout {
                     100L,
                     v -> EmotionViewHolder.this.onDeleteClick());
 
-            final int spanCount = context.getResources().getInteger(R.integer.imsdk_uikit_widget_custom_soft_keyboard_emoji_columns);
+            final int spanCount = context.getResources().getInteger(R.integer.imsdk_uikit_widget_custom_soft_keyboard_emotion_span_count);
             final GridLayoutManager layoutManager = new GridLayoutManager(
                     context, spanCount, GridLayoutManager.VERTICAL, false
             );
