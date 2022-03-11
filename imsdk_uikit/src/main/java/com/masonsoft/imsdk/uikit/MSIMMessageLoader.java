@@ -12,7 +12,6 @@ import java.io.IOException;
 
 import io.github.idonans.core.util.IOUtil;
 
-@Deprecated
 public abstract class MSIMMessageLoader extends DataLoaderImpl<MSIMMessage> implements Closeable {
 
     private static final boolean DEBUG = MSIMUikitConstants.DEBUG_WIDGET;
@@ -28,7 +27,7 @@ public abstract class MSIMMessageLoader extends DataLoaderImpl<MSIMMessage> impl
             protected void onMessageChanged(@NonNull MSIMMessage message) {
                 super.onMessageChanged(message);
 
-                MSIMMessageLoader.this.onMessageChangedInternal(message, false);
+                MSIMMessageLoader.this.onMessageChangedInternal(message);
             }
         };
     }
@@ -44,31 +43,56 @@ public abstract class MSIMMessageLoader extends DataLoaderImpl<MSIMMessage> impl
         return mMessage;
     }
 
-    public void setMessage(@Nullable MSIMMessage message) {
-        setMessageInternal(message);
+    public void setMessage(@NonNull MSIMMessage message, boolean forceReplace) {
+        setMessageInternal(message, forceReplace);
     }
 
-    private void setMessageInternal(@Nullable MSIMMessage message) {
+    private void setMessageInternal(@NonNull MSIMMessage message, boolean forceReplace) {
+        final MSIMMessage currentMessage = mMessage;
+        if (!forceReplace) {
+            if (currentMessage != null) {
+                if (match(currentMessage, message)) {
+                    // 继续使用当前 message
+                    message = currentMessage;
+                }
+            }
+        }
+
         mMessage = message;
         onMessageLoad(mMessage);
 
         requestLoadData();
     }
 
-    private void onMessageChangedInternal(@Nullable MSIMMessage message, boolean acceptNull) {
-        if (!acceptNull && message == null) {
+    private void onMessageChangedInternal(@NonNull MSIMMessage message) {
+        final MSIMMessage currentMessage = mMessage;
+        if (currentMessage == null) {
             return;
         }
 
-        if (message != null && mMessage != null && !message.equals(mMessage)) {
-            return;
+        if (match(currentMessage, message)) {
+            mMessage = message;
+            onMessageLoad(message);
         }
-
-        mMessage = message;
-        onMessageLoad(mMessage);
     }
 
-    protected void onMessageLoad(@Nullable MSIMMessage message) {
+    private boolean match(@NonNull MSIMMessage obj1, @NonNull MSIMMessage obj2) {
+        final long sessionUserId = obj1.getSessionUserId();
+        final int conversationType = obj1.getConversationType();
+        final long targetUserId = obj1.getTargetUserId();
+        final long messageId = obj1.getMessageId();
+
+        if (sessionUserId > 0 && targetUserId > 0 && messageId > 0) {
+            return sessionUserId == obj2.getSessionUserId()
+                    && conversationType == obj2.getConversationType()
+                    && targetUserId == obj2.getTargetUserId()
+                    && messageId == obj2.getMessageId();
+        }
+
+        return false;
+    }
+
+    protected void onMessageLoad(@NonNull MSIMMessage message) {
         if (DEBUG) {
             MSIMUikitLog.v("%s onMessageLoad %s", Objects.defaultObjectTag(this), message);
         }
@@ -92,7 +116,9 @@ public abstract class MSIMMessageLoader extends DataLoaderImpl<MSIMMessage> impl
 
     @Override
     protected void onDataLoad(@Nullable MSIMMessage message) {
-        onMessageChangedInternal(message, true);
+        if (message != null) {
+            onMessageChangedInternal(message);
+        }
     }
 
 }
