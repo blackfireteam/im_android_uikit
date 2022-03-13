@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingDefaultResource">
+    <item android:drawable="@drawable/imsdk_uikit_widget_custom_soft_keyboard_layer_emoji_emotion_tab_indicator_hl" android:state_selected="true" />
+    <item android:drawable="@drawable/imsdk_uikit_widget_custom_soft_keyboard_layer_emoji_emotion_tab_indicator_normal" />
+</selector>

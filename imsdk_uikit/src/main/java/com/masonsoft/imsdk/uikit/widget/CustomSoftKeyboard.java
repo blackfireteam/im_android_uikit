@@ -24,6 +24,7 @@ import com.dd.plist.NSDictionary;
 import com.dd.plist.NSObject;
 import com.dd.plist.NSString;
 import com.dd.plist.PropertyListParser;
+import com.google.android.material.tabs.TabLayoutMediator;
 import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.uikit.R;
@@ -176,28 +177,19 @@ public class CustomSoftKeyboard extends FrameLayout {
     }
 
     /**
-     * 硬编码自定义键盘上的数据
-     */
-    private final static class CustomKeyboardDataBuiltin {
-
-        // 1F600-1F64F
-        static final int EMOJI_START = 0x1F600;
-        static final int EMOJI_END = 0x1F64F;
-        static final int EMOJI_COUNT = EMOJI_END - EMOJI_START + 1;
-        static final String[] EMOJI = new String[EMOJI_COUNT];
-
-        static {
-            for (int i = 0; i < EMOJI_COUNT; i++) {
-                EMOJI[i] = new String(Character.toChars(i + EMOJI_START));
-            }
-        }
-    }
-
-    /**
      * 自定义键盘：表情
      */
     private void initLayerEmoji() {
         mBinding.layerEmojiPager.setAdapter(new LayerEmojiPagerAdapter());
+        new TabLayoutMediator(
+                mBinding.layerEmojiTabLayout,
+                mBinding.layerEmojiPager,
+                (tab, position) -> {
+                    if (position == 0) {
+                        tab.setCustomView(R.layout.imsdk_uikit_widget_custom_soft_keyboard_layer_emoji_emotion_tab_indicator_item);
+                    }
+                }
+        ).attach();
     }
 
     /**
