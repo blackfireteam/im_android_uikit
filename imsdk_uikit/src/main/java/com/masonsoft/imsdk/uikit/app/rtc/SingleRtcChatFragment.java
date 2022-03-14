@@ -1,5 +1,6 @@
 package com.masonsoft.imsdk.uikit.app.rtc;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.widget.FrameLayout;
 import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentActivity;
 
 import com.google.common.base.Verify;
 import com.masonsoft.imsdk.MSIMManager;
@@ -24,13 +26,16 @@ import com.masonsoft.imsdk.uikit.R;
 import com.masonsoft.imsdk.uikit.app.SystemInsetsFragment;
 import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitSingleRtcChatFragmentBinding;
 import com.masonsoft.imsdk.uikit.entity.RtcMessagePayload;
+import com.masonsoft.imsdk.uikit.util.TipUtil;
 import com.masonsoft.imsdk.util.Objects;
+import com.tbruyelle.rxpermissions3.RxPermissions;
 
 import io.agora.rtc.RtcEngine;
 import io.agora.rtc.video.VideoCanvas;
 import io.github.idonans.core.thread.Threads;
 import io.github.idonans.core.util.IOUtil;
 import io.github.idonans.core.util.Preconditions;
+import io.github.idonans.lang.DisposableHolder;
 import io.github.idonans.lang.util.ViewUtil;
 
 /**
@@ -68,6 +73,8 @@ public class SingleRtcChatFragment extends SystemInsetsFragment {
     private MSIMRtcMessageManager.RtcEngineWrapper mRtcEngineWrapper;
 
     private MSIMUserInfoLoader mTargetUserInfoLoader;
+
+    private final DisposableHolder mPermissionRequest = new DisposableHolder();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -118,6 +125,42 @@ public class SingleRtcChatFragment extends SystemInsetsFragment {
         mRtcEngineWrapper.addRtcEventListener(mRtcEventListener);
 
         blockBackPressed();
+
+        Threads.postUi(this::requestPermission);
+    }
+
+    private void requestPermission() {
+        final FragmentActivity activity = getActivity();
+        if (activity == null) {
+            return;
+        }
+        if (activity.getSupportFragmentManager().isStateSaved()) {
+            return;
+        }
+
+        final String[] requiredPermissions;
+        if (mVideo) {
+            requiredPermissions = new String[]{
+                    Manifest.permission.RECORD_AUDIO,
+                    Manifest.permission.MODIFY_AUDIO_SETTINGS,
+                    Manifest.permission.CAMERA,
+            };
+        } else {
+            requiredPermissions = new String[]{
+                    Manifest.permission.RECORD_AUDIO,
+                    Manifest.permission.MODIFY_AUDIO_SETTINGS,
+            };
+        }
+        final RxPermissions rxPermissions = new RxPermissions(activity);
+        mPermissionRequest.set(
+                rxPermissions.request(requiredPermissions)
+                        .subscribe(granted -> {
+                            if (!granted) {
+                                MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.PERMISSION_REQUIRED);
+                                TipUtil.show(MSIMUikitConstants.ErrorLog.PERMISSION_REQUIRED);
+                            }
+                        })
+        );
     }
 
     private void blockBackPressed() {
@@ -626,6 +669,7 @@ public class SingleRtcChatFragment extends SystemInsetsFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        mPermissionRequest.clear();
         IOUtil.closeQuietly(mTargetUserInfoLoader);
         mTargetUserInfoLoader = null;
 

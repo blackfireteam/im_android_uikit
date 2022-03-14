@@ -45,11 +45,9 @@ import com.masonsoft.imsdk.uikit.entity.AgoraTokenInfo;
 import com.masonsoft.imsdk.uikit.entity.CustomMessagePayload;
 import com.masonsoft.imsdk.uikit.entity.RtcMessagePayload;
 import com.masonsoft.imsdk.uikit.message.packet.GetAgoraTokenMessagePacket;
-import com.masonsoft.imsdk.uikit.util.TipUtil;
 import com.masonsoft.imsdk.uikit.widget.IMReceivedRtcMessageViewHelper;
 import com.masonsoft.imsdk.util.Objects;
 import com.masonsoft.imsdk.util.WeakObservable;
-import com.tbruyelle.rxpermissions3.RxPermissions;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -371,8 +369,6 @@ public class MSIMRtcMessageManager {
         MSIMUikitLog.e("unexpected event:%s %s", event, RtcMessagePayload.Event.eventToString(event));
     }
 
-    private final DisposableHolder mPermissionRequest = new DisposableHolder();
-
     private void showRtcView(long fromUserId, long toUserId, boolean video, String roomId) {
         Activity activity = TopActivity.getInstance().getResumed();
         if (activity == null) {
@@ -390,31 +386,7 @@ public class MSIMRtcMessageManager {
             return;
         }
 
-        final String[] requiredPermissions;
-        if (video) {
-            requiredPermissions = new String[]{
-                    Manifest.permission.RECORD_AUDIO,
-                    Manifest.permission.MODIFY_AUDIO_SETTINGS,
-                    Manifest.permission.CAMERA,
-            };
-        } else {
-            requiredPermissions = new String[]{
-                    Manifest.permission.RECORD_AUDIO,
-                    Manifest.permission.MODIFY_AUDIO_SETTINGS,
-            };
-        }
-        final RxPermissions rxPermissions = new RxPermissions((AppCompatActivity) activity);
-        mPermissionRequest.set(
-                rxPermissions.request(requiredPermissions)
-                        .subscribe(granted -> {
-                            if (granted) {
-                                SingleRtcChatActivity.start(activity, fromUserId, toUserId, video, roomId);
-                            } else {
-                                MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.PERMISSION_REQUIRED);
-                                TipUtil.show(MSIMUikitConstants.ErrorLog.PERMISSION_REQUIRED);
-                            }
-                        })
-        );
+        SingleRtcChatActivity.start(activity, fromUserId, toUserId, video, roomId);
     }
 
     /**
@@ -1242,10 +1214,6 @@ public class MSIMRtcMessageManager {
             public void onError(int err) {
                 MSIMUikitLog.e("%s onError %s %s",
                         Objects.defaultObjectTag(this), err, RtcEngine.getErrorDescription(err));
-
-                if (MSIMRtcMessageManager.getInstance().mRtcEngineWrapper == RtcEngineWrapper.this) {
-                    MSIMRtcMessageManager.getInstance().rtcEngineError(mTargetUserId, null, mRtcMessagePayload);
-                }
             }
 
             @Override
