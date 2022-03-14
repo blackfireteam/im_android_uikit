@@ -326,8 +326,7 @@ public abstract class CustomInputFragment extends SystemInsetsFragment {
 
             @Override
             public void onLottiePicked(String lottieId) {
-                // TODO
-                // FIXME
+                submitLottieMessage(isSnapchatMode(), lottieId);
             }
 
             @Override
@@ -457,6 +456,8 @@ public abstract class CustomInputFragment extends SystemInsetsFragment {
     }
 
     protected abstract void submitTextMessage(boolean snapchat, String text);
+
+    protected abstract void submitLottieMessage(boolean snapchat, String lottieId);
 
     protected abstract void submitMediaMessage(boolean snapchat, @NonNull List<MediaData.MediaInfo> mediaInfoList);
 

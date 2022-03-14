@@ -267,6 +267,25 @@ public class ChatRoomFragment extends CustomInputFragment {
     }
 
     @Override
+    protected void submitLottieMessage(boolean snapchat, String lottieId) {
+        final GlobalChatRoomManager.StaticChatRoomContext chatRoomContext = mPresenter.getChatRoomContext();
+        if (chatRoomContext == null) {
+            MSIMUikitLog.e("chat room context is null");
+            return;
+        }
+
+        mEnqueueCallback = new LocalEnqueueCallback(true);
+        final MSIMChatRoomMessage message = MSIMChatRoomMessageFactory.createCustomEmotionMessage(
+                lottieId
+        );
+        chatRoomContext.getChatRoomContext().getChatRoomManager().sendChatRoomMessage(
+                chatRoomContext.getSessionUserId(),
+                message,
+                new MSIMWeakCallback<>(mEnqueueCallback)
+        );
+    }
+
+    @Override
     protected void submitMediaMessage(boolean snapchat, @NonNull List<MediaData.MediaInfo> mediaInfoList) {
         final GlobalChatRoomManager.StaticChatRoomContext chatRoomContext = mPresenter.getChatRoomContext();
         if (chatRoomContext == null) {

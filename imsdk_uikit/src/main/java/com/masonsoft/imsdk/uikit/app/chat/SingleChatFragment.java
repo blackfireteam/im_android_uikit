@@ -273,6 +273,19 @@ public class SingleChatFragment extends CustomInputFragment {
     }
 
     @Override
+    protected void submitLottieMessage(boolean snapchat, String lottieId) {
+        mEnqueueCallback = new LocalEnqueueCallback(true);
+        final MSIMMessage message = MSIMMessageFactory.createCustomEmotionMessage(lottieId);
+        MSIMMessageFactory.setSnapchat(message, snapchat);
+        MSIMManager.getInstance().getMessageManager().sendMessage(
+                MSIMManager.getInstance().getSessionUserId(),
+                message,
+                mTargetUserId,
+                new MSIMWeakCallback<>(mEnqueueCallback)
+        );
+    }
+
+    @Override
     protected void submitMediaMessage(boolean snapchat, @NonNull List<MediaData.MediaInfo> mediaInfoList) {
         for (MediaData.MediaInfo mediaInfo : mediaInfoList) {
             mEnqueueCallback = new LocalEnqueueCallback(false);
