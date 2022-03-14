@@ -23,10 +23,12 @@ import com.masonsoft.imsdk.MSIMMessage;
 import com.masonsoft.imsdk.MSIMMessageFactory;
 import com.masonsoft.imsdk.MSIMUserInfo;
 import com.masonsoft.imsdk.MSIMWeakCallback;
+import com.masonsoft.imsdk.common.TopActivity;
 import com.masonsoft.imsdk.lang.GeneralResult;
 import com.masonsoft.imsdk.uikit.MSIMRtcMessageManager;
 import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 import com.masonsoft.imsdk.uikit.MSIMUikitLog;
+import com.masonsoft.imsdk.uikit.app.rtc.SingleRtcChatActivity;
 import com.masonsoft.imsdk.uikit.common.app.CustomInputFragment;
 import com.masonsoft.imsdk.uikit.common.locationpicker.LocationInfo;
 import com.masonsoft.imsdk.uikit.common.mediapicker.MediaData;
@@ -525,7 +527,7 @@ public class SingleChatFragment extends CustomInputFragment {
                 getAdapter().getData().beginTransaction()
                         .commit(() -> {
                             final int count = getAdapter().getItemCount();
-                            if (count > 0 && isResumed()) {
+                            if (count > 0 && (isResumed() || TopActivity.getInstance().getResumed(SingleRtcChatActivity.class) != null)) {
                                 scrollToPosition(binding.recyclerView, count - 1);
                                 sendMarkAsRead();
                             }
@@ -628,7 +630,7 @@ public class SingleChatFragment extends CustomInputFragment {
                                     // 当前滚动到最后
                                     autoScroll = true;
                                 }
-                                if (autoScroll && isResumed()) {
+                                if (autoScroll && (isResumed() || TopActivity.getInstance().getResumed(SingleRtcChatActivity.class) != null)) {
                                     scrollToPosition(binding.recyclerView, count - 1);
                                     sendMarkAsRead();
                                 } else {
