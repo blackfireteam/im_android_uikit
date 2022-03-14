@@ -138,13 +138,13 @@ ext.gitVersionName = ext.createGitVersionName()
 
 def static addRepos(RepositoryHandler handler) {
     handler.mavenLocal()
+    handler.mavenCentral()
     handler.maven { url 'https://s01.oss.sonatype.org/content/repositories/snapshots/' }
     handler.maven { url 'https://s01.oss.sonatype.org/content/repositories/releases/' }
     handler.maven { url 'https://maven.aliyun.com/repository/gradle-plugin' }
     handler.maven { url 'https://maven.aliyun.com/repository/central' }
     handler.maven { url 'https://maven.aliyun.com/repository/public' }
     handler.maven { url 'https://maven.aliyun.com/repository/google' }
-    handler.mavenCentral()
     handler.maven { url 'https://jitpack.io' }
     // handler.maven { url 'https://dl.bintray.com/idonans/maven/' }
     // handler.maven { url 'https://dl.bintray.com/thelasterstar/maven/' }

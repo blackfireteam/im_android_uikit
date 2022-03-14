@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <item name="imsdk_uikit_widget_custom_soft_keyboard_emotion_span_count" type="integer">6</item>
+    <item name="imsdk_uikit_widget_custom_soft_keyboard_emotion2_span_count" type="integer">3</item>
 </resources>

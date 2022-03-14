@@ -55,6 +55,7 @@ public class MSIMUikitManager {
         {
             // 预加载自定义键盘上的表情
             CustomSoftKeyboard.EmotionLoader.preload();
+            CustomSoftKeyboard.Emotion2Loader.preload();
         }
     }
 

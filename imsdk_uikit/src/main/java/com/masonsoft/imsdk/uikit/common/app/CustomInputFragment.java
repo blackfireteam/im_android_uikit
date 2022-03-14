@@ -325,6 +325,12 @@ public abstract class CustomInputFragment extends SystemInsetsFragment {
             }
 
             @Override
+            public void onLottiePicked(String lottieId) {
+                // TODO
+                // FIXME
+            }
+
+            @Override
             public void onDeleteOne() {
                 if (mBinding == null) {
                     MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);

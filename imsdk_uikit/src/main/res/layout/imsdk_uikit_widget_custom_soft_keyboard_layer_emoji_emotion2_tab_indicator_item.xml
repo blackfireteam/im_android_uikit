@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="45dp"
+    android:layout_height="match_parent"
+    tools:layout_height="45dp">
+
+    <View
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_gravity="center"
+        android:background="@drawable/imsdk_uikit_widget_custom_soft_keyboard_layer_emoji_emotion2_tab_indicator_selector"
+        android:duplicateParentState="true" />
+</FrameLayout>
