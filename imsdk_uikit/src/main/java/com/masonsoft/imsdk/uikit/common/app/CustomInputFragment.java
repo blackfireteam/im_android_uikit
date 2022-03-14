@@ -316,7 +316,7 @@ public abstract class CustomInputFragment extends SystemInsetsFragment {
         });
         mBinding.customSoftKeyboard.setOnInputListener(new CustomSoftKeyboard.OnInputListener() {
             @Override
-            public void onInputText(CharSequence text) {
+            public void onInputText(String text) {
                 if (mBinding == null) {
                     MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
                     return;

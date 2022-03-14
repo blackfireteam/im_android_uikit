@@ -22,6 +22,8 @@ public class EditTextUtil {
      * 根据光标位置的不同插入数据
      */
     public static void insertText(@NonNull EditText view, CharSequence text) {
+        text = ViewDraweeSpan.rebuildTargetViewText(text, view);
+
         int selectionStart = view.getSelectionStart();
         if (selectionStart >= 0) {
             int selectionEnd = view.getSelectionEnd();
@@ -30,8 +32,6 @@ public class EditTextUtil {
             } else {
                 view.getText().insert(selectionStart, text);
             }
-
-            ViewDraweeSpan.updateTargetView(view.getText(), view);
         } else {
             MSIMUikitLog.e("insertText invalid selectionStart:%s", selectionStart);
         }

@@ -39,7 +39,6 @@ import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitWidgetCustomSoftKeyboardL
 import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitWidgetCustomSoftKeyboardLayerEmojiEmotionViewHolderItemViewHolderBinding;
 import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitWidgetCustomSoftKeyboardLayerMoreItemViewBinding;
 import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitWidgetCustomSoftKeyboardLayerMoreViewHolderBinding;
-import com.masonsoft.imsdk.uikit.drawee.ViewDraweeSpan;
 import com.masonsoft.imsdk.uikit.util.ActivityUtil;
 import com.masonsoft.imsdk.uikit.util.TipUtil;
 import com.tbruyelle.rxpermissions3.RxPermissions;
@@ -206,7 +205,7 @@ public class CustomSoftKeyboard extends FrameLayout {
     }
 
     public interface OnInputListener {
-        void onInputText(CharSequence text);
+        void onInputText(String text);
 
         void onLottiePicked(String lottieId);
 
@@ -248,7 +247,7 @@ public class CustomSoftKeyboard extends FrameLayout {
                     }
 
                     @Override
-                    protected void onEmotionClick(CharSequence name) {
+                    protected void onEmotionClick(String name) {
                         super.onEmotionClick(name);
 
                         if (mOnInputListener != null) {
@@ -638,6 +637,11 @@ public class CustomSoftKeyboard extends FrameLayout {
         public static String getAssetValue(String name) {
             return "asset:///" + getValue(name);
         }
+
+        public static boolean contains(String name) {
+            preloadIfNeed();
+            return MAP_LIST.containsKey(name);
+        }
     }
 
     static class EmotionViewHolder extends RecyclerView.ViewHolder {
@@ -665,7 +669,7 @@ public class CustomSoftKeyboard extends FrameLayout {
             mBinding.recyclerView.setLayoutManager(layoutManager);
             mBinding.recyclerView.setAdapter(new EmotionAdapter(mInflater) {
                 @Override
-                protected void onEmotionItemClick(CharSequence name) {
+                protected void onEmotionItemClick(String name) {
                     super.onEmotionItemClick(name);
                     EmotionViewHolder.this.onEmotionClick(name);
                 }
@@ -675,7 +679,7 @@ public class CustomSoftKeyboard extends FrameLayout {
         protected void onDeleteClick() {
         }
 
-        protected void onEmotionClick(CharSequence name) {
+        protected void onEmotionClick(String name) {
         }
 
         static class EmotionAdapter extends RecyclerView.Adapter<ItemViewHolder> {
@@ -699,10 +703,7 @@ public class CustomSoftKeyboard extends FrameLayout {
                                 return;
                             }
                             final String name = EmotionLoader.getName(position);
-                            final String assetFilename = EmotionLoader.getAssetValue(position);
-
-                            final CharSequence span = ViewDraweeSpan.createViewDraweeSpanStringBuilder(name, assetFilename, DimenUtil.sp2px(15));
-                            onEmotionItemClick(span);
+                            onEmotionItemClick(name);
                         });
 
                 return viewHolder;
@@ -719,7 +720,7 @@ public class CustomSoftKeyboard extends FrameLayout {
                 return EmotionLoader.size();
             }
 
-            protected void onEmotionItemClick(CharSequence name) {
+            protected void onEmotionItemClick(String name) {
             }
         }
 
@@ -799,6 +800,11 @@ public class CustomSoftKeyboard extends FrameLayout {
 
         public static String getAssetValue(String lottieId) {
             return "asset:///" + getValue(lottieId);
+        }
+
+        public static boolean contains(String name) {
+            preloadIfNeed();
+            return MAP_LIST.containsKey(name);
         }
     }
 
