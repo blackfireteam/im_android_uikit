@@ -33,6 +33,7 @@ public class ViewDraweeSpan extends BetterImageSpan {
         mDraweeHolder = draweeHolder;
         //noinspection ConstantConditions
         draweeHolder.getTopLevelDrawable().setBounds(0, 0, sizePx, sizePx);
+        updateBounds();
         mDraweeHolder.onAttach();
     }
 
