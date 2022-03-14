@@ -12,6 +12,7 @@ import androidx.core.view.GestureDetectorCompat;
 import com.masonsoft.imsdk.MSIMBaseMessage;
 import com.masonsoft.imsdk.MSIMTextElement;
 import com.masonsoft.imsdk.uikit.R;
+import com.masonsoft.imsdk.uikit.drawee.ViewDraweeSpan;
 import com.masonsoft.imsdk.uikit.uniontype.DataObject;
 import com.masonsoft.imsdk.uikit.uniontype.UnionTypeViewHolderListeners;
 
@@ -47,6 +48,7 @@ public abstract class IMBaseMessageTextViewHolder extends IMBaseMessageViewHolde
             text = element.getText();
         }
         mMessageText.setText(text);
+        ViewDraweeSpan.rebuildTargetViewText(mMessageText);
 
         GestureDetectorCompat gestureDetectorCompat = new GestureDetectorCompat(mMessageText.getContext(), new GestureDetector.SimpleOnGestureListener() {
             @Override

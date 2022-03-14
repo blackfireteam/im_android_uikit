@@ -1,6 +1,7 @@
 package com.masonsoft.imsdk.uikit.drawee;
 
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.drawable.ColorDrawable;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -76,7 +77,8 @@ public class ViewDraweeSpan extends BetterImageSpan {
             final String emotionName = spannableText.subSequence(start, end).toString();
             if (CustomSoftKeyboard.EmotionLoader.contains(emotionName)) {
                 final String assetFilename = CustomSoftKeyboard.EmotionLoader.getAssetValue(emotionName);
-                final int size = (int) (targetView.getLineHeight() * 0.8f);
+                final Paint.FontMetrics fontMetrics = targetView.getPaint().getFontMetrics();
+                final int size = (int) ((fontMetrics.descent - fontMetrics.ascent) * 0.95f);
                 final ViewDraweeSpan viewDraweeSpan = ViewDraweeSpan.create(assetFilename, size);
                 viewDraweeSpan.setTargetView(targetView);
                 spannableText.setSpan(
