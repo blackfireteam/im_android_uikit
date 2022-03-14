@@ -440,7 +440,12 @@ public abstract class IMBaseMessageViewHolder extends UnionTypeViewHolder {
             if (MSIMConstants.MessageType.isCustomMessage(messageType)) {
                 final CustomMessagePayload customMessagePayload = CustomMessagePayload.fromDataObjectWithCache(dataObject);
                 if (customMessagePayload != null) {
-                    if (customMessagePayload.isTypeAudio() || customMessagePayload.isTypeVideo()) {
+                    if (customMessagePayload.isLike()) {
+                        // 喜欢
+                        return received
+                                ? IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_CUSTOM_LIKE_RECEIVED
+                                : IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_CUSTOM_LIKE_SEND;
+                    } else if (customMessagePayload.isTypeAudio() || customMessagePayload.isTypeVideo()) {
                         // 语音、视频电话相关
                         return received
                                 ? IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_RTC_RECEIVED

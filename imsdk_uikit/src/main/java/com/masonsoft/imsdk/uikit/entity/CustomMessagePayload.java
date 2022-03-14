@@ -14,6 +14,10 @@ import com.masonsoft.imsdk.uikit.uniontype.DataObject;
 public class CustomMessagePayload {
 
     /**
+     * 喜欢
+     */
+    public static final int TYPE_LIKE = 1;
+    /**
      * 对方正在输入...
      */
     public static final int TYPE_BEING_TYPED = 100;
@@ -42,6 +46,10 @@ public class CustomMessagePayload {
         } catch (Throwable e) {
             MSIMUikitLog.e(e);
         }
+    }
+
+    public boolean isLike() {
+        return !mType.isUnset() && mType.get() == TYPE_LIKE;
     }
 
     public boolean isTypeBeingTyped() {

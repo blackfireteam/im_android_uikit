@@ -1,5 +1,7 @@
 package com.masonsoft.imsdk.uikit.uniontype;
 
+import com.masonsoft.imsdk.uikit.uniontype.viewholder.IMBaseMessageCustomLikeReceivedViewHolder;
+import com.masonsoft.imsdk.uikit.uniontype.viewholder.IMBaseMessageCustomLikeSendViewHolder;
 import com.masonsoft.imsdk.uikit.uniontype.viewholder.IMBaseMessageDefaultReceivedViewHolder;
 import com.masonsoft.imsdk.uikit.uniontype.viewholder.IMBaseMessageDefaultSendViewHolder;
 import com.masonsoft.imsdk.uikit.uniontype.viewholder.IMBaseMessageImageReceivedViewHolder;
@@ -56,6 +58,8 @@ public class IMUikitUnionTypeMapper extends UnionTypeLoadingStatus {
     public static final int UNION_TYPE_IMPL_IM_MESSAGE_PREVIEW_IMAGE = sNextUnionType++; // 聊天消息-横向全屏预览-图片
     public static final int UNION_TYPE_IMPL_IM_MESSAGE_PREVIEW_VIDEO = sNextUnionType++; // 聊天消息-横向全屏预览-视频
     public static final int UNION_TYPE_IMPL_IM_MESSAGE_TIP_TEXT = sNextUnionType++; // 聊天消息中的提示性文字
+    public static final int UNION_TYPE_IMPL_IM_MESSAGE_CUSTOM_LIKE_RECEIVED = sNextUnionType++; // 聊天消息-接收的 like 信息
+    public static final int UNION_TYPE_IMPL_IM_MESSAGE_CUSTOM_LIKE_SEND = sNextUnionType++; // 聊天消息-发送的 like 信息
     public static final int UNION_TYPE_IMPL_CHAT_ROOM_MEMBER = sNextUnionType++; // 聊天室在线用户
     public static final int UNION_TYPE_IMPL_LOCATION_PICKER_SIMPLE_LOCATION_ITEM = sNextUnionType++; // 地址选择器视图中的一个 item, LocationInfo 类型
 
@@ -84,6 +88,8 @@ public class IMUikitUnionTypeMapper extends UnionTypeLoadingStatus {
         put(UNION_TYPE_IMPL_IM_MESSAGE_PREVIEW_IMAGE, IMBaseMessagePreviewImageViewHolder::new);
         put(UNION_TYPE_IMPL_IM_MESSAGE_PREVIEW_VIDEO, IMBaseMessagePreviewVideoViewHolder::new);
         put(UNION_TYPE_IMPL_IM_MESSAGE_TIP_TEXT, IMBaseMessageTipTextViewHolder::new);
+        put(UNION_TYPE_IMPL_IM_MESSAGE_CUSTOM_LIKE_RECEIVED, IMBaseMessageCustomLikeReceivedViewHolder::new);
+        put(UNION_TYPE_IMPL_IM_MESSAGE_CUSTOM_LIKE_SEND, IMBaseMessageCustomLikeSendViewHolder::new);
         put(UNION_TYPE_IMPL_CHAT_ROOM_MEMBER, IMChatRoomMemberViewHolder::new);
         put(UNION_TYPE_IMPL_LOCATION_PICKER_SIMPLE_LOCATION_ITEM, LocationPickerSimpleLocationItemViewHolder::new);
     }
