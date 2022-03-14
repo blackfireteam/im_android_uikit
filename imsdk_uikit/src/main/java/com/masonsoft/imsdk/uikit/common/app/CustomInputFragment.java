@@ -355,11 +355,31 @@ public abstract class CustomInputFragment extends SystemInsetsFragment {
 
             @Override
             public void onClickRtcAudio() {
+                MSIMUikitLog.v("onClickRtcAudio");
+                if (mBinding == null) {
+                    MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
+                    return;
+                }
+                if (mSoftKeyboardHelper == null) {
+                    MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.SOFT_KEYBOARD_HELPER_IS_NULL);
+                    return;
+                }
+                mSoftKeyboardHelper.requestHideAllSoftKeyboard();
                 submitClickRtcAudio(isSnapchatMode());
             }
 
             @Override
             public void onClickRtcVideo() {
+                MSIMUikitLog.v("onClickRtcAudio");
+                if (mBinding == null) {
+                    MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.BINDING_IS_NULL);
+                    return;
+                }
+                if (mSoftKeyboardHelper == null) {
+                    MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.SOFT_KEYBOARD_HELPER_IS_NULL);
+                    return;
+                }
+                mSoftKeyboardHelper.requestHideAllSoftKeyboard();
                 submitClickRtcVideo(isSnapchatMode());
             }
 
