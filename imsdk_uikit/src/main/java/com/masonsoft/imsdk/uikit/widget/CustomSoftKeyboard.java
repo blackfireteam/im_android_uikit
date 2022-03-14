@@ -133,6 +133,15 @@ public class CustomSoftKeyboard extends FrameLayout {
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION,
     };
+    private static final String[] RTC_VIDEO_PERMISSION = {
+            Manifest.permission.RECORD_AUDIO,
+            Manifest.permission.MODIFY_AUDIO_SETTINGS,
+            Manifest.permission.CAMERA,
+    };
+    private static final String[] RTC_AUDIO_PERMISSION = {
+            Manifest.permission.RECORD_AUDIO,
+            Manifest.permission.MODIFY_AUDIO_SETTINGS,
+    };
 
     private void initFromAttributes(
             Context context,
@@ -395,9 +404,7 @@ public class CustomSoftKeyboard extends FrameLayout {
             mBinding.gridLayout.addView(binding.getRoot());
 
             ViewUtil.onClick(binding.getRoot(), v -> {
-                if (mOnInputListener != null) {
-                    mOnInputListener.onClickRtcAudio();
-                }
+                requestRtcAudioPermission();
             });
         }
 
@@ -418,9 +425,7 @@ public class CustomSoftKeyboard extends FrameLayout {
             mBinding.gridLayout.addView(binding.getRoot());
 
             ViewUtil.onClick(binding.getRoot(), v -> {
-                if (mOnInputListener != null) {
-                    mOnInputListener.onClickRtcVideo();
-                }
+                requestRtcVideoPermission();
             });
         }
 
@@ -481,6 +486,70 @@ public class CustomSoftKeyboard extends FrameLayout {
             mBinding.gridLayout.addView(itemView);
         }
 
+    }
+
+    private void requestRtcVideoPermission() {
+        final AppCompatActivity activity = ActivityUtil.getActiveAppCompatActivity(getContext());
+        if (activity == null) {
+            MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.ACTIVITY_IS_NULL);
+            return;
+        }
+
+        final RxPermissions rxPermissions = new RxPermissions(activity);
+        mPermissionRequest.set(
+                rxPermissions.request(RTC_VIDEO_PERMISSION)
+                        .subscribe(granted -> {
+                            if (granted) {
+                                onRtcVideoPermissionGranted();
+                            } else {
+                                MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.PERMISSION_REQUIRED);
+                                TipUtil.show(MSIMUikitConstants.ErrorLog.PERMISSION_REQUIRED);
+                            }
+                        }));
+    }
+
+    private void onRtcVideoPermissionGranted() {
+        final AppCompatActivity activity = ActivityUtil.getActiveAppCompatActivity(getContext());
+        if (activity == null) {
+            MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.ACTIVITY_IS_NULL);
+            return;
+        }
+
+        if (mOnInputListener != null) {
+            mOnInputListener.onClickRtcVideo();
+        }
+    }
+
+    private void requestRtcAudioPermission() {
+        final AppCompatActivity activity = ActivityUtil.getActiveAppCompatActivity(getContext());
+        if (activity == null) {
+            MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.ACTIVITY_IS_NULL);
+            return;
+        }
+
+        final RxPermissions rxPermissions = new RxPermissions(activity);
+        mPermissionRequest.set(
+                rxPermissions.request(RTC_AUDIO_PERMISSION)
+                        .subscribe(granted -> {
+                            if (granted) {
+                                onRtcAudioPermissionGranted();
+                            } else {
+                                MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.PERMISSION_REQUIRED);
+                                TipUtil.show(MSIMUikitConstants.ErrorLog.PERMISSION_REQUIRED);
+                            }
+                        }));
+    }
+
+    private void onRtcAudioPermissionGranted() {
+        final AppCompatActivity activity = ActivityUtil.getActiveAppCompatActivity(getContext());
+        if (activity == null) {
+            MSIMUikitLog.e(MSIMUikitConstants.ErrorLog.ACTIVITY_IS_NULL);
+            return;
+        }
+
+        if (mOnInputListener != null) {
+            mOnInputListener.onClickRtcAudio();
+        }
     }
 
     private void requestMediaPickerPermission() {
