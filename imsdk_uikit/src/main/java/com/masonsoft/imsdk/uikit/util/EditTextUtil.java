@@ -1,7 +1,6 @@
 package com.masonsoft.imsdk.uikit.util;
 
 import android.text.Editable;
-import android.text.Spanned;
 import android.text.method.KeyListener;
 import android.view.KeyEvent;
 import android.widget.EditText;
@@ -32,14 +31,7 @@ public class EditTextUtil {
                 view.getText().insert(selectionStart, text);
             }
 
-            if (text instanceof Spanned) {
-                final ViewDraweeSpan[] viewDraweeSpans = ((Spanned) text).getSpans(0, text.length(), ViewDraweeSpan.class);
-                if (viewDraweeSpans != null) {
-                    for (ViewDraweeSpan viewDraweeSpan : viewDraweeSpans) {
-                        viewDraweeSpan.setTargetView(view);
-                    }
-                }
-            }
+            ViewDraweeSpan.updateTargetView(view.getText(), view);
         } else {
             MSIMUikitLog.e("insertText invalid selectionStart:%s", selectionStart);
         }

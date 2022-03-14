@@ -5,6 +5,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.view.View;
+import android.widget.TextView;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.backends.pipeline.PipelineDraweeControllerBuilder;
@@ -57,6 +58,17 @@ public class ViewDraweeSpan extends BetterImageSpan {
         final SpannableStringBuilder builder = new SpannableStringBuilder(name);
         builder.setSpan(ViewDraweeSpan.create(assetFilename, sizePx), 0, builder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         return builder;
+    }
+
+    public static void updateTargetView(CharSequence text, TextView targetView) {
+        if (text instanceof Spanned) {
+            final ViewDraweeSpan[] viewDraweeSpans = ((Spanned) text).getSpans(0, text.length(), ViewDraweeSpan.class);
+            if (viewDraweeSpans != null) {
+                for (ViewDraweeSpan viewDraweeSpan : viewDraweeSpans) {
+                    viewDraweeSpan.setTargetView(targetView);
+                }
+            }
+        }
     }
 
 }
