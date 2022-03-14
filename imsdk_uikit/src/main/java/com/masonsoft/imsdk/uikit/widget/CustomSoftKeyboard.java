@@ -802,9 +802,18 @@ public class CustomSoftKeyboard extends FrameLayout {
             return "asset:///" + getValue(lottieId);
         }
 
-        public static boolean contains(String name) {
+        public static String getDefaultValue() {
             preloadIfNeed();
-            return MAP_LIST.containsKey(name);
+            return ASSET_DIR + "/" + "emotion_default.json";
+        }
+
+        public static String getDefaultAssetValue() {
+            return "asset:///" + getDefaultValue();
+        }
+
+        public static boolean contains(String lottieId) {
+            preloadIfNeed();
+            return MAP_LIST.containsKey(lottieId);
         }
     }
 

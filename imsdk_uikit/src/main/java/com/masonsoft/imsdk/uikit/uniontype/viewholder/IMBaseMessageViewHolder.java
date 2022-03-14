@@ -436,6 +436,13 @@ public abstract class IMBaseMessageViewHolder extends UnionTypeViewHolder {
                         : IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_LOCATION_SEND;
             }
 
+            // 自定义表情
+            if (messageType == MSIMConstants.MessageType.CUSTOM_EMOTION) {
+                return received
+                        ? IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_CUSTOM_EMOTION_RECEIVED
+                        : IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_CUSTOM_EMOTION_SEND;
+            }
+
             // 自定义消息
             if (MSIMConstants.MessageType.isCustomMessage(messageType)) {
                 final CustomMessagePayload customMessagePayload = CustomMessagePayload.fromDataObjectWithCache(dataObject);
