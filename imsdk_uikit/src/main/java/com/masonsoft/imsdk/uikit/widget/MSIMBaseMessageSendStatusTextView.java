@@ -18,6 +18,7 @@ import androidx.core.content.ContextCompat;
 import com.masonsoft.imsdk.MSIMBaseMessage;
 import com.masonsoft.imsdk.MSIMConstants;
 import com.masonsoft.imsdk.uikit.R;
+import com.masonsoft.imsdk.uikit.drawee.ViewDraweeSpan;
 
 import io.github.idonans.core.util.Preconditions;
 
@@ -127,7 +128,8 @@ public class MSIMBaseMessageSendStatusTextView extends MSIMBaseMessageFrameLayou
             messageText = messageText.trim();
             builder.append(messageText);
         }
-        return builder;
+
+        return ViewDraweeSpan.rebuildTargetViewText(builder, mTextView);
     }
 
 }
