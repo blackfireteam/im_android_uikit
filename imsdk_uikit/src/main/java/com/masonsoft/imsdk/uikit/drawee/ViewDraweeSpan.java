@@ -3,6 +3,7 @@ package com.masonsoft.imsdk.uikit.drawee;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -15,25 +16,23 @@ import com.facebook.drawee.drawable.ScalingUtils;
 import com.facebook.drawee.generic.GenericDraweeHierarchy;
 import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
 import com.facebook.drawee.view.DraweeHolder;
-import com.facebook.widget.text.span.BetterImageSpan;
+import com.masonsoft.imsdk.uikit.widget.AlignImageSpan;
 import com.masonsoft.imsdk.uikit.widget.CustomSoftKeyboard;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import io.github.idonans.core.util.ContextUtil;
+import io.github.idonans.core.util.Preconditions;
 
-public class ViewDraweeSpan extends BetterImageSpan {
+public class ViewDraweeSpan extends AlignImageSpan {
 
     private final DraweeHolder<?> mDraweeHolder;
 
     public ViewDraweeSpan(
-            DraweeHolder<?> draweeHolder, @BetterImageSpanAlignment int verticalAlignment, int sizePx) {
+            DraweeHolder<?> draweeHolder, int verticalAlignment) {
         super(draweeHolder.getTopLevelDrawable(), verticalAlignment);
         mDraweeHolder = draweeHolder;
-        //noinspection ConstantConditions
-        draweeHolder.getTopLevelDrawable().setBounds(0, 0, sizePx, sizePx);
-        updateBounds();
         mDraweeHolder.onAttach();
     }
 
@@ -57,7 +56,11 @@ public class ViewDraweeSpan extends BetterImageSpan {
         builder.setAutoPlayAnimations(false);
         draweeHolder.setController(builder.build());
 
-        final ViewDraweeSpan draweeSpan = new ViewDraweeSpan(draweeHolder, BetterImageSpan.ALIGN_CENTER, sizePx);
+        final Drawable topLevelDrawable = draweeHolder.getTopLevelDrawable();
+        Preconditions.checkNotNull(topLevelDrawable);
+        topLevelDrawable.setBounds(0, 0, sizePx, sizePx);
+
+        final ViewDraweeSpan draweeSpan = new ViewDraweeSpan(draweeHolder, ALIGN_CENTER);
         return draweeSpan;
     }
 
