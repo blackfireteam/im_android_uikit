@@ -38,6 +38,7 @@ import io.github.idonans.core.util.IOUtil;
 import io.github.idonans.dynamic.DynamicResult;
 import io.github.idonans.dynamic.page.PagePresenter;
 import io.github.idonans.lang.DisposableHolder;
+import io.github.idonans.uniontype.DeepDiff;
 import io.github.idonans.uniontype.UnionTypeItemObject;
 import io.github.idonans.uniontype.UnionTypeMapper;
 import io.reactivex.rxjava3.core.Single;
@@ -208,7 +209,7 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
         if (message == null) {
             return null;
         }
-        final DataObject dataObject = new DataObject(message)
+        final DataObject dataObject = new DeepDiffDataObject(message)
                 .putExtHolderItemClick1(mOnHolderItemClickListener)
                 .putExtHolderItemLongClick1(mOnHolderItemLongClickListener);
         final int unionType = IMBaseMessageViewHolder.Helper.getDefaultUnionType(dataObject);
@@ -216,6 +217,43 @@ public class SingleChatFragmentPresenter extends PagePresenter<UnionTypeItemObje
             return new UnionTypeItemObject(unionType, dataObject);
         }
         return null;
+    }
+
+    private static class DeepDiffDataObject extends DataObject implements DeepDiff {
+
+        public DeepDiffDataObject(MSIMMessage object) {
+            super(object);
+        }
+
+        @Override
+        public boolean isSameItem(@Nullable Object o) {
+            if (!(o instanceof DeepDiffDataObject)) {
+                return false;
+            }
+
+            final DeepDiffDataObject other = (DeepDiffDataObject) o;
+            if (!(other.object instanceof MSIMMessage)) {
+                return false;
+            }
+
+            if (!(this.object instanceof MSIMMessage)) {
+                return false;
+            }
+
+            return this.object.equals(other.object);
+        }
+
+        @Override
+        public boolean isSameContent(@Nullable Object o) {
+            final MSIMMessage thisMessage = (MSIMMessage) this.object;
+            //noinspection ConstantConditions
+            final MSIMMessage thatMessage = (MSIMMessage) ((DeepDiffDataObject) o).object;
+            return thisMessage.getMessageId() == thatMessage.getMessageId()
+                    && thisMessage.getLastModify() == thatMessage.getLastModify()
+                    && thisMessage.getServerMessageId() > 0 && thisMessage.getServerMessageId() == thatMessage.getServerMessageId()
+                    && thisMessage.getSendStatus() == thatMessage.getSendStatus()
+                    && thisMessage.getMessageType() == thatMessage.getMessageType();
+        }
     }
 
     @Override
