@@ -39,6 +39,7 @@ import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitWidgetCustomSoftKeyboardL
 import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitWidgetCustomSoftKeyboardLayerEmojiEmotionViewHolderItemViewHolderBinding;
 import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitWidgetCustomSoftKeyboardLayerMoreItemViewBinding;
 import com.masonsoft.imsdk.uikit.databinding.ImsdkUikitWidgetCustomSoftKeyboardLayerMoreViewHolderBinding;
+import com.masonsoft.imsdk.uikit.drawee.ViewDraweeSpan;
 import com.masonsoft.imsdk.uikit.util.ActivityUtil;
 import com.masonsoft.imsdk.uikit.util.TipUtil;
 import com.tbruyelle.rxpermissions3.RxPermissions;
@@ -247,7 +248,7 @@ public class CustomSoftKeyboard extends FrameLayout {
                     }
 
                     @Override
-                    protected void onEmotionClick(String name) {
+                    protected void onEmotionClick(CharSequence name) {
                         super.onEmotionClick(name);
 
                         if (mOnInputListener != null) {
@@ -664,7 +665,7 @@ public class CustomSoftKeyboard extends FrameLayout {
             mBinding.recyclerView.setLayoutManager(layoutManager);
             mBinding.recyclerView.setAdapter(new EmotionAdapter(mInflater) {
                 @Override
-                protected void onEmotionItemClick(String name) {
+                protected void onEmotionItemClick(CharSequence name) {
                     super.onEmotionItemClick(name);
                     EmotionViewHolder.this.onEmotionClick(name);
                 }
@@ -674,7 +675,7 @@ public class CustomSoftKeyboard extends FrameLayout {
         protected void onDeleteClick() {
         }
 
-        protected void onEmotionClick(String name) {
+        protected void onEmotionClick(CharSequence name) {
         }
 
         static class EmotionAdapter extends RecyclerView.Adapter<ItemViewHolder> {
@@ -698,7 +699,10 @@ public class CustomSoftKeyboard extends FrameLayout {
                                 return;
                             }
                             final String name = EmotionLoader.getName(position);
-                            onEmotionItemClick(name);
+                            final String assetFilename = EmotionLoader.getAssetValue(position);
+
+                            final CharSequence span = ViewDraweeSpan.createViewDraweeSpanStringBuilder(name, assetFilename, DimenUtil.sp2px(15));
+                            onEmotionItemClick(span);
                         });
 
                 return viewHolder;
@@ -715,7 +719,7 @@ public class CustomSoftKeyboard extends FrameLayout {
                 return EmotionLoader.size();
             }
 
-            protected void onEmotionItemClick(String name) {
+            protected void onEmotionItemClick(CharSequence name) {
             }
         }
 

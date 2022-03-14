@@ -1,10 +1,15 @@
 package com.masonsoft.imsdk.uikit.util;
 
+import android.text.Editable;
+import android.text.Spanned;
+import android.text.method.KeyListener;
+import android.view.KeyEvent;
 import android.widget.EditText;
 
 import androidx.annotation.NonNull;
 
 import com.masonsoft.imsdk.uikit.MSIMUikitLog;
+import com.masonsoft.imsdk.uikit.drawee.ViewDraweeSpan;
 
 /**
  * EditText 相关辅助类
@@ -26,6 +31,15 @@ public class EditTextUtil {
             } else {
                 view.getText().insert(selectionStart, text);
             }
+
+            if (text instanceof Spanned) {
+                final ViewDraweeSpan[] viewDraweeSpans = ((Spanned) text).getSpans(0, text.length(), ViewDraweeSpan.class);
+                if (viewDraweeSpans != null) {
+                    for (ViewDraweeSpan viewDraweeSpan : viewDraweeSpans) {
+                        viewDraweeSpan.setTargetView(view);
+                    }
+                }
+            }
         } else {
             MSIMUikitLog.e("insertText invalid selectionStart:%s", selectionStart);
         }
@@ -35,6 +49,26 @@ public class EditTextUtil {
      * 根据光标位置的不同删除数据
      */
     public static void deleteOne(@NonNull EditText view) {
+        final KeyListener keyListener = view.getKeyListener();
+        if (keyListener == null) {
+            MSIMUikitLog.e("unexpected. key listener is null.");
+            return;
+        }
+        final Editable editable = view.getEditableText();
+        if (editable == null) {
+            MSIMUikitLog.e("unexpected. editable is null.");
+            return;
+        }
+
+        final long timeNow = System.currentTimeMillis();
+        keyListener.onKeyDown(
+                view,
+                editable,
+                KeyEvent.KEYCODE_DEL,
+                new KeyEvent(timeNow, timeNow, KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DEL, 0)
+        );
+
+        /*
         int selectionStart = view.getSelectionStart();
         if (selectionStart >= 0) {
             int selectionEnd = view.getSelectionEnd();
@@ -55,6 +89,7 @@ public class EditTextUtil {
         } else {
             MSIMUikitLog.e("deleteOne invalid selectionStart:%s", selectionStart);
         }
+        */
     }
 
 }
