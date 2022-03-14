@@ -117,7 +117,7 @@ public class MSIMBaseMessageSendStatusTextView extends MSIMBaseMessageFrameLayou
                 messageText = "";
                 break;
             default:
-                messageText = "[default]type:" + messageType + ", body:" + baseMessage.getBody();
+                messageText = "[其他消息]";
         }
 
         if (MSIMConstants.MessageType.isCustomMessage(messageType)) {
