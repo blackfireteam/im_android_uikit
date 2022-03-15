@@ -62,7 +62,7 @@
             android:textColor="@android:color/white"
             android:textSize="22sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toTopOf="@id/desc"
+            app:layout_constraintBottom_toTopOf="@id/department_text"
             app:layout_constraintStart_toStartOf="parent"
             tools:text="home spark" />
 
@@ -75,17 +75,36 @@
             app:layout_constraintTop_toTopOf="@id/username" />
 
         <TextView
-            android:id="@+id/desc"
+            android:id="@+id/department_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginBottom="5dp"
+            android:background="@drawable/imsdk_uikit_ic_common_rect_corners_4dp_fill_alpha50"
             android:includeFontPadding="false"
-            android:paddingHorizontal="20dp"
-            android:paddingBottom="20dp"
-            android:textColor="#fff5f5f5"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="2dp"
+            android:textColor="#ff282828"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toTopOf="@id/workplace_text"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:text="部门" />
+
+        <TextView
+            android:id="@+id/workplace_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/imsdk_uikit_ic_common_rect_corners_4dp_fill_alpha50"
+            android:includeFontPadding="false"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="2dp"
+            android:textColor="#ff282828"
             android:textSize="12sp"
             app:layout_constraintBottom_toTopOf="@id/bottom_barrier"
             app:layout_constraintStart_toStartOf="parent"
-            tools:text="部门 / 办公地" />
+            tools:text="办公地" />
 
         <androidx.constraintlayout.widget.Barrier
             android:id="@+id/bottom_barrier"

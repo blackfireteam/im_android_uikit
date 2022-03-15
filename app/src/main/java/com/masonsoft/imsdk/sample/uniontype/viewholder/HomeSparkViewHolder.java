@@ -1,5 +1,6 @@
 package com.masonsoft.imsdk.sample.uniontype.viewholder;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 
 import androidx.annotation.FloatRange;
@@ -96,6 +97,7 @@ public class HomeSparkViewHolder extends UnionTypeViewHolder {
         mBinding.userGender.setUserInfo(userInfo);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
     public void onBindUpdate() {
         final DataObject itemObject = getItemObject(DataObject.class);
@@ -106,7 +108,11 @@ public class HomeSparkViewHolder extends UnionTypeViewHolder {
         mUserInfoLoader.setUserInfo(MSIMUserInfo.mock(spark.profile.getUid()), false);
 
         mBinding.imageLayout.setImageUrl(null, spark.profile.getAvatar());
-        mBinding.desc.setText(buildDescText(spark));
+        final Map<String, Object> map = JsonUtil.toMapOrEmpty(spark.profile.getCustom());
+        final String department = StringUtil.toStringOrEmpty(map.get("department"));
+        final String workplace = StringUtil.toStringOrEmpty(map.get("workplace"));
+        mBinding.departmentText.setText("部门：" + department);
+        mBinding.workplaceText.setText("办公地：" + workplace);
 
         updateLikeAndDislike(0, false);
 
@@ -151,25 +157,6 @@ public class HomeSparkViewHolder extends UnionTypeViewHolder {
 
             SingleChatActivity.start(innerActivity, spark.profile.getUid());
         });
-    }
-
-    private String buildDescText(@NonNull Spark spark) {
-        final Map<String, Object> map = JsonUtil.toMapOrEmpty(spark.profile.getCustom());
-        final String department = StringUtil.toStringOrEmpty(map.get("department"));
-        final String workplace = StringUtil.toStringOrEmpty(map.get("workplace"));
-        final StringBuilder builder = new StringBuilder();
-        if (!department.isEmpty()) {
-            builder.append(department);
-            builder.append(" ");
-        }
-        if (!workplace.isEmpty()) {
-            builder.append(workplace);
-            builder.append(" ");
-        }
-
-        // builder.append("[" + spark.debugInfo + "]");
-
-        return builder.toString();
     }
 
     private void sendLikeMessage(long targetUserId) {
