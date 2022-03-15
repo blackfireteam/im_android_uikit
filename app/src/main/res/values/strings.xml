@@ -3,7 +3,7 @@
     <string name="app_name">msimsdk</string>
     <string name="imsdk_sample_base_on">BaseOn</string>
     <string name="imsdk_sample_tab_home">首页</string>
-    <string name="imsdk_sample_tab_discover">探索</string>
+    <string name="imsdk_sample_tab_discover">在线</string>
     <string name="imsdk_sample_tab_conversation">消息</string>
     <string name="imsdk_sample_tab_mine">我的</string>
     <string name="imsdk_sample_tab_discover_title">在线用户</string>

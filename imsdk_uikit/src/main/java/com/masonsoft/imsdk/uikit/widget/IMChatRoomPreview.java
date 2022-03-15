@@ -41,7 +41,7 @@ public class IMChatRoomPreview extends IMChatRoomStateDynamicFrameLayout {
         AppContext.setContextInEditMode(this);
         LayoutInflater.from(context).inflate(R.layout.imsdk_uikit_widget_im_chat_room_preview, this, true);
         mBinding = ImsdkUikitWidgetImChatRoomPreviewBinding.bind(this);
-        mBinding.chatRoomLogo.setImageUrl(null, "res://app/" + R.drawable.imsdk_uikit_ic_chat_room_logo);
+        mBinding.chatRoomLogo.setImageUrl(null, "res://app2/" + R.drawable.imsdk_uikit_ic_chat_room_logo);
     }
 
     @Override
