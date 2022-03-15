@@ -16,6 +16,7 @@ import java.util.concurrent.TimeUnit;
 import io.github.idonans.core.thread.Threads;
 import io.github.idonans.dynamic.DynamicResult;
 import io.github.idonans.dynamic.page.PagePresenter;
+import io.github.idonans.uniontype.DeepDiff;
 import io.github.idonans.uniontype.UnionTypeItemObject;
 import io.reactivex.rxjava3.core.Single;
 import io.reactivex.rxjava3.core.SingleSource;
@@ -42,8 +43,10 @@ public class HomeFragmentPresenter extends PagePresenter<UnionTypeItemObject, Ob
 
         if (result.items == null || result.items.isEmpty()) {
             setLastRetryListener(() -> requestInit(true));
+            setNextPageRequestEnable(false);
         } else {
             setLastRetryListener(null);
+            setNextPageRequestEnable(true);
         }
     }
 
@@ -62,8 +65,10 @@ public class HomeFragmentPresenter extends PagePresenter<UnionTypeItemObject, Ob
 
         if (result.items == null || result.items.isEmpty()) {
             setLastRetryListener(() -> requestNextPage(true));
+            setNextPageRequestEnable(false);
         } else {
             setLastRetryListener(null);
+            setNextPageRequestEnable(true);
         }
     }
 
@@ -80,7 +85,7 @@ public class HomeFragmentPresenter extends PagePresenter<UnionTypeItemObject, Ob
     }
 
     private UnionTypeItemObject create(@NonNull Spark input) {
-        return new UnionTypeItemObject(SampleUnionTypeMapper.UNION_TYPE_IMPL_IM_HOME_SPARK, new DataObject(input));
+        return new UnionTypeItemObject(SampleUnionTypeMapper.UNION_TYPE_IMPL_IM_HOME_SPARK, new DeepDiffDataObject(input));
     }
 
     private void setLastRetryListener(LastRetryListener listener) {
@@ -99,6 +104,39 @@ public class HomeFragmentPresenter extends PagePresenter<UnionTypeItemObject, Ob
     public void requestLastRetry() {
         if (mLastRetryListener != null) {
             mLastRetryListener.onRetry();
+        }
+    }
+
+    private static final class DeepDiffDataObject extends DataObject implements DeepDiff {
+
+        public DeepDiffDataObject(Spark spark) {
+            super(spark);
+        }
+
+        @Override
+        public boolean isSameItem(@Nullable Object o) {
+            if (!(o instanceof DeepDiffDataObject)) {
+                return false;
+            }
+
+            final DeepDiffDataObject other = (DeepDiffDataObject) o;
+            if (!(other.object instanceof Spark)) {
+                return false;
+            }
+
+            if (!(this.object instanceof Spark)) {
+                return false;
+            }
+
+            return this.object.equals(other.object);
+        }
+
+        @Override
+        public boolean isSameContent(@Nullable Object o) {
+            final Spark thisSpark = (Spark) this.object;
+            //noinspection ConstantConditions
+            final Spark thatSpark = (Spark) ((DeepDiffDataObject) o).object;
+            return thisSpark.profile == thatSpark.profile;
         }
     }
 

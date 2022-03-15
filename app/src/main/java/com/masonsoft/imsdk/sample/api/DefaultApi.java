@@ -235,7 +235,17 @@ public class DefaultApi {
         };
         OtherMessageObservable.DEFAULT.registerObserver(otherMessageObserver);
         OtherMessageManager.getInstance().enqueueOtherMessage(sessionUserId, originSign, otherMessage);
-        return subject.timeout(TIMEOUT_MS, TimeUnit.MILLISECONDS).blockingGet();
+        final List<Spark> result = subject.timeout(TIMEOUT_MS, TimeUnit.MILLISECONDS).blockingGet();
+
+        {
+            final int size = result.size();
+            for (int i = 0; i < size; i++) {
+                result.get(i).debugInfo = (i + 1) + "/" + size;
+            }
+        }
+
+        Preconditions.checkNotNull(result);
+        return result;
     }
 
 }

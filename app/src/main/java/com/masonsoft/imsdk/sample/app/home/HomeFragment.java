@@ -108,10 +108,12 @@ public class HomeFragment extends SystemInsetsFragment {
         adapter.setUnionTypeMapper(new SampleUnionTypeMapper() {
             {
                 put(UNION_TYPE_LOADING_STATUS_LOADING_LARGE, HomeSparkLoadingLargeViewHolder::new);
+                put(UNION_TYPE_LOADING_STATUS_LOADING_SMALL, HomeSparkLoadingLargeViewHolder::new);
                 put(UNION_TYPE_LOADING_STATUS_LOAD_FAIL_LARGE, HomeSparkLoadFailLargeViewHolder::new);
                 put(UNION_TYPE_LOADING_STATUS_LOAD_FAIL_SMALL, HomeSparkLoadFailLargeViewHolder::new);
                 put(UNION_TYPE_LOADING_STATUS_NO_MORE_DATA, LocalHomeSparkLoadNoMoreDataLargeViewHolder::new);
                 put(UNION_TYPE_LOADING_STATUS_EMPTY_DATA, LocalHomeSparkLoadNoMoreDataLargeViewHolder::new);
+                put(UNION_TYPE_LOADING_STATUS_MANUAL_TO_LOAD_MORE, LocalHomeSparkLoadNoMoreDataLargeViewHolder::new);
             }
         });
 

@@ -10,6 +10,7 @@ import java.util.List;
 public class Spark {
 
     public ProtoMessage.Profile profile;
+    public String debugInfo;
 
     @NonNull
     public static Spark valueOf(@NonNull ProtoMessage.Profile input) {

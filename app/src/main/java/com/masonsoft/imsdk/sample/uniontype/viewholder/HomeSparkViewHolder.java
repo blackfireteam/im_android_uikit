@@ -165,6 +165,9 @@ public class HomeSparkViewHolder extends UnionTypeViewHolder {
             builder.append(workplace);
             builder.append(" ");
         }
+
+        builder.append("[" + spark.debugInfo + "]");
+
         return builder.toString();
     }
 
