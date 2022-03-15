@@ -166,573 +166,573 @@
 	</dict>
 	<dict>
 		<key>face_name</key>
-		<string>[Sweats]</string>
+		<string>[Heart]</string>
 		<key>face_id</key>
 		<string>028</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
-		<string>[Heart]</string>
+		<string>[Lips]</string>
 		<key>face_id</key>
 		<string>029</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
-		<string>[Lips]</string>
+		<string>[Boring]</string>
 		<key>face_id</key>
 		<string>030</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
-		<string>[Boring]</string>
+		<string>[Frown]</string>
 		<key>face_id</key>
 		<string>031</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
-		<string>[Frown]</string>
-		<key>face_id</key>
-		<string>033</string>
-	</dict>
-	<dict>
-		<key>face_name</key>
 		<string>[Surprise]</string>
 		<key>face_id</key>
-		<string>034</string>
+		<string>032</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Shocked]</string>
 		<key>face_id</key>
-		<string>035</string>
+		<string>033</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Emm]</string>
 		<key>face_id</key>
-		<string>037</string>
+		<string>034</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Laugh]</string>
 		<key>face_id</key>
-		<string>038</string>
+		<string>035</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Love]</string>
 		<key>face_id</key>
-		<string>039</string>
+		<string>036</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Toasted]</string>
 		<key>face_id</key>
-		<string>040</string>
+		<string>037</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Smug]</string>
 		<key>face_id</key>
-		<string>041</string>
+		<string>038</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Dog]</string>
 		<key>face_id</key>
-		<string>042</string>
+		<string>039</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[GoForlt]</string>
 		<key>face_id</key>
-		<string>043</string>
+		<string>040</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Scowl]</string>
 		<key>face_id</key>
-		<string>044</string>
+		<string>041</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Hug]</string>
 		<key>face_id</key>
-		<string>046</string>
+		<string>042</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Trick]</string>
 		<key>face_id</key>
-		<string>047</string>
+		<string>043</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Pooh-pooh]</string>
 		<key>face_id</key>
-		<string>049</string>
+		<string>044</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Dizzy]</string>
 		<key>face_id</key>
-		<string>050</string>
+		<string>045</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Commando]</string>
 		<key>face_id</key>
-		<string>051</string>
+		<string>046</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Whimper]</string>
 		<key>face_id</key>
-		<string>052</string>
+		<string>047</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Good]</string>
 		<key>face_id</key>
-		<string>053</string>
+		<string>048</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Thumbdown]</string>
 		<key>face_id</key>
-		<string>054</string>
+		<string>049</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Shake]</string>
 		<key>face_id</key>
-		<string>055</string>
+		<string>050</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Peace]</string>
 		<key>face_id</key>
-		<string>056</string>
+		<string>051</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Salute]</string>
 		<key>face_id</key>
-		<string>057</string>
+		<string>052</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Wilt]</string>
 		<key>face_id</key>
-		<string>058</string>
+		<string>053</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Rice]</string>
 		<key>face_id</key>
-		<string>059</string>
+		<string>054</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Cake]</string>
 		<key>face_id</key>
-		<string>060</string>
+		<string>055</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Watermelon]</string>
 		<key>face_id</key>
-		<string>061</string>
+		<string>056</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Beer]</string>
 		<key>face_id</key>
-		<string>062</string>
+		<string>057</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Bug]</string>
 		<key>face_id</key>
-		<string>063</string>
+		<string>058</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Beckon]</string>
 		<key>face_id</key>
-		<string>064</string>
+		<string>059</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[OK]</string>
 		<key>face_id</key>
-		<string>065</string>
+		<string>060</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Coffe]</string>
 		<key>face_id</key>
-		<string>067</string>
+		<string>061</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Moon]</string>
 		<key>face_id</key>
-		<string>068</string>
+		<string>062</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Cleaver]</string>
 		<key>face_id</key>
-		<string>069</string>
+		<string>063</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Tremble]</string>
 		<key>face_id</key>
-		<string>070</string>
+		<string>064</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Loser]</string>
 		<key>face_id</key>
-		<string>071</string>
+		<string>065</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Fist]</string>
 		<key>face_id</key>
-		<string>072</string>
+		<string>066</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Brokenheart]</string>
 		<key>face_id</key>
-		<string>073</string>
+		<string>067</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Sun]</string>
 		<key>face_id</key>
-		<string>074</string>
+		<string>068</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Gift]</string>
 		<key>face_id</key>
-		<string>075</string>
+		<string>069</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Football]</string>
 		<key>face_id</key>
-		<string>076</string>
+		<string>070</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Skull]</string>
 		<key>face_id</key>
-		<string>077</string>
+		<string>071</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Wave]</string>
 		<key>face_id</key>
-		<string>078</string>
+		<string>072</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Lightning]</string>
 		<key>face_id</key>
-		<string>079</string>
+		<string>073</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Hungry]</string>
 		<key>face_id</key>
-		<string>080</string>
+		<string>074</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Sleepy]</string>
 		<key>face_id</key>
-		<string>081</string>
+		<string>075</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Scold]</string>
 		<key>face_id</key>
-		<string>082</string>
+		<string>076</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Scream]</string>
 		<key>face_id</key>
-		<string>083</string>
+		<string>077</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Nosepick]</string>
 		<key>face_id</key>
-		<string>084</string>
+		<string>078</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Clap]</string>
 		<key>face_id</key>
-		<string>085</string>
+		<string>079</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Mybad]</string>
 		<key>face_id</key>
-		<string>086</string>
+		<string>080</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[TearingUp]</string>
 		<key>face_id</key>
-		<string>089</string>
+		<string>081</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Terror]</string>
 		<key>face_id</key>
-		<string>090</string>
+		<string>082</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Ball]</string>
 		<key>face_id</key>
-		<string>091</string>
+		<string>083</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Pingpong]</string>
 		<key>face_id</key>
-		<string>092</string>
+		<string>084</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[NO]</string>
 		<key>face_id</key>
-		<string>093</string>
+		<string>085</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Waddle]</string>
 		<key>face_id</key>
-		<string>094</string>
+		<string>086</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Twirl]</string>
 		<key>face_id</key>
-		<string>096</string>
+		<string>087</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Dance]</string>
 		<key>face_id</key>
-		<string>101</string>
+		<string>088</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Silent]</string>
 		<key>face_id</key>
-		<string>105</string>
+		<string>089</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Cat]</string>
 		<key>face_id</key>
-		<string>106</string>
+		<string>090</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Firecracker]</string>
 		<key>face_id</key>
-		<string>108</string>
+		<string>091</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Lantern]</string>
 		<key>face_id</key>
-		<string>109</string>
+		<string>092</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Rich]</string>
 		<key>face_id</key>
-		<string>110</string>
+		<string>093</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Mic]</string>
 		<key>face_id</key>
-		<string>111</string>
+		<string>094</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Packet]</string>
 		<key>face_id</key>
-		<string>112</string>
+		<string>095</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Envelope]</string>
 		<key>face_id</key>
-		<string>113</string>
+		<string>096</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Chess]</string>
 		<key>face_id</key>
-		<string>114</string>
+		<string>097</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Party]</string>
 		<key>face_id</key>
-		<string>115</string>
+		<string>098</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Candle]</string>
 		<key>face_id</key>
-		<string>116</string>
+		<string>099</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Lollipop]</string>
 		<key>face_id</key>
-		<string>118</string>
+		<string>100</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Feeder]</string>
 		<key>face_id</key>
-		<string>119</string>
+		<string>101</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Noodles]</string>
 		<key>face_id</key>
-		<string>120</string>
+		<string>102</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Banana]</string>
 		<key>face_id</key>
-		<string>121</string>
+		<string>103</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Plane]</string>
 		<key>face_id</key>
-		<string>122</string>
+		<string>104</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Train]</string>
 		<key>face_id</key>
-		<string>125</string>
+		<string>105</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Cloud]</string>
 		<key>face_id</key>
-		<string>127</string>
+		<string>106</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Rain]</string>
 		<key>face_id</key>
-		<string>128</string>
+		<string>107</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Money]</string>
 		<key>face_id</key>
-		<string>129</string>
+		<string>108</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Panda]</string>
 		<key>face_id</key>
-		<string>130</string>
+		<string>109</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Bulb]</string>
 		<key>face_id</key>
-		<string>131</string>
+		<string>110</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Windmill]</string>
 		<key>face_id</key>
-		<string>132</string>
+		<string>111</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Clock]</string>
 		<key>face_id</key>
-		<string>133</string>
+		<string>112</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Umbrella]</string>
 		<key>face_id</key>
-		<string>134</string>
+		<string>113</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Balloon]</string>
 		<key>face_id</key>
-		<string>135</string>
+		<string>114</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Ring]</string>
 		<key>face_id</key>
-		<string>136</string>
+		<string>115</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Sofa]</string>
 		<key>face_id</key>
-		<string>137</string>
+		<string>116</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Tissue]</string>
 		<key>face_id</key>
-		<string>138</string>
+		<string>117</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Gun]</string>
 		<key>face_id</key>
-		<string>140</string>
+		<string>118</string>
 	</dict>
 	<dict>
 		<key>face_name</key>
 		<string>[Frog]</string>
 		<key>face_id</key>
-		<string>141</string>
+		<string>119</string>
 	</dict>
     <dict>
         <key>face_name</key>
         <string>[Car]</string>
         <key>face_id</key>
-        <string>142</string>
+        <string>120</string>
     </dict>
     <dict>
         <key>face_name</key>
-        <string>[Ring]</string>
+        <string>[Drug]</string>
         <key>face_id</key>
-        <string>143</string>
+        <string>121</string>
+    </dict>
+    <dict>
+        <key>face_name</key>
+        <string>[Sleep]</string>
+        <key>face_id</key>
+        <string>122</string>
     </dict>
 </array>
 </plist>
