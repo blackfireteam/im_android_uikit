@@ -7,6 +7,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.SystemClock;
+import android.text.Layout;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -54,8 +55,12 @@ public class ViewDraweeSpan extends AlignImageSpan {
                 final View targetView = findTargetView();
                 MSIMUikitLog.v("%s invalidateDrawable, targetView:%s", Objects.defaultObjectTag(ViewDraweeSpan.this), targetView);
                 if (targetView != null) {
-                    // targetView.postInvalidate();
-                    targetView.requestLayout();
+                    if (targetView instanceof TextView) {
+                        final Layout layout = ((TextView) targetView).getLayout();
+                        MSIMUikitLog.v("%s invalidateDrawable, targetView:%s, layout:%s", Objects.defaultObjectTag(ViewDraweeSpan.this), targetView, layout);
+                    }
+                    targetView.postInvalidate();
+                    // targetView.requestLayout();
                 }
             }
 
@@ -142,7 +147,12 @@ public class ViewDraweeSpan extends AlignImageSpan {
             spannableText = (Spannable) text;
         }
 
-        spannableText.removeSpan(ViewDraweeSpan.class);
+        final ViewDraweeSpan[] oldSpan = spannableText.getSpans(0, spannableText.length(), ViewDraweeSpan.class);
+        if (oldSpan != null) {
+            for (ViewDraweeSpan span : oldSpan) {
+                spannableText.removeSpan(span);
+            }
+        }
         final Matcher matcher = EMOTION_PATTERN.matcher(spannableText);
 
         while (matcher.find()) {
