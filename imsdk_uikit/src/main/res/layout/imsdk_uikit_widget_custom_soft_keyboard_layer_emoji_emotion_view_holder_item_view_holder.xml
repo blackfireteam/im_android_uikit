@@ -15,5 +15,8 @@
         android:layout_gravity="center"
         android:layout_marginVertical="8dp"
         app:imagePlaceHolderFail="@android:color/transparent"
-        app:imagePlaceHolderLoading="@android:color/transparent" />
+        app:imagePlaceHolderLoading="@android:color/transparent"
+        app:imageResize="-1"
+        app:imageResizePercent="-1"
+        app:smallCache="true" />
 </FrameLayout>
