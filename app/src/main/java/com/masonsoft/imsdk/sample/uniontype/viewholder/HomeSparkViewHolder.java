@@ -107,10 +107,11 @@ public class HomeSparkViewHolder extends UnionTypeViewHolder {
 
         mUserInfoLoader.setUserInfo(MSIMUserInfo.mock(spark.profile.getUid()), false);
 
-        mBinding.imageLayout.setImageUrl(null, spark.profile.getAvatar());
         final Map<String, Object> map = JsonUtil.toMapOrEmpty(spark.profile.getCustom());
         final String department = StringUtil.toStringOrEmpty(map.get("department"));
         final String workplace = StringUtil.toStringOrEmpty(map.get("workplace"));
+        final String pic = StringUtil.toStringOrEmpty(map.get("pic"));
+        mBinding.imageLayout.setImageUrl(null, pic);
         mBinding.departmentText.setText("部门：" + department);
         mBinding.workplaceText.setText("办公地：" + workplace);
 
