@@ -1,13 +1,11 @@
 package com.masonsoft.imsdk.uikit.drawee;
 
-import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.SystemClock;
-import android.text.Layout;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -25,10 +23,8 @@ import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
 import com.facebook.drawee.view.DraweeHolder;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
-import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.uikit.widget.AlignImageSpan;
 import com.masonsoft.imsdk.uikit.widget.CustomSoftKeyboard;
-import com.masonsoft.imsdk.util.Objects;
 
 import java.lang.ref.WeakReference;
 import java.util.regex.Matcher;
@@ -53,21 +49,27 @@ public class ViewDraweeSpan extends AlignImageSpan {
             @Override
             public void invalidateDrawable(@NonNull Drawable who) {
                 final View targetView = findTargetView();
-                MSIMUikitLog.v("%s invalidateDrawable, targetView:%s", Objects.defaultObjectTag(ViewDraweeSpan.this), targetView);
-                if (targetView != null) {
-                    if (targetView instanceof TextView) {
-                        final Layout layout = ((TextView) targetView).getLayout();
-                        MSIMUikitLog.v("%s invalidateDrawable, targetView:%s, layout:%s", Objects.defaultObjectTag(ViewDraweeSpan.this), targetView, layout);
+                if (targetView instanceof TextView) {
+                    final CharSequence charSequence = ((TextView) targetView).getText();
+                    if (charSequence instanceof Spannable) {
+                        final Spannable spannable = (Spannable) charSequence;
+                        final int start = spannable.getSpanStart(ViewDraweeSpan.this);
+                        if (start >= 0) {
+                            final int end = spannable.getSpanEnd(ViewDraweeSpan.this);
+                            final int flag = spannable.getSpanFlags(ViewDraweeSpan.this);
+                            spannable.setSpan(ViewDraweeSpan.this, start, end, flag);
+                        }
                     }
-                    targetView.postInvalidate();
-                    // targetView.requestLayout();
+                }
+
+                if (targetView != null) {
+                    targetView.invalidate();
                 }
             }
 
             @Override
             public void scheduleDrawable(@NonNull Drawable who, @NonNull Runnable what, long when) {
                 final View targetView = findTargetView();
-                MSIMUikitLog.v("%s scheduleDrawable, targetView:%s", Objects.defaultObjectTag(ViewDraweeSpan.this), targetView);
                 if (targetView != null) {
                     final long delay = when - SystemClock.uptimeMillis();
                     targetView.postDelayed(what, delay);
@@ -77,7 +79,6 @@ public class ViewDraweeSpan extends AlignImageSpan {
             @Override
             public void unscheduleDrawable(@NonNull Drawable who, @NonNull Runnable what) {
                 final View targetView = findTargetView();
-                MSIMUikitLog.v("%s unscheduleDrawable, targetView:%s", Objects.defaultObjectTag(ViewDraweeSpan.this), targetView);
                 if (targetView != null) {
                     targetView.removeCallbacks(what);
                 }
@@ -94,19 +95,6 @@ public class ViewDraweeSpan extends AlignImageSpan {
             return targetViewRef.get();
         }
         return null;
-    }
-
-    @Override
-    public int getSize(Paint paint, CharSequence text, int start, int end, Paint.FontMetricsInt fm) {
-        MSIMUikitLog.v("%s getSize text:%s, start:%s, end:%s", Objects.defaultObjectTag(this), text, start, end);
-        return super.getSize(paint, text, start, end, fm);
-    }
-
-    @Override
-    public void draw(Canvas canvas, CharSequence text, int start, int end, float x, int top, int y, int bottom, Paint paint) {
-        MSIMUikitLog.v("%s draw text:%s, start:%s, end:%s, x:%s, top:%s, y:%s, bottom:%s",
-                Objects.defaultObjectTag(this), text, start, end, x, top, y, bottom);
-        super.draw(canvas, text, start, end, x, top, y, bottom, paint);
     }
 
     public void setTargetView(View targetView) {
