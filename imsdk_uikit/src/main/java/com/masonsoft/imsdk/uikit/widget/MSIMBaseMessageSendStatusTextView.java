@@ -19,6 +19,7 @@ import com.masonsoft.imsdk.MSIMBaseMessage;
 import com.masonsoft.imsdk.MSIMConstants;
 import com.masonsoft.imsdk.uikit.R;
 import com.masonsoft.imsdk.uikit.drawee.ViewDraweeSpan;
+import com.masonsoft.imsdk.uikit.entity.CustomMessagePayload;
 
 import io.github.idonans.core.util.Preconditions;
 
@@ -125,6 +126,17 @@ public class MSIMBaseMessageSendStatusTextView extends MSIMBaseMessageFrameLayou
 
         if (MSIMConstants.MessageType.isCustomMessage(messageType)) {
             messageText = "[自定义消息]";
+
+            if (baseMessage.getBody() != null) {
+                final CustomMessagePayload customMessagePayload = CustomMessagePayload.fromBaseMessage(baseMessage);
+                if (customMessagePayload != null) {
+                    if (customMessagePayload.isTypeVideo()) {
+                        messageText = "[视频通话]";
+                    } else if (customMessagePayload.isTypeAudio()) {
+                        messageText = "[语音通话]";
+                    }
+                }
+            }
         }
 
         if (messageText != null) {
