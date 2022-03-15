@@ -1,15 +1,20 @@
 package com.masonsoft.imsdk.uikit.drawee;
 
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.SystemClock;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.view.View;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.backends.pipeline.PipelineDraweeControllerBuilder;
@@ -19,9 +24,12 @@ import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
 import com.facebook.drawee.view.DraweeHolder;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
+import com.masonsoft.imsdk.uikit.MSIMUikitLog;
 import com.masonsoft.imsdk.uikit.widget.AlignImageSpan;
 import com.masonsoft.imsdk.uikit.widget.CustomSoftKeyboard;
+import com.masonsoft.imsdk.util.Objects;
 
+import java.lang.ref.WeakReference;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,17 +39,73 @@ import io.github.idonans.core.util.Preconditions;
 public class ViewDraweeSpan extends AlignImageSpan {
 
     private final DraweeHolder<?> mDraweeHolder;
+    private final Drawable.Callback mDraweeCallback;
+    private WeakReference<View> mTargetViewRef;
 
     public ViewDraweeSpan(
             DraweeHolder<?> draweeHolder, int verticalAlignment) {
         super(draweeHolder.getTopLevelDrawable(), verticalAlignment);
         mDraweeHolder = draweeHolder;
         mDraweeHolder.onAttach();
+        mDraweeCallback = new Drawable.Callback() {
+
+            @Override
+            public void invalidateDrawable(@NonNull Drawable who) {
+                final View targetView = findTargetView();
+                MSIMUikitLog.v("%s invalidateDrawable, targetView:%s", Objects.defaultObjectTag(ViewDraweeSpan.this), targetView);
+                if (targetView != null) {
+                    // targetView.postInvalidate();
+                    targetView.requestLayout();
+                }
+            }
+
+            @Override
+            public void scheduleDrawable(@NonNull Drawable who, @NonNull Runnable what, long when) {
+                final View targetView = findTargetView();
+                MSIMUikitLog.v("%s scheduleDrawable, targetView:%s", Objects.defaultObjectTag(ViewDraweeSpan.this), targetView);
+                if (targetView != null) {
+                    final long delay = when - SystemClock.uptimeMillis();
+                    targetView.postDelayed(what, delay);
+                }
+            }
+
+            @Override
+            public void unscheduleDrawable(@NonNull Drawable who, @NonNull Runnable what) {
+                final View targetView = findTargetView();
+                MSIMUikitLog.v("%s unscheduleDrawable, targetView:%s", Objects.defaultObjectTag(ViewDraweeSpan.this), targetView);
+                if (targetView != null) {
+                    targetView.removeCallbacks(what);
+                }
+            }
+        };
+        //noinspection ConstantConditions
+        draweeHolder.getTopLevelDrawable().setCallback(mDraweeCallback);
+    }
+
+    @Nullable
+    private View findTargetView() {
+        final WeakReference<View> targetViewRef = mTargetViewRef;
+        if (targetViewRef != null) {
+            return targetViewRef.get();
+        }
+        return null;
+    }
+
+    @Override
+    public int getSize(Paint paint, CharSequence text, int start, int end, Paint.FontMetricsInt fm) {
+        MSIMUikitLog.v("%s getSize text:%s, start:%s, end:%s", Objects.defaultObjectTag(this), text, start, end);
+        return super.getSize(paint, text, start, end, fm);
+    }
+
+    @Override
+    public void draw(Canvas canvas, CharSequence text, int start, int end, float x, int top, int y, int bottom, Paint paint) {
+        MSIMUikitLog.v("%s draw text:%s, start:%s, end:%s, x:%s, top:%s, y:%s, bottom:%s",
+                Objects.defaultObjectTag(this), text, start, end, x, top, y, bottom);
+        super.draw(canvas, text, start, end, x, top, y, bottom, paint);
     }
 
     public void setTargetView(View targetView) {
-        mDraweeHolder.getTopLevelDrawable().setCallback(targetView);
-        mDraweeHolder.getTopLevelDrawable().invalidateSelf();
+        mTargetViewRef = new WeakReference<>(targetView);
     }
 
     public static ViewDraweeSpan create(final String assetFilename, int sizePx) {
