@@ -41,10 +41,10 @@ public class MSIMUserInfoGenderView extends MSIMUserInfoImageView {
 
     private void setGender(long gender) {
         if (gender == MSIMUikitConstants.Gender.MALE) {
-            setImageResource(R.drawable.imsdk_uikit_ic_gender_male);
+            setImageResource(R.drawable.imsdk_uikit_ic_gender_female);
         } else {
             // default female
-            setImageResource(R.drawable.imsdk_uikit_ic_gender_female);
+            setImageResource(R.drawable.imsdk_uikit_ic_gender_male);
         }
     }
 

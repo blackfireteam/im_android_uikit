@@ -72,7 +72,7 @@
                 android:layout_marginStart="5dp"
                 app:layout_flexGrow="0"
                 app:layout_flexShrink="0"
-                tools:src="@drawable/imsdk_uikit_ic_gender_female" />
+                tools:src="@drawable/imsdk_uikit_ic_gender_male" />
         </com.google.android.flexbox.FlexboxLayout>
 
         <com.masonsoft.imsdk.uikit.widget.MSIMConversationUnreadCountView

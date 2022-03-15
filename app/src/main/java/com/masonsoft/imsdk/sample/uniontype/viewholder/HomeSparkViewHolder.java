@@ -93,6 +93,7 @@ public class HomeSparkViewHolder extends UnionTypeViewHolder {
         }
 
         mBinding.username.setUserInfo(userInfo);
+        mBinding.userGender.setUserInfo(userInfo);
     }
 
     @Override
@@ -166,7 +167,7 @@ public class HomeSparkViewHolder extends UnionTypeViewHolder {
             builder.append(" ");
         }
 
-        builder.append("[" + spark.debugInfo + "]");
+        // builder.append("[" + spark.debugInfo + "]");
 
         return builder.toString();
     }

@@ -53,10 +53,11 @@
 
         <com.masonsoft.imsdk.uikit.widget.MSIMUserInfoName
             android:id="@+id/username"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:includeFontPadding="false"
-            android:paddingHorizontal="20dp"
+            android:paddingStart="20dp"
+            android:paddingEnd="10dp"
             android:paddingBottom="5dp"
             android:textColor="@android:color/white"
             android:textSize="22sp"
@@ -64,6 +65,14 @@
             app:layout_constraintBottom_toTopOf="@id/desc"
             app:layout_constraintStart_toStartOf="parent"
             tools:text="home spark" />
+
+        <com.masonsoft.imsdk.uikit.widget.MSIMUserInfoGenderView
+            android:id="@+id/user_gender"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@id/username"
+            app:layout_constraintStart_toEndOf="@id/username"
+            app:layout_constraintTop_toTopOf="@id/username" />
 
         <TextView
             android:id="@+id/desc"
@@ -76,7 +85,7 @@
             android:textSize="12sp"
             app:layout_constraintBottom_toTopOf="@id/bottom_barrier"
             app:layout_constraintStart_toStartOf="parent"
-            tools:text="部门 / 办公地点" />
+            tools:text="部门 / 办公地" />
 
         <androidx.constraintlayout.widget.Barrier
             android:id="@+id/bottom_barrier"

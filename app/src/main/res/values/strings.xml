@@ -15,7 +15,7 @@
     <string name="imsdk_sample_edit_hint_im_server">消息服务器地址 x.x.x.x:8888</string>
     <string name="imsdk_sample_edit_hint_nickname">昵称</string>
     <string name="imsdk_sample_edit_hint_department">部门</string>
-    <string name="imsdk_sample_edit_hint_workplace">办公地点</string>
+    <string name="imsdk_sample_edit_hint_workplace">办公地</string>
     <string name="imsdk_sample_edit_hint_invitation_code">邀请码</string>
     <string-array name="imsdk_sample_department_list" translatable="false">
         <item>SALE&amp;MARKETING</item>
@@ -52,7 +52,7 @@
     <string name="imsdk_sample_input_error_im_server_error">消息服务器地址错误</string>
     <string name="imsdk_sample_input_error_nickname_error">昵称在 3 – 20 字符</string>
     <string name="imsdk_sample_input_error_department_error">请选择部门</string>
-    <string name="imsdk_sample_input_error_workplace_error">请选择办公地点</string>
+    <string name="imsdk_sample_input_error_workplace_error">请选择办公地</string>
     <string name="imsdk_sample_input_error_gender_error">请选性别</string>
     <string name="imsdk_sample_input_error_invitation_code">邀请码错误</string>
     <string name="imsdk_sample_input_error_require_pick_avatar">头像未设置</string>
@@ -68,8 +68,8 @@
     <string name="imsdk_sample_profile_modify_nickname_success">昵称修改成功</string>
     <string name="imsdk_sample_profile_modify_department_fail">部门修改失败</string>
     <string name="imsdk_sample_profile_modify_department_success">部门修改成功</string>
-    <string name="imsdk_sample_profile_modify_workplace_fail">办公地点修改失败</string>
-    <string name="imsdk_sample_profile_modify_workplace_success">办公地点修改成功</string>
+    <string name="imsdk_sample_profile_modify_workplace_fail">办公地修改失败</string>
+    <string name="imsdk_sample_profile_modify_workplace_success">办公地修改成功</string>
     <string name="imsdk_sample_profile_modify_gender">性别</string>
     <string name="imsdk_sample_profile_modify_gender_fail">性别修改失败</string>
     <string name="imsdk_sample_profile_modify_gender_success">性别修改成功</string>

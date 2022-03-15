@@ -24,7 +24,7 @@ public class SignUpArgument implements Parcelable {
     public String nickname;
     public String avatar;
     public String department; // 部门
-    public String workplace; // 办公地点
+    public String workplace; // 办公地
     public long gender = MSIMUikitConstants.Gender.FEMALE;
 
     public SignUpArgument() {
