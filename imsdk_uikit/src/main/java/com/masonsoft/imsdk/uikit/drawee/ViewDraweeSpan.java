@@ -4,6 +4,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -16,6 +17,8 @@ import com.facebook.drawee.drawable.ScalingUtils;
 import com.facebook.drawee.generic.GenericDraweeHierarchy;
 import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
 import com.facebook.drawee.view.DraweeHolder;
+import com.facebook.imagepipeline.request.ImageRequest;
+import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.masonsoft.imsdk.uikit.widget.AlignImageSpan;
 import com.masonsoft.imsdk.uikit.widget.CustomSoftKeyboard;
 
@@ -52,7 +55,10 @@ public class ViewDraweeSpan extends AlignImageSpan {
                         .build();
         final DraweeHolder<GenericDraweeHierarchy> draweeHolder = new DraweeHolder<>(hierarchy);
         final PipelineDraweeControllerBuilder builder = Fresco.newDraweeControllerBuilder();
-        builder.setUri(assetFilename);
+        final ImageRequest imageRequest = ImageRequestBuilder.newBuilderWithSource(Uri.parse(assetFilename))
+                .setCacheChoice(ImageRequest.CacheChoice.SMALL)
+                .build();
+        builder.setImageRequest(imageRequest);
         builder.setAutoPlayAnimations(false);
         draweeHolder.setController(builder.build());
 
