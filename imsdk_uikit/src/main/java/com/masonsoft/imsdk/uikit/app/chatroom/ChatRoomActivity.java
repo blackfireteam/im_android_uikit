@@ -6,6 +6,7 @@ import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 
+import com.masonsoft.imsdk.MSIMManager;
 import com.masonsoft.imsdk.uikit.GlobalChatRoomManager;
 import com.masonsoft.imsdk.uikit.MSIMUikitConstants;
 import com.masonsoft.imsdk.uikit.app.FragmentDelegateActivity;
@@ -59,6 +60,32 @@ public class ChatRoomActivity extends FragmentDelegateActivity {
         }
 
         super.onBackPressed();
+    }
+
+    private boolean mWasResumed;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mWasResumed = true;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+        if (mWasResumed) {
+            final long chatRoomId = getIntent().getLongExtra(MSIMUikitConstants.ExtrasKey.KEY_ROOM_ID, 0L);
+            if (chatRoomId > 0) {
+                final GlobalChatRoomManager.StaticChatRoomContext chatRoomContext = GlobalChatRoomManager.getInstance().getStaticChatRoomContext(
+                        MSIMManager.getInstance().getSessionUserId(),
+                        chatRoomId,
+                        false);
+                if (chatRoomContext != null) {
+                    chatRoomContext.getChatRoomContext().clearUnreadCount();
+                }
+            }
+        }
     }
 
 }

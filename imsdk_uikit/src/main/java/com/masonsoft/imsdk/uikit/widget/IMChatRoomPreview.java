@@ -51,10 +51,20 @@ public class IMChatRoomPreview extends IMChatRoomStateDynamicFrameLayout {
         mBinding.time.setChatRoomContext(chatRoomContext);
         mBinding.name.setChatRoomContext(chatRoomContext);
         mBinding.msg.setChatRoomContext(chatRoomContext);
+        updateUnreadCountView(chatRoomContext);
     }
 
     @Override
     protected void onChatRoomStateChanged(@Nullable MSIMChatRoomContext chatRoomContext, @Nullable Object customObject) {
+        updateUnreadCountView(chatRoomContext);
+    }
+
+    private void updateUnreadCountView(@Nullable MSIMChatRoomContext chatRoomContext) {
+        if (chatRoomContext == null) {
+            mBinding.unreadCountView.setUnreadCount(0L);
+        } else {
+            mBinding.unreadCountView.setUnreadCount(chatRoomContext.getUnreadCount());
+        }
     }
 
 }
