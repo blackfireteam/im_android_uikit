@@ -52,20 +52,20 @@
                 app:layout_flexGrow="0"
                 app:layout_flexShrink="1">
 
-                <androidx.appcompat.widget.LinearLayoutCompat
+                <com.google.android.flexbox.FlexboxLayout
                     android:id="@+id/rtc_click_container"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/imsdk_uikit_chat_bubble_send"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
-                    android:paddingHorizontal="9dp">
+                    android:paddingHorizontal="9dp"
+                    app:alignItems="center">
 
                     <TextView
                         android:id="@+id/message_text"
-                        android:layout_width="0dp"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
                         android:gravity="center_vertical"
                         android:includeFontPadding="false"
                         android:lineSpacingMultiplier="1.2"
@@ -74,6 +74,8 @@
                         android:paddingVertical="10dp"
                         android:textColor="@android:color/white"
                         android:textSize="15sp"
+                        app:layout_flexGrow="0"
+                        app:layout_flexShrink="1"
                         tools:text="已取消" />
 
                     <View
@@ -81,15 +83,19 @@
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:layout_marginHorizontal="3dp"
-                        android:background="@drawable/imsdk_uikit_ic_rtc_type_audio_send" />
+                        android:background="@drawable/imsdk_uikit_ic_rtc_type_audio_send"
+                        app:layout_flexGrow="0"
+                        app:layout_flexShrink="0" />
 
                     <View
                         android:id="@+id/message_rtc_type_video"
                         android:layout_width="24dp"
                         android:layout_height="24dp"
                         android:layout_marginHorizontal="3dp"
-                        android:background="@drawable/imsdk_uikit_ic_rtc_type_video_send" />
-                </androidx.appcompat.widget.LinearLayoutCompat>
+                        android:background="@drawable/imsdk_uikit_ic_rtc_type_video_send"
+                        app:layout_flexGrow="0"
+                        app:layout_flexShrink="0" />
+                </com.google.android.flexbox.FlexboxLayout>
             </com.masonsoft.imsdk.uikit.widget.SnapchatContainer>
 
             <com.masonsoft.imsdk.uikit.widget.MSIMBaseMessageSendStatusView

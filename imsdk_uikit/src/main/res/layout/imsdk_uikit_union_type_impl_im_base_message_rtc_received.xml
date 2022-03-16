@@ -48,28 +48,33 @@
             app:layout_flexGrow="0"
             app:layout_flexShrink="1">
 
-            <androidx.appcompat.widget.LinearLayoutCompat
+            <com.google.android.flexbox.FlexboxLayout
                 android:id="@+id/rtc_click_container"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@drawable/imsdk_uikit_chat_bubble_received"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:paddingHorizontal="9dp">
+                android:paddingHorizontal="9dp"
+                app:alignItems="center">
 
                 <View
                     android:id="@+id/message_rtc_type_audio"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_marginHorizontal="3dp"
-                    android:background="@drawable/imsdk_uikit_ic_rtc_type_audio_received" />
+                    android:background="@drawable/imsdk_uikit_ic_rtc_type_audio_received"
+                    app:layout_flexGrow="0"
+                    app:layout_flexShrink="0" />
 
                 <View
                     android:id="@+id/message_rtc_type_video"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_marginHorizontal="3dp"
-                    android:background="@drawable/imsdk_uikit_ic_rtc_type_video_received" />
+                    android:background="@drawable/imsdk_uikit_ic_rtc_type_video_received"
+                    app:layout_flexGrow="0"
+                    app:layout_flexShrink="0" />
 
                 <TextView
                     android:id="@+id/message_text"
@@ -82,8 +87,10 @@
                     android:paddingVertical="10dp"
                     android:textColor="#333333"
                     android:textSize="15sp"
+                    app:layout_flexGrow="0"
+                    app:layout_flexShrink="1"
                     tools:text="中文中文中文中文中文中文中文中文中文中文中文中文中文中文中文中文中文中文中文中文中文中文中文中文" />
-            </androidx.appcompat.widget.LinearLayoutCompat>
+            </com.google.android.flexbox.FlexboxLayout>
         </com.masonsoft.imsdk.uikit.widget.SnapchatContainer>
     </com.google.android.flexbox.FlexboxLayout>
 </LinearLayout>
