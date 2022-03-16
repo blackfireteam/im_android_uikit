@@ -389,6 +389,13 @@ public abstract class IMBaseMessageViewHolder extends UnionTypeViewHolder {
             final boolean received = baseMessage.isReceived();
             final int messageType = baseMessage.getMessageType();
 
+            if (messageType == MSIMConstants.MessageType.DELETED) {
+                // 已删除的消息特殊处理(逻辑上不予展示，如果已经在页面上，则需要移除。如果是闪照并且正在倒计时，则继续保持到倒计时结束)
+                return received
+                        ? IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_DEFAULT_RECEIVED
+                        : IMUikitUnionTypeMapper.UNION_TYPE_IMPL_IM_MESSAGE_DEFAULT_SEND;
+            }
+
             // 不可见消息
             if (!MSIMConstants.MessageType.isVisibleMessage(messageType)) {
                 return UnionTypeMapper.UNION_TYPE_NULL;
