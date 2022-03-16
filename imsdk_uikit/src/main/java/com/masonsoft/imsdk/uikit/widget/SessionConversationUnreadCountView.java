@@ -28,16 +28,16 @@ public class SessionConversationUnreadCountView extends IMConversationAllUnreadC
     }
 
     @SuppressWarnings("FieldCanBeLocal")
-    private MSIMSessionUserIdChangedHelper mMSIMSessionUserIdChangedHelper;
+    private MSIMSessionUserIdChangedHelper mSessionUserIdChangedHelper;
 
     private void initFromAttributes(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        mMSIMSessionUserIdChangedHelper = new MSIMSessionUserIdChangedHelper() {
+        mSessionUserIdChangedHelper = new MSIMSessionUserIdChangedHelper() {
             @Override
             protected void onSessionUserIdChanged(long sessionUserId) {
                 SessionConversationUnreadCountView.this.setSessionUserId(sessionUserId);
             }
         };
-        setSessionUserId(mMSIMSessionUserIdChangedHelper.getSessionUserId());
+        setSessionUserId(mSessionUserIdChangedHelper.getSessionUserId());
     }
 
 }
