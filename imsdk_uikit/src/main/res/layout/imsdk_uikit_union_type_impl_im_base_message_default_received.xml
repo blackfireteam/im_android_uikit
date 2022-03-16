@@ -38,22 +38,20 @@
             app:layout_flexShrink="0" />
 
         <TextView
-            android:id="@+id/message_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="72dp"
-            android:background="@drawable/imsdk_uikit_chat_bubble_received"
+            android:background="#fff0f0f0"
             android:includeFontPadding="false"
             android:lineSpacingMultiplier="1.2"
-            android:minHeight="40dp"
             android:paddingStart="12dp"
-            android:paddingTop="10dp"
+            android:paddingTop="2dp"
             android:paddingEnd="12dp"
-            android:paddingBottom="10dp"
-            android:textColor="#333333"
-            android:textSize="15sp"
+            android:paddingBottom="2dp"
+            android:text="@string/imsdk_uikit_tip_message_not_impl"
+            android:textColor="#ffcccccc"
+            android:textSize="12sp"
             app:layout_flexGrow="0"
-            app:layout_flexShrink="1"
-            tools:text="default text" />
+            app:layout_flexShrink="1" />
     </com.google.android.flexbox.FlexboxLayout>
 </LinearLayout>

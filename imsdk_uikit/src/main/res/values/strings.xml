@@ -44,6 +44,7 @@
     <string name="imsdk_uikit_button_text_submit">确认</string>
     <string name="imsdk_uikit_tip_message_delivered">已送达</string>
     <string name="imsdk_uikit_tip_message_read">已读</string>
+    <string name="imsdk_uikit_tip_message_not_impl">不支持的消息，升级应用试试。</string>
     <string name="imsdk_uikit_voice_record_text_input">按住 说话</string>
     <string name="imsdk_uikit_voice_record_down_cancel_send">手指上滑，取消发送</string>
     <string name="imsdk_uikit_voice_record_say_time_short">说话时间太短</string>
