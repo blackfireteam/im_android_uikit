@@ -139,6 +139,10 @@ public class MSIMBaseMessageSendStatusTextView extends MSIMBaseMessageFrameLayou
             }
         }
 
+        if (messageType != MSIMConstants.MessageType.DELETED && baseMessage.isSnapchat()) {
+            messageText = "[阅后即焚]";
+        }
+
         if (messageText != null) {
             messageText = messageText.trim();
             builder.append(messageText);
