@@ -17,11 +17,7 @@ public class CustomIMMessageFactory {
      */
     @NonNull
     public static MSIMMessage createCustomMessageLike() {
-        final Map<String, Object> data = new HashMap<>();
-        data.put("type", 1);
-        data.put("desc", "like");
-        final String text = new Gson().toJson(data);
-        return MSIMMessageFactory.createCustomMessage(text, true, true);
+        return MSIMMessageFactory.createCustomEmotionMessage("008");
     }
 
     /**
